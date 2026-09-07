@@ -79,11 +79,12 @@ export default function Footer() {
                   <rect x="11" y="11" width="6" height="6" fill="white" />
                 </svg>
               </div>
-              <img
-                src="/aurex-logo.png"
-                alt="AUREX"
-                className="h-8 w-auto"
-              />
+              <span
+                className="text-[27px] font-bold tracking-[-0.08em] text-white"
+                style={{ fontFamily: "Arial, sans-serif" }}
+              >
+                aurex
+              </span>
             </div>
 
             <p
