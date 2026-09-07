@@ -142,12 +142,11 @@ export default function Header() {
                   <rect x="11" y="11" width="6" height="6" fill="#1E5EF3" />
                 </svg>
               </div>
-              <span
-                className="text-[27px] font-bold tracking-[-0.08em] text-[#168BC3]"
-                style={{ fontFamily: "Arial, sans-serif" }}
-              >
-                aurex
-              </span>
+              <img
+                src="/aurex-logo.png"
+                alt="AUREX"
+                className="h-8 w-auto object-contain"
+              />
             </Link>
 
             {/* Desktop nav */}
@@ -669,12 +668,11 @@ export default function Header() {
                     <rect x="11" y="11" width="6" height="6" fill="#1E5EF3" />
                   </svg>
                 </div>
-                <span
-                  className="text-2xl font-bold tracking-[-0.08em] text-[#168BC3]"
-                  style={{ fontFamily: "Arial, sans-serif" }}
-                >
-                  aurex
-                </span>
+                <img
+                  src="/aurex-logo.png"
+                  alt="AUREX"
+                  className="h-7 w-auto object-contain"
+                />
               </Link>
               <button
                 onClick={() => setMobileOpen(false)}
