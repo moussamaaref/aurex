@@ -1,0 +1,143 @@
+@import 'tailwindcss';
+@import 'leaflet/dist/leaflet.css';
+
+@theme {
+  --font-sans: 'Segoe UI', Arial, ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Arial Narrow', 'Segoe UI', Arial, ui-sans-serif, system-ui, sans-serif;
+
+  --color-primary: #0A2463;
+  --color-primary-dark: #061540;
+  --color-primary-light: #1A3A7A;
+  --color-accent: #1E5EF3;
+  --color-accent-hover: #1a51d4;
+  --color-navy: #0A2463;
+  --color-surface: #F9FAFB;
+  --color-surface-2: #EFF3FB;
+  --color-ink: #0D1117;
+  --color-ink-muted: #64748B;
+  --color-border-light: #E2E8F0;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #F9FAFB;
+  color: #0D1117;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  image-rendering: auto;
+  text-rendering: optimizeLegibility;
+}
+
+button, a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible, a:focus-visible, input:focus-visible {
+  outline: 3px solid rgba(30, 94, 243, 0.45);
+  outline-offset: 3px;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+*:hover {
+  scrollbar-color: rgba(30, 94, 243, 0.25) transparent;
+}
+
+.aurex-map-marker {
+  background: transparent;
+  border: 0;
+}
+
+.aurex-map-marker span {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border: 4px solid #fff;
+  border-radius: 9999px;
+  background: #1e5ef3;
+  box-shadow: 0 3px 10px rgba(10, 36, 99, 0.35);
+}
+
+.aurex-map-fullscreen:fullscreen {
+  min-height: 100vh;
+  width: 100vw;
+  border-radius: 0;
+}
+
+@keyframes kenBurns {
+  0%   { transform: scale(1) translate(0, 0); }
+  100% { transform: scale(1.07) translate(-1%, -1%); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-ken-burns  { animation: kenBurns 14s ease-out forwards; }
+.animate-fade-in    { animation: fadeIn 0.7s ease-out forwards; }
+.animate-slide-up   { animation: slideUp 0.48s ease-out forwards; }
+.animate-fade-in-down { animation: fadeInDown 0.22s ease-out forwards; }
+
+.delay-200 { animation-delay: 200ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-600 { animation-delay: 600ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-ken-burns,
+  .animate-fade-in,
+  .animate-slide-up,
+  .animate-fade-in-down { animation: none; opacity: 1; transform: none; }
+}
+
+/* RTL support for Arabic */
+[dir="rtl"] body {
+  font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+}
+[dir="rtl"] .font-display {
+  font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+}
+[dir="rtl"] .font-sans {
+  font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+}
+[dir="rtl"] .space-y-2 > * + * { margin-top: 0.5rem; }
+[dir="rtl"] .space-y-3 > * + * { margin-top: 0.75rem; }
+[dir="rtl"] .space-y-4 > * + * { margin-top: 1rem; }
+[dir="rtl"] .space-y-5 > * + * { margin-top: 1.25rem; }
+[dir="rtl"] .space-y-6 > * + * { margin-top: 1.5rem; }
+[dir="rtl"] .space-y-10 > * + * { margin-top: 2.5rem; }
+
+@media print {
+  body {
+    background: #ffffff;
+  }
+  header,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+  main {
+    padding-top: 0 !important;
+  }
+  .pt-28 {
+    padding-top: 0 !important;
+  }
+  .overflow-x-auto {
+    overflow: visible !important;
+  }
+}

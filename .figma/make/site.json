@@ -1,0 +1,10 @@
+{
+  "description": "Showcasing AUREX's premium home appliance brand, this web app features a comprehensive product catalog, smart home technologies, and customer support.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
