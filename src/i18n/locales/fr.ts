@@ -159,7 +159,7 @@ const fr = {
     hero: [
       {
         tag: "Nouveauté 2026",
-        title: "L'excellence\nau quotidien.",
+        title: "Une propreté\nnouvelle génération.",
         subtitle:
           "La nouvelle gamme AUREX — technologies de pointe\npour chaque foyer algérien.",
         cta: "Découvrir la gamme",
@@ -167,7 +167,7 @@ const fr = {
       },
       {
         tag: "AUREX SmartConnect",
-        title: "Connectez\nvotre maison.",
+        title: "Le plaisir\nd'un café parfait.",
         subtitle:
           "Pilotez tous vos appareils depuis votre smartphone,\noù que vous soyez.",
         cta: "Smart Home",
@@ -230,6 +230,7 @@ const fr = {
       cta: "Découvrir Smart Home",
       ex9000Name: "Lave-linge EX9000",
       cycleComplete: "Cycle terminé — 09:24",
+      energyLabel: "Énergie",
     },
     technologies: {
       subtitle: "Innovations",
@@ -255,6 +256,10 @@ const fr = {
       needHelp: "Besoin d'aide ?",
       supportTitle: "Notre équipe vous accompagne après votre achat.",
       supportAction: "Accéder au support",
+      statsArticles: "Articles",
+      statsCategories: "Catégories",
+      readTimeFeatured: "5 min de lecture",
+      readTimeCard: "3 min",
     },
     support: {
       subtitle: "Service après-vente",
@@ -563,6 +568,7 @@ const fr = {
       energySavings: "Économies d'énergie moyennes",
       freshCoolDuration: "Durée de conservation FreshCool",
       inverterWarranty: "Garantie moteur Inverter",
+      inverterWarrantyValue: "10 ans",
     },
     filters: {
       all: "Toutes",
@@ -745,6 +751,22 @@ const fr = {
           desc: "120+ produits au catalogue, 48 points de vente, 12 centres SAV, et une marque de confiance pour des milliers de foyers.",
         },
       ],
+    },
+    stats: {
+      years: "Années d'expertise",
+      products: "Références produits",
+      sales: "Points de vente",
+      employees: "Collaborateurs",
+    },
+    quality: {
+      badge: "Qualité certifiée",
+      badgeSub: "ISO 9001 — Normes internationales",
+    },
+    cta: {
+      title: "Prêt à équiper votre foyer ?",
+      desc: "Découvrez la gamme complète AUREX et trouvez l'appareil parfait pour votre maison.",
+      button: "Découvrir le catalogue",
+      support: "Contacter le SAV",
     },
   },
   notFound: {

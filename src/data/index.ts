@@ -6,7 +6,6 @@ export interface Product {
   subcategory?: string
   image: string
   images?: string[]
-  price?: number
   badges: Array<"Nouveau" | "Promotion" | "Best Seller" | "Exclusivité">
   capacity?: string
   energyClass: string
@@ -27,6 +26,7 @@ export interface Category {
   image: string
   count: number
   subcategories?: string[]
+  color?: string
 }
 
 export interface Technology {
@@ -40,7 +40,7 @@ export interface Technology {
   compatibleCategories: string[]
 }
 
-export const categories: Category[] = [
+const defaultCategories: Category[] = [
   {
     slug: "lavage",
     label: "Lavage",
@@ -115,7 +115,7 @@ export const categories: Category[] = [
   },
 ]
 
-export const products: Product[] = [
+const defaultProducts: Product[] = [
   {
     id: "ex9000-wm",
     name: "Lave-linge EX9000 Smart",
@@ -129,7 +129,6 @@ export const products: Product[] = [
       "https://images.unsplash.com/photo-1604335398980-ededcadcc37d?w=800&h=900&fit=crop&auto=format",
       "https://images.unsplash.com/photo-1626806819282-2c1dc01a5e0c?w=800&h=900&fit=crop&auto=format",
     ],
-    price: 89900,
     badges: ["Nouveau", "Best Seller"],
     capacity: "9 kg",
     energyClass: "A+++",
@@ -162,7 +161,6 @@ export const products: Product[] = [
       "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=900&fit=crop&auto=format",
       "https://images.unsplash.com/photo-1588854337115-1c67d9247e4d?w=800&h=900&fit=crop&auto=format",
     ],
-    price: 124900,
     badges: ["Nouveau"],
     capacity: "350 L",
     energyClass: "A++",
@@ -194,7 +192,6 @@ export const products: Product[] = [
       "https://images.unsplash.com/photo-1604335398980-ededcadcc37d?w=800&h=900&fit=crop&auto=format",
       "https://images.unsplash.com/photo-1626806819282-2c1dc01a5e0c?w=800&h=900&fit=crop&auto=format",
     ],
-    price: 64900,
     badges: ["Nouveau"],
     capacity: "7 kg",
     energyClass: "A++",
@@ -222,7 +219,6 @@ export const products: Product[] = [
     subcategory: "Fours encastrables",
     image:
       "https://images.unsplash.com/photo-1639405069836-f82aa6dcb900?w=600&h=700&fit=crop&auto=format",
-    price: 67500,
     badges: ["Best Seller"],
     capacity: "70 L",
     energyClass: "A+",
@@ -249,7 +245,6 @@ export const products: Product[] = [
     subcategory: "Estrela",
     image:
       "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=600&h=700&fit=crop&auto=format",
-    price: 58900,
     badges: ["Promotion"],
     capacity: "14 couverts",
     energyClass: "A+++",
@@ -277,7 +272,6 @@ export const products: Product[] = [
     subcategory: "Climatisation",
     image:
       "https://images.unsplash.com/photo-1545259741-2ea3ebf61fa3?w=600&h=700&fit=crop&auto=format",
-    price: 79900,
     badges: ["Nouveau", "Exclusivité"],
     capacity: "24 000 BTU",
     energyClass: "A+++",
@@ -306,7 +300,6 @@ export const products: Product[] = [
     subcategory: "Sans sac",
     image:
       "https://images.unsplash.com/photo-1519558260268-cde7e03a0152?w=600&h=700&fit=crop&auto=format",
-    price: 32900,
     badges: ["Nouveau"],
     capacity: "jusqu'à 65 m²",
     energyClass: "A++",
@@ -328,7 +321,7 @@ export const products: Product[] = [
   },
 ]
 
-export const technologies: Technology[] = [
+const defaultTechnologies: Technology[] = [
   {
     id: "smart-connect",
     name: "SmartConnect",
@@ -408,7 +401,7 @@ export const technologies: Technology[] = [
   },
 ]
 
-export const newsItems = [
+const defaultNewsItems = [
   {
     id: "launch-ex9000",
     title:
@@ -445,7 +438,7 @@ export const newsItems = [
   },
 ]
 
-export const faqItems = [
+const defaultFaqItems = [
   {
     q: "Comment enregistrer mon produit AUREX pour la garantie ?",
     a: "Rendez-vous sur le formulaire d'enregistrement dans la section Support de notre site. Munissez-vous de votre numéro de série (au dos ou en dessous de l'appareil) et de votre preuve d'achat.",
@@ -471,3 +464,73 @@ export const faqItems = [
     a: "Les pièces d'origine AUREX sont disponibles auprès de nos centres de service agréés et de nos distributeurs partenaires. Vous pouvez aussi soumettre une demande via Support > Pièces détachées.",
   },
 ]
+
+function loadManagedCollection<T>(key: string, fallback: T): T {
+  if (typeof window === "undefined") return fallback
+  try {
+    const stored = window.localStorage.getItem(`aurex-data-${key}`)
+    return stored ? (JSON.parse(stored) as T) : fallback
+  } catch {
+    return fallback
+  }
+}
+
+function normalizeCategories(value: unknown): Category[] {
+  if (!Array.isArray(value)) return defaultCategories
+  return value.filter((item): item is Category => Boolean(item && typeof item === "object")).map((item) => ({
+    ...item,
+    subcategories: Array.isArray(item.subcategories) ? item.subcategories : [],
+  }))
+}
+
+function normalizeProducts(value: unknown): Product[] {
+  if (!Array.isArray(value)) return defaultProducts
+  return value.filter((item): item is Product => Boolean(item && typeof item === "object")).map((item) => {
+    const raw = item as unknown as Record<string, unknown>
+    // Le CMS enregistre `category_slug` (format Supabase) : le mapper vers `category`
+    // en minuscules pour que le filtrage par slug d'URL fonctionne toujours.
+    const slug = String(raw.category ?? raw.category_slug ?? "").toLowerCase().trim()
+    return {
+      ...item,
+      category: slug,
+      badges: Array.isArray(item.badges) ? item.badges : [],
+      technologies: Array.isArray(item.technologies) ? item.technologies : [],
+      features: Array.isArray(item.features) ? item.features : [],
+      images: Array.isArray(item.images) && item.images.length > 0 ? item.images : [item.image].filter(Boolean),
+    }
+  })
+}
+
+function normalizeTechnologies(value: unknown): Technology[] {
+  if (!Array.isArray(value)) return defaultTechnologies
+  return value.filter((item): item is Technology => Boolean(item && typeof item === "object")).map((item) => {
+    const raw = item as unknown as Record<string, unknown>
+    const compat = Array.isArray(item.compatibleCategories)
+      ? item.compatibleCategories
+      : Array.isArray(raw.compatible_categories)
+        ? (raw.compatible_categories as string[])
+        : []
+    return { ...item, compatibleCategories: compat }
+  })
+}
+
+function normalizeArray<T>(value: unknown, fallback: T[]): T[] {
+  return Array.isArray(value) ? value : fallback
+}
+
+function normalizeNews<T extends Record<string, unknown>>(value: unknown, fallback: T[]): T[] {
+  if (!Array.isArray(value)) return fallback
+  return value
+    .filter((item): item is T => Boolean(item && typeof item === "object"))
+    .map((item) => ({
+      ...item,
+      // Le CMS enregistre `published_at` (format Supabase) : le mapper vers `date` du front.
+      date: item.date ?? item.published_at ?? "",
+    }))
+}
+
+export const categories: Category[] = normalizeCategories(loadManagedCollection("categories", defaultCategories))
+export const products: Product[] = normalizeProducts(loadManagedCollection("products", defaultProducts))
+export const technologies: Technology[] = normalizeTechnologies(loadManagedCollection("technologies", defaultTechnologies))
+export const newsItems = normalizeNews(loadManagedCollection("news", defaultNewsItems), defaultNewsItems)
+export const faqItems = normalizeArray(loadManagedCollection("faq", defaultFaqItems), defaultFaqItems)

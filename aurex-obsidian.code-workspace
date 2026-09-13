@@ -1,0 +1,59 @@
+{
+  "folders": [
+    {
+      "name": "aurex-app",
+      "path": "C:\\Users\\DAYCONN3\\Desktop\\Web App for EUREX"
+    },
+    {
+      "name": "obsidian-vault",
+      "path": "C:\\Users\\DAYCONN3\\Documents\\Obsidian Vault"
+    }
+  ],
+  "settings": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "oxfmt.oxfmt",
+    "typescript.tsdk": "node_modules\\typescript\\lib",
+    "files.exclude": {
+      "**/node_modules": true,
+      "**/dist": true
+    },
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/dist": true,
+      "pnpm-lock.yaml": true,
+      "package-lock.json": true
+    }
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "dev",
+        "type": "shell",
+        "command": "npm.cmd run dev",
+        "options": { "cwd": "C:\\Users\\DAYCONN3\\Desktop\\Web App for EUREX" },
+        "presentation": { "reveal": "always", "panel": "new" }
+      },
+      {
+        "label": "build",
+        "type": "shell",
+        "command": "npm.cmd run build",
+        "options": { "cwd": "C:\\Users\\DAYCONN3\\Desktop\\Web App for EUREX" },
+        "group": { "kind": "build", "isDefault": true }
+      },
+      {
+        "label": "verify",
+        "type": "shell",
+        "command": "npm.cmd run verify",
+        "options": { "cwd": "C:\\Users\\DAYCONN3\\Desktop\\Web App for EUREX" },
+        "group": "test"
+      },
+      {
+        "label": "deploy",
+        "type": "shell",
+        "command": "npx.cmd vercel --prod --yes",
+        "options": { "cwd": "C:\\Users\\DAYCONN3\\Desktop\\Web App for EUREX" }
+      }
+    ]
+  }
+}

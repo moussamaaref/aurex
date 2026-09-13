@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react"
 import { Link } from "react-router-dom"
 import { useTranslation } from "react-i18next"
+import { loadRemoteCollection } from "../lib/contentStore"
+import { ml } from "../lib/ml"
+import { tx } from "../lib/langText"
 
 function ArrowIcon({ className = "w-4 h-4" }: { className?: string }) {
   return (
@@ -54,19 +57,93 @@ function Reveal({
   )
 }
 
-export default function AboutPage() {
-  const { t } = useTranslation()
+export type AboutPageData = {
+  aboutHeroSubtitle?: string
+  aboutHeroTitle?: string
+  aboutHeroDesc?: string
+  aboutHeroImage?: string
+  aboutStat1Value?: string
+  aboutStat1Label?: string
+  aboutStat2Value?: string
+  aboutStat2Label?: string
+  aboutStat3Value?: string
+  aboutStat3Label?: string
+  aboutStat4Value?: string
+  aboutStat4Label?: string
+  aboutIntroTitle?: string
+  aboutIntroParagraphs?: string[]
+  aboutTagline?: string
+  aboutMissionSubtitle?: string
+  aboutMissionTitle?: string
+  aboutMissionDesc1?: string
+  aboutMissionDesc2?: string
+  aboutMissionCta1?: string
+  aboutMissionCta2?: string
+  aboutMissionImage?: string
+  aboutQualityBadge?: string
+  aboutQualityBadgeSub?: string
+  aboutValuesSubtitle?: string
+  aboutValuesTitle?: string
+  aboutValuesItems?: Array<{ title?: string; desc?: string }>
+  aboutHistorySubtitle?: string
+  aboutHistoryTitle?: string
+  aboutHistoryMilestones?: Array<{ year?: string; title?: string; desc?: string }>
+  aboutCtaTitle?: string
+  aboutCtaDesc?: string
+  aboutCtaButton1?: string
+  aboutCtaButton2?: string
+  is_active?: boolean
+}
+const defaultAboutPage: AboutPageData = {}
+function normalizeAboutPage(raw: unknown): AboutPageData {
+  if (!Array.isArray(raw) || raw.length === 0) return defaultAboutPage
+  const first = (raw as AboutPageData[]).find((c) => c && typeof c === "object" && c.is_active !== false)
+  return first ?? defaultAboutPage
+}
 
-  const values = (t("about.values.items", { returnObjects: true }) as Array<{
+export default function AboutPage() {
+  const { t, i18n } = useTranslation()
+  const [ap, setAp] = useState<AboutPageData>(() => {
+    try {
+      const raw = localStorage.getItem("aurex-data-aboutPage")
+      if (raw) return normalizeAboutPage(JSON.parse(raw))
+    } catch {
+      // ignore
+    }
+    return defaultAboutPage
+  })
+
+  useEffect(() => {
+    void loadRemoteCollection<AboutPageData>("aboutPage").then((remote) => {
+      if (remote && Array.isArray(remote) && remote.length > 0) {
+        const normalized = normalizeAboutPage(remote)
+        setAp(normalized)
+        localStorage.setItem("aurex-data-aboutPage", JSON.stringify([normalized]))
+      }
+    }).catch(() => {})
+  }, [])
+
+  const tValues = (t("about.values.items", { returnObjects: true }) as Array<{
     title: string
     desc: string
-  }>).map((v, i) => ({ ...v, icon: ["⚡", "🌱", "🤝", "🏆"][i] }))
-  const milestones = t("about.history.milestones", {
+  }>)
+  const values = (ap.aboutValuesItems && ap.aboutValuesItems.length > 0 ? ap.aboutValuesItems : tValues).map((v, i) => ({
+    title: tx(v.title, tValues[i]?.title || ""),
+    desc: tx(v.desc, tValues[i]?.desc || ""),
+    icon: ["⚡", "🌱", "🤝", "🏆"][i],
+  }))
+  const tMilestones = t("about.history.milestones", {
     returnObjects: true,
   }) as Array<{ year: string; title: string; desc: string }>
-  const introduction = t("about.introduction", {
+  const milestones = (ap.aboutHistoryMilestones && ap.aboutHistoryMilestones.length > 0 ? ap.aboutHistoryMilestones : tMilestones).map((m, i) => ({
+    year: tx(m.year, tMilestones[i]?.year || ""),
+    title: tx(m.title, tMilestones[i]?.title || ""),
+    desc: tx(m.desc, tMilestones[i]?.desc || ""),
+  }))
+  const tIntroduction = t("about.introduction", {
     returnObjects: true,
   }) as string[]
+  const introduction = ap.aboutIntroParagraphs && ap.aboutIntroParagraphs.length > 0 && i18n.language === "fr" ? ap.aboutIntroParagraphs : tIntroduction
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] pt-24">
@@ -74,7 +151,7 @@ export default function AboutPage() {
       <section className="relative overflow-hidden min-h-[480px] flex items-end">
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1556911220-bff31c812dba?w=1600&h=600&fit=crop&auto=format"
+            src={ap.aboutHeroImage || "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=1600&h=600&fit=crop&auto=format"}
             alt=""
             aria-hidden="true"
             className="w-full h-full object-cover animate-ken-burns"
@@ -87,16 +164,16 @@ export default function AboutPage() {
             className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#4d8dff] animate-fade-in"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            {t("about.hero.subtitle")}
+            {tx(ap.aboutHeroSubtitle, t("about.hero.subtitle"))}
           </span>
           <h1
             className="text-5xl lg:text-7xl font-bold text-white mt-3 leading-tight animate-slide-up"
             style={{ fontFamily: "var(--font-display)", whiteSpace: "pre-line" }}
           >
-            {t("about.hero.title")}
+            {tx(ap.aboutHeroTitle, t("about.hero.title"))}
           </h1>
           <p className="text-blue-100/80 mt-5 max-w-xl leading-relaxed font-sans delay-200 animate-slide-up">
-            {t("about.hero.desc")}
+            {tx(ap.aboutHeroDesc, t("about.hero.desc"))}
           </p>
         </div>
       </section>
@@ -105,10 +182,10 @@ export default function AboutPage() {
       <section className="bg-white border-b border-[#E8EDF4]">
         <div className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-2 md:grid-cols-4 gap-6 md:divide-x md:divide-[#E8EDF4]">
           {[
-            { value: "30+", label: t("about.stats.years", { defaultValue: "Années d'expertise" }) },
-            { value: "120+", label: t("about.stats.products", { defaultValue: "Références produits" }) },
-            { value: "48", label: t("about.stats.sales", { defaultValue: "Points de vente" }) },
-            { value: "500+", label: t("about.stats.employees", { defaultValue: "Collaborateurs" }) },
+            { value: ml(ap.aboutStat1Value) || "30+", label: tx(ap.aboutStat1Label, t("about.stats.years", { defaultValue: "Années d'expertise" })) },
+            { value: ml(ap.aboutStat2Value) || "120+", label: tx(ap.aboutStat2Label, t("about.stats.products", { defaultValue: "Références produits" })) },
+            { value: ml(ap.aboutStat3Value) || "48", label: tx(ap.aboutStat3Label, t("about.stats.sales", { defaultValue: "Points de vente" })) },
+            { value: ml(ap.aboutStat4Value) || "500+", label: tx(ap.aboutStat4Label, t("about.stats.employees", { defaultValue: "Collaborateurs" })) },
           ].map((s, i) => (
             <Reveal key={s.label} delay={i * 80} className="md:pl-8 first:pl-0 text-center md:text-left group">
               <p className="text-3xl font-bold text-[#0A2463] font-display group-hover:text-[#1E5EF3] transition-colors">
@@ -131,11 +208,11 @@ export default function AboutPage() {
                 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#1E5EF3]"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                {t("about.introductionTitle")}
+                {tx(ap.aboutIntroTitle, t("about.introductionTitle"))}
               </span>
               <div className="mt-5 space-y-4 text-sm leading-8 text-gray-600 font-sans">
-                {introduction.map((paragraph) => (
-                  <p key={paragraph}>{paragraph}</p>
+                {introduction.map((paragraph, i) => (
+                  <p key={`${ml(paragraph).slice(0, 24)}-${i}`}>{ml(paragraph)}</p>
                 ))}
               </div>
               <div className="mt-8 border-t border-blue-50 pt-6 flex items-center gap-4">
@@ -145,7 +222,7 @@ export default function AboutPage() {
                 <p>
                   <span className="block text-lg font-bold text-[#0A2463] font-display">AUREX</span>
                   <span className="block text-sm font-medium text-[#1E5EF3] font-sans">
-                    {t("about.tagline")}
+                    {tx(ap.aboutTagline, t("about.tagline"))}
                   </span>
                 </p>
               </div>
@@ -163,33 +240,33 @@ export default function AboutPage() {
                 className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#1E5EF3]"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                {t("about.mission.subtitle")}
+                {tx(ap.aboutMissionSubtitle, t("about.mission.subtitle"))}
               </span>
               <h2
                 className="text-4xl font-bold text-[#0A2463] mt-3 leading-tight"
                 style={{ fontFamily: "var(--font-display)", whiteSpace: "pre-line" }}
               >
-                {t("about.mission.title")}
+                {tx(ap.aboutMissionTitle, t("about.mission.title"))}
               </h2>
               <p className="text-gray-600 mt-5 leading-relaxed font-sans text-sm">
-                {t("about.mission.desc1")}
+                {tx(ap.aboutMissionDesc1, t("about.mission.desc1"))}
               </p>
               <p className="text-gray-600 mt-4 leading-relaxed font-sans text-sm">
-                {t("about.mission.desc2")}
+                {tx(ap.aboutMissionDesc2, t("about.mission.desc2"))}
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
                   to="/produits"
                   className="group inline-flex items-center gap-2 bg-[#1E5EF3] text-white font-semibold px-7 py-4 rounded-xl text-sm font-sans hover:bg-[#1a51d4] transition-all shadow-lg shadow-[#1E5EF3]/25 hover:-translate-y-0.5"
                 >
-                  {t("about.mission.seeProducts")}
+                  {tx(ap.aboutMissionCta1, t("about.mission.seeProducts"))}
                   <ArrowIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </Link>
                 <Link
                   to="/support"
                   className="inline-flex items-center gap-2 border border-[#0A2463]/20 text-[#0A2463] font-medium px-7 py-4 rounded-xl text-sm font-sans hover:bg-[#EFF3FB] hover:-translate-y-0.5 transition-all"
                 >
-                  {t("about.mission.savContact")}
+                  {tx(ap.aboutMissionCta2, t("about.mission.savContact"))}
                 </Link>
               </div>
             </div>
@@ -198,7 +275,7 @@ export default function AboutPage() {
             <div className="relative">
               <div className="absolute -inset-3 rounded-3xl bg-gradient-to-br from-[#1E5EF3]/20 to-transparent blur-xl" />
               <img
-                src="https://images.unsplash.com/photo-1639405069836-f82aa6dcb900?w=700&h=700&fit=crop&auto=format"
+                src={ap.aboutMissionImage || "https://images.unsplash.com/photo-1639405069836-f82aa6dcb900?w=700&h=700&fit=crop&auto=format"}
                 alt=""
                 className="relative rounded-3xl w-full object-cover shadow-2xl"
               />
@@ -210,10 +287,10 @@ export default function AboutPage() {
                 </div>
                 <div>
                   <p className="text-xs font-bold text-[#0A2463] font-sans">
-                    {t("about.quality.badge", { defaultValue: "Qualité certifiée" })}
+                    {tx(ap.aboutQualityBadge, t("about.quality.badge", { defaultValue: "Qualité certifiée" }))}
                   </p>
                   <p className="text-[10px] text-gray-400 font-sans">
-                    {t("about.quality.badgeSub", { defaultValue: "ISO 9001 — Normes internationales" })}
+                    {tx(ap.aboutQualityBadgeSub, t("about.quality.badgeSub", { defaultValue: "ISO 9001 — Normes internationales" }))}
                   </p>
                 </div>
               </div>
@@ -230,13 +307,13 @@ export default function AboutPage() {
               className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#1E5EF3]"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              {t("about.values.subtitle")}
+              {tx(ap.aboutValuesSubtitle, t("about.values.subtitle"))}
             </span>
             <h2
               className="text-4xl font-bold text-[#0A2463] mt-3"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              {t("about.values.title")}
+              {tx(ap.aboutValuesTitle, t("about.values.title"))}
             </h2>
           </Reveal>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -269,13 +346,13 @@ export default function AboutPage() {
               className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#1E5EF3]"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              {t("about.history.subtitle")}
+              {tx(ap.aboutHistorySubtitle, t("about.history.subtitle"))}
             </span>
             <h2
               className="text-4xl font-bold text-[#0A2463] mt-3"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              {t("about.history.title")}
+              {tx(ap.aboutHistoryTitle, t("about.history.title"))}
             </h2>
           </Reveal>
           <div className="relative">
@@ -328,28 +405,28 @@ export default function AboutPage() {
                   className="text-3xl lg:text-5xl font-bold text-white"
                   style={{ fontFamily: "var(--font-display)" }}
                 >
-                  {t("about.cta.title", {
+                  {tx(ap.aboutCtaTitle, t("about.cta.title", {
                     defaultValue: "Prêt à équiper votre foyer ?",
-                  })}
+                  }))}
                 </h2>
                 <p className="text-blue-100/80 mt-4 max-w-xl mx-auto font-sans text-sm leading-relaxed">
-                  {t("about.cta.desc", {
+                  {tx(ap.aboutCtaDesc, t("about.cta.desc", {
                     defaultValue: "Découvrez la gamme complète AUREX et trouvez l'appareil parfait pour votre maison.",
-                  })}
+                  }))}
                 </p>
                 <div className="flex flex-wrap justify-center gap-4 mt-8">
                   <Link
                     to="/produits"
                     className="group inline-flex items-center gap-2 bg-white text-[#0A2463] font-semibold px-8 py-4 rounded-xl text-sm font-sans hover:bg-blue-50 hover:-translate-y-0.5 transition-all shadow-xl"
                   >
-                    {t("about.cta.button", { defaultValue: "Découvrir le catalogue" })}
+                    {tx(ap.aboutCtaButton1, t("about.cta.button", { defaultValue: "Découvrir le catalogue" }))}
                     <ArrowIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                   </Link>
                   <Link
                     to="/support"
                     className="inline-flex items-center gap-2 text-white border border-white/40 font-medium px-8 py-4 rounded-xl text-sm font-sans hover:bg-white/10 hover:-translate-y-0.5 transition-all backdrop-blur-sm"
                   >
-                    {t("about.cta.support", { defaultValue: "Contacter le SAV" })}
+                    {tx(ap.aboutCtaButton2, t("about.cta.support", { defaultValue: "Contacter le SAV" }))}
                   </Link>
                 </div>
               </div>

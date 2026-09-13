@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import type { TFunction } from "i18next"
 import { categories, products, type Product } from "../data"
+import { ml } from "../lib/ml"
 import { useCompare } from "../context/CompareContext"
 
 function EnergyBadge({ cls }: { cls: string }) {
@@ -95,7 +96,7 @@ export default function ComparePage() {
 
   const rows = useMemo<Row[]>(() => {
     const catLabel = (p: Product) =>
-      categories.find((c) => c.slug === p.category)?.label ?? p.category
+      ml(categories.find((c) => c.slug === p.category)?.label) || p.category
     const dim = (p: Product, part: "w" | "h" | "d") =>
       p.dimensions ? `${p.dimensions[part]} cm` : ""
     const defs: Row[] = [
@@ -120,16 +121,16 @@ export default function ComparePage() {
       {
         key: "availability",
         label: t("comparator.rows.availability"),
-        raw: (p) => p.badges.join(" / "),
+        raw: (p) => p.badges.map((b) => ml(b)).join(" / "),
         render: (p) =>
           p.badges.length > 0 ? (
             <div className="flex flex-wrap gap-1">
               {p.badges.map((badge) => (
                 <span
-                  key={badge}
+                  key={ml(badge)}
                   className="text-[10px] font-bold px-2 py-0.5 rounded font-display tracking-wider bg-[#0A2463] text-white"
                 >
-                  {badge}
+                  {ml(badge)}
                 </span>
               ))}
             </div>
@@ -140,29 +141,13 @@ export default function ComparePage() {
           ),
       },
       {
-        key: "price",
-        label: t("comparator.rows.price"),
-        best: "min",
-        raw: (p) => (p.price ? String(p.price) : ""),
-        render: (p) =>
-          p.price ? (
-            <span className="text-base font-bold text-[#0A2463] font-display">
-              {p.price.toLocaleString("fr-DZ")} DA
-            </span>
-          ) : (
-            <span className="text-xs text-gray-400 font-sans">
-              {t("common.priceOnRequest")}
-            </span>
-          ),
-      },
-      {
         key: "capacity",
         label: t("comparator.rows.capacity"),
         best: "max",
-        raw: (p) => p.capacity ?? "",
+        raw: (p) => ml(p.capacity),
         render: (p) => (
           <span className="text-sm font-medium text-gray-800">
-            {p.capacity ?? EMPTY}
+            {ml(p.capacity) || EMPTY}
           </span>
         ),
       },
@@ -225,10 +210,10 @@ export default function ComparePage() {
         key: "noiseLevel",
         label: t("comparator.rows.noiseLevel"),
         best: "min",
-        raw: (p) => p.noiseLevel ?? "",
+        raw: (p) => ml(p.noiseLevel),
         render: (p) => (
           <span className="text-sm font-medium text-gray-800">
-            {p.noiseLevel ?? EMPTY}
+            {ml(p.noiseLevel) || EMPTY}
           </span>
         ),
       },
@@ -265,26 +250,26 @@ export default function ComparePage() {
       {
         key: "color",
         label: t("comparator.rows.color"),
-        raw: (p) => p.color ?? "",
+        raw: (p) => ml(p.color),
         render: (p) => (
           <span className="text-sm font-medium text-gray-800">
-            {p.color ?? EMPTY}
+            {ml(p.color) || EMPTY}
           </span>
         ),
       },
       {
         key: "technologies",
         label: t("comparator.rows.technologies"),
-        raw: (p) => p.technologies.join(", "),
+        raw: (p) => p.technologies.map((id) => ml(id)).join(", "),
         render: (p) =>
           p.technologies.length > 0 ? (
             <div className="flex flex-wrap gap-1">
               {p.technologies.map((tech) => (
                 <span
-                  key={tech}
+                  key={ml(tech)}
                   className="text-xs font-medium text-[#0A2463] bg-[#EFF3FB] border border-blue-100 rounded-full px-2 py-0.5 font-sans"
                 >
-                  {tech}
+                  {ml(tech)}
                 </span>
               ))}
             </div>
@@ -325,9 +310,7 @@ export default function ComparePage() {
       ? "comparator.best.capacity"
       : row.key === "noiseLevel"
         ? "comparator.best.noise"
-        : row.key === "price"
-          ? "comparator.best.price"
-          : "comparator.best.energy"
+        : "comparator.best.energy"
 
   const recommendation = useMemo(() => {
     if (selected.length < 2) return null
@@ -337,19 +320,16 @@ export default function ComparePage() {
     }
     const scores = selected.map((product) => {
       let score = 0
-      const price = product.price
-      const capacity = numeric(product.capacity)
-      const noise = numeric(product.noiseLevel)
-      if (price !== undefined && price === Math.min(...selected.map((p) => p.price ?? Infinity)))
-        score += 2
+      const capacity = numeric(ml(product.capacity))
+      const noise = numeric(ml(product.noiseLevel))
       if (
         ENERGY_RANK.indexOf(product.energyClass) ===
         Math.min(...selected.map((p) => ENERGY_RANK.indexOf(p.energyClass)))
       )
         score += 2
-      if (capacity !== null && capacity === Math.max(...selected.map((p) => numeric(p.capacity) ?? -Infinity)))
+      if (capacity !== null && capacity === Math.max(...selected.map((p) => numeric(ml(p.capacity)) ?? -Infinity)))
         score += 1
-      if (noise !== null && noise === Math.min(...selected.map((p) => numeric(p.noiseLevel) ?? Infinity)))
+      if (noise !== null && noise === Math.min(...selected.map((p) => numeric(ml(p.noiseLevel)) ?? Infinity)))
         score += 1
       if (product.connectivity) score += 1
       return score
@@ -358,17 +338,13 @@ export default function ComparePage() {
     const winner = selected[winnerIndex]
     if (!winner) return null
     const reasons = [
-      winner.price !== undefined &&
-      winner.price === Math.min(...selected.map((p) => p.price ?? Infinity))
-        ? "price"
-        : null,
       ENERGY_RANK.indexOf(winner.energyClass) ===
       Math.min(...selected.map((p) => ENERGY_RANK.indexOf(p.energyClass)))
         ? "energy"
         : null,
-      winner.capacity &&
-      numeric(winner.capacity) ===
-        Math.max(...selected.map((p) => numeric(p.capacity) ?? -Infinity))
+      ml(winner.capacity) &&
+      numeric(ml(winner.capacity)) ===
+        Math.max(...selected.map((p) => numeric(ml(p.capacity)) ?? -Infinity))
         ? "capacity"
         : null,
       winner.connectivity ? "connectivity" : null,
@@ -380,7 +356,7 @@ export default function ComparePage() {
   const hiddenCount = rows.length - visibleRows.length
 
   const mobileGroupFor = (key: string) => {
-    if (["reference", "category", "availability", "price"].includes(key))
+    if (["reference", "category", "availability"].includes(key))
       return "overview"
     if (["capacity", "energyClass", "connectivity", "noiseLevel"].includes(key))
       return "performance"
@@ -418,7 +394,7 @@ export default function ComparePage() {
   const applyReplace = (newId: string) => {
     if (!replacingId) return
     replace(ids.map((id) => (id === replacingId ? newId : id)))
-    const name = products.find((p) => p.id === newId)?.name ?? ""
+    const name = ml(products.find((p) => p.id === newId)?.name ?? "")
     notify(
       t("comparator.toastReplaced", { name }),
       t("comparator.toastView"),
@@ -710,7 +686,7 @@ export default function ComparePage() {
                       <div className="mb-2.5 aspect-[4/3] overflow-hidden rounded-xl bg-gray-50 sm:mb-3 sm:aspect-square">
                         <img
                           src={p.image}
-                          alt={p.name}
+                          alt={ml(p.name)}
                           loading="lazy"
                           decoding="async"
                           className="w-full h-full object-cover"
@@ -720,14 +696,9 @@ export default function ComparePage() {
                         {p.reference}
                       </p>
                       <p className="mt-1 line-clamp-2 text-[11px] font-semibold leading-snug text-gray-900 sm:text-xs">
-                        {p.name}
+                        {ml(p.name)}
                       </p>
                     </Link>
-                    {p.price && (
-                      <p className="mt-2 text-sm font-bold text-[#0A2463] font-display sm:text-base">
-                        {p.price.toLocaleString("fr-DZ")} DA
-                      </p>
-                    )}
                     <div className="flex gap-1.5 mt-3">
                       <button
                         type="button"
@@ -804,7 +775,7 @@ export default function ComparePage() {
                       {selected.map((p) => (
                         <div key={p.id} className="p-4 min-w-0">
                           <p className="text-[10px] text-gray-400 font-medium truncate mb-2">
-                            {p.name}
+                            {ml(p.name)}
                           </p>
                           <div className="min-h-6">{row.render(p)}</div>
                           {isDiff && best?.id === p.id && (
@@ -849,21 +820,21 @@ export default function ComparePage() {
                         <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-gray-50 border border-gray-100">
                           <Link
                             to={`/produits/${p.category}/${p.id}`}
-                            aria-label={p.name}
+                            aria-label={ml(p.name)}
                           >
                             <img
                               src={p.image}
-                              alt={p.name}
+                              alt={ml(p.name)}
                               className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                             />
                           </Link>
                           <div className="absolute top-2 left-2 flex flex-col gap-1">
                             {p.badges.slice(0, 1).map((badge) => (
                               <span
-                                key={badge}
+                                key={ml(badge)}
                                 className="text-[9px] font-bold px-2 py-0.5 rounded font-display tracking-wider bg-[#0A2463] text-white"
                               >
-                                {badge}
+                                {ml(badge)}
                               </span>
                             ))}
                           </div>
@@ -875,19 +846,14 @@ export default function ComparePage() {
                           to={`/produits/${p.category}/${p.id}`}
                           className="text-sm font-semibold text-gray-900 hover:text-[#0A2463] transition-colors font-sans line-clamp-2 leading-snug"
                         >
-                          {p.name}
+                          {ml(p.name)}
                         </Link>
-                        {p.price && (
-                          <span className="text-lg font-bold text-[#0A2463] font-display">
-                            {p.price.toLocaleString("fr-DZ")} DA
-                          </span>
-                        )}
                         <div className="flex items-center gap-2">
                           <button
                             type="button"
                             onClick={() => setReplacingId(p.id)}
                             aria-label={t("comparator.replace", {
-                              name: p.name,
+                              name: ml(p.name),
                             })}
                             title={t("comparator.replaceTitle")}
                             className="inline-flex items-center gap-1.5 text-xs font-medium text-[#1E5EF3] hover:text-[#0A2463] border border-blue-100 bg-[#EFF3FB] rounded-lg px-2.5 py-1.5 hover:bg-[#E4ECFB] transition-colors font-sans"
@@ -1054,7 +1020,7 @@ export default function ComparePage() {
                   {t("comparator.recommendation.title")}
                 </p>
                 <h2 className="mt-2 text-xl font-bold text-white font-display">
-                  {recommendation.winner.name}
+                  {ml(recommendation.winner.name)}
                 </h2>
                 <p className="mt-2 max-w-2xl text-sm leading-relaxed text-blue-100/80 font-sans">
                   {t("comparator.recommendation.description")}
@@ -1186,7 +1152,7 @@ export default function ComparePage() {
           role="dialog"
           aria-modal="true"
           aria-label={t("comparator.replaceModal.title", {
-            name: replacingProduct.name,
+            name: ml(replacingProduct.name),
           })}
         >
           <div
@@ -1201,7 +1167,7 @@ export default function ComparePage() {
                   style={{ fontFamily: "var(--font-display)" }}
                 >
                   {t("comparator.replaceModal.title", {
-                    name: replacingProduct.name,
+                    name: ml(replacingProduct.name),
                   })}
                 </h2>
                 <p className="text-sm text-gray-500 mt-1 font-sans">
@@ -1260,13 +1226,8 @@ export default function ComparePage() {
                       />
                       <span className="flex-1 min-w-0">
                         <span className="block text-xs font-medium text-gray-900 line-clamp-2 leading-snug font-sans">
-                          {c.name}
+                          {ml(c.name)}
                         </span>
-                        {c.price && (
-                          <span className="block text-sm font-bold text-[#0A2463] mt-1 font-display">
-                            {c.price.toLocaleString("fr-DZ")} DA
-                          </span>
-                        )}
                       </span>
                     </button>
                   ))}
@@ -1353,19 +1314,14 @@ function SuggestionCard({ product, t }: { product: Product; t: TFunction }) {
       <div className="relative flex-shrink-0">
         <img
           src={product.image}
-          alt={product.name}
+          alt={ml(product.name)}
           className="w-16 h-16 rounded-xl object-cover bg-gray-50"
         />
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-xs font-semibold text-gray-900 font-sans line-clamp-2 leading-snug">
-          {product.name}
+          {ml(product.name)}
         </p>
-        {product.price && (
-          <p className="text-sm font-bold text-[#0A2463] mt-1 font-display">
-            {product.price.toLocaleString("fr-DZ")} DA
-          </p>
-        )}
       </div>
       <button
         type="button"

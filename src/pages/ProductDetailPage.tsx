@@ -1,7 +1,8 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { Link, useParams, Navigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { products, categories } from "../data"
+import { ml } from "../lib/ml"
 import CompareButton from "../components/CompareButton"
 
 function EnergyBadge({ cls }: { cls: string }) {
@@ -22,11 +23,15 @@ function EnergyBadge({ cls }: { cls: string }) {
   )
 }
 
+// Temporaire : masque le bouton « Où acheter » (comme dans le header)
+const hideWhereToBuy = true
+
 export default function ProductDetailPage() {
   const { t } = useTranslation()
   const { id } = useParams<{ id: string; category: string }>()
   const product = products.find((p) => p.id === id)
   const [selectedImage, setSelectedImage] = useState(0)
+  const galleryRef = useRef<HTMLDivElement>(null)
   const [activeTab, setActiveTab] = useState<"features" | "specs" | "docs">(
     "features",
   )
@@ -35,19 +40,27 @@ export default function ProductDetailPage() {
   if (!product) return <Navigate to="/produits" replace />
 
   const images = product.images ?? [product.image]
-  const category = categories.find((c) => c.slug === product.category)
+  const category = categories.find((c) => String(c.slug ?? "").toLowerCase() === String(product.category ?? "").toLowerCase())
   const related = products
     .filter((p) => p.category === product.category && p.id !== product.id)
     .slice(0, 3)
 
+  const selectImage = (index: number) => {
+    setSelectedImage(index)
+    galleryRef.current?.scrollTo({
+      left: index * galleryRef.current.clientWidth,
+      behavior: "smooth",
+    })
+  }
+
   const badgeStyle = (badge: string) =>
     badge === "Nouveau"
-      ? "bg-[#0A2463] text-white"
+      ? "bg-[var(--color-primary)] text-white"
       : badge === "Promotion"
         ? "bg-red-500 text-white"
         : badge === "Best Seller"
           ? "bg-amber-400 text-amber-900"
-          : "bg-[#1E5EF3] text-white"
+          : "bg-[var(--color-accent)] text-white"
 
   return (
     <div className="min-h-screen bg-slate-50 pt-24">
@@ -58,13 +71,13 @@ export default function ProductDetailPage() {
             className="flex flex-wrap items-center gap-1.5 text-xs text-slate-400"
             aria-label="Breadcrumb"
           >
-            <Link to="/" className="transition-colors hover:text-[#0A2463]">
+            <Link to="/" className="transition-colors hover:text-[var(--color-primary)]">
               {t("products.breadcrumb.home")}
             </Link>
             <svg className="h-3 w-3 text-slate-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
             </svg>
-            <Link to="/produits" className="transition-colors hover:text-[#0A2463]">
+            <Link to="/produits" className="transition-colors hover:text-[var(--color-primary)]">
               {t("products.breadcrumb.products")}
             </Link>
             <svg className="h-3 w-3 text-slate-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -72,14 +85,14 @@ export default function ProductDetailPage() {
             </svg>
             <Link
               to={`/produits/${product.category}`}
-              className="transition-colors hover:text-[#0A2463]"
+              className="transition-colors hover:text-[var(--color-primary)]"
             >
-              {category?.label}
+              {category ? ml(category.label) : ""}
             </Link>
             <svg className="h-3 w-3 text-slate-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
             </svg>
-            <span className="font-medium text-[#0A2463]">{product.name}</span>
+            <span className="font-medium text-[var(--color-primary)]">{ml(product.name)}</span>
           </nav>
         </div>
       </div>
@@ -95,16 +108,36 @@ export default function ProductDetailPage() {
                   : "relative aspect-square rounded-2xl border border-slate-100"
               }`}
             >
-              <img
-                src={images[selectedImage]}
-                alt={product.name}
-                draggable={false}
-                className={`select-none transition-opacity duration-300 ${
-                  isImageFullscreen
-                    ? "h-auto max-h-[80vh] w-auto max-w-[80vw] object-contain"
-                    : "h-full w-full object-cover"
+              <div
+                ref={galleryRef}
+                onScroll={(event) => {
+                  const element = event.currentTarget
+                  const index = Math.round(element.scrollLeft / element.clientWidth)
+                  if (index !== selectedImage) setSelectedImage(index)
+                }}
+                className={`flex h-full w-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain ${
+                  isImageFullscreen ? "items-center" : ""
                 }`}
-              />
+                style={{ scrollbarWidth: "none" }}
+              >
+                {images.map((img, index) => (
+                  <div
+                    key={`${img}-${index}`}
+                    className="flex min-w-full snap-center snap-always items-center justify-center"
+                  >
+                    <img
+                      src={img}
+                      alt={`${ml(product.name)} ${index + 1}`}
+                      draggable={false}
+                      className={
+                        isImageFullscreen
+                          ? "max-h-[80vh] max-w-[80vw] object-contain"
+                          : "h-full w-full object-cover"
+                      }
+                    />
+                  </div>
+                ))}
+              </div>
               <button
                 type="button"
                 aria-label={
@@ -114,7 +147,7 @@ export default function ProductDetailPage() {
                 }
                 onPointerDown={(event) => event.stopPropagation()}
                 onClick={() => setIsImageFullscreen((value) => !value)}
-                className="absolute right-4 top-4 rounded-xl bg-white/90 p-3 text-[#0A2463] shadow-lg backdrop-blur transition-colors hover:bg-[#1E5EF3] hover:text-white"
+                className="absolute right-4 top-4 rounded-xl bg-white/90 p-3 text-[var(--color-primary)] shadow-lg backdrop-blur transition-colors hover:bg-[var(--color-accent)] hover:text-white"
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                   {isImageFullscreen ? (
@@ -127,10 +160,10 @@ export default function ProductDetailPage() {
               <div className="absolute left-4 top-4 flex flex-col gap-2">
                 {product.badges.map((badge) => (
                   <span
-                    key={badge}
-                    className={`rounded-md px-2.5 py-1.5 text-[10px] font-bold tracking-wider shadow-sm ${badgeStyle(badge)}`}
+                    key={ml(badge)}
+                    className={`rounded-md px-2.5 py-1.5 text-[10px] font-bold tracking-wider shadow-sm ${badgeStyle(ml(badge))}`}
                   >
-                    {badge}
+                    {ml(badge)}
                   </span>
                 ))}
               </div>
@@ -140,10 +173,10 @@ export default function ProductDetailPage() {
                 {images.map((img, i) => (
                   <button
                     key={i}
-                    onClick={() => setSelectedImage(i)}
+                    onClick={() => selectImage(i)}
                     className={`relative aspect-square overflow-hidden rounded-xl border-2 bg-white transition-all ${
                       selectedImage === i
-                        ? "border-[#1E5EF3] shadow-md ring-2 ring-blue-100"
+                        ? "border-[var(--color-accent)] shadow-md ring-2 ring-blue-100"
                         : "border-slate-100 hover:border-slate-300 hover:shadow-sm"
                     }`}
                   >
@@ -159,7 +192,7 @@ export default function ProductDetailPage() {
             <div className="mb-4 flex flex-wrap items-center gap-2">
               <EnergyBadge cls={product.energyClass} />
               {product.connectivity && (
-                <span className="flex items-center gap-1.5 rounded-full border border-blue-100 bg-blue-50 px-2.5 py-1 text-xs font-semibold text-[#1E5EF3]">
+                <span className="flex items-center gap-1.5 rounded-full border border-blue-100 bg-blue-50 px-2.5 py-1 text-xs font-semibold text-[var(--color-accent)]">
                   <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
                   </svg>
@@ -170,35 +203,35 @@ export default function ProductDetailPage() {
             <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-slate-400">
               {product.reference}
             </p>
-            <h1 className="text-3xl font-bold leading-tight text-[#0A2463] lg:text-4xl font-display">
-              {product.name}
+            <h1 className="text-3xl font-bold leading-tight text-[var(--color-primary)] lg:text-4xl font-display">
+              {ml(product.name)}
             </h1>
             <p className="mt-4 text-sm leading-relaxed text-slate-600">
-              {product.description}
+              {ml(product.description)}
             </p>
 
             {/* Specs rapides */}
             <div className="mt-6 grid grid-cols-2 gap-3">
               {[
-                product.capacity && {
+                ml(product.capacity) && {
                   label: t("productDetail.capacity"),
-                  value: product.capacity,
+                  value: ml(product.capacity),
                 },
                 {
                   label: t("productDetail.energyClass"),
                   value: product.energyClass,
                 },
-                product.noiseLevel && {
+                ml(product.noiseLevel) && {
                   label: t("productDetail.noiseLevel"),
-                  value: product.noiseLevel,
+                  value: ml(product.noiseLevel),
                 },
                 product.dimensions && {
                   label: t("productDetail.dimensions"),
                   value: `${product.dimensions.w} × ${product.dimensions.h} × ${product.dimensions.d} cm`,
                 },
-                product.color && {
+                ml(product.color) && {
                   label: t("productDetail.color"),
-                  value: product.color,
+                  value: ml(product.color),
                 },
               ]
                 .filter(Boolean)
@@ -226,39 +259,31 @@ export default function ProductDetailPage() {
                 <div className="flex flex-wrap gap-2">
                   {product.technologies.map((tech) => (
                     <span
-                      key={tech}
-                      className="rounded-full border border-blue-100 bg-[#EFF3FB] px-3.5 py-1.5 text-xs font-semibold text-[#0A2463] transition-colors hover:border-blue-200 hover:bg-blue-50"
+                      key={ml(tech)}
+                      className="rounded-full border border-blue-100 bg-[#EFF3FB] px-3.5 py-1.5 text-xs font-semibold text-[var(--color-primary)] transition-colors hover:border-blue-200 hover:bg-blue-50"
                     >
-                      {tech}
+                      {ml(tech)}
                     </span>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Prix + CTA */}
+            {/* CTA */}
             <div className="mt-8 rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
-              {product.price && (
-                <div className="mb-5">
-                  <p className="font-display text-3xl font-bold text-[#0A2463]">
-                    {product.price.toLocaleString("fr-DZ")} DA
-                  </p>
-                  <p className="mt-1 text-xs text-slate-500">
-                    {t("productDetail.priceRecommended")}
-                  </p>
-                </div>
-              )}
               <div className="flex flex-wrap gap-3">
-                <Link
-                  to="/distributeurs"
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#0A2463] px-6 py-3.5 text-sm font-bold text-white shadow-md shadow-blue-900/20 transition-all hover:-translate-y-0.5 hover:bg-[#12348f] hover:shadow-lg"
-                >
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  {t("common.whereToBuy")}
-                </Link>
+                {!hideWhereToBuy && (
+                  <Link
+                    to="/distributeurs"
+                    className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[var(--color-primary)] px-6 py-3.5 text-sm font-bold text-white shadow-md shadow-blue-900/20 transition-all hover:-translate-y-0.5 hover:bg-[#12348f] hover:shadow-lg"
+                  >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    {t("common.whereToBuy")}
+                  </Link>
+                )}
                 <CompareButton
                   productId={product.id}
                   variant="detail"
@@ -267,7 +292,7 @@ export default function ProductDetailPage() {
               </div>
               <Link
                 to="/support"
-                className="mt-4 inline-flex items-center gap-2 rounded-lg px-2 py-1 text-xs font-medium text-slate-500 transition-colors hover:text-[#0A2463]"
+                className="mt-4 inline-flex items-center gap-2 rounded-lg px-2 py-1 text-xs font-medium text-slate-500 transition-colors hover:text-[var(--color-primary)]"
               >
                 <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -291,7 +316,7 @@ export default function ProductDetailPage() {
                 onClick={() => setActiveTab(tab.key)}
                 className={`-mb-px whitespace-nowrap border-b-2 px-6 py-4 text-sm font-semibold transition-colors ${
                   activeTab === tab.key
-                    ? "border-[#1E5EF3] text-[#1E5EF3]"
+                    ? "border-[var(--color-accent)] text-[var(--color-accent)]"
                     : "border-transparent text-slate-400 hover:text-slate-700"
                 }`}
               >
@@ -305,15 +330,15 @@ export default function ProductDetailPage() {
               <ul className="grid grid-cols-1 gap-3 md:grid-cols-2">
                 {product.features.map((feat) => (
                   <li
-                    key={feat}
+                    key={ml(feat)}
                     className="flex items-start gap-3 rounded-xl border border-slate-100 bg-slate-50/60 p-4 transition-colors hover:border-blue-100 hover:bg-blue-50/40"
                   >
-                    <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-[#1E5EF3]/10">
-                      <svg className="h-3 w-3 text-[#1E5EF3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-accent)]/10">
+                      <svg className="h-3 w-3 text-[var(--color-accent)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
-                    <span className="text-sm text-slate-700">{feat}</span>
+                    <span className="text-sm text-slate-700">{ml(feat)}</span>
                   </li>
                 ))}
               </ul>
@@ -324,21 +349,21 @@ export default function ProductDetailPage() {
                   <tbody>
                     {[
                       { label: t("productDetail.specsTable.reference"), value: product.reference },
-                      { label: t("productDetail.specsTable.category"), value: category?.label },
-                      product.capacity && { label: t("productDetail.specsTable.capacity"), value: product.capacity },
+                      { label: t("productDetail.specsTable.category"), value: category ? ml(category.label) : "" },
+                      ml(product.capacity) && { label: t("productDetail.specsTable.capacity"), value: ml(product.capacity) },
                       { label: t("productDetail.specsTable.energyClass"), value: product.energyClass },
-                      product.noiseLevel && { label: t("productDetail.specsTable.noiseLevel"), value: product.noiseLevel },
+                      ml(product.noiseLevel) && { label: t("productDetail.specsTable.noiseLevel"), value: ml(product.noiseLevel) },
                       product.dimensions && { label: t("productDetail.specsTable.width"), value: `${product.dimensions.w} cm` },
                       product.dimensions && { label: t("productDetail.specsTable.height"), value: `${product.dimensions.h} cm` },
                       product.dimensions && { label: t("productDetail.specsTable.depth"), value: `${product.dimensions.d} cm` },
-                      product.color && { label: t("productDetail.specsTable.color"), value: product.color },
+                      ml(product.color) && { label: t("productDetail.specsTable.color"), value: ml(product.color) },
                       {
                         label: t("productDetail.specsTable.wifi"),
                         value: product.connectivity
                           ? t("productDetail.specsTable.yesSmartConnect")
                           : t("productDetail.specsTable.no"),
                       },
-                      { label: t("productDetail.specsTable.technologies"), value: product.technologies.join(", ") },
+                      { label: t("productDetail.specsTable.technologies"), value: product.technologies.map((id) => ml(id)).join(", ") },
                     ]
                       .filter(Boolean)
                       .map((row, i) => (
@@ -392,7 +417,7 @@ export default function ProductDetailPage() {
                   >
                     <div className="flex items-center gap-3">
                       <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-[#EFF3FB]">
-                        <svg className="h-5 w-5 text-[#1E5EF3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <svg className="h-5 w-5 text-[var(--color-accent)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                           <path strokeLinecap="round" strokeLinejoin="round" d={doc.icon} />
                         </svg>
                       </div>
@@ -403,7 +428,7 @@ export default function ProductDetailPage() {
                         </p>
                       </div>
                     </div>
-                    <button className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-semibold text-[#1E5EF3] transition-colors hover:bg-blue-50 hover:text-[#0A2463]">
+                    <button className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-semibold text-[var(--color-accent)] transition-colors hover:bg-blue-50 hover:text-[var(--color-primary)]">
                       <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                       </svg>
@@ -421,17 +446,17 @@ export default function ProductDetailPage() {
           <div className="mt-14">
             <div className="mb-7 flex items-end justify-between">
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#1E5EF3] font-display">
-                  {category?.label}
+                <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--color-accent)] font-display">
+              {category ? ml(category.label) : ""}
                 </p>
-                <h2 className="mt-1.5 text-2xl font-bold text-[#0A2463] font-display">
+                <h2 className="mt-1.5 text-2xl font-bold text-[var(--color-primary)] font-display">
                   {t("productDetail.related")}
                 </h2>
               </div>
               {category && (
                 <Link
                   to={`/produits/${category.slug}`}
-                  className="hidden items-center gap-1.5 text-sm font-semibold text-[#1E5EF3] transition-all hover:gap-2.5 sm:flex"
+                  className="hidden items-center gap-1.5 text-sm font-semibold text-[var(--color-accent)] transition-all hover:gap-2.5 sm:flex"
                 >
                   {t("common.viewAll")}
                   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -450,20 +475,15 @@ export default function ProductDetailPage() {
                   <div className="aspect-video overflow-hidden bg-slate-100">
                     <img
                       src={p.image}
-                      alt={p.name}
+                      alt={ml(p.name)}
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>
                   <div className="p-4">
                     <p className="font-mono text-[10px] uppercase tracking-widest text-slate-400">{p.reference}</p>
-                    <h3 className="mt-1 text-sm font-semibold text-slate-900 transition-colors group-hover:text-[#0A2463]">
-                      {p.name}
+                    <h3 className="mt-1 text-sm font-semibold text-slate-900 transition-colors group-hover:text-[var(--color-primary)]">
+                      {ml(p.name)}
                     </h3>
-                    {p.price && (
-                      <p className="mt-2 font-display text-sm font-bold text-[#0A2463]">
-                        {p.price.toLocaleString("fr-DZ")} DA
-                      </p>
-                    )}
                   </div>
                 </Link>
               ))}

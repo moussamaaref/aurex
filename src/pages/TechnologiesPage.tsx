@@ -1,7 +1,10 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { technologies, products } from "../data"
+import { loadRemoteCollection } from "../lib/contentStore"
+import { ml, mlFr } from "../lib/ml"
+import { tx } from "../lib/langText"
 
 function ArrowIcon({ className = "w-4 h-4" }: { className?: string }) {
   return (
@@ -11,39 +14,93 @@ function ArrowIcon({ className = "w-4 h-4" }: { className?: string }) {
   )
 }
 
+export type TechPageData = {
+  techHeroSubtitle?: string
+  techHeroTitle?: string
+  techHeroDesc?: string
+  stat1Value?: string
+  stat1Label?: string
+  stat2Value?: string
+  stat2Label?: string
+  stat3Value?: string
+  stat3Label?: string
+  stat4Value?: string
+  stat4Label?: string
+  filterAll?: string
+  filterConnectivity?: string
+  filterEco?: string
+  filterHygiene?: string
+  filterConservation?: string
+  ctaTitle?: string
+  ctaDesc?: string
+  ctaButton?: string
+  is_active?: boolean
+}
+const defaultTechPage: TechPageData = {}
+function normalizeTechPage(raw: unknown): TechPageData {
+  if (!Array.isArray(raw) || raw.length === 0) return defaultTechPage
+  const first = (raw as TechPageData[]).find((c) => c && typeof c === "object" && c.is_active !== false)
+  return first ?? defaultTechPage
+}
+
 export default function TechnologiesPage() {
   const { t } = useTranslation()
   const [activeCategory, setActiveCategory] = useState("all")
   const [activeTech, setActiveTech] = useState<string | null>(null)
+  const [tp, setTp] = useState<TechPageData>(() => {
+    try {
+      const raw = localStorage.getItem("aurex-data-techPage")
+      if (raw) return normalizeTechPage(JSON.parse(raw))
+    } catch {
+      // ignore
+    }
+    return defaultTechPage
+  })
+
+  useEffect(() => {
+    void loadRemoteCollection<TechPageData>("techPage").then((remote) => {
+      if (remote && Array.isArray(remote) && remote.length > 0) {
+        const normalized = normalizeTechPage(remote)
+        setTp(normalized)
+        localStorage.setItem("aurex-data-techPage", JSON.stringify([normalized]))
+      }
+    }).catch(() => {})
+  }, [])
 
   const filterCategories = [
-    { key: "all", label: t("technologies.filters.all") },
-    { key: "Connectivité", label: t("technologies.filters.connectivity") },
-    { key: "Éco-efficacité", label: t("technologies.filters.ecoEfficiency") },
-    { key: "Hygiène", label: t("technologies.filters.hygiene") },
-    { key: "Conservation", label: t("technologies.filters.conservation") },
+    { key: "all", label: tx(tp.filterAll, t("technologies.filters.all")) },
+    { key: "Connectivité", label: tx(tp.filterConnectivity, t("technologies.filters.connectivity")) },
+    { key: "Éco-efficacité", label: tx(tp.filterEco, t("technologies.filters.ecoEfficiency")) },
+    { key: "Hygiène", label: tx(tp.filterHygiene, t("technologies.filters.hygiene")) },
+    { key: "Conservation", label: tx(tp.filterConservation, t("technologies.filters.conservation")) },
   ]
 
   const countFor = (key: string) =>
-    key === "all" ? technologies.length : technologies.filter((t2) => t2.category === key).length
+    key === "all"
+      ? technologies.length
+      : technologies.filter((t2) => mlFr(t2.category) === key).length
 
   const filtered =
     activeCategory === "all"
       ? technologies
-      : technologies.filter((t2) => t2.category === activeCategory)
+      : technologies.filter((t2) => mlFr(t2.category) === activeCategory)
 
   const selectedTech = activeTech
     ? technologies.find((t2) => t2.id === activeTech)
     : null
   const compatibleProducts = selectedTech
-    ? products.filter((p) => selectedTech.compatibleCategories.includes(p.category))
+    ? products.filter((p) =>
+        selectedTech.compatibleCategories.some(
+          (c) => ml(c).toLowerCase() === String(p.category ?? "").toLowerCase(),
+        ),
+      )
     : []
 
   const stats = [
-    { value: "12+", label: t("technologies.stats.patented") },
-    { value: "40%", label: t("technologies.stats.energySavings") },
-    { value: "3×", label: t("technologies.stats.freshCoolDuration") },
-    { value: "10 ans", label: t("technologies.stats.inverterWarranty") },
+    { value: ml(tp.stat1Value) || "12+", label: tx(tp.stat1Label, t("technologies.stats.patented")) },
+    { value: ml(tp.stat2Value) || "40%", label: tx(tp.stat2Label, t("technologies.stats.energySavings")) },
+    { value: ml(tp.stat3Value) || "3×", label: tx(tp.stat3Label, t("technologies.stats.freshCoolDuration")) },
+    { value: tx(tp.stat4Value, t("technologies.stats.inverterWarrantyValue")) || "10 ans", label: tx(tp.stat4Label, t("technologies.stats.inverterWarranty")) },
   ]
 
   return (
@@ -68,16 +125,16 @@ export default function TechnologiesPage() {
               className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#4d8dff]"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              {t("technologies.hero.subtitle")}
+              {tx(tp.techHeroSubtitle, t("technologies.hero.subtitle"))}
             </span>
             <h1
               className="text-5xl lg:text-6xl font-bold text-white mt-3 leading-tight"
               style={{ fontFamily: "var(--font-display)", whiteSpace: "pre-line" }}
             >
-              {t("technologies.hero.title")}
+              {tx(tp.techHeroTitle, t("technologies.hero.title"))}
             </h1>
             <p className="text-blue-100/80 mt-5 leading-relaxed font-sans text-base">
-              {t("technologies.hero.desc")}
+              {tx(tp.techHeroDesc, t("technologies.hero.desc"))}
             </p>
           </div>
           {/* Stats dans le hero sombre */}
@@ -112,7 +169,7 @@ export default function TechnologiesPage() {
                     : "bg-white text-gray-600 border border-gray-200 hover:border-[#1E5EF3]/50 hover:text-[#1E5EF3] hover:-translate-y-0.5"
                 }`}
               >
-                {cat.label}
+                {ml(cat.label)}
                 <span
                   className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${
                     active ? "bg-white/20 text-white" : "bg-[#EFF3FB] text-[#1E5EF3]"
@@ -144,13 +201,13 @@ export default function TechnologiesPage() {
                 <div className="relative aspect-video overflow-hidden">
                   <img
                     src={tech.image}
-                    alt={tech.name}
+                    alt={ml(tech.name)}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0A2463]/80 via-[#0A2463]/10 to-transparent" />
                   <div className="absolute top-3 left-3">
                     <span className="text-[10px] font-bold tracking-widest uppercase text-white bg-white/15 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/25 font-display">
-                      {tech.category}
+                      {ml(tech.category)}
                     </span>
                   </div>
                   {/* Indicateur d'expansion */}
@@ -164,7 +221,7 @@ export default function TechnologiesPage() {
                     </svg>
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 p-5 flex items-end justify-between gap-3">
-                    <h3 className="text-xl font-bold text-white font-display">{tech.name}</h3>
+                    <h3 className="text-xl font-bold text-white font-display">{ml(tech.name)}</h3>
                   </div>
                 </div>
 
@@ -175,10 +232,10 @@ export default function TechnologiesPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                       </svg>
                     </div>
-                    <p className="text-xs font-semibold text-[#1E5EF3] font-sans">{tech.benefit}</p>
+                    <p className="text-xs font-semibold text-[#1E5EF3] font-sans">{ml(tech.benefit)}</p>
                   </div>
                   <p className="text-sm text-gray-600 leading-relaxed font-sans line-clamp-3">
-                    {tech.description}
+                    {ml(tech.description)}
                   </p>
 
                   {/* Expansion animée */}
@@ -190,7 +247,7 @@ export default function TechnologiesPage() {
                     <div className="overflow-hidden">
                       <div className="mt-4 pt-4 border-t border-gray-100">
                         <p className="text-[10px] font-bold tracking-widest uppercase text-gray-400 mb-3 font-display">
-                          {t("technologies.productsWith", { name: tech.name })}
+                          {t("technologies.productsWith", { name: ml(tech.name) })}
                         </p>
                         <div className="space-y-1.5">
                           {compatibleProducts.length > 0 ? (
@@ -202,10 +259,10 @@ export default function TechnologiesPage() {
                                   onClick={(e) => e.stopPropagation()}
                                   className="group/p flex items-center gap-3 hover:bg-[#EFF3FB] rounded-xl p-2 transition-colors border border-transparent hover:border-[#1E5EF3]/20"
                                 >
-                                  <img src={p.image} alt={p.name} className="w-11 h-11 object-cover rounded-lg shadow-sm" />
+                                  <img src={p.image} alt={ml(p.name)} className="w-11 h-11 object-cover rounded-lg shadow-sm" />
                                   <div className="min-w-0 flex-1">
                                     <p className="text-xs font-semibold text-gray-900 font-sans truncate group-hover/p:text-[#0A2463] transition-colors">
-                                      {p.name}
+                                      {ml(p.name)}
                                     </p>
                                     <p className="text-[10px] text-gray-400 font-mono">{p.reference}</p>
                                   </div>
@@ -253,16 +310,16 @@ export default function TechnologiesPage() {
             />
             <div className="relative">
               <h2 className="text-3xl lg:text-4xl font-bold text-white" style={{ fontFamily: "var(--font-display)" }}>
-                {t("technologies.ctaTitle")}
+                {tx(tp.ctaTitle, t("technologies.ctaTitle"))}
               </h2>
               <p className="text-blue-100/80 mt-4 max-w-xl mx-auto font-sans text-sm leading-relaxed">
-                {t("technologies.ctaDesc")}
+                {tx(tp.ctaDesc, t("technologies.ctaDesc"))}
               </p>
               <Link
                 to="/produits"
                 className="group inline-flex items-center gap-2 mt-8 bg-white text-[#0A2463] hover:bg-blue-50 font-semibold px-8 py-4 rounded-xl transition-all font-sans shadow-xl hover:-translate-y-0.5"
               >
-                {t("technologies.viewFullCatalog")}
+                {tx(tp.ctaButton, t("technologies.viewFullCatalog"))}
                 <ArrowIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>

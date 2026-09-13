@@ -226,6 +226,7 @@ const en = {
       cta: "Discover Smart Home",
       ex9000Name: "EX9000 Washer",
       cycleComplete: "Cycle complete — 09:24",
+      energyLabel: "Energy",
     },
     technologies: {
       subtitle: "Innovations",
@@ -251,6 +252,10 @@ const en = {
       needHelp: "Need help?",
       supportTitle: "Our team is here for you after your purchase.",
       supportAction: "Access support",
+      statsArticles: "Articles",
+      statsCategories: "Categories",
+      readTimeFeatured: "5 min read",
+      readTimeCard: "3 min",
     },
     support: {
       subtitle: "After-sales service",
@@ -527,6 +532,7 @@ const en = {
       energySavings: "Average energy savings",
       freshCoolDuration: "FreshCool preservation time",
       inverterWarranty: "Inverter motor warranty",
+      inverterWarrantyValue: "10 years",
     },
     filters: {
       all: "All",
@@ -710,6 +716,22 @@ const en = {
           desc: "120+ products in the catalog, 48 points of sale, 12 service centers, and a trusted brand for thousands of households.",
         },
       ],
+    },
+    stats: {
+      years: "Years of expertise",
+      products: "Product references",
+      sales: "Points of sale",
+      employees: "Employees",
+    },
+    quality: {
+      badge: "Certified quality",
+      badgeSub: "ISO 9001 — International standards",
+    },
+    cta: {
+      title: "Ready to equip your home?",
+      desc: "Discover the full AUREX range and find the perfect appliance for your home.",
+      button: "Discover the catalog",
+      support: "Contact support",
     },
   },
   notFound: {

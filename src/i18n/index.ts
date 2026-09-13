@@ -4,13 +4,17 @@ import fr from "./locales/fr"
 import en from "./locales/en"
 import ar from "./locales/ar"
 
+const storedLang =
+  typeof localStorage !== "undefined" ? localStorage.getItem("aurex-lang") : null
+const initialLang = storedLang === "en" || storedLang === "ar" ? storedLang : "fr"
+
 i18n.use(initReactI18next).init({
   resources: {
     fr: { translation: fr },
     en: { translation: en },
     ar: { translation: ar },
   },
-  lng: "fr",
+  lng: initialLang,
   fallbackLng: "fr",
   interpolation: {
     escapeValue: false,

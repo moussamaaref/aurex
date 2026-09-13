@@ -1,7 +1,10 @@
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Link } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { newsItems } from "../data"
+import { loadRemoteCollection } from "../lib/contentStore"
+import { ml } from "../lib/ml"
+import { tx } from "../lib/langText"
 
 /* ── Icône flèche réutilisable ── */
 function ArrowIcon({ className = "w-4 h-4" }: { className?: string }) {
@@ -12,18 +15,63 @@ function ArrowIcon({ className = "w-4 h-4" }: { className?: string }) {
   )
 }
 
+export type NewsPageData = {
+  newsHeroEyebrow?: string
+  newsHeroTitle?: string
+  newsHeroDesc?: string
+  newsStatArticles?: string
+  newsStatCategories?: string
+  newsSectionEyebrow?: string
+  newsSectionTitle?: string
+  newsFilterAll?: string
+  newsFeaturedBadge?: string
+  newsFeaturedReadTime?: string
+  newsCardReadTime?: string
+  newsEmpty?: string
+  newsSupportEyebrow?: string
+  newsSupportTitle?: string
+  newsSupportButton?: string
+  is_active?: boolean
+}
+const defaultNewsPage: NewsPageData = {}
+function normalizeNewsPage(raw: unknown): NewsPageData {
+  if (!Array.isArray(raw) || raw.length === 0) return defaultNewsPage
+  const first = (raw as NewsPageData[]).find((c) => c && typeof c === "object" && c.is_active !== false)
+  return first ?? defaultNewsPage
+}
+
 export default function NewsPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [category, setCategory] = useState("all")
+  const [np, setNp] = useState<NewsPageData>(() => {
+    try {
+      const raw = localStorage.getItem("aurex-data-newsPage")
+      if (raw) return normalizeNewsPage(JSON.parse(raw))
+    } catch {
+      // ignore
+    }
+    return defaultNewsPage
+  })
+
+  useEffect(() => {
+    void loadRemoteCollection<NewsPageData>("newsPage").then((remote) => {
+      if (remote && Array.isArray(remote) && remote.length > 0) {
+        const normalized = normalizeNewsPage(remote)
+        setNp(normalized)
+        localStorage.setItem("aurex-data-newsPage", JSON.stringify([normalized]))
+      }
+    }).catch(() => {})
+  }, [])
 
   const categories = useMemo(
-    () => ["all", ...Array.from(new Set(newsItems.map((item) => item.category)))],
-    [],
+    () => ["all", ...Array.from(new Set(newsItems.map((item) => ml(item.category))))],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [i18n.language],
   )
   const visibleNews =
     category === "all"
       ? newsItems
-      : newsItems.filter((item) => item.category === category)
+      : newsItems.filter((item) => ml(item.category) === category)
   const featured = visibleNews[0]
   const remaining = visibleNews.slice(1)
 
@@ -54,17 +102,17 @@ export default function NewsPage() {
             style={{ fontFamily: "var(--font-display)" }}
           >
             <span className="w-1.5 h-1.5 rounded-full bg-[#1E5EF3] animate-pulse" />
-            {t("newsPage.eyebrow")}
+            {tx(np.newsHeroEyebrow, t("newsPage.eyebrow"))}
           </span>
 
           <h1
             className="max-w-3xl text-5xl md:text-7xl font-bold leading-[0.95] mt-2"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            {t("newsPage.title")}
+            {tx(np.newsHeroTitle, t("newsPage.title"))}
           </h1>
           <p className="max-w-xl text-base md:text-lg text-blue-100/80 leading-relaxed mt-6">
-            {t("newsPage.description")}
+            {tx(np.newsHeroDesc, t("newsPage.description"))}
           </p>
 
           {/* Mini-stats */}
@@ -73,13 +121,13 @@ export default function NewsPage() {
               <p className="text-3xl font-bold text-white" style={{ fontFamily: "var(--font-display)" }}>
                 {newsItems.length}
               </p>
-              <p className="text-xs text-blue-200 mt-0.5 uppercase tracking-wider">Articles</p>
+              <p className="text-xs text-blue-200 mt-0.5 uppercase tracking-wider">{tx(np.newsStatArticles, t("newsPage.statsArticles"))}</p>
             </div>
             <div>
               <p className="text-3xl font-bold text-white" style={{ fontFamily: "var(--font-display)" }}>
                 {new Set(newsItems.map((n) => n.category)).size}
               </p>
-              <p className="text-xs text-blue-200 mt-0.5 uppercase tracking-wider">Catégories</p>
+              <p className="text-xs text-blue-200 mt-0.5 uppercase tracking-wider">{tx(np.newsStatCategories, t("newsPage.statsCategories"))}</p>
             </div>
           </div>
         </div>
@@ -101,13 +149,13 @@ export default function NewsPage() {
               className="text-xs uppercase tracking-[0.2em] text-[#1E5EF3] font-bold"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              {t("newsPage.latest")}
+              {tx(np.newsSectionEyebrow, t("newsPage.latest"))}
             </p>
             <h2
               className="text-3xl md:text-4xl text-[#0A2463] font-bold mt-2"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              {t("newsPage.allNews")}
+              {tx(np.newsSectionTitle, t("newsPage.allNews"))}
             </h2>
           </div>
           <div className="flex flex-wrap gap-2" aria-label={t("newsPage.filters")}>
@@ -122,7 +170,7 @@ export default function NewsPage() {
                     : "bg-white text-[#64748B] border border-[#E2E8F0] hover:border-[#1E5EF3] hover:text-[#1E5EF3] hover:shadow-sm"
                 }`}
               >
-                {item === "all" ? t("newsPage.all") : item}
+                {item === "all" ? tx(np.newsFilterAll, t("newsPage.all")) : item}
               </button>
             ))}
           </div>
@@ -135,40 +183,40 @@ export default function NewsPage() {
             <div className="relative min-h-[280px] lg:min-h-[400px] overflow-hidden">
               <img
                 src={featured.image}
-                alt={featured.title}
+                alt={ml(featured.title)}
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0A2463]/40 via-transparent to-transparent" />
               {/* Badge */}
               <span className="absolute top-5 left-5 inline-flex items-center gap-2 bg-[#1E5EF3] text-white rounded-full px-4 py-2 text-[10px] uppercase tracking-widest font-bold shadow-lg">
                 <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                {t("newsPage.featured")}
+                {tx(np.newsFeaturedBadge, t("newsPage.featured"))}
               </span>
               {/* Catégorie overlay */}
               <span className="absolute bottom-5 left-5 bg-white/20 backdrop-blur-md text-white rounded-full px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold border border-white/30">
-                {featured.category}
+                {ml(featured.category)}
               </span>
             </div>
 
             {/* Contenu */}
             <div className="p-8 md:p-12 flex flex-col justify-center">
-              <p className="text-xs text-[#94A3B8] font-mono">{featured.date}</p>
+              <p className="text-xs text-[#94A3B8] font-mono">{ml(featured.date)}</p>
               <h3
                 className="text-3xl md:text-[2rem] leading-tight text-[#0A2463] font-bold mt-4"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                {featured.title}
+                {ml(featured.title)}
               </h3>
               {/* Trait animé */}
               <div className="w-10 h-0.5 bg-[#1E5EF3] mt-5 mb-5 group-hover:w-16 transition-all duration-500" />
-              <p className="text-[#64748B] leading-relaxed text-sm">{featured.excerpt}</p>
+              <p className="text-[#64748B] leading-relaxed text-sm">{ml(featured.excerpt)}</p>
               <div className="mt-8 flex items-center gap-4">
                 <span className="inline-flex items-center gap-2 text-sm font-semibold text-[#1E5EF3] group-hover:gap-3 transition-all duration-300">
                   {t("common.seeMore")}
                   <ArrowIcon className="w-4 h-4" />
                 </span>
                 <span className="h-4 w-px bg-[#E2E8F0]" />
-                <span className="text-xs text-[#94A3B8]">5 min de lecture</span>
+                <span className="text-xs text-[#94A3B8]">{tx(np.newsFeaturedReadTime, t("newsPage.readTimeFeatured"))}</span>
               </div>
             </div>
           </article>
@@ -187,12 +235,12 @@ export default function NewsPage() {
                 <div className="relative aspect-[16/9] overflow-hidden flex-shrink-0">
                   <img
                     src={news.image}
-                    alt={news.title}
+                    alt={ml(news.title)}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0A2463]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <span className="absolute top-3 left-3 bg-[#0A2463]/90 backdrop-blur-sm text-white rounded-full px-3 py-1.5 text-[10px] uppercase tracking-widest font-bold">
-                    {news.category}
+                    {ml(news.category)}
                   </span>
                   {/* Bouton flottant hover */}
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
@@ -204,20 +252,20 @@ export default function NewsPage() {
 
                 {/* Contenu */}
                 <div className="p-6 flex flex-col flex-1">
-                  <p className="text-xs text-[#94A3B8] font-mono">{news.date}</p>
+                  <p className="text-xs text-[#94A3B8] font-mono">{ml(news.date)}</p>
                   <h3
                     className="text-lg text-[#0A2463] font-bold leading-snug mt-2 group-hover:text-[#1E5EF3] transition-colors duration-200 line-clamp-2"
                     style={{ fontFamily: "var(--font-display)" }}
                   >
-                    {news.title}
+                    {ml(news.title)}
                   </h3>
-                  <p className="text-sm text-[#64748B] leading-relaxed mt-3 line-clamp-2 flex-1">{news.excerpt}</p>
+                  <p className="text-sm text-[#64748B] leading-relaxed mt-3 line-clamp-2 flex-1">{ml(news.excerpt)}</p>
                   <div className="flex items-center justify-between mt-5 pt-4 border-t border-[#F1F5F9]">
                     <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#1E5EF3]">
                       {t("common.seeMore")}
                       <ArrowIcon className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform duration-200" />
                     </span>
-                    <span className="text-xs text-[#CBD5E1]">3 min</span>
+                    <span className="text-xs text-[#CBD5E1]">{tx(np.newsCardReadTime, t("newsPage.readTimeCard"))}</span>
                   </div>
                 </div>
               </article>
@@ -233,7 +281,7 @@ export default function NewsPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
               </svg>
             </div>
-            <p className="text-[#64748B] font-medium">{t("newsPage.empty")}</p>
+            <p className="text-[#64748B] font-medium">{tx(np.newsEmpty, t("newsPage.empty"))}</p>
           </div>
         )}
 
@@ -255,20 +303,20 @@ export default function NewsPage() {
               className="text-xs uppercase tracking-[0.2em] text-[#A9C4FF] font-bold"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              {t("newsPage.needHelp")}
+              {tx(np.newsSupportEyebrow, t("newsPage.needHelp"))}
             </p>
             <h2
               className="text-2xl md:text-3xl text-white font-bold mt-2"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              {t("newsPage.supportTitle")}
+              {tx(np.newsSupportTitle, t("newsPage.supportTitle"))}
             </h2>
           </div>
           <Link
             to="/support"
             className="relative shrink-0 inline-flex items-center gap-2.5 justify-center rounded-xl bg-white text-[#0A2463] px-7 py-4 text-sm font-semibold hover:bg-blue-50 transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
           >
-            {t("newsPage.supportAction")}
+            {tx(np.newsSupportButton, t("newsPage.supportAction"))}
             <ArrowIcon className="w-4 h-4" />
           </Link>
         </section>

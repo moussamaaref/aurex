@@ -1,8 +1,52 @@
+import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { products } from "../data"
+import { loadRemoteCollection } from "../lib/contentStore"
+import { ml } from "../lib/ml"
+import { tx } from "../lib/langText"
 
 const compatibleProducts = products.filter((p) => p.connectivity)
+
+export type SupportPageFeature = { title?: string; desc?: string }
+export type SupportPageData = {
+  supHeroEyebrow?: string
+  supHeroTitle?: string
+  supHeroDesc?: string
+  supHeroCta1?: string
+  supHeroCta2?: string
+  supHeroImage?: string
+  supBadgeTitle?: string
+  supBadgeSubtitle?: string
+  supChartLabel?: string
+  supChartValue?: string
+  supStep1Title?: string
+  supStep1Desc?: string
+  supStep2Title?: string
+  supStep2Desc?: string
+  supStep3Title?: string
+  supStep3Desc?: string
+  supFeatSubtitle?: string
+  supFeatTitle?: string
+  supFeatDesc?: string
+  supFeatures?: SupportPageFeature[]
+  supCompatEyebrow?: string
+  supCompatTitle?: string
+  supTestiQuote?: string
+  supTestiAuthor?: string
+  supTestiCity?: string
+  supAppSubtitle?: string
+  supAppTitle?: string
+  supAppDesc?: string
+  supAppSecure?: string
+  is_active?: boolean
+}
+const defaultSupportPage: SupportPageData = {}
+function normalizeSupportPage(raw: unknown): SupportPageData {
+  if (!Array.isArray(raw) || raw.length === 0) return defaultSupportPage
+  const first = (raw as SupportPageData[]).find((c) => c && typeof c === "object" && c.is_active !== false)
+  return first ?? defaultSupportPage
+}
 
 function ArrowIcon({ className = "w-4 h-4" }: { className?: string }) {
   return (
@@ -14,10 +58,35 @@ function ArrowIcon({ className = "w-4 h-4" }: { className?: string }) {
 
 export default function SmartHomePage() {
   const { t } = useTranslation()
+  const [sup, setSup] = useState<SupportPageData>(() => {
+    try {
+      const raw = localStorage.getItem("aurex-data-supportPage")
+      if (raw) return normalizeSupportPage(JSON.parse(raw))
+    } catch {
+      // ignore
+    }
+    return defaultSupportPage
+  })
 
-  const features = t("smartHome.features.items", {
+  useEffect(() => {
+    void loadRemoteCollection<SupportPageData>("supportPage").then((remote) => {
+      if (remote && Array.isArray(remote) && remote.length > 0) {
+        const normalized = normalizeSupportPage(remote)
+        setSup(normalized)
+        localStorage.setItem("aurex-data-supportPage", JSON.stringify([normalized]))
+      }
+    }).catch(() => {})
+  }, [])
+
+  const tFeatures = t("smartHome.features.items", {
     returnObjects: true,
   }) as Array<{ title: string; desc: string }>
+  const features = sup.supFeatures && sup.supFeatures.length > 0
+    ? sup.supFeatures.map((f, i) => ({
+        title: tx(f.title, tFeatures[i]?.title || ""),
+        desc: tx(f.desc, tFeatures[i]?.desc || ""),
+      }))
+    : tFeatures
 
   const featureIcons = ["📱", "🎙️", "⚡", "📊", "🔔", "🛡️"]
 
@@ -46,34 +115,34 @@ export default function SmartHomePage() {
                 className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#4d8dff]"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                AUREX SmartConnect
+                {sup.supHeroEyebrow || "AUREX SmartConnect"}
               </span>
             </div>
             <h1
               className="text-5xl lg:text-7xl font-bold text-white leading-tight"
               style={{ fontFamily: "var(--font-display)", whiteSpace: "pre-line" }}
             >
-              {t("smartHome.hero.title")}
+              {tx(sup.supHeroTitle, t("smartHome.hero.title"))}
             </h1>
             <p
               className="text-blue-100/80 text-base leading-relaxed mt-6 max-w-lg"
               style={{ fontFamily: "var(--font-sans)" }}
             >
-              {t("smartHome.hero.desc")}
+              {tx(sup.supHeroDesc, t("smartHome.hero.desc"))}
             </p>
             <div className="flex flex-wrap gap-3 mt-8">
               <a
                 href="#app"
                 className="group inline-flex items-center gap-2 bg-[#1E5EF3] hover:bg-[#1a51d4] text-white font-semibold px-7 py-4 rounded-xl transition-all text-sm font-sans shadow-lg shadow-[#1E5EF3]/30 hover:-translate-y-0.5"
               >
-                {t("smartHome.hero.downloadApp")}
+                {tx(sup.supHeroCta1, t("smartHome.hero.downloadApp"))}
                 <ArrowIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </a>
               <Link
                 to="/produits"
                 className="inline-flex items-center gap-2 text-white/80 border border-white/30 font-medium px-7 py-4 rounded-xl hover:bg-white/10 hover:border-white/60 hover:-translate-y-0.5 transition-all text-sm font-sans backdrop-blur-sm"
               >
-                {t("smartHome.hero.compatibleProducts")}
+                {tx(sup.supHeroCta2, t("smartHome.hero.compatibleProducts"))}
               </Link>
             </div>
           </div>
@@ -81,7 +150,7 @@ export default function SmartHomePage() {
           <div className="relative">
             <div className="absolute -inset-3 rounded-3xl bg-gradient-to-br from-[#1E5EF3]/40 to-transparent blur-xl" />
             <img
-              src="https://images.unsplash.com/photo-1558002038-1055907df827?w=700&h=800&fit=crop&auto=format"
+              src={sup.supHeroImage || "https://images.unsplash.com/photo-1558002038-1055907df827?w=700&h=800&fit=crop&auto=format"}
               alt=""
               className="relative w-full rounded-3xl shadow-2xl object-cover animate-float"
             />
@@ -93,13 +162,13 @@ export default function SmartHomePage() {
                 </svg>
               </div>
               <div>
-                <p className="text-xs font-semibold text-gray-900 font-sans">{t("smartHome.hero.washerDone")}</p>
-                <p className="text-xs text-green-600 font-sans">{t("smartHome.hero.cycle60")}</p>
+                <p className="text-xs font-semibold text-gray-900 font-sans">{tx(sup.supBadgeTitle, t("smartHome.hero.washerDone"))}</p>
+                <p className="text-xs text-green-600 font-sans">{tx(sup.supBadgeSubtitle, t("smartHome.hero.cycle60"))}</p>
               </div>
             </div>
             {/* Carte consommation */}
             <div className="absolute -right-4 bottom-1/4 bg-white rounded-2xl p-4 shadow-2xl animate-float" style={{ animationDelay: "2.4s" }}>
-              <p className="text-xs text-gray-500 font-sans mb-2">{t("smartHome.hero.todayConsumption")}</p>
+              <p className="text-xs text-gray-500 font-sans mb-2">{tx(sup.supChartLabel, t("smartHome.hero.todayConsumption"))}</p>
               <div className="flex items-end gap-1">
                 {[30, 55, 40, 70, 45, 85, 60].map((h, i) => (
                   <div
@@ -112,7 +181,7 @@ export default function SmartHomePage() {
                   />
                 ))}
               </div>
-              <p className="text-xs font-bold text-[#0A2463] mt-2 font-display">{t("smartHome.hero.kwh")}</p>
+              <p className="text-xs font-bold text-[#0A2463] mt-2 font-display">{tx(sup.supChartValue, t("smartHome.hero.kwh"))}</p>
             </div>
           </div>
         </div>
@@ -122,9 +191,9 @@ export default function SmartHomePage() {
       <section className="py-16 bg-white border-b border-[#E8EDF4]">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
-            { step: "01", icon: "📲", title: t("smartHome.app.subtitle") && t("smartHome.steps.scan", { defaultValue: "Scannez le QR code" }), desc: t("smartHome.steps.scanDesc", { defaultValue: "Sur votre appareil AUREX, scannez pour connecter en 30 secondes" }) },
-            { step: "02", icon: "🔗", title: t("smartHome.steps.connect", { defaultValue: "Connectez votre Wi-Fi" }), desc: t("smartHome.steps.connectDesc", { defaultValue: "Vos appareils rejoignent votre foyer numérique automatiquement" }) },
-            { step: "03", icon: "🎛️", title: t("smartHome.steps.control", { defaultValue: "Pilotez tout" }), desc: t("smartHome.steps.controlDesc", { defaultValue: "Programmes, automatisations et suivi énergie depuis l'app" }) },
+            { step: "01", icon: "📲", title: tx(sup.supStep1Title, t("smartHome.app.subtitle")) && t("smartHome.steps.scan", { defaultValue: "Scannez le QR code" }), desc: tx(sup.supStep1Desc, t("smartHome.steps.scanDesc", { defaultValue: "Sur votre appareil AUREX, scannez pour connecter en 30 secondes" })) },
+            { step: "02", icon: "🔗", title: tx(sup.supStep2Title, t("smartHome.steps.connect", { defaultValue: "Connectez votre Wi-Fi" })), desc: tx(sup.supStep2Desc, t("smartHome.steps.connectDesc", { defaultValue: "Vos appareils rejoignent votre foyer numérique automatiquement" })) },
+            { step: "03", icon: "🎛️", title: tx(sup.supStep3Title, t("smartHome.steps.control", { defaultValue: "Pilotez tout" })), desc: tx(sup.supStep3Desc, t("smartHome.steps.controlDesc", { defaultValue: "Programmes, automatisations et suivi énergie depuis l'app" })) },
           ].map((s) => (
             <div key={s.step} className="flex items-start gap-5 group">
               <div className="relative flex-shrink-0">
@@ -151,16 +220,16 @@ export default function SmartHomePage() {
             className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#1E5EF3]"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            {t("smartHome.features.subtitle")}
+            {tx(sup.supFeatSubtitle, t("smartHome.features.subtitle"))}
           </span>
           <h2
             className="text-4xl font-bold text-[#0A2463] mt-3"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            {t("smartHome.features.title")}
+            {tx(sup.supFeatTitle, t("smartHome.features.title"))}
           </h2>
           <p className="text-gray-500 mt-4 max-w-xl mx-auto font-sans text-sm leading-relaxed">
-            {t("smartHome.features.desc")}
+            {tx(sup.supFeatDesc, t("smartHome.features.desc"))}
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -196,13 +265,13 @@ export default function SmartHomePage() {
                 className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#1E5EF3]"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                SmartConnect
+                {sup.supCompatEyebrow || "SmartConnect"}
               </span>
               <h2
                 className="text-4xl font-bold text-[#0A2463] mt-2"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                {t("smartHome.compatible.title")}
+                {tx(sup.supCompatTitle, t("smartHome.compatible.title"))}
               </h2>
             </div>
             <Link
@@ -223,7 +292,7 @@ export default function SmartHomePage() {
                 <div className="relative w-20 h-20 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl overflow-hidden flex-shrink-0">
                   <img
                     src={p.image}
-                    alt={p.name}
+                    alt={ml(p.name)}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                   <span className="absolute bottom-0.5 right-0.5 w-3 h-3 rounded-full bg-green-400 border-2 border-white" />
@@ -233,7 +302,7 @@ export default function SmartHomePage() {
                     {p.reference}
                   </p>
                   <h3 className="text-sm font-semibold text-gray-900 mt-1 group-hover:text-[#0A2463] transition-colors font-sans line-clamp-2">
-                    {p.name}
+                    {ml(p.name)}
                   </h3>
                   <div className="flex items-center gap-1.5 mt-2 bg-[#1E5EF3]/10 rounded-full px-2.5 py-1 w-fit">
                     <svg
@@ -276,9 +345,9 @@ export default function SmartHomePage() {
             <blockquote
               className="text-xl lg:text-2xl font-semibold text-white leading-relaxed font-sans"
             >
-              {t("smartHome.testimonial.quote", {
+              {tx(sup.supTestiQuote, t("smartHome.testimonial.quote", {
                 defaultValue: "J'ai réduit ma facture d'énergie de 25% et je lance la lessive depuis le bureau. SmartConnect a vraiment changé mon quotidien.",
-              })}
+              }))}
             </blockquote>
             <div className="mt-6 flex items-center justify-center gap-3">
               <div className="w-11 h-11 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-lg font-bold text-white font-display">
@@ -286,10 +355,10 @@ export default function SmartHomePage() {
               </div>
               <div className="text-left">
                 <p className="text-sm font-semibold text-white font-sans">
-                  {t("smartHome.testimonial.author", { defaultValue: "Amine B." })}
+                  {tx(sup.supTestiAuthor, t("smartHome.testimonial.author", { defaultValue: "Amine B." }))}
                 </p>
                 <p className="text-xs text-blue-200 font-sans">
-                  {t("smartHome.testimonial.city", { defaultValue: "Alger — Client AUREX depuis 2024" })}
+                  {tx(sup.supTestiCity, t("smartHome.testimonial.city", { defaultValue: "Alger — Client AUREX depuis 2024" }))}
                 </p>
               </div>
             </div>
@@ -316,16 +385,16 @@ export default function SmartHomePage() {
             className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#4d8dff]"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            {t("smartHome.app.subtitle")}
+            {tx(sup.supAppSubtitle, t("smartHome.app.subtitle"))}
           </span>
           <h2
             className="text-4xl font-bold text-white mt-3"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            {t("smartHome.app.title")}
+            {tx(sup.supAppTitle, t("smartHome.app.title"))}
           </h2>
           <p className="text-blue-100/80 mt-4 text-sm leading-relaxed font-sans max-w-xl mx-auto">
-            {t("smartHome.app.desc")}
+            {tx(sup.supAppDesc, t("smartHome.app.desc"))}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 mt-10">
             <a
@@ -357,7 +426,7 @@ export default function SmartHomePage() {
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
-            {t("smartHome.app.secure", { defaultValue: "Compatible iOS 14+ et Android 10+ — Connexion chiffrée" })}
+            {tx(sup.supAppSecure, t("smartHome.app.secure", { defaultValue: "Compatible iOS 14+ et Android 10+ — Connexion chiffrée" }))}
           </p>
         </div>
       </section>

@@ -5,17 +5,22 @@
   --font-sans: 'Segoe UI', Arial, ui-sans-serif, system-ui, sans-serif;
   --font-display: 'Arial Narrow', 'Segoe UI', Arial, ui-sans-serif, system-ui, sans-serif;
 
-  --color-primary: #0A2463;
-  --color-primary-dark: #061540;
-  --color-primary-light: #1A3A7A;
-  --color-accent: #1E5EF3;
-  --color-accent-hover: #1a51d4;
-  --color-navy: #0A2463;
-  --color-surface: #F9FAFB;
-  --color-surface-2: #EFF3FB;
-  --color-ink: #0D1117;
-  --color-ink-muted: #64748B;
-  --color-border-light: #E2E8F0;
+   --color-primary: rgba(0, 142, 208, 1);
+  --color-primary-dark: rgba(0, 111, 163, 1);
+  --color-primary-light: rgba(38, 166, 216, 1);
+
+  --color-accent: rgba(0, 119, 182, 1);
+  --color-accent-hover: rgba(0, 104, 159, 1);
+
+  --color-navy: rgba(10, 37, 64, 1);
+
+  --color-surface: rgba(249, 250, 251, 1);
+  --color-surface-2: rgba(239, 247, 251, 1);
+
+  --color-ink: rgba(13, 17, 23, 1);
+  --color-ink-muted: rgba(100, 116, 139, 1);
+
+  --color-border-light: rgba(226, 232, 240, 1);
 }
 
 html, body, #root {
@@ -89,7 +94,7 @@ button:focus-visible, a:focus-visible, input:focus-visible {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-.animate-ken-burns  { animation: kenBurns 14s ease-out forwards; }
+.animate-ken-burns  { animation: kenBurns 16s ease-out forwards; }
 .animate-fade-in    { animation: fadeIn 0.7s ease-out forwards; }
 .animate-slide-up   { animation: slideUp 0.48s ease-out forwards; }
 .animate-fade-in-down { animation: fadeInDown 0.22s ease-out forwards; }

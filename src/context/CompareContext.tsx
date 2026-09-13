@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { products } from "../data"
+import { ml } from "../lib/ml"
 
 export const MAX_COMPARE = 4
 
@@ -92,7 +93,7 @@ export function CompareProvider({ children }: { children: React.ReactNode }) {
       return
     }
     setIds([...ids, id])
-    const name = product?.name ?? ""
+    const name = ml(product?.name ?? "")
     notify(
       t("comparator.toastAdded", { name }),
       t("comparator.toastView"),

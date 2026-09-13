@@ -1,8 +1,15 @@
 import { Link } from "react-router-dom"
 import { useTranslation } from "react-i18next"
+import { useSiteSettings } from "../context/SiteSettingsContext"
 
 export default function Footer() {
   const { t } = useTranslation()
+  const { settings } = useSiteSettings()
+
+  const handleLogoError = (event: React.SyntheticEvent<HTMLImageElement>) => {
+    event.currentTarget.style.display = "none"
+    event.currentTarget.nextElementSibling?.removeAttribute("hidden")
+  }
 
   const footerLinks = {
     [t("footer.links.Produits")]: [
@@ -50,40 +57,30 @@ export default function Footer() {
           {/* Brand col */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-2.5 mb-5">
-              <div className="w-9 h-9 bg-[#1E5EF3] rounded flex items-center justify-center">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <rect
-                    x="3"
-                    y="3"
-                    width="6"
-                    height="6"
-                    fill="white"
-                    opacity="0.9"
-                  />
-                  <rect
-                    x="11"
-                    y="3"
-                    width="6"
-                    height="6"
-                    fill="white"
-                    opacity="0.5"
-                  />
-                  <rect
-                    x="3"
-                    y="11"
-                    width="6"
-                    height="6"
-                    fill="white"
-                    opacity="0.5"
-                  />
-                  <rect x="11" y="11" width="6" height="6" fill="white" />
-                </svg>
-              </div>
-              <img
-                src="/aurex-logo.png"
-                alt="AUREX"
-                className="h-8 w-auto object-contain"
-              />
+              {settings.showLogoIcon && (
+                <div className="w-11 h-11 rounded-lg flex items-center justify-center overflow-hidden" style={{ backgroundColor: settings.logoIconBg }}>
+                  {settings.logoIconUrl ? (
+                    <img src={settings.logoIconUrl} alt="icon" className="w-8 h-8 object-contain" />
+                  ) : (
+                    <svg width="22" height="22" viewBox="0 0 20 20" fill="none">
+                      <rect x="3" y="3" width="6" height="6" fill="white" opacity="0.9" />
+                      <rect x="11" y="3" width="6" height="6" fill="white" opacity="0.5" />
+                      <rect x="3" y="11" width="6" height="6" fill="white" opacity="0.5" />
+                      <rect x="11" y="11" width="6" height="6" fill={settings.logoAccent} />
+                    </svg>
+                  )}
+                </div>
+              )}
+              {settings.showLogoImage && <img src={settings.logoUrl || "/aurex-logo.png"} alt="AUREX" className="h-10 w-auto object-contain" onError={handleLogoError} />}
+              {settings.showLogoText ? (
+                <span className="text-[27px] font-bold tracking-[-0.08em]" style={{ color: settings.logoTextColor }}>
+                  {settings.logoText}
+                </span>
+              ) : (
+                <span hidden className="text-[27px] font-bold tracking-[-0.08em] text-white">
+                  aurex
+                </span>
+              )}
             </div>
 
             <p
@@ -107,11 +104,11 @@ export default function Footer() {
                 <input
                   type="email"
                   placeholder={t("footer.emailPlaceholder")}
-                  className="flex-1 bg-white/5 border border-white/10 rounded px-3 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#1E5EF3] transition-colors"
+                  className="flex-1 bg-white/5 border border-white/10 rounded px-3 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[var(--color-accent)] transition-colors"
                   style={{ fontFamily: "var(--font-sans)" }}
                 />
                 <button
-                  className="bg-[#1E5EF3] hover:bg-[#1a51d4] transition-colors text-white px-4 py-2.5 rounded text-sm font-medium whitespace-nowrap"
+                  className="bg-[var(--color-accent)] hover:bg-[#1a51d4] transition-colors text-white px-4 py-2.5 rounded text-sm font-medium whitespace-nowrap"
                   style={{ fontFamily: "var(--font-sans)" }}
                 >
                   {t("footer.subscribe")}
@@ -119,24 +116,38 @@ export default function Footer() {
               </div>
             </div>
 
-            {/* Social */}
+            {/* Social — connecté à site_settings.social_links */}
             <div className="mt-6 flex items-center gap-3">
-              {[
-                { label: "Facebook", icon: "f" },
-                { label: "Instagram", icon: "◎" },
-                { label: "YouTube", icon: "▶" },
-                { label: "LinkedIn", icon: "in" },
-              ].map((s) => (
-                <a
-                  key={s.label}
-                  href="#"
-                  aria-label={s.label}
-                  className="w-8 h-8 rounded-lg bg-white/5 hover:bg-[#1E5EF3] border border-white/10 hover:border-[#1E5EF3] flex items-center justify-center text-xs text-gray-400 hover:text-white transition-all"
-                  style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
-                >
-                  {s.icon}
-                </a>
-              ))}
+              {(() => {
+                const defaults = [
+                  { label: "Facebook", icon: "f", href: "#" },
+                  { label: "Instagram", icon: "◎", href: "#" },
+                  { label: "YouTube", icon: "▶", href: "#" },
+                  { label: "LinkedIn", icon: "in", href: "#" },
+                ]
+                const entries = Object.entries(settings.socialLinks)
+                const socials =
+                  entries.length > 0
+                    ? entries.map(([k, v]) => ({
+                        label: k,
+                        icon: k.slice(0, 2).toUpperCase(),
+                        href: v as string,
+                      }))
+                    : defaults
+                return socials.map((s) => (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    target={s.href.startsWith("http") ? "_blank" : undefined}
+                    rel={s.href.startsWith("http") ? "noreferrer" : undefined}
+                    aria-label={s.label}
+                    className="w-8 h-8 rounded-lg bg-white/5 hover:bg-[var(--color-accent)] border border-white/10 hover:border-[var(--color-accent)] flex items-center justify-center text-xs text-gray-400 hover:text-white transition-all"
+                    style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
+                  >
+                    {s.icon}
+                  </a>
+                ))
+              })()}
             </div>
           </div>
 
@@ -186,7 +197,7 @@ export default function Footer() {
                 </svg>
               ),
               label: t("footer.contact.phone"),
-              value: "+213 21 XX XX XX",
+              value: settings.contactPhone || "+213 21 XX XX XX",
             },
             {
               icon: (
@@ -205,7 +216,7 @@ export default function Footer() {
                 </svg>
               ),
               label: t("footer.contact.email"),
-              value: "support@aurex-dz.com",
+              value: settings.contactEmail || "support@aurex-dz.com",
             },
             {
               icon: (
@@ -229,11 +240,11 @@ export default function Footer() {
                 </svg>
               ),
               label: t("footer.contact.address"),
-              value: t("footer.contact.city"),
+              value: settings.contactAddress || t("footer.contact.city"),
             },
           ].map((info) => (
             <div key={info.label} className="flex items-start gap-3">
-              <div className="w-7 h-7 rounded-lg bg-[#1E5EF3]/20 flex items-center justify-center text-[#1E5EF3] flex-shrink-0 mt-0.5">
+              <div className="w-7 h-7 rounded-lg bg-[var(--color-accent)]/20 flex items-center justify-center text-[var(--color-accent)] flex-shrink-0 mt-0.5">
                 {info.icon}
               </div>
               <div>

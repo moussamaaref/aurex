@@ -217,6 +217,7 @@ const ar = {
       cta: "اكتشف المنزل الذكي",
       ex9000Name: "غسالة EX9000",
       cycleComplete: "انتهى الدورة — 09:24",
+      energyLabel: "الطاقة",
     },
     technologies: {
       subtitle: "الابتكارات",
@@ -242,6 +243,10 @@ const ar = {
       needHelp: "هل تحتاج إلى مساعدة؟",
       supportTitle: "فريقنا يرافقكم بعد الشراء.",
       supportAction: "الوصول إلى الدعم",
+      statsArticles: "مقالات",
+      statsCategories: "فئات",
+      readTimeFeatured: "5 دقائق قراءة",
+      readTimeCard: "3 دقائق",
     },
     support: {
       subtitle: "خدمة ما بعد البيع",
@@ -514,6 +519,7 @@ const ar = {
       energySavings: "متوسط توفير الطاقة",
       freshCoolDuration: "مدة الحفظ بـ FreshCool",
       inverterWarranty: "ضمان محرك إنفرتر",
+      inverterWarrantyValue: "10 سنوات",
     },
     filters: {
       all: "الكل",
@@ -696,6 +702,22 @@ const ar = {
           desc: "أكثر من 120 منتجًا في الكتالوج، 48 نقطة بيع، 12 مركز خدمة، وعلامة تجارية موثوقة لآلاف الأسر.",
         },
       ],
+    },
+    stats: {
+      years: "سنوات من الخبرة",
+      products: "مراجع المنتجات",
+      sales: "نقاط البيع",
+      employees: "موظفون",
+    },
+    quality: {
+      badge: "جودة معتمدة",
+      badgeSub: "ISO 9001 — معايير دولية",
+    },
+    cta: {
+      title: "جاهز لتجهيز منزلك؟",
+      desc: "اكتشف مجموعة AUREX الكاملة واعثر على الجهاز المثالي لمنزلك.",
+      button: "اكتشف الكتالوج",
+      support: "اتصل بالدعم",
     },
   },
   notFound: {

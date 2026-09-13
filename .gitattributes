@@ -1,6 +1,10 @@
 # Git LFS Tracking Rules
 # Generated for binary, large, and non-diffable file types
 
+# The brand logo must be served directly by Vercel, not as an LFS pointer.
+public/aurex-logo.png -filter -diff merge -text
+public/aurex-favicon.png -filter -diff merge -text
+
 # ---------------------------------------------------------------------------
 # Images & Graphics
 # ---------------------------------------------------------------------------
