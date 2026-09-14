@@ -1,8 +1,10 @@
-import { useState, useEffect, useRef } from "react"
-import { Link, useLocation } from "react-router-dom"
+import { useState, useEffect, useRef, useMemo } from "react"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { useCompare } from "../context/CompareContext"
 import { useSiteSettings } from "../context/SiteSettingsContext"
+import { products, categories } from "../data"
+import { ml } from "../lib/ml"
 
 const navItems = [
   { key: "products", href: "/produits", hasMega: true },
@@ -36,8 +38,40 @@ export default function Header() {
   const [hoveredNav, setHoveredNav] = useState<string | null>(null)
   const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const location = useLocation()
+  const navigate = useNavigate()
   const isDistributors = location.pathname.startsWith("/distributeurs")
   const hideWhereToBuy = true // temporaire : bouton Où acheter invisible partout pour le moment
+
+  const closeSearch = () => {
+    setSearchOpen(false)
+    setSearchQuery("")
+  }
+
+  const goToProduct = (category: string, id: string) => {
+    closeSearch()
+    navigate(`/produits/${category}/${id}`)
+  }
+
+  // Recherche live : nom, référence, sous-catégorie, catégorie (insensible aux accents)
+  const searchResults = useMemo(() => {
+    const norm = (value: string) =>
+      value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    const q = norm(searchQuery.trim())
+    if (q.length < 2) return []
+    return products
+      .filter((p) => {
+        const catLabel = ml(
+          categories.find(
+            (c) => String(c.slug ?? "").toLowerCase() === String(p.category ?? "").toLowerCase(),
+          )?.label,
+        )
+        return [ml(p.name), p.reference, ml(p.subcategory), catLabel].some((field) =>
+          norm(field).includes(q),
+        )
+      })
+      .slice(0, 6)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery, i18n.language])
 
   const openNav = (key: string) => {
     if (hoverTimer.current) clearTimeout(hoverTimer.current)
@@ -63,6 +97,7 @@ export default function Header() {
     setMegaOpen(false)
     setHoveredNav(null)
     setSearchOpen(false)
+    setSearchQuery("")
   }, [location.pathname])
 
   const isActive = (href: string) =>
@@ -86,6 +121,9 @@ export default function Header() {
 
   return (
     <>
+      {searchOpen && (
+        <div aria-hidden="true" className="fixed inset-0 z-40" onClick={closeSearch} />
+      )}
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled ? "shadow-[0_8px_30px_rgba(15,23,42,0.08)]" : ""
@@ -214,7 +252,7 @@ export default function Header() {
               </Link>
 
               <button
-                onClick={() => setSearchOpen((v) => !v)}
+                onClick={() => (searchOpen ? closeSearch() : setSearchOpen(true))}
                 className="p-2 text-gray-500 hover:text-[var(--color-primary)] transition-colors rounded-lg hover:bg-gray-50"
                 aria-label={t("header.searchLabel")}
               >
@@ -337,7 +375,17 @@ export default function Header() {
                   placeholder={t("header.searchPlaceholder")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Escape") closeSearch()
+                    else if (e.key === "Enter" && searchResults.length > 0) {
+                      const first = searchResults[0]
+                      goToProduct(first.category, first.id)
+                    }
+                  }}
                   autoFocus
+                  role="combobox"
+                  aria-expanded={searchQuery.trim().length >= 2}
+                  aria-controls="aurex-search-results"
                   className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm placeholder-gray-400 focus:outline-none focus:border-[var(--color-accent)] focus:bg-white transition-colors"
                   style={{ fontFamily: "var(--font-sans)" }}
                 />
@@ -354,6 +402,64 @@ export default function Header() {
                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                   />
                 </svg>
+                {searchQuery.trim().length >= 2 && (
+                  <div
+                    id="aurex-search-results"
+                    role="listbox"
+                    className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-2xl"
+                  >
+                    {searchResults.length > 0 ? (
+                      <>
+                        <p
+                          className="px-4 pt-3 text-[10px] font-bold uppercase tracking-[0.18em] text-gray-400"
+                          style={{ fontFamily: "var(--font-display)" }}
+                        >
+                          {t("header.searchResults")} ({searchResults.length})
+                        </p>
+                        <ul className="max-h-80 overflow-y-auto p-2">
+                          {searchResults.map((p) => (
+                            <li key={p.id} role="option" aria-selected="false">
+                              <button
+                                type="button"
+                                onClick={() => goToProduct(p.category, p.id)}
+                                className="flex w-full items-center gap-3 rounded-lg p-2 text-start transition-colors hover:bg-[#EFF3FB]"
+                              >
+                                <img
+                                  src={p.image}
+                                  alt=""
+                                  className="h-11 w-11 flex-shrink-0 rounded-lg bg-gray-50 object-cover"
+                                />
+                                <span className="min-w-0 flex-1">
+                                  <span className="block truncate text-sm font-semibold text-gray-900" style={{ fontFamily: "var(--font-sans)" }}>
+                                    {ml(p.name)}
+                                  </span>
+                                  <span className="block truncate font-mono text-[10px] uppercase tracking-wider text-gray-400">
+                                    {p.reference}
+                                  </span>
+                                </span>
+                                <svg className="h-4 w-4 flex-shrink-0 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                                </svg>
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                        <Link
+                          to="/produits"
+                          onClick={closeSearch}
+                          className="block border-t border-gray-100 px-4 py-3 text-center text-xs font-semibold text-[var(--color-accent)] transition-colors hover:bg-[#EFF3FB]"
+                          style={{ fontFamily: "var(--font-sans)" }}
+                        >
+                          {t("header.searchSeeAll")}
+                        </Link>
+                      </>
+                    ) : (
+                      <p className="px-4 py-6 text-center text-sm text-gray-500" style={{ fontFamily: "var(--font-sans)" }}>
+                        {t("header.searchNoResults")}
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           )}
