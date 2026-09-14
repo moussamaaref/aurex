@@ -803,7 +803,7 @@ export default function ComparePage() {
               <thead>
                 <tr>
                   <th
-                    className="sticky start-0 top-0 z-40 bg-white w-44 min-w-44 p-5 text-start align-top border-b border-gray-100"
+                    className="sticky start-0 top-0 z-40 bg-white w-44 min-w-44 p-5 text-start align-top shadow-[0_14px_24px_-18px_rgba(10,36,99,0.5)]"
                     scope="col"
                   >
                     <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 font-display">
@@ -814,7 +814,7 @@ export default function ComparePage() {
                     <th
                       key={p.id}
                       scope="col"
-                      className="sticky top-0 z-30 min-w-[210px] w-[210px] p-5 text-start align-top border-b border-gray-100 bg-white"
+                      className="sticky top-0 z-30 min-w-[210px] w-[210px] px-5 pt-5 pb-3 text-start align-top bg-white shadow-[0_14px_24px_-18px_rgba(10,36,99,0.5)]"
                     >
                       <div className="flex flex-col gap-3">
                         <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-gray-50 border border-gray-100">
@@ -839,70 +839,85 @@ export default function ComparePage() {
                             ))}
                           </div>
                         </div>
-                        <p className="text-[10px] text-gray-400 font-mono tracking-widest uppercase -mt-1">
-                          {p.reference}
-                        </p>
                         <Link
                           to={`/produits/${p.category}/${p.id}`}
                           className="text-sm font-semibold text-gray-900 hover:text-[#0A2463] transition-colors font-sans line-clamp-2 leading-snug"
                         >
                           {ml(p.name)}
                         </Link>
-                        <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => setReplacingId(p.id)}
-                            aria-label={t("comparator.replace", {
-                              name: ml(p.name),
-                            })}
-                            title={t("comparator.replaceTitle")}
-                            className="inline-flex items-center gap-1.5 text-xs font-medium text-[#1E5EF3] hover:text-[#0A2463] border border-blue-100 bg-[#EFF3FB] rounded-lg px-2.5 py-1.5 hover:bg-[#E4ECFB] transition-colors font-sans"
+                      </div>
+                    </th>
+                  ))}
+                  {selected.length === 1 && (
+                    <th scope="col" aria-hidden="true" className="sticky top-0 z-30 min-w-[190px] bg-white" />
+                  )}
+                </tr>
+                {/* Ligne 2 — référence + actions : défile avec le tableau */}
+                <tr>
+                  <th scope="col" aria-hidden="true" className="sticky start-0 z-10 bg-white border-b border-gray-100" />
+                  {selected.map((p) => (
+                    <th
+                      key={p.id}
+                      scope="col"
+                      className="min-w-[210px] w-[210px] px-5 pt-2 pb-5 text-start align-top border-b border-gray-100 bg-white"
+                    >
+                      <p className="text-[10px] text-gray-400 font-mono tracking-widest uppercase">
+                        {p.reference}
+                      </p>
+                      <div className="mt-2 flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setReplacingId(p.id)}
+                          aria-label={t("comparator.replace", {
+                            name: ml(p.name),
+                          })}
+                          title={t("comparator.replaceTitle")}
+                          className="inline-flex items-center gap-1.5 text-xs font-medium text-[#1E5EF3] hover:text-[#0A2463] border border-blue-100 bg-[#EFF3FB] rounded-lg px-2.5 py-1.5 hover:bg-[#E4ECFB] transition-colors font-sans"
+                        >
+                          <svg
+                            className="w-3.5 h-3.5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                            aria-hidden="true"
                           >
-                            <svg
-                              className="w-3.5 h-3.5"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              strokeWidth={2}
-                              aria-hidden="true"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                              />
-                            </svg>
-                            {t("comparator.replace")}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => remove(p.id)}
-                            className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-red-600 border border-gray-200 rounded-lg px-2.5 py-1.5 hover:border-red-200 transition-colors font-sans"
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                            />
+                          </svg>
+                          {t("comparator.replace")}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => remove(p.id)}
+                          className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-red-600 border border-gray-200 rounded-lg px-2.5 py-1.5 hover:border-red-200 transition-colors font-sans"
+                        >
+                          <svg
+                            className="w-3.5 h-3.5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                            aria-hidden="true"
                           >
-                            <svg
-                              className="w-3.5 h-3.5"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              strokeWidth={2}
-                              aria-hidden="true"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M6 18L18 6M6 6l12 12"
-                              />
-                            </svg>
-                            {t("comparator.remove")}
-                          </button>
-                        </div>
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                          {t("comparator.remove")}
+                        </button>
                       </div>
                     </th>
                   ))}
                   {selected.length === 1 && (
                     <th
                       scope="col"
-                      className="sticky top-0 z-30 min-w-[190px] p-5 align-top border-b border-gray-100 bg-white"
+                      className="min-w-[190px] px-5 pt-2 pb-5 align-top border-b border-gray-100 bg-white"
                     >
                       <div className="border-2 border-dashed border-gray-200 rounded-xl h-full min-h-[300px] flex flex-col items-center justify-center gap-3 p-4 text-center">
                         <ScaleIcon className="w-6 h-6 text-gray-300" />
