@@ -798,12 +798,12 @@ export default function ComparePage() {
         </div>
 
         <div className="hidden md:block bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
-          <div className="overflow-x-auto overscroll-x-contain">
-            <table className="w-full min-w-[860px] text-sm font-sans border-collapse">
+          <div className="max-h-[80vh] overflow-auto overscroll-contain">
+            <table className="w-full min-w-[860px] text-sm font-sans border-separate border-spacing-0">
               <thead>
                 <tr>
                   <th
-                    className="sticky start-0 z-20 bg-white w-44 min-w-44 p-5 text-start align-top border-b border-gray-100"
+                    className="sticky start-0 top-0 z-40 bg-white w-44 min-w-44 p-5 text-start align-top border-b border-gray-100"
                     scope="col"
                   >
                     <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 font-display">
@@ -814,7 +814,7 @@ export default function ComparePage() {
                     <th
                       key={p.id}
                       scope="col"
-                      className="min-w-[210px] w-[210px] p-5 text-start align-top border-b border-gray-100 bg-white"
+                      className="sticky top-0 z-30 min-w-[210px] w-[210px] p-5 text-start align-top border-b border-gray-100 bg-white"
                     >
                       <div className="flex flex-col gap-3">
                         <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-gray-50 border border-gray-100">
@@ -902,7 +902,7 @@ export default function ComparePage() {
                   {selected.length === 1 && (
                     <th
                       scope="col"
-                      className="min-w-[190px] p-5 align-top border-b border-gray-100 bg-white"
+                      className="sticky top-0 z-30 min-w-[190px] p-5 align-top border-b border-gray-100 bg-white"
                     >
                       <div className="border-2 border-dashed border-gray-200 rounded-xl h-full min-h-[300px] flex flex-col items-center justify-center gap-3 p-4 text-center">
                         <ScaleIcon className="w-6 h-6 text-gray-300" />
