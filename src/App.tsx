@@ -6,7 +6,7 @@ import Footer from "./components/Footer"
 import { CompareProvider } from "./context/CompareContext"
 import { SiteSettingsProvider } from "./context/SiteSettingsContext"
 import CompareToast from "./components/CompareToast"
-import { loadNormalizedCollections, loadPublicPages } from "./lib/contentStore"
+import { loadNormalizedCollections, loadPublicPages, loadRemoteCollection } from "./lib/contentStore"
 
 const HomePage = lazy(() => import("./pages/HomePage"))
 const ProductsPage = lazy(() => import("./pages/ProductsPage"))
@@ -98,21 +98,60 @@ function RtlHandler({ children }: { children: React.ReactNode }) {
   return <>{children}</>
 }
 
+/** Source unique de vérité = collections CMS (gérées par le back-office).
+ *  Repli : tables normalisées, puis cache local / seeds. N'écrase jamais
+ *  le cache avec des listes vides. */
+const CATALOG_SYNC_KEYS = [
+  "products",
+  "categories",
+  "familles",
+  "sousFamilles",
+  "gammes",
+  "capacites",
+  "couleurs",
+  "technologies",
+  "news",
+  "faq",
+  "distributors",
+] as const
+
 function RemoteContentSync() {
   useEffect(() => {
     if (sessionStorage.getItem("aurex-content-sync")) return
-    void loadNormalizedCollections()
-      .then((collections) => {
-        if (!collections) return
-        Object.entries(collections).forEach(([key, items]) => {
-          localStorage.setItem(`aurex-data-${key}`, JSON.stringify(items))
-        })
+    void (async () => {
+      try {
+        const [collectionResults, normalized] = await Promise.all([
+          Promise.all(
+            CATALOG_SYNC_KEYS.map(async (key) => {
+              try {
+                return [key, await loadRemoteCollection(key)] as const
+              } catch {
+                return [key, null] as const
+              }
+            }),
+          ),
+          loadNormalizedCollections().catch(() => null),
+        ])
+        const normMap = (normalized ?? {}) as Record<string, unknown[]>
+        let changed = false
+        for (const [key, remote] of collectionResults) {
+          const items =
+            Array.isArray(remote) && remote.length > 0
+              ? remote
+              : Array.isArray(normMap[key]) && (normMap[key] as unknown[]).length > 0
+                ? (normMap[key] as unknown[])
+                : null
+          if (items) {
+            localStorage.setItem(`aurex-data-${key}`, JSON.stringify(items))
+            changed = true
+          }
+        }
         sessionStorage.setItem("aurex-content-sync", "1")
-        window.location.reload()
-      })
-      .catch((error: unknown) => {
+        if (changed) window.location.reload()
+      } catch (error: unknown) {
         console.warn("AUREX remote content is not available yet.", error)
-      })
+      }
+    })()
   }, [])
   return null
 }

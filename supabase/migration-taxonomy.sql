@@ -494,6 +494,151 @@ insert into public.product_couleurs (product_id, couleur_slug) values
   ('800', 'blanc-noir'), ('802', 'blanc-gris'), ('802-2', 'gris'), ('168', 'blanc')
 on conflict do nothing;
 -- =====================================================================
+-- 10) Produits démo historiques (préservés du seed front, absents de la base)
+-- ex7000-fridge : catégorie legacy orpheline 'refrigerateurs' → rattaché à 'autres'.
+-- =====================================================================
+
+insert into public.products
+  (id, slug, name, reference, category_slug, subcategory, capacity, color, image,
+   energy_class, connectivity, badges, technologies, features, images,
+   description, is_new, stock, is_active)
+values
+  ('ex5000-wm', 'ex5000-wm', 'Lave-linge EX5000 Eco', 'EX-WM-5000-70-EW', 'lavage', 'Lavexa', '7 kg', 'Blanc', 'https://images.unsplash.com/photo-1604335398980-ededcadcc37d?w=600&h=700&fit=crop&auto=format', 'A++', false, '[]', '["EcoWash", "QuickWash"]', '["12 programmes de lavage", "Programme rapide 15 minutes"]', '[]', 'Le lave-linge EX5000 Eco offre des programmes essentiels et une consommation maîtrisée.', false, 10, true),
+  ('ex5500-dw', 'ex5500-dw', 'Lave-vaisselle EX5500', 'EX-DW-5500-14-ENK', 'lave-vaisselle', 'Estrela', '14 couverts', 'Inox', 'https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=600&h=700&fit=crop&auto=format', 'A+++', false, '["Promotion"]', '["AquaSave", "SilentWash"]', '["Ultra-silencieux 42 dB", "8 programmes de lavage"]', '[]', 'Lave-vaisselle encastrable ultra-silencieux EX5500 avec technologie AquaSave.', false, 10, true),
+  ('ex6000-ac', 'ex6000-ac', 'Climatiseur Inverter EX6000', 'EX-AC-6000-24-INV', 'autres', 'Climatisation', '24 000 BTU', 'Blanc', 'https://images.unsplash.com/photo-1545259741-2ea3ebf61fa3?w=600&h=700&fit=crop&auto=format', 'A+++', true, '["Nouveau", "Exclusivité"]', '["InverterPlus", "SmartConnect", "TurboMode"]', '["Ultra-silencieux 24 dB", "Contrôle Wi-Fi intégré"]', '[]', 'Climatiseur split inverter EX6000 avec technologie InverterPlus.', true, 10, true),
+  ('ex7000-fridge', 'ex7000-fridge', 'Réfrigérateur No Frost EX7000', 'EX-RF-7000-350-NF', 'autres', 'Réfrigérateurs', '350 L', 'Inox', 'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&h=700&fit=crop&auto=format', 'A++', true, '["Nouveau"]', '["FreshCool", "SmartConnect", "NoFrost"]', '["Froid ventilé No Frost total", "Tiroir FreshZone 0°C"]', '[]', 'Le réfrigérateur EX7000 offre une capacité généreuse avec technologie No Frost.', true, 10, true)
+on conflict (id) do nothing;
+
+-- Jonctions génériques rejouées (couvrent aussi les produits ci-dessus)
+insert into public.product_capacites (product_id, capacite_slug)
+select distinct p.id, c.slug
+from public.products p
+join public.capacites c
+  on lower(regexp_replace(trim(p.capacity), '\s+', ' ', 'g')) = lower(c.name)
+where p.capacity is not null and trim(p.capacity) <> ''
+on conflict do nothing;
+
+insert into public.product_couleurs (product_id, couleur_slug)
+select distinct p.id, c.slug
+from public.products p
+join public.couleurs c
+  on lower(trim(p.color)) = lower(c.name)
+where p.color is not null and trim(p.color) <> ''
+on conflict do nothing;
+
+-- =====================================================================
+-- 11) Miroir CMS : aurex_collections reflète les tables normalisées.
+-- Le front lit les collections en priorité, le BO les édite :
+-- une seule source de vérité, BO et front attachés à la même base.
+-- (Uniquement si la table source est non vide : jamais d'écrasement à vide.)
+-- =====================================================================
+
+with pc as (
+  select product_id, jsonb_agg(capacite_slug order by capacite_slug) as arr
+  from public.product_capacites group by 1
+),
+pw as (
+  select product_id, jsonb_agg(couleur_slug order by couleur_slug) as arr
+  from public.product_couleurs group by 1
+)
+insert into public.aurex_collections (collection_key, items)
+select 'products', jsonb_agg(jsonb_build_object(
+    'id', p.id, 'slug', p.slug, 'name', p.name, 'reference', p.reference,
+    'category_slug', p.category_slug,
+    'famille', p.famille_id, 'sousFamille', p.sous_famille_id, 'gamme', p.gamme_id,
+    'capacites', coalesce(pc.arr, '[]'::jsonb), 'couleurs', coalesce(pw.arr, '[]'::jsonb),
+    'subcategory', p.subcategory, 'image', p.image, 'images', p.images,
+    'badges', p.badges, 'capacity', p.capacity, 'energy_class', p.energy_class,
+    'connectivity', p.connectivity, 'technologies', p.technologies,
+    'noise_level', p.noise_level, 'dimensions', p.dimensions,
+    'description', p.description, 'features', p.features, 'color', p.color,
+    'is_new', p.is_new, 'stock', p.stock, 'is_active', p.is_active
+  ) order by p.created_at)
+from public.products p
+left join pc on pc.product_id = p.id
+left join pw on pw.product_id = p.id
+where p.is_active
+group by ()
+having count(*) > 0
+on conflict (collection_key) do update set items = excluded.items, updated_at = now();
+
+insert into public.aurex_collections (collection_key, items)
+select 'categories', jsonb_agg(jsonb_build_object(
+    'slug', c.slug, 'label', c.label, 'description', c.description, 'image', c.image,
+    'subcategories', c.subcategories, 'sort_order', c.sort_order, 'is_active', c.is_active
+  ) order by c.sort_order)
+from public.categories c
+where c.is_active
+group by ()
+having count(*) > 0
+on conflict (collection_key) do update set items = excluded.items, updated_at = now();
+
+insert into public.aurex_collections (collection_key, items)
+select 'familles', jsonb_agg(jsonb_build_object(
+    'slug', f.slug, 'category_slug', f.category_slug,
+    'name', jsonb_build_object('fr', f.name, 'ar', f.name_ar, 'en', f.name_en),
+    'description', f.description, 'image', f.image,
+    'sort_order', f.sort_order, 'is_active', f.is_active
+  ) order by f.sort_order)
+from public.familles f
+where f.is_active
+group by ()
+having count(*) > 0
+on conflict (collection_key) do update set items = excluded.items, updated_at = now();
+
+insert into public.aurex_collections (collection_key, items)
+select 'sousFamilles', jsonb_agg(jsonb_build_object(
+    'slug', s.slug, 'famille_id', s.famille_slug,
+    'name', jsonb_build_object('fr', s.name, 'ar', s.name_ar, 'en', s.name_en),
+    'description', s.description, 'image', s.image,
+    'sort_order', s.sort_order, 'is_active', s.is_active
+  ) order by s.sort_order)
+from public.sous_familles s
+where s.is_active
+group by ()
+having count(*) > 0
+on conflict (collection_key) do update set items = excluded.items, updated_at = now();
+
+insert into public.aurex_collections (collection_key, items)
+select 'gammes', jsonb_agg(jsonb_build_object(
+    'slug', g.slug, 'sous_famille_id', g.sous_famille_slug,
+    'name', jsonb_build_object('fr', g.name, 'ar', g.name_ar, 'en', g.name_en),
+    'description', g.description, 'image', g.image,
+    'sort_order', g.sort_order, 'is_active', g.is_active
+  ) order by g.sort_order)
+from public.gammes g
+where g.is_active
+group by ()
+having count(*) > 0
+on conflict (collection_key) do update set items = excluded.items, updated_at = now();
+
+insert into public.aurex_collections (collection_key, items)
+select 'capacites', jsonb_agg(jsonb_build_object(
+    'slug', c.slug,
+    'name', jsonb_build_object('fr', c.name, 'ar', c.name_ar, 'en', c.name_en),
+    'value', c.value, 'unit', c.unit,
+    'sort_order', c.sort_order, 'is_active', c.is_active
+  ) order by c.sort_order)
+from public.capacites c
+where c.is_active
+group by ()
+having count(*) > 0
+on conflict (collection_key) do update set items = excluded.items, updated_at = now();
+
+insert into public.aurex_collections (collection_key, items)
+select 'couleurs', jsonb_agg(jsonb_build_object(
+    'slug', c.slug,
+    'name', jsonb_build_object('fr', c.name, 'ar', c.name_ar, 'en', c.name_en),
+    'hex_code', c.hex_code, 'image', c.image,
+    'sort_order', c.sort_order, 'is_active', c.is_active
+  ) order by c.sort_order)
+from public.couleurs c
+where c.is_active
+group by ()
+having count(*) > 0
+on conflict (collection_key) do update set items = excluded.items, updated_at = now();
+
+-- =====================================================================
 -- CONTRÔLES
 -- =====================================================================
 -- Aucun produit perdu :
