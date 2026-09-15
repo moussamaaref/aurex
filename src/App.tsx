@@ -117,6 +117,19 @@ const CATALOG_SYNC_KEYS = [
 
 function RemoteContentSync() {
   useEffect(() => {
+    // Versionnage du cache : un schéma de données périmé (anciennes synchros
+    // partielle) est purgé pour ne jamais empoisonner les filtres avec des
+    // entrées incomplètes. À bumper à chaque changement de schéma.
+    try {
+      if (localStorage.getItem("aurex-cache-version") !== "3") {
+        Object.keys(localStorage)
+          .filter((k) => k.startsWith("aurex-data-"))
+          .forEach((k) => localStorage.removeItem(k))
+        localStorage.setItem("aurex-cache-version", "3")
+      }
+    } catch {
+      // stockage indisponible : on continue sans cache
+    }
     if (sessionStorage.getItem("aurex-content-sync")) return
     void (async () => {
       try {
