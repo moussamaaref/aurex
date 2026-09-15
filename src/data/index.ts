@@ -1487,6 +1487,7 @@ function normalizeCategories(value: unknown): Category[] {
   if (!Array.isArray(value)) return defaultCategories
   return value.filter((item): item is Category => Boolean(item && typeof item === "object")).map((item) => ({
     ...item,
+    slug: String(item.slug ?? "").toLowerCase().trim(),
     subcategories: Array.isArray(item.subcategories) ? item.subcategories : [],
   }))
 }
@@ -1504,6 +1505,7 @@ function normalizeProducts(value: unknown): Product[] {
       typeof v === "string" && v ? v : undefined
     return {
       ...item,
+      id: String(item.id ?? ""),
       category: slug,
       // Champs taxonomiques (nouveau modèle + variantes snake_case Supabase).
       famille: strOrUndef(raw.famille ?? raw.famille_id) ?? item.famille,
@@ -1611,21 +1613,33 @@ export function productCouleurs(p: Product) {
 
 /** Libellé de catégorie (résolu, avec repli legacy). */
 export function categoryLabelOf(categorySlug: string): string {
-  const found = categories.find((c) => c.slug.toLowerCase() === categorySlug.toLowerCase())
-  return found ? ml(found.label) : categorySlug
+  const wanted = String(categorySlug ?? "").toLowerCase()
+  const found = categories.find((c) => String(c.slug ?? "").toLowerCase() === wanted)
+  return found ? ml(found.label) : String(categorySlug ?? "")
 }
 
 /** URL canonique d'un produit : hiérarchique si complète, sinon legacy. */
 export function productUrl(p: Product): string {
+  const catSlug = String(p.category ?? "").toLowerCase()
   const fam = productFamille(p)
   const sfam = productSousFamille(p)
   const gamme = productGamme(p)
   // Cohérence hiérarchique : la famille doit appartenir à la catégorie du produit.
-  const coherentFam = fam && fam.categorySlug.toLowerCase() === p.category.toLowerCase() ? fam : undefined
+  const coherentFam =
+    fam && String(fam.categorySlug ?? "").toLowerCase() === catSlug ? fam : undefined
   const coherentSfam =
-    sfam && coherentFam && sfam.familleSlug.toLowerCase() === coherentFam.slug.toLowerCase() ? sfam : undefined
+    sfam &&
+    coherentFam &&
+    String(sfam.familleSlug ?? "").toLowerCase() === String(coherentFam.slug ?? "").toLowerCase()
+      ? sfam
+      : undefined
   const coherentGamme =
-    gamme && coherentSfam && gamme.sousFamilleSlug.toLowerCase() === coherentSfam.slug.toLowerCase() ? gamme : undefined
+    gamme &&
+    coherentSfam &&
+    String(gamme.sousFamilleSlug ?? "").toLowerCase() ===
+      String(coherentSfam.slug ?? "").toLowerCase()
+      ? gamme
+      : undefined
   return productPath(p, {
     categorySlug: p.category,
     famille: coherentFam?.slug,
@@ -1639,7 +1653,7 @@ export function findProduct(slugOrId: string | undefined): Product | undefined {
   if (!slugOrId) return undefined
   const s = decodeURIComponent(slugOrId).toLowerCase().trim()
   return (
-    products.find((p) => p.id.toLowerCase() === s) ??
+    products.find((p) => String(p.id ?? "").toLowerCase() === s) ??
     products.find((p) => productSlugOf(p).toLowerCase() === s)
   )
 }
