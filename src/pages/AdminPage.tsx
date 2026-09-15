@@ -35,6 +35,7 @@ import {
 } from "./admin/constants"
 import { collectionTemplate, defaultCollections } from "./admin/defaults"
 import { btnGhostSmall } from "./admin/components/primitives/ui"
+import { validateProductTaxonomy } from "../lib/taxonomy"
 import { AuthGate, ConnectionBadge } from "./admin/components/layout/AuthGate"
 import { OverviewTab } from "./admin/components/tabs/OverviewTab"
 import { CollectionsTab } from "./admin/components/tabs/CollectionsTab"
@@ -236,6 +237,11 @@ export default function AdminPage() {
     return [
       ["Produits", collections.products.length],
       ["Catégories", collections.categories.length],
+      ["Familles", collections.familles.length],
+      ["Sous-familles", collections.sousFamilles.length],
+      ["Gammes", collections.gammes.length],
+      ["Capacités", collections.capacites.length],
+      ["Couleurs", collections.couleurs.length],
       ["Technologies", collections.technologies.length],
       ["Actualités", collections.news.length],
       ["FAQ", collections.faq.length],
@@ -274,6 +280,16 @@ export default function AdminPage() {
         throw new Error("Votre rôle ne permet pas de modifier les données (viewer en lecture seule).")
       const parsed: unknown = JSON.parse(editor)
       if (!Array.isArray(parsed)) throw new Error("La collection doit être un tableau JSON.")
+      // Validation hiérarchique des produits : Catégorie → Famille → Sous-famille → Gamme.
+      if (activeCollection === "products") {
+        const errors = parsed.flatMap((item, index) => {
+          if (!item || typeof item !== "object") return [`Élément ${index + 1} : objet invalide.`]
+          return validateProductTaxonomy(item as Record<string, unknown>).map(
+            (message) => `Élément ${index + 1} : ${message}.`,
+          )
+        })
+        if (errors.length > 0) throw new Error(errors.slice(0, 5).join(" "))
+      }
       const next = { ...collections, [activeCollection]: parsed }
       setCollections(next)
       localStorage.setItem(`aurex-data-${activeCollection}`, JSON.stringify(parsed))

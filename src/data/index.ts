@@ -1,8 +1,36 @@
+import {
+  defaultCapacites,
+  defaultCouleurs,
+  defaultFamilles,
+  defaultGammes,
+  defaultSousFamilles,
+  productPath,
+  productSlugOf,
+  resolveCapacites,
+  resolveCouleurs,
+  resolveFamille,
+  resolveGamme,
+  resolveSousFamille,
+  type Capacite,
+  type Couleur,
+  type Famille,
+  type Gamme,
+  type SousFamille,
+} from "../lib/taxonomy"
+import { ml } from "../lib/ml"
+
 export interface Product {
   id: string
   name: string
+  slug?: string
   reference: string
   category: string
+  /** Hiérarchie taxonomique (nouveau modèle ; legacy conservé en repli). */
+  famille?: string
+  sousFamille?: string
+  gamme?: string
+  capacites?: string[]
+  couleurs?: string[]
   subcategory?: string
   image: string
   images?: string[]
@@ -490,9 +518,20 @@ function normalizeProducts(value: unknown): Product[] {
     // Le CMS enregistre `category_slug` (format Supabase) : le mapper vers `category`
     // en minuscules pour que le filtrage par slug d'URL fonctionne toujours.
     const slug = String(raw.category ?? raw.category_slug ?? "").toLowerCase().trim()
+    const asStrArray = (v: unknown): string[] | undefined =>
+      Array.isArray(v) ? v.map((x) => String(x)).filter(Boolean) : undefined
+    const strOrUndef = (v: unknown): string | undefined =>
+      typeof v === "string" && v ? v : undefined
     return {
       ...item,
       category: slug,
+      // Champs taxonomiques (nouveau modèle + variantes snake_case Supabase).
+      famille: strOrUndef(raw.famille ?? raw.famille_id) ?? item.famille,
+      sousFamille: strOrUndef(raw.sousFamille ?? raw.sous_famille ?? raw.sous_famille_id) ?? item.sousFamille,
+      gamme: strOrUndef(raw.gamme ?? raw.gamme_id) ?? item.gamme,
+      capacites: asStrArray(raw.capacites) ?? item.capacites,
+      couleurs: asStrArray(raw.couleurs) ?? item.couleurs,
+      slug: strOrUndef(raw.slug) ?? item.slug,
       badges: Array.isArray(item.badges) ? item.badges : [],
       technologies: Array.isArray(item.technologies) ? item.technologies : [],
       features: Array.isArray(item.features) ? item.features : [],
@@ -529,8 +568,98 @@ function normalizeNews<T extends Record<string, unknown>>(value: unknown, fallba
     }))
 }
 
+/** Normalise une collection taxonomique (slugs minuscules, variantes snake_case). */
+function normalizeTaxonomy<T extends { slug: string }>(value: unknown, fallback: T[]): T[] {
+  if (!Array.isArray(value)) return fallback
+  const pick = (raw: Record<string, unknown>, ...keys: string[]): unknown => {
+    for (const k of keys) if (raw[k] !== undefined && raw[k] !== null && raw[k] !== "") return raw[k]
+    return undefined
+  }
+  const items = value
+    .filter((item): item is T => Boolean(item && typeof item === "object"))
+    .map((item) => {
+      const raw = { ...(item as unknown as Record<string, unknown>) }
+      raw.slug = String(raw.slug ?? "").toLowerCase().trim()
+      if ("categorySlug" in raw || "category_slug" in raw || "category_id" in raw)
+        raw.categorySlug = String(pick(raw, "categorySlug", "category_slug", "category_id") ?? "").toLowerCase().trim()
+      if ("familleSlug" in raw || "famille_id" in raw)
+        raw.familleSlug = String(pick(raw, "familleSlug", "famille_id") ?? "").toLowerCase().trim()
+      if ("sousFamilleSlug" in raw || "sous_famille" in raw || "sous_famille_id" in raw)
+        raw.sousFamilleSlug = String(pick(raw, "sousFamilleSlug", "sous_famille", "sous_famille_id") ?? "").toLowerCase().trim()
+      return raw as unknown as T
+    })
+    .filter((item) => Boolean(item.slug))
+  return items.length > 0 ? items : fallback
+}
+
 export const categories: Category[] = normalizeCategories(loadManagedCollection("categories", defaultCategories))
 export const products: Product[] = normalizeProducts(loadManagedCollection("products", defaultProducts))
+export const familles: Famille[] = normalizeTaxonomy(loadManagedCollection("familles", defaultFamilles), defaultFamilles)
+export const sousFamilles: SousFamille[] = normalizeTaxonomy(loadManagedCollection("sousFamilles", defaultSousFamilles), defaultSousFamilles)
+export const gammes: Gamme[] = normalizeTaxonomy(loadManagedCollection("gammes", defaultGammes), defaultGammes)
+export const capacites: Capacite[] = normalizeTaxonomy(loadManagedCollection("capacites", defaultCapacites), defaultCapacites)
+export const couleurs: Couleur[] = normalizeTaxonomy(loadManagedCollection("couleurs", defaultCouleurs), defaultCouleurs)
 export const technologies: Technology[] = normalizeTechnologies(loadManagedCollection("technologies", defaultTechnologies))
 export const newsItems = normalizeNews(loadManagedCollection("news", defaultNewsItems), defaultNewsItems)
 export const faqItems = normalizeArray(loadManagedCollection("faq", defaultFaqItems), defaultFaqItems)
+
+/* ---------------- Helpers taxonomiques liés aux collections chargées ---------------- */
+
+export type { Famille, SousFamille, Gamme, Capacite, Couleur }
+export { productSlugOf } from "../lib/taxonomy"
+export type { TaxoValue } from "../lib/taxonomy"
+
+export function productFamille(p: Product): Famille | undefined {
+  return resolveFamille(p, familles)
+}
+
+export function productSousFamille(p: Product): SousFamille | undefined {
+  return resolveSousFamille(p, sousFamilles)
+}
+
+export function productGamme(p: Product): Gamme | undefined {
+  return resolveGamme(p, gammes)
+}
+
+export function productCapacites(p: Product) {
+  return resolveCapacites(p, capacites)
+}
+
+export function productCouleurs(p: Product) {
+  return resolveCouleurs(p, couleurs)
+}
+
+/** Libellé de catégorie (résolu, avec repli legacy). */
+export function categoryLabelOf(categorySlug: string): string {
+  const found = categories.find((c) => c.slug.toLowerCase() === categorySlug.toLowerCase())
+  return found ? ml(found.label) : categorySlug
+}
+
+/** URL canonique d'un produit : hiérarchique si complète, sinon legacy. */
+export function productUrl(p: Product): string {
+  const fam = productFamille(p)
+  const sfam = productSousFamille(p)
+  const gamme = productGamme(p)
+  // Cohérence hiérarchique : la famille doit appartenir à la catégorie du produit.
+  const coherentFam = fam && fam.categorySlug.toLowerCase() === p.category.toLowerCase() ? fam : undefined
+  const coherentSfam =
+    sfam && coherentFam && sfam.familleSlug.toLowerCase() === coherentFam.slug.toLowerCase() ? sfam : undefined
+  const coherentGamme =
+    gamme && coherentSfam && gamme.sousFamilleSlug.toLowerCase() === coherentSfam.slug.toLowerCase() ? gamme : undefined
+  return productPath(p, {
+    categorySlug: p.category,
+    famille: coherentFam?.slug,
+    sousFamille: coherentSfam?.slug,
+    gamme: coherentGamme?.slug,
+  })
+}
+
+/** Retrouve un produit par id, slug explicite ou slug dérivé du nom. */
+export function findProduct(slugOrId: string | undefined): Product | undefined {
+  if (!slugOrId) return undefined
+  const s = decodeURIComponent(slugOrId).toLowerCase().trim()
+  return (
+    products.find((p) => p.id.toLowerCase() === s) ??
+    products.find((p) => productSlugOf(p).toLowerCase() === s)
+  )
+}

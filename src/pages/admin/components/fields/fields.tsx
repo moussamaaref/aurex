@@ -41,6 +41,9 @@ const SINGLE_KEYS = new Set([
   "entity",
   "entity_id",
   "actor_id",
+  "hex_code",
+  "value",
+  "unit",
 ])
 
 // Tableaux de valeurs techniques (pas de texte) : URLs d'images, ids technos, slugs.
@@ -308,7 +311,119 @@ export function ImagesGalleryField({
   )
 }
 
-export function StructuredEditor({ value, onChange, fieldKey, disabled, options }: StructuredEditorProps) {
+// Hiérarchie taxonomique : champ dépendant → clés parentes + clé de la carte parent.
+// Ordre de saisie imposé : Catégorie → Famille → Sous-famille → Gamme.
+const DEPENDENT: Record<string, { parentKeys: string[]; mapKey: string }> = {
+  famille: { parentKeys: ["category", "category_slug"], mapKey: "famille" },
+  famille_id: { parentKeys: ["category_slug", "category"], mapKey: "famille" },
+  sousFamille: { parentKeys: ["famille"], mapKey: "sousFamille" },
+  sous_famille: { parentKeys: ["famille"], mapKey: "sousFamille" },
+  sous_famille_id: { parentKeys: ["famille_id", "famille"], mapKey: "sousFamille" },
+  gamme: { parentKeys: ["sousFamille", "sous_famille", "sous_famille_id"], mapKey: "gamme" },
+  gamme_id: { parentKeys: ["sous_famille_id", "sousFamille", "sous_famille"], mapKey: "gamme" },
+}
+
+// Remise à zéro en cascade : changer un parent vide les enfants dépendants.
+const CASCADE: Record<string, string[]> = {
+  category: ["famille", "sousFamille", "sous_famille", "gamme"],
+  category_slug: ["famille", "sousFamille", "sous_famille", "gamme"],
+  famille: ["sousFamille", "sous_famille", "gamme"],
+  famille_id: ["sous_famille_id", "gamme_id", "gamme"],
+  sousFamille: ["gamme"],
+  sous_famille: ["gamme"],
+  sous_famille_id: ["gamme_id", "gamme"],
+}
+
+/** Sélection multiple avec recherche + chips (capacités, couleurs). */
+function MultiChips({
+  fieldKey,
+  value,
+  onChange,
+  options,
+  optionLabels,
+  disabled,
+}: {
+  fieldKey: string
+  value: string[]
+  onChange: (next: string[]) => void
+  options: string[]
+  optionLabels: Record<string, string>
+  disabled?: boolean
+}) {
+  const [query, setQuery] = useState("")
+  const selected = new Set(value.map(String))
+  const q = query.trim().toLowerCase()
+  const visible = options.filter((s) => !selected.has(s) && (!q || s.toLowerCase().includes(q) || (optionLabels[s] ?? "").toLowerCase().includes(q)))
+  const toggle = (slug: string) => {
+    onChange(selected.has(slug) ? value.filter((v) => String(v) !== slug) : [...value.map(String), slug])
+  }
+  return (
+    <div className="space-y-2">
+      {value.length > 0 ? (
+        <div className="flex flex-wrap gap-1.5">
+          {value.map((slug) => (
+            <span
+              key={String(slug)}
+              className="inline-flex items-center gap-1.5 rounded-full bg-[#0A2342] px-2.5 py-1 text-[11px] font-semibold text-white"
+            >
+              {optionLabels[String(slug)] ?? String(slug)}
+              {!disabled && (
+                <button
+                  type="button"
+                  onClick={() => toggle(String(slug))}
+                  aria-label={`Retirer ${optionLabels[String(slug)] ?? String(slug)}`}
+                  className="font-bold text-white/70 hover:text-white"
+                >
+                  ×
+                </button>
+              )}
+            </span>
+          ))}
+        </div>
+      ) : (
+        <p className="text-xs text-[#9A9585]">Aucune sélection — choisissez ci-dessous.</p>
+      )}
+      <input
+        type="search"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Rechercher…"
+        disabled={disabled}
+        className="w-full rounded-xl border border-[#E4DFD2] bg-white px-3 py-2 text-xs text-[#1A1A1A] placeholder:text-[#A8A4A0] focus:border-[#2F5FE8] focus:outline-none disabled:opacity-50"
+      />
+      <div className="flex max-h-40 flex-wrap gap-1.5 overflow-y-auto rounded-xl border border-[#E4DFD2] bg-white p-2">
+        {visible.length === 0 && <span className="px-1 py-1 text-xs text-[#9A9585]">Aucune autre valeur.</span>}
+        {visible.map((slug) => (
+          <button
+            key={slug}
+            type="button"
+            disabled={disabled}
+            onClick={() => toggle(slug)}
+            className="rounded-lg border border-[#E4DFD2] bg-[#F7F4EC] px-2 py-1 text-[11px] font-semibold text-[#4A4438] transition hover:border-[#2F5FE8] hover:text-[#2F5FE8] disabled:opacity-50"
+          >
+            {optionLabels[slug] ?? slug}
+          </button>
+        ))}
+      </div>
+      <div className="flex flex-wrap gap-1.5">
+        {value.length > 0 && !disabled && (
+          <button
+            type="button"
+            onClick={() => onChange([])}
+            className="text-[11px] font-semibold text-[#C1443D] hover:text-[#A6362F]"
+          >
+            Tout effacer
+          </button>
+        )}
+      </div>
+    </div>
+  )
+}
+
+export function StructuredEditor({ value, onChange, fieldKey, disabled, options, parent, optionLabels, taxonomyParents }: StructuredEditorProps) {
+  const labelOf = (key: string, slug: string): string =>
+    optionLabels?.[key]?.[slug] ?? slug
+
   // Gallery
   if (fieldKey && GALLERY_KEYS.has(fieldKey) && Array.isArray(value)) {
     return (
@@ -476,13 +591,58 @@ export function StructuredEditor({ value, onChange, fieldKey, disabled, options 
         className={inputBase}
       >
         <option value="">— Choisir une catégorie —</option>
-        {!slugs.includes(value) && value !== "" && <option value={value}>{value} (actuel)</option>}
+        {!slugs.includes(value) && value !== "" && <option value={value}>{labelOf("category_slug", value)} (actuel)</option>}
         {slugs.map((slug) => (
           <option key={slug} value={slug}>
-            {slug}
+            {labelOf("category_slug", slug)}
           </option>
         ))}
       </select>
+    )
+  }
+
+  // Champ dépendant de la hiérarchie (Famille ← Catégorie, etc.) : options
+  // filtrées par le parent sélectionné dans le même objet.
+  if (fieldKey && DEPENDENT[fieldKey] && (typeof value === "string" || value == null)) {
+    const dep = DEPENDENT[fieldKey]
+    const parentVal = String(
+      dep.parentKeys.map((k) => parent?.[k]).find((v) => String(v ?? "").trim() !== "") ?? "",
+    ).toLowerCase()
+    const all = options?.[fieldKey] ?? []
+    const childMap = taxonomyParents?.[dep.mapKey] ?? {}
+    const allowed = parentVal
+      ? all.filter((s) => (childMap[s] ?? "").toLowerCase() === parentVal)
+      : all
+    const current = typeof value === "string" ? value : ""
+    return (
+      <div className="space-y-1.5">
+        <select
+          value={current}
+          onChange={(e) => onChange(e.target.value)}
+          disabled={disabled}
+          className={inputBase}
+        >
+          <option value="">— Choisir —</option>
+          {!allowed.includes(current) && current !== "" && (
+            <option value={current}>{labelOf(fieldKey, current)} (actuel)</option>
+          )}
+          {allowed.map((slug) => (
+            <option key={slug} value={slug}>
+              {labelOf(fieldKey, slug)}
+            </option>
+          ))}
+        </select>
+        {!parentVal && all.length > 0 && (
+          <p className="text-[11px] text-[#9A9585]">
+            Sélectionnez d'abord {getFieldLabel(dep.parentKeys[0])} pour filtrer cette liste.
+          </p>
+        )}
+        {parentVal !== "" && allowed.length === 0 && (
+          <p className="text-[11px] font-semibold text-[#B8863D]">
+            Aucune valeur pour ce parent — créez-la dans sa collection.
+          </p>
+        )}
+      </div>
     )
   }
 
@@ -534,6 +694,21 @@ export function StructuredEditor({ value, onChange, fieldKey, disabled, options 
         onChange={onChange as (v: { fr: string; ar: string; en: string }) => void}
         disabled={disabled}
         suggestions={options?.[fieldKey]}
+      />
+    )
+  }
+
+  // Capacités / couleurs multiples : sélection avec recherche + chips.
+  if ((fieldKey === "capacites" || fieldKey === "couleurs") && (value == null || Array.isArray(value))) {
+    const list = Array.isArray(value) ? value.map((v) => String(v)) : []
+    return (
+      <MultiChips
+        fieldKey={fieldKey}
+        value={list}
+        onChange={onChange as (v: string[]) => void}
+        options={options?.[fieldKey] ?? []}
+        optionLabels={optionLabels?.[fieldKey] ?? {}}
+        disabled={disabled}
       />
     )
   }
@@ -625,6 +800,9 @@ export function StructuredEditor({ value, onChange, fieldKey, disabled, options 
               }
               disabled={disabled}
               options={options}
+              parent={parent}
+              optionLabels={optionLabels}
+              taxonomyParents={taxonomyParents}
             />
           </div>
           )
@@ -662,15 +840,21 @@ export function StructuredEditor({ value, onChange, fieldKey, disabled, options 
               </span>
               <StructuredEditor
                 value={entry}
-                onChange={(next) =>
-                  onChange({
-                    ...(value as Record<string, unknown>),
-                    [key]: next,
-                  })
-                }
+                onChange={(next) => {
+                  const base = value as Record<string, unknown>
+                  const obj: Record<string, unknown> = { ...base, [key]: next }
+                  // Changement de parent → vide les enfants dépendants (évite les orphelins).
+                  if (String(base[key] ?? "") !== String((next as unknown) ?? "")) {
+                    for (const child of CASCADE[key] ?? []) obj[child] = ""
+                  }
+                  onChange(obj)
+                }}
                 fieldKey={key}
                 disabled={disabled}
                 options={options}
+                parent={value as Record<string, unknown>}
+                optionLabels={optionLabels}
+                taxonomyParents={taxonomyParents}
               />
             </div>
           )

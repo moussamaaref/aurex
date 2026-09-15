@@ -15,7 +15,7 @@ export async function loadRemoteCollection<T>(key: string): Promise<T[] | null> 
 
 export async function loadNormalizedCollections() {
   if (!supabase) return null
-  const [categoryResult, productResult, technologyResult, newsResult, faqResult, distributorResult] =
+  const [categoryResult, productResult, technologyResult, newsResult, faqResult, distributorResult, familleResult, sousFamilleResult, gammeResult, capaciteResult, couleurResult, prodCapResult, prodCoulResult] =
     await Promise.all([
       supabase.from("categories").select("*").eq("is_active", true).order("sort_order"),
       supabase.from("products").select("*").eq("is_active", true).order("created_at"),
@@ -23,15 +23,45 @@ export async function loadNormalizedCollections() {
       supabase.from("news").select("*").eq("is_published", true).order("published_at", { ascending: false }),
       supabase.from("faq").select("*").eq("is_active", true).order("sort_order"),
       supabase.from("distributors").select("*").eq("is_active", true).order("name"),
+      supabase.from("familles").select("*").eq("is_active", true).order("sort_order"),
+      supabase.from("sous_familles").select("*").eq("is_active", true).order("sort_order"),
+      supabase.from("gammes").select("*").eq("is_active", true).order("sort_order"),
+      supabase.from("capacites").select("*").eq("is_active", true).order("sort_order"),
+      supabase.from("couleurs").select("*").eq("is_active", true).order("sort_order"),
+      supabase.from("product_capacites").select("product_id, capacite_slug"),
+      supabase.from("product_couleurs").select("product_id, couleur_slug"),
     ])
   const firstError = [categoryResult, productResult, technologyResult, newsResult, faqResult, distributorResult]
     .map((result) => result.error)
     .find(Boolean)
   if (firstError) throw firstError
 
+  // Jonctions many-to-many → ids par produit (tables absentes si migration non jouée : repli silencieux)
+  const capByProduct = new Map<string, string[]>()
+  for (const row of ((prodCapResult.data ?? []) as Array<{ product_id: string; capacite_slug: string }>)) {
+    if (!row?.product_id || !row?.capacite_slug) continue
+    const list = capByProduct.get(row.product_id) ?? []
+    list.push(String(row.capacite_slug))
+    capByProduct.set(row.product_id, list)
+  }
+  const coulByProduct = new Map<string, string[]>()
+  for (const row of ((prodCoulResult.data ?? []) as Array<{ product_id: string; couleur_slug: string }>)) {
+    if (!row?.product_id || !row?.couleur_slug) continue
+    const list = coulByProduct.get(row.product_id) ?? []
+    list.push(String(row.couleur_slug))
+    coulByProduct.set(row.product_id, list)
+  }
+
   const mapProduct = (row: RemoteRow) => ({
     ...row,
     category: row.category_slug,
+    // Hiérarchie taxonomique (colonnes absentes si migration non jouée : undefined → repli legacy)
+    famille: row.famille_id ?? undefined,
+    sousFamille: row.sous_famille_id ?? undefined,
+    gamme: row.gamme_id ?? undefined,
+    capacites: capByProduct.get(String(row.id ?? "")),
+    couleurs: coulByProduct.get(String(row.id ?? "")),
+    slug: row.slug ?? undefined,
     energyClass: row.energy_class,
     noiseLevel: row.noise_level,
     images: Array.isArray(row.images) ? row.images : [],
@@ -65,6 +95,11 @@ export async function loadNormalizedCollections() {
   return {
     categories: (categoryResult.data ?? []) as unknown[],
     products: (productResult.data ?? []).map(mapProduct),
+    familles: (familleResult.data ?? []) as unknown[],
+    sousFamilles: (sousFamilleResult.data ?? []) as unknown[],
+    gammes: (gammeResult.data ?? []) as unknown[],
+    capacites: (capaciteResult.data ?? []) as unknown[],
+    couleurs: (couleurResult.data ?? []) as unknown[],
     technologies: (technologyResult.data ?? []).map(mapTechnology),
     news: (newsResult.data ?? []).map(mapNews),
     faq: (faqResult.data ?? []).map(mapFaq),

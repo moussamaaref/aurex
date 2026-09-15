@@ -4,6 +4,15 @@ import { useTranslation } from "react-i18next"
 import { useCompare } from "../context/CompareContext"
 import { useSiteSettings } from "../context/SiteSettingsContext"
 import { products, categories } from "../data"
+import type { Product } from "../data"
+import {
+  productUrl,
+  productFamille,
+  productSousFamille,
+  productGamme,
+  productCapacites,
+  productCouleurs,
+} from "../data"
 import { ml } from "../lib/ml"
 
 const navItems = [
@@ -47,9 +56,9 @@ export default function Header() {
     setSearchQuery("")
   }
 
-  const goToProduct = (category: string, id: string) => {
+  const goToProduct = (p: Product) => {
     closeSearch()
-    navigate(`/produits/${category}/${id}`)
+    navigate(productUrl(p))
   }
 
   // Recherche live : nom, référence, sous-catégorie, catégorie (insensible aux accents)
@@ -65,9 +74,19 @@ export default function Header() {
             (c) => String(c.slug ?? "").toLowerCase() === String(p.category ?? "").toLowerCase(),
           )?.label,
         )
-        return [ml(p.name), p.reference, ml(p.subcategory), catLabel].some((field) =>
-          norm(field).includes(q),
-        )
+        // Référence, nom, catégorie, famille, sous-famille, gamme, capacité, couleur
+        const haystack = [
+          ml(p.name),
+          p.reference,
+          ml(p.subcategory),
+          catLabel,
+          ml(productFamille(p)?.name),
+          ml(productSousFamille(p)?.name),
+          ml(productGamme(p)?.name),
+          ...productCapacites(p).map((v) => ml(v.label)),
+          ...productCouleurs(p).map((v) => ml(v.label)),
+        ]
+        return haystack.some((field) => norm(field).includes(q))
       })
       .slice(0, 6)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -379,7 +398,7 @@ export default function Header() {
                     if (e.key === "Escape") closeSearch()
                     else if (e.key === "Enter" && searchResults.length > 0) {
                       const first = searchResults[0]
-                      goToProduct(first.category, first.id)
+                      goToProduct(first)
                     }
                   }}
                   autoFocus
@@ -421,7 +440,7 @@ export default function Header() {
                             <li key={p.id} role="option" aria-selected="false">
                               <button
                                 type="button"
-                                onClick={() => goToProduct(p.category, p.id)}
+                                onClick={() => goToProduct(p)}
                                 className="flex w-full items-center gap-3 rounded-lg p-2 text-start transition-colors hover:bg-[#EFF3FB]"
                               >
                                 <img

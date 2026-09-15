@@ -2,7 +2,17 @@ import { useEffect, useMemo, useState } from "react"
 import { Link, useSearchParams } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import type { TFunction } from "i18next"
-import { categories, products, type Product } from "../data"
+import {
+  categories,
+  products,
+  productUrl,
+  productFamille,
+  productSousFamille,
+  productGamme,
+  productCapacites,
+  productCouleurs,
+  type Product,
+} from "../data"
 import { ml } from "../lib/ml"
 import { useCompare } from "../context/CompareContext"
 
@@ -117,6 +127,98 @@ export default function ComparePage() {
             {catLabel(p)}
           </span>
         ),
+      },
+      {
+        key: "famille",
+        label: t("comparator.rows.famille"),
+        raw: (p) => {
+          const f = productFamille(p)
+          return f ? ml(f.name) : ""
+        },
+        render: (p) => {
+          const f = productFamille(p)
+          return (
+            <span className="text-sm font-medium text-gray-700">
+              {f ? ml(f.name) : EMPTY}
+            </span>
+          )
+        },
+      },
+      {
+        key: "sousFamille",
+        label: t("comparator.rows.sousFamille"),
+        raw: (p) => {
+          const s = productSousFamille(p)
+          return s ? ml(s.name) : ""
+        },
+        render: (p) => {
+          const s = productSousFamille(p)
+          return (
+            <span className="text-sm font-medium text-gray-700">
+              {s ? ml(s.name) : EMPTY}
+            </span>
+          )
+        },
+      },
+      {
+        key: "gamme",
+        label: t("comparator.rows.gamme"),
+        raw: (p) => {
+          const g = productGamme(p)
+          return g ? ml(g.name) : ""
+        },
+        render: (p) => {
+          const g = productGamme(p)
+          return (
+            <span className="text-sm font-medium text-gray-700">
+              {g ? ml(g.name) : EMPTY}
+            </span>
+          )
+        },
+      },
+      {
+        key: "capacites",
+        label: t("comparator.rows.capacites"),
+        raw: (p) => productCapacites(p).map((v) => ml(v.label)).join(" / "),
+        render: (p) => {
+          const vals = productCapacites(p)
+          return vals.length > 0 ? (
+            <div className="flex flex-wrap gap-1">
+              {vals.map((v) => (
+                <span
+                  key={v.id}
+                  className="text-xs font-medium text-[#0A2463] bg-[#EFF3FB] border border-blue-100 rounded-full px-2 py-0.5 font-sans"
+                >
+                  {ml(v.label)}
+                </span>
+              ))}
+            </div>
+          ) : (
+            EMPTY
+          )
+        },
+      },
+      {
+        key: "couleurs",
+        label: t("comparator.rows.couleurs"),
+        raw: (p) => productCouleurs(p).map((v) => ml(v.label)).join(" / "),
+        render: (p) => {
+          const vals = productCouleurs(p)
+          return vals.length > 0 ? (
+            <div className="flex flex-wrap gap-1">
+              {vals.map((v) => (
+                <span
+                  key={v.id}
+                  className="text-xs font-medium text-[#0A2463] bg-[#EFF3FB] border border-blue-100 rounded-full px-2 py-0.5 font-sans"
+                >
+                  {ml(v.label)}
+                </span>
+              ))}
+            </div>
+          ) : (
+            EMPTY
+          )
+        },
       },
       {
         key: "availability",
@@ -356,11 +458,11 @@ export default function ComparePage() {
   const hiddenCount = rows.length - visibleRows.length
 
   const mobileGroupFor = (key: string) => {
-    if (["reference", "category", "availability"].includes(key))
+    if (["reference", "category", "famille", "sousFamille", "gamme", "availability"].includes(key))
       return "overview"
-    if (["capacity", "energyClass", "connectivity", "noiseLevel"].includes(key))
+    if (["capacity", "capacites", "energyClass", "connectivity", "noiseLevel"].includes(key))
       return "performance"
-    if (["width", "height", "depth", "color"].includes(key))
+    if (["width", "height", "depth", "color", "couleurs"].includes(key))
       return "dimensions"
     return "technologies"
   }
@@ -682,7 +784,7 @@ export default function ComparePage() {
                     key={p.id}
                     className="w-[calc((100vw-3.5rem)/2)] min-w-[150px] max-w-[190px] shrink-0 rounded-2xl border border-gray-100 bg-white p-2.5 shadow-md sm:w-[220px] sm:p-3"
                   >
-                    <Link to={`/produits/${p.category}/${p.id}`} className="block">
+                    <Link to={productUrl(p)} className="block">
                       <div className="mb-2.5 aspect-[4/3] overflow-hidden rounded-xl bg-gray-50 sm:mb-3 sm:aspect-square">
                         <img
                           src={p.image}
@@ -819,7 +921,7 @@ export default function ComparePage() {
                       <div className="flex flex-col gap-3">
                         <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-gray-50 border border-gray-100">
                           <Link
-                            to={`/produits/${p.category}/${p.id}`}
+                            to={productUrl(p)}
                             aria-label={ml(p.name)}
                           >
                             <img
@@ -843,7 +945,7 @@ export default function ComparePage() {
                           {p.reference}
                         </p>
                         <Link
-                          to={`/produits/${p.category}/${p.id}`}
+                          to={productUrl(p)}
                           className="text-sm font-semibold text-gray-900 hover:text-[#0A2463] transition-colors font-sans line-clamp-2 leading-snug"
                         >
                           {ml(p.name)}
@@ -1037,7 +1139,7 @@ export default function ComparePage() {
                 </div>
               </div>
               <Link
-                to={`/produits/${recommendation.winner.category}/${recommendation.winner.id}`}
+                to={productUrl(recommendation.winner)}
                 className="relative inline-flex flex-shrink-0 items-center gap-2 justify-center rounded-xl bg-white text-[#0A2463] px-6 py-3.5 text-sm font-semibold transition-all hover:bg-blue-50 hover:shadow-lg hover:-translate-y-0.5 font-sans"
               >
                 {t("comparator.recommendation.viewProduct")}

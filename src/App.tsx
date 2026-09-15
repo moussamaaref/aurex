@@ -174,6 +174,8 @@ export default function App() {
                   <Route path="/" element={<HomePage />} />
                   <Route path="/produits" element={<ProductsPage />} />
                   <Route path="/produits/:category" element={<ProductsPage />} />
+                  {/* Fiche produit : URL hiérarchique (canonique) + URL legacy (conservée) */}
+                  <Route path="/produits/:category/:famille/:sousFamille/:gamme/:slug" element={<ProductDetailPage />} />
                   <Route path="/produits/:category/:id" element={<ProductDetailPage />} />
                   <Route path="/comparateur" element={<ComparePage />} />
                   <Route path="/smart-home" element={<SmartHomePage />} />

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react"
 import { Link } from "react-router-dom"
 import { useTranslation } from "react-i18next"
-import { categories, products, technologies, newsItems } from "../data"
+import { categories, products, technologies, newsItems, productUrl } from "../data"
 import { loadRemoteCollection } from "../lib/contentStore"
 import { ml, mlFr, type Localized } from "../lib/ml"
 import { tx } from "../lib/langText"
@@ -224,7 +224,7 @@ function ProductCard({ product, index = 0 }: { product: (typeof products)[0]; in
 
   return (
     <Link
-      to={`/produits/${product.category}/${product.id}`}
+      to={productUrl(product)}
       className="group bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-2xl hover:shadow-[var(--color-primary)]/10 hover:-translate-y-1.5 hover:border-gray-200 transition-all duration-300 flex flex-col"
       style={{ animationDelay: `${index * 80}ms` }}
     >

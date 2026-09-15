@@ -54,14 +54,70 @@ export function CollectionsTab({
     const techs = (collections.technologies ?? []).map(asRecord)
     const techIds = techs.map((t) => String(t.id ?? "")).filter(Boolean)
     const icons = [...new Set([...techs.map((t) => String(t.icon ?? "")).filter(Boolean), "⟳", "◈", "◇", "❄", "◉", "◌"])]
+    // Hiérarchie taxonomique : slugs + cartes enfant → parent
+    const fams = (collections.familles ?? []).map(asRecord)
+    const sfams = (collections.sousFamilles ?? []).map(asRecord)
+    const gammes = (collections.gammes ?? []).map(asRecord)
+    const capacites = (collections.capacites ?? []).map(asRecord)
+    const couleurs = (collections.couleurs ?? []).map(asRecord)
+    const famSlugs = fams.map((f) => String(f.slug ?? "")).filter(Boolean)
+    const sfamSlugs = sfams.map((s) => String(s.slug ?? "")).filter(Boolean)
+    const gammeSlugs = gammes.map((g) => String(g.slug ?? "")).filter(Boolean)
     return {
       category_slug: slugs,
+      famille: famSlugs,
+      famille_id: famSlugs,
+      sousFamille: sfamSlugs,
+      sous_famille: sfamSlugs,
+      sous_famille_id: sfamSlugs,
+      gamme: gammeSlugs,
+      gamme_id: gammeSlugs,
+      capacites: capacites.map((c) => String(c.slug ?? "")).filter(Boolean),
+      couleurs: couleurs.map((c) => String(c.slug ?? "")).filter(Boolean),
       subcategory: subcategories,
       technologies: techIds,
       compatibleCategories: slugs,
       compatible_categories: slugs,
       icon: icons,
     }
+  }, [collections])
+
+  // Cartes enfant → parent + libellés lisibles pour les selects dépendants
+  const { taxonomyParents, optionLabels } = useMemo(() => {
+    const asRecord = (v: unknown): Record<string, unknown> =>
+      v && typeof v === "object" && !Array.isArray(v) ? (v as Record<string, unknown>) : {}
+    const str = (v: unknown) => String(v ?? "").toLowerCase().trim()
+    const parents: Record<string, Record<string, string>> = { famille: {}, sousFamille: {}, gamme: {} }
+    const labels: Record<string, Record<string, string>> = {}
+    const fill = (
+      items: unknown[],
+      slugKey: string,
+      parentKey: string | null,
+      mapKey: string | null,
+      labelKeys: string[],
+    ) => {
+      const map: Record<string, string> = {}
+      for (const item of items.map(asRecord)) {
+        const slug = str(item[slugKey])
+        if (!slug) continue
+        if (parentKey && mapKey) parents[mapKey][slug] = str(item[parentKey])
+        const label = labelKeys.map((k) => mlFr(item[k] as string | { fr?: string })).find((s) => s.trim() !== "")
+        if (label) map[slug] = label
+      }
+      return map
+    }
+    const catLabels = fill((collections.categories ?? []), "slug", null, null, ["label", "name"])
+    labels.category_slug = catLabels
+    labels.famille = fill(collections.familles ?? [], "slug", "category_slug", "famille", ["name", "label"])
+    labels.famille_id = labels.famille
+    labels.sousFamille = fill(collections.sousFamilles ?? [], "slug", "famille_id", "sousFamille", ["name", "label"])
+    labels.sous_famille = labels.sousFamille
+    labels.sous_famille_id = labels.sousFamille
+    labels.gamme = fill(collections.gammes ?? [], "slug", "sous_famille_id", "gamme", ["name", "label"])
+    labels.gamme_id = labels.gamme
+    labels.capacites = fill(collections.capacites ?? [], "slug", null, null, ["name"])
+    labels.couleurs = fill(collections.couleurs ?? [], "slug", null, null, ["name"])
+    return { taxonomyParents: parents, optionLabels: labels }
   }, [collections])
   return (
     <section className={`p-6 ${cardBase}`}>
@@ -174,6 +230,8 @@ export function CollectionsTab({
               onChange={onUpdateSelectedItem}
               disabled={!canEdit}
               options={fieldOptions}
+              optionLabels={optionLabels}
+              taxonomyParents={taxonomyParents}
             />
           )
         ) : (

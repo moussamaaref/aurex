@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { useTranslation } from "react-i18next"
-import { technologies, products } from "../data"
+import { technologies, products, productUrl } from "../data"
 import { loadRemoteCollection } from "../lib/contentStore"
 import { ml, mlFr } from "../lib/ml"
 import { tx } from "../lib/langText"
@@ -255,7 +255,7 @@ export default function TechnologiesPage() {
                               {compatibleProducts.slice(0, 2).map((p) => (
                                 <Link
                                   key={p.id}
-                                  to={`/produits/${p.category}/${p.id}`}
+                                  to={productUrl(p)}
                                   onClick={(e) => e.stopPropagation()}
                                   className="group/p flex items-center gap-3 hover:bg-[#EFF3FB] rounded-xl p-2 transition-colors border border-transparent hover:border-[#1E5EF3]/20"
                                 >

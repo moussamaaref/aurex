@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { useTranslation } from "react-i18next"
-import { products } from "../data"
+import { products, productUrl } from "../data"
 import { loadRemoteCollection } from "../lib/contentStore"
 import { ml } from "../lib/ml"
 import { tx } from "../lib/langText"
@@ -286,7 +286,7 @@ export default function SmartHomePage() {
             {compatibleProducts.map((p) => (
               <Link
                 key={p.id}
-                to={`/produits/${p.category}/${p.id}`}
+                to={productUrl(p)}
                 className="group flex gap-4 bg-white border border-gray-100 rounded-2xl p-4 hover:shadow-xl hover:shadow-[#0A2463]/10 hover:border-[#1E5EF3]/40 hover:-translate-y-1 transition-all duration-300"
               >
                 <div className="relative w-20 h-20 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl overflow-hidden flex-shrink-0">

@@ -1,4 +1,12 @@
 import { categories, faqItems, newsItems, products, technologies } from "../../data"
+import {
+  defaultCapacites,
+  defaultCouleurs,
+  defaultFamilles,
+  defaultGammes,
+  defaultSousFamilles,
+} from "../../lib/taxonomy"
+import { mlFr } from "../../lib/ml"
 import type { CollectionKey } from "./types"
 
 // ---------------------------------------------------------------------------
@@ -231,8 +239,14 @@ export function collectionTemplate(key: CollectionKey): Record<string, unknown> 
       return {
         id: `nouveau-produit-${Date.now()}`,
         name: "",
+        slug: "",
         reference: "",
         category_slug: "",
+        famille: "",
+        sousFamille: "",
+        gamme: "",
+        capacites: [],
+        couleurs: [],
         subcategory: "",
         image: "",
         images: [],
@@ -244,9 +258,11 @@ export function collectionTemplate(key: CollectionKey): Record<string, unknown> 
         noise_level: "",
         dimensions: { w: 0, h: 0, d: 0 },
         description: "",
+        short_description: "",
         features: [],
         color: "",
         is_new: false,
+        is_featured: false,
         stock: 0,
         is_active: true,
       }
@@ -259,6 +275,54 @@ export function collectionTemplate(key: CollectionKey): Record<string, unknown> 
         color: "",
         sort_order: 0,
         subcategories: [],
+        is_active: true,
+      }
+    case "familles":
+      return {
+        slug: "",
+        category_slug: "",
+        name: "",
+        description: "",
+        image: "",
+        sort_order: 0,
+        is_active: true,
+      }
+    case "sousFamilles":
+      return {
+        slug: "",
+        famille_id: "",
+        name: "",
+        description: "",
+        image: "",
+        sort_order: 0,
+        is_active: true,
+      }
+    case "gammes":
+      return {
+        slug: "",
+        sous_famille_id: "",
+        name: "",
+        description: "",
+        image: "",
+        sort_order: 0,
+        is_active: true,
+      }
+    case "capacites":
+      return {
+        slug: "",
+        name: "",
+        value: "",
+        unit: "",
+        sort_order: 0,
+        is_active: true,
+      }
+    case "couleurs":
+      return {
+        slug: "",
+        name: "",
+        hex_code: "",
+        image: "",
+        sort_order: 0,
         is_active: true,
       }
     case "technologies":
@@ -357,6 +421,49 @@ export function defaultCollections(): Record<CollectionKey, unknown[]> {
   return {
     products,
     categories,
+    familles: defaultFamilles.map((f) => ({
+      slug: f.slug,
+      category_slug: f.categorySlug,
+      name: mlFr(f.name),
+      description: "",
+      image: "",
+      sort_order: 0,
+      is_active: true,
+    })),
+    sousFamilles: defaultSousFamilles.map((s) => ({
+      slug: s.slug,
+      famille_id: s.familleSlug,
+      name: mlFr(s.name),
+      description: "",
+      image: "",
+      sort_order: 0,
+      is_active: true,
+    })),
+    gammes: defaultGammes.map((g) => ({
+      slug: g.slug,
+      sous_famille_id: g.sousFamilleSlug,
+      name: mlFr(g.name),
+      description: "",
+      image: "",
+      sort_order: 0,
+      is_active: true,
+    })),
+    capacites: defaultCapacites.map((c) => ({
+      slug: c.slug,
+      name: mlFr(c.name),
+      value: c.value ?? "",
+      unit: c.unit ?? "",
+      sort_order: 0,
+      is_active: true,
+    })),
+    couleurs: defaultCouleurs.map((c) => ({
+      slug: c.slug,
+      name: mlFr(c.name),
+      hex_code: c.hex_code ?? "",
+      image: "",
+      sort_order: 0,
+      is_active: true,
+    })),
     technologies,
     news: newsItems,
     faq: faqItems,

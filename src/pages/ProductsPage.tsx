@@ -1,7 +1,22 @@
 import { useState, useMemo, useEffect } from "react"
-import { Link, useParams } from "react-router-dom"
+import { Link, useParams, useSearchParams } from "react-router-dom"
 import { useTranslation } from "react-i18next"
-import { categories, products } from "../data"
+import {
+  categories,
+  products,
+  familles,
+  sousFamilles,
+  gammes,
+  capacites,
+  couleurs,
+  productFamille,
+  productSousFamille,
+  productGamme,
+  productCapacites,
+  productCouleurs,
+  productUrl,
+  type TaxoValue,
+} from "../data"
 import { ml } from "../lib/ml"
 import CompareButton from "../components/CompareButton"
 import { useCompare } from "../context/CompareContext"
@@ -44,14 +59,53 @@ function EnergyBadge({ cls }: { cls: string }) {
   )
 }
 
+/** Select générique pour un niveau de la hiérarchie (sidebar + tiroir mobile). */
+function TaxoSelect({
+  label,
+  value,
+  onChange,
+  allLabel,
+  options,
+}: {
+  label: string
+  value: string
+  onChange: (v: string) => void
+  allLabel: string
+  options: Array<{ value: string; label: string }>
+}) {
+  return (
+    <div className="border-t border-slate-100 pt-5">
+      <label className="mb-3 block text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400 font-display">
+        {label}
+      </label>
+      <select
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 outline-none focus:border-[var(--color-accent)]"
+      >
+        <option value="">{allLabel}</option>
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>{o.label}</option>
+        ))}
+      </select>
+    </div>
+  )
+}
+
 export default function ProductsPage() {
   const { t, i18n } = useTranslation()
   const { category } = useParams<{ category?: string }>()
+  const [searchParams] = useSearchParams()
   const { ids, max, remove, clear } = useCompare()
 
   const [selectedEnergy, setSelectedEnergy] = useState<string[]>([])
   const [connectedOnly, setConnectedOnly] = useState(false)
-  const [selectedSubcategory, setSelectedSubcategory] = useState("")
+  // Hiérarchie dépendante : Catégorie → Famille → Sous-famille → Gamme (+ Capacité, Couleur)
+  const [selectedFamille, setSelectedFamille] = useState("")
+  const [selectedSousFamille, setSelectedSousFamille] = useState("")
+  const [selectedGamme, setSelectedGamme] = useState("")
+  const [selectedCapacite, setSelectedCapacite] = useState("")
+  const [selectedCouleur, setSelectedCouleur] = useState("")
   const [sortBy, setSortBy] = useState("relevance")
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
@@ -69,19 +123,111 @@ export default function ProductsPage() {
     { value: "newest", label: t("products.sortBy.newest") },
   ]
 
+  // Options dépendantes de la hiérarchie (re-triées à chaque langue)
+  const familleOptions = useMemo(() => {
+    const list = category
+      ? familles.filter((f) => f.categorySlug.toLowerCase() === category.toLowerCase())
+      : [...familles]
+    return [...list].sort((a, b) => ml(a.name).localeCompare(ml(b.name)))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category, i18n.language])
+
+  const sousFamilleOptions = useMemo(() => {
+    const list = selectedFamille
+      ? sousFamilles.filter((s) => s.familleSlug.toLowerCase() === selectedFamille)
+      : category
+        ? sousFamilles.filter((s) =>
+            familleOptions.some((f) => f.slug.toLowerCase() === s.familleSlug.toLowerCase()),
+          )
+        : [...sousFamilles]
+    return [...list].sort((a, b) => ml(a.name).localeCompare(ml(b.name)))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category, selectedFamille, familleOptions, i18n.language])
+
+  const gammeOptions = useMemo(() => {
+    const list = selectedSousFamille
+      ? gammes.filter((g) => g.sousFamilleSlug.toLowerCase() === selectedSousFamille)
+      : selectedFamille || category
+        ? gammes.filter((g) =>
+            sousFamilleOptions.some((s) => s.slug.toLowerCase() === g.sousFamilleSlug.toLowerCase()),
+          )
+        : [...gammes]
+    return [...list].sort((a, b) => ml(a.name).localeCompare(ml(b.name)))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category, selectedFamille, selectedSousFamille, sousFamilleOptions, i18n.language])
+
+  // Produits dans le périmètre hiérarchique (sans capacité/couleur/énergie/connectivité)
+  const scopedProducts = useMemo(
+    () =>
+      products.filter((p) => {
+        if (category && String(p.category ?? "").toLowerCase() !== category.toLowerCase()) return false
+        if (selectedFamille && productFamille(p)?.slug.toLowerCase() !== selectedFamille) return false
+        if (selectedSousFamille && productSousFamille(p)?.slug.toLowerCase() !== selectedSousFamille) return false
+        if (selectedGamme && productGamme(p)?.slug.toLowerCase() !== selectedGamme) return false
+        return true
+      }),
+    [category, selectedFamille, selectedSousFamille, selectedGamme],
+  )
+
+  // Capacités / couleurs réellement présentes dans le périmètre
+  const capaciteOptions: TaxoValue[] = useMemo(() => {
+    const map = new Map<string, TaxoValue>()
+    for (const p of scopedProducts)
+      for (const v of productCapacites(p)) if (!map.has(v.id.toLowerCase())) map.set(v.id.toLowerCase(), v)
+    const known = capacites.filter((c) => map.has(c.slug.toLowerCase()))
+    const extra = [...map.values()].filter((v) => !known.some((c) => c.slug.toLowerCase() === v.id.toLowerCase()))
+    const sortByLabel = (a: TaxoValue, b: TaxoValue) => ml(a.label).localeCompare(ml(b.label))
+    return [
+      ...[...known].sort((a, b) => ml(a.name).localeCompare(ml(b.name))).map((c) => ({ id: c.slug, label: c.name })),
+      ...extra.sort(sortByLabel),
+    ]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scopedProducts, i18n.language])
+
+  const couleurOptions: TaxoValue[] = useMemo(() => {
+    const map = new Map<string, TaxoValue>()
+    for (const p of scopedProducts)
+      for (const v of productCouleurs(p)) if (!map.has(v.id.toLowerCase())) map.set(v.id.toLowerCase(), v)
+    const known = couleurs.filter((c) => map.has(c.slug.toLowerCase()))
+    const extra = [...map.values()].filter((v) => !known.some((c) => c.slug.toLowerCase() === v.id.toLowerCase()))
+    const sortByLabel = (a: TaxoValue, b: TaxoValue) => ml(a.label).localeCompare(ml(b.label))
+    return [
+      ...[...known].sort((a, b) => ml(a.name).localeCompare(ml(b.name))).map((c) => ({ id: c.slug, label: c.name })),
+      ...extra.sort(sortByLabel),
+    ]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scopedProducts, i18n.language])
+
+  const matchCapacite = (p: (typeof products)[number]) => {
+    if (!selectedCapacite) return true
+    const wanted = capaciteOptions.find((o) => o.id.toLowerCase() === selectedCapacite)
+    const wantedLabel = wanted ? ml(wanted.label).toLowerCase() : ""
+    return productCapacites(p).some(
+      (v) => v.id.toLowerCase() === selectedCapacite || (wantedLabel !== "" && ml(v.label).toLowerCase() === wantedLabel),
+    )
+  }
+
+  const matchCouleur = (p: (typeof products)[number]) => {
+    if (!selectedCouleur) return true
+    const wanted = couleurOptions.find((o) => o.id.toLowerCase() === selectedCouleur)
+    const wantedLabel = wanted ? ml(wanted.label).toLowerCase() : ""
+    return productCouleurs(p).some(
+      (v) => v.id.toLowerCase() === selectedCouleur || (wantedLabel !== "" && ml(v.label).toLowerCase() === wantedLabel),
+    )
+  }
+
   const filtered = useMemo(() => {
-    let list = category
-      ? products.filter((p) => String(p.category ?? "").toLowerCase() === String(category ?? "").toLowerCase())
-      : [...products]
+    let list = scopedProducts
     if (selectedEnergy.length > 0)
       list = list.filter((p) => selectedEnergy.includes(p.energyClass))
-    if (selectedSubcategory)
-      list = list.filter((p) => ml(p.subcategory) === selectedSubcategory)
     if (connectedOnly) list = list.filter((p) => p.connectivity)
+    if (selectedCapacite) list = list.filter(matchCapacite)
+    if (selectedCouleur) list = list.filter(matchCouleur)
     if (sortBy === "newest")
       list = list.filter((p) => p.isNew).concat(list.filter((p) => !p.isNew))
     return list
-  }, [category, selectedEnergy, selectedSubcategory, connectedOnly, sortBy])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scopedProducts, selectedEnergy, connectedOnly, selectedCapacite, selectedCouleur, sortBy])
 
   const toggleEnergy = (cls: string) => {
     setSelectedEnergy((prev) =>
@@ -91,16 +237,55 @@ export default function ProductsPage() {
 
   const resetFilters = () => {
     setSelectedEnergy([])
-    setSelectedSubcategory("")
+    setSelectedFamille("")
+    setSelectedSousFamille("")
+    setSelectedGamme("")
+    setSelectedCapacite("")
+    setSelectedCouleur("")
     setConnectedOnly(false)
   }
 
-  const hasFilters = selectedEnergy.length > 0 || Boolean(selectedSubcategory) || connectedOnly
-  const availableSubcategories = currentCategory?.subcategories ?? []
+  const hasFilters =
+    selectedEnergy.length > 0 ||
+    Boolean(selectedFamille) ||
+    Boolean(selectedSousFamille) ||
+    Boolean(selectedGamme) ||
+    Boolean(selectedCapacite) ||
+    Boolean(selectedCouleur) ||
+    connectedOnly
+
+  const taxonomyLabel = (kind: "famille" | "sousFamille" | "gamme" | "capacite" | "couleur", slug: string): string => {
+    const s = slug.toLowerCase()
+    if (kind === "famille") {
+      const f = familles.find((x) => x.slug.toLowerCase() === s)
+      return f ? ml(f.name) : slug
+    }
+    if (kind === "sousFamille") {
+      const x = sousFamilles.find((x) => x.slug.toLowerCase() === s)
+      return x ? ml(x.name) : slug
+    }
+    if (kind === "gamme") {
+      const x = gammes.find((x) => x.slug.toLowerCase() === s)
+      return x ? ml(x.name) : slug
+    }
+    if (kind === "capacite") {
+      const o = capaciteOptions.find((x) => x.id.toLowerCase() === s)
+      return o ? ml(o.label) : slug
+    }
+    const o = couleurOptions.find((x) => x.id.toLowerCase() === s)
+    return o ? ml(o.label) : slug
+  }
 
   useEffect(() => {
-    setSelectedSubcategory("")
-  }, [category, i18n.language])
+    // Valeurs initiales via query (?famille=…&sousFamille=…&gamme=…&capacite=…&couleur=…), ex. depuis le breadcrumb.
+    const q = (k: string) => (searchParams.get(k) ?? "").toLowerCase().trim()
+    setSelectedFamille(q("famille"))
+    setSelectedSousFamille(q("sousFamille"))
+    setSelectedGamme(q("gamme"))
+    setSelectedCapacite(q("capacite"))
+    setSelectedCouleur(q("couleur"))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category, searchParams, i18n.language])
 
   const badgeStyle = (badge: string) =>
     badge === "Nouveau"
@@ -245,24 +430,49 @@ export default function ProductsPage() {
                   ))}
                 </div>
 
-                {availableSubcategories.length > 0 && (
-                  <div className="border-t border-slate-100 pt-5">
-                    <label className="mb-3 block text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400 font-display">
-                      {t("products.filters.subcategory")}
-                    </label>
-                    <select
-                      value={selectedSubcategory}
-                      onChange={(event) => setSelectedSubcategory(event.target.value)}
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 outline-none focus:border-[var(--color-accent)]"
-                    >
-                      <option value="">{t("products.filters.allSubcategories")}</option>
-                      {availableSubcategories.map((item) => {
-                        const label = ml(item)
-                        return <option key={label} value={label}>{label}</option>
-                      })}
-                    </select>
-                  </div>
-                )}
+                {/* Hiérarchie dépendante : Famille → Sous-famille → Gamme */}
+                <TaxoSelect
+                  label={t("products.filters.famille")}
+                  value={selectedFamille}
+                  onChange={(v) => {
+                    setSelectedFamille(v.toLowerCase())
+                    setSelectedSousFamille("")
+                    setSelectedGamme("")
+                  }}
+                  allLabel={t("products.filters.allFamilles")}
+                  options={familleOptions.map((f) => ({ value: f.slug.toLowerCase(), label: ml(f.name) }))}
+                />
+                <TaxoSelect
+                  label={t("products.filters.sousFamille")}
+                  value={selectedSousFamille}
+                  onChange={(v) => {
+                    setSelectedSousFamille(v.toLowerCase())
+                    setSelectedGamme("")
+                  }}
+                  allLabel={t("products.filters.allSousFamilles")}
+                  options={sousFamilleOptions.map((s) => ({ value: s.slug.toLowerCase(), label: ml(s.name) }))}
+                />
+                <TaxoSelect
+                  label={t("products.filters.gamme")}
+                  value={selectedGamme}
+                  onChange={(v) => setSelectedGamme(v.toLowerCase())}
+                  allLabel={t("products.filters.allGammes")}
+                  options={gammeOptions.map((g) => ({ value: g.slug.toLowerCase(), label: ml(g.name) }))}
+                />
+                <TaxoSelect
+                  label={t("products.filters.capacite")}
+                  value={selectedCapacite}
+                  onChange={(v) => setSelectedCapacite(v.toLowerCase())}
+                  allLabel={t("products.filters.allCapacites")}
+                  options={capaciteOptions.map((o) => ({ value: o.id.toLowerCase(), label: ml(o.label) }))}
+                />
+                <TaxoSelect
+                  label={t("products.filters.couleur")}
+                  value={selectedCouleur}
+                  onChange={(v) => setSelectedCouleur(v.toLowerCase())}
+                  allLabel={t("products.filters.allCouleurs")}
+                  options={couleurOptions.map((o) => ({ value: o.id.toLowerCase(), label: ml(o.label) }))}
+                />
 
                 <div className="border-t border-slate-100 pt-5">
                   <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400 font-display">
@@ -331,12 +541,63 @@ export default function ProductsPage() {
                       </svg>
                     </button>
                   ))}
-                  {selectedSubcategory && (
+                  {selectedFamille && (
                     <button
-                      onClick={() => setSelectedSubcategory("")}
+                      onClick={() => {
+                        setSelectedFamille("")
+                        setSelectedSousFamille("")
+                        setSelectedGamme("")
+                      }}
                       className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-[var(--color-primary)] transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600"
                     >
-                      {selectedSubcategory}
+                      {taxonomyLabel("famille", selectedFamille)}
+                      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  )}
+                  {selectedSousFamille && (
+                    <button
+                      onClick={() => {
+                        setSelectedSousFamille("")
+                        setSelectedGamme("")
+                      }}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-[var(--color-primary)] transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+                    >
+                      {taxonomyLabel("sousFamille", selectedSousFamille)}
+                      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  )}
+                  {selectedGamme && (
+                    <button
+                      onClick={() => setSelectedGamme("")}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-[var(--color-primary)] transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+                    >
+                      {taxonomyLabel("gamme", selectedGamme)}
+                      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  )}
+                  {selectedCapacite && (
+                    <button
+                      onClick={() => setSelectedCapacite("")}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-[var(--color-primary)] transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+                    >
+                      {taxonomyLabel("capacite", selectedCapacite)}
+                      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  )}
+                  {selectedCouleur && (
+                    <button
+                      onClick={() => setSelectedCouleur("")}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-[var(--color-primary)] transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+                    >
+                      {taxonomyLabel("couleur", selectedCouleur)}
                       <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                       </svg>
@@ -419,7 +680,7 @@ export default function ProductsPage() {
                 {filtered.map((product) => (
                   <Link
                     key={product.id}
-                    to={`/produits/${product.category}/${product.id}`}
+                    to={productUrl(product)}
                     className="group overflow-hidden rounded-2xl border border-slate-100 bg-white transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-100/50 hover:shadow-2xl hover:shadow-blue-900/12 flex flex-col"
                   >
                     <div className="relative aspect-square overflow-hidden bg-slate-100 flex-shrink-0">
@@ -489,7 +750,7 @@ export default function ProductsPage() {
                 {filtered.map((product) => (
                   <Link
                     key={product.id}
-                    to={`/produits/${product.category}/${product.id}`}
+                    to={productUrl(product)}
                     className="group flex flex-col sm:flex-row gap-5 rounded-2xl border border-slate-100 bg-white p-4 transition-all duration-300 hover:-translate-y-1 hover:border-blue-100/50 hover:shadow-xl hover:shadow-blue-900/12"
                   >
                     <div className="relative h-48 w-full sm:h-36 sm:w-36 flex-shrink-0 overflow-hidden rounded-xl bg-slate-100">
@@ -652,24 +913,50 @@ export default function ProductsPage() {
                   ))}
                 </div>
               </div>
-              {availableSubcategories.length > 0 && (
-                <div className="border-t border-slate-100 pt-6">
-                  <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-slate-400 font-display">
-                    {t("products.filters.subcategory")}
-                  </label>
-                  <select
-                    value={selectedSubcategory}
-                    onChange={(event) => setSelectedSubcategory(event.target.value)}
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 outline-none focus:border-[var(--color-accent)] focus:ring-4 focus:ring-blue-100"
-                  >
-                    <option value="">{t("products.filters.allSubcategories")}</option>
-                    {availableSubcategories.map((item) => {
-                      const label = ml(item)
-                      return <option key={label} value={label}>{label}</option>
-                    })}
-                  </select>
-                </div>
-              )}
+              <div className="border-t border-slate-100 pt-2">
+                <TaxoSelect
+                  label={t("products.filters.famille")}
+                  value={selectedFamille}
+                  onChange={(v) => {
+                    setSelectedFamille(v.toLowerCase())
+                    setSelectedSousFamille("")
+                    setSelectedGamme("")
+                  }}
+                  allLabel={t("products.filters.allFamilles")}
+                  options={familleOptions.map((f) => ({ value: f.slug.toLowerCase(), label: ml(f.name) }))}
+                />
+                <TaxoSelect
+                  label={t("products.filters.sousFamille")}
+                  value={selectedSousFamille}
+                  onChange={(v) => {
+                    setSelectedSousFamille(v.toLowerCase())
+                    setSelectedGamme("")
+                  }}
+                  allLabel={t("products.filters.allSousFamilles")}
+                  options={sousFamilleOptions.map((s) => ({ value: s.slug.toLowerCase(), label: ml(s.name) }))}
+                />
+                <TaxoSelect
+                  label={t("products.filters.gamme")}
+                  value={selectedGamme}
+                  onChange={(v) => setSelectedGamme(v.toLowerCase())}
+                  allLabel={t("products.filters.allGammes")}
+                  options={gammeOptions.map((g) => ({ value: g.slug.toLowerCase(), label: ml(g.name) }))}
+                />
+                <TaxoSelect
+                  label={t("products.filters.capacite")}
+                  value={selectedCapacite}
+                  onChange={(v) => setSelectedCapacite(v.toLowerCase())}
+                  allLabel={t("products.filters.allCapacites")}
+                  options={capaciteOptions.map((o) => ({ value: o.id.toLowerCase(), label: ml(o.label) }))}
+                />
+                <TaxoSelect
+                  label={t("products.filters.couleur")}
+                  value={selectedCouleur}
+                  onChange={(v) => setSelectedCouleur(v.toLowerCase())}
+                  allLabel={t("products.filters.allCouleurs")}
+                  options={couleurOptions.map((o) => ({ value: o.id.toLowerCase(), label: ml(o.label) }))}
+                />
+              </div>
               <div className="border-t border-slate-100 pt-6">
                 <label className="flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
                   <div className="flex items-center gap-3">

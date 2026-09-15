@@ -1,6 +1,11 @@
 export type CollectionKey =
   | "products"
   | "categories"
+  | "familles"
+  | "sousFamilles"
+  | "gammes"
+  | "capacites"
+  | "couleurs"
   | "technologies"
   | "news"
   | "faq"
@@ -33,4 +38,10 @@ export type StructuredEditorProps = {
   disabled?: boolean
   /** Suggestions par clé de champ (slugs, ids technos, sous-catégories...). */
   options?: Record<string, string[]>
+  /** Objet parent (pour les dropdowns dépendants : famille ← catégorie...). */
+  parent?: Record<string, unknown>
+  /** Libellés lisibles des options (slug → nom affiché). */
+  optionLabels?: Record<string, Record<string, string>>
+  /** Cartes enfant → parent par niveau taxonomique (famille, sousFamille, gamme). */
+  taxonomyParents?: Record<string, Record<string, string>>
 }

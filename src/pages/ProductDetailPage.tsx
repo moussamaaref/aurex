@@ -1,7 +1,17 @@
 import { useRef, useState } from "react"
 import { Link, useParams, Navigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
-import { products, categories } from "../data"
+import {
+  products,
+  categories,
+  productFamille,
+  productSousFamille,
+  productGamme,
+  productCapacites,
+  productCouleurs,
+  productUrl,
+  findProduct,
+} from "../data"
 import { ml } from "../lib/ml"
 import CompareButton from "../components/CompareButton"
 
@@ -28,8 +38,8 @@ const hideWhereToBuy = true
 
 export default function ProductDetailPage() {
   const { t } = useTranslation()
-  const { id } = useParams<{ id: string; category: string }>()
-  const product = products.find((p) => p.id === id)
+  const { id, slug } = useParams<{ id?: string; slug?: string }>()
+  const product = findProduct(id ?? slug)
   const [selectedImage, setSelectedImage] = useState(0)
   const galleryRef = useRef<HTMLDivElement>(null)
   const [activeTab, setActiveTab] = useState<"features" | "specs" | "docs">(
@@ -41,9 +51,64 @@ export default function ProductDetailPage() {
 
   const images = product.images ?? [product.image]
   const category = categories.find((c) => String(c.slug ?? "").toLowerCase() === String(product.category ?? "").toLowerCase())
+  // Hiérarchie résolue (champs explicites → fallback historique → legacy)
+  const famille = productFamille(product)
+  const coherentFamille =
+    famille && famille.categorySlug.toLowerCase() === product.category.toLowerCase() ? famille : undefined
+  const sousFamille = productSousFamille(product)
+  const coherentSousFamille =
+    sousFamille && coherentFamille && sousFamille.familleSlug.toLowerCase() === coherentFamille.slug.toLowerCase()
+      ? sousFamille
+      : undefined
+  const gamme = productGamme(product)
+  const coherentGamme =
+    gamme && coherentSousFamille && gamme.sousFamilleSlug.toLowerCase() === coherentSousFamille.slug.toLowerCase()
+      ? gamme
+      : undefined
+  const capacitesList = productCapacites(product)
+  const couleursList = productCouleurs(product)
+  const categoryLabel = category ? ml(category.label) : product.category
+
+  // Produits similaires : même gamme → sous-famille → famille → catégorie
+  const simScore = (p: (typeof products)[number]): number => {
+    if (p.id === product.id) return -1
+    const f = productFamille(p)?.slug.toLowerCase()
+    const sf = productSousFamille(p)?.slug.toLowerCase()
+    const g = productGamme(p)?.slug.toLowerCase()
+    if (coherentGamme && g === coherentGamme.slug.toLowerCase()) return 4
+    if (coherentSousFamille && sf === coherentSousFamille.slug.toLowerCase()) return 3
+    if (coherentFamille && f === coherentFamille.slug.toLowerCase()) return 2
+    if (p.category.toLowerCase() === product.category.toLowerCase()) return 1
+    return 0
+  }
   const related = products
-    .filter((p) => p.category === product.category && p.id !== product.id)
+    .map((p) => ({ p, score: simScore(p) }))
+    .filter((x) => x.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .map((x) => x.p)
     .slice(0, 3)
+
+  // Fil d'Ariane hiérarchique : Accueil > Catégorie > Famille > Sous-famille > Gamme > Produit
+  const crumbs: Array<{ label: string; to?: string }> = [
+    { label: t("products.breadcrumb.home"), to: "/" },
+    { label: t("products.breadcrumb.products"), to: "/produits" },
+    { label: categoryLabel, to: `/produits/${product.category}` },
+  ]
+  if (coherentFamille)
+    crumbs.push({
+      label: ml(coherentFamille.name),
+      to: `/produits/${product.category}?famille=${coherentFamille.slug}`,
+    })
+  if (coherentSousFamille)
+    crumbs.push({
+      label: ml(coherentSousFamille.name),
+      to: `/produits/${product.category}?famille=${coherentFamille?.slug}&sousFamille=${coherentSousFamille.slug}`,
+    })
+  if (coherentGamme)
+    crumbs.push({
+      label: ml(coherentGamme.name),
+      to: `/produits/${product.category}?famille=${coherentFamille?.slug}&sousFamille=${coherentSousFamille?.slug}&gamme=${coherentGamme.slug}`,
+    })
 
   const selectImage = (index: number) => {
     setSelectedImage(index)
@@ -71,24 +136,22 @@ export default function ProductDetailPage() {
             className="flex flex-wrap items-center gap-1.5 text-xs text-slate-400"
             aria-label="Breadcrumb"
           >
-            <Link to="/" className="transition-colors hover:text-[var(--color-primary)]">
-              {t("products.breadcrumb.home")}
-            </Link>
-            <svg className="h-3 w-3 text-slate-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-            </svg>
-            <Link to="/produits" className="transition-colors hover:text-[var(--color-primary)]">
-              {t("products.breadcrumb.products")}
-            </Link>
-            <svg className="h-3 w-3 text-slate-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-            </svg>
-            <Link
-              to={`/produits/${product.category}`}
-              className="transition-colors hover:text-[var(--color-primary)]"
-            >
-              {category ? ml(category.label) : ""}
-            </Link>
+            {crumbs.map((crumb, i) => (
+              <span key={`${crumb.label}-${i}`} className="flex items-center gap-1.5">
+                {i > 0 && (
+                  <svg className="h-3 w-3 text-slate-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                  </svg>
+                )}
+                {crumb.to ? (
+                  <Link to={crumb.to} className="transition-colors hover:text-[var(--color-primary)]">
+                    {crumb.label}
+                  </Link>
+                ) : (
+                  <span>{crumb.label}</span>
+                )}
+              </span>
+            ))}
             <svg className="h-3 w-3 text-slate-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
             </svg>
@@ -213,9 +276,9 @@ export default function ProductDetailPage() {
             {/* Specs rapides */}
             <div className="mt-6 grid grid-cols-2 gap-3">
               {[
-                ml(product.capacity) && {
+                capacitesList.length > 0 && {
                   label: t("productDetail.capacity"),
-                  value: ml(product.capacity),
+                  value: capacitesList.map((v) => ml(v.label)).join(" · "),
                 },
                 {
                   label: t("productDetail.energyClass"),
@@ -229,9 +292,9 @@ export default function ProductDetailPage() {
                   label: t("productDetail.dimensions"),
                   value: `${product.dimensions.w} × ${product.dimensions.h} × ${product.dimensions.d} cm`,
                 },
-                ml(product.color) && {
+                couleursList.length > 0 && {
                   label: t("productDetail.color"),
-                  value: ml(product.color),
+                  value: couleursList.map((v) => ml(v.label)).join(" · "),
                 },
               ]
                 .filter(Boolean)
@@ -349,14 +412,17 @@ export default function ProductDetailPage() {
                   <tbody>
                     {[
                       { label: t("productDetail.specsTable.reference"), value: product.reference },
-                      { label: t("productDetail.specsTable.category"), value: category ? ml(category.label) : "" },
-                      ml(product.capacity) && { label: t("productDetail.specsTable.capacity"), value: ml(product.capacity) },
+                      { label: t("productDetail.specsTable.category"), value: categoryLabel },
+                      coherentFamille && { label: t("productDetail.specsTable.famille"), value: ml(coherentFamille.name) },
+                      coherentSousFamille && { label: t("productDetail.specsTable.sousFamille"), value: ml(coherentSousFamille.name) },
+                      coherentGamme && { label: t("productDetail.specsTable.gamme"), value: ml(coherentGamme.name) },
+                      capacitesList.length > 0 && { label: t("productDetail.specsTable.capacity"), value: capacitesList.map((v) => ml(v.label)).join(", ") },
                       { label: t("productDetail.specsTable.energyClass"), value: product.energyClass },
                       ml(product.noiseLevel) && { label: t("productDetail.specsTable.noiseLevel"), value: ml(product.noiseLevel) },
                       product.dimensions && { label: t("productDetail.specsTable.width"), value: `${product.dimensions.w} cm` },
                       product.dimensions && { label: t("productDetail.specsTable.height"), value: `${product.dimensions.h} cm` },
                       product.dimensions && { label: t("productDetail.specsTable.depth"), value: `${product.dimensions.d} cm` },
-                      ml(product.color) && { label: t("productDetail.specsTable.color"), value: ml(product.color) },
+                      couleursList.length > 0 && { label: t("productDetail.specsTable.color"), value: couleursList.map((v) => ml(v.label)).join(", ") },
                       {
                         label: t("productDetail.specsTable.wifi"),
                         value: product.connectivity
@@ -447,7 +513,7 @@ export default function ProductDetailPage() {
             <div className="mb-7 flex items-end justify-between">
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--color-accent)] font-display">
-              {category ? ml(category.label) : ""}
+              {coherentGamme ? ml(coherentGamme.name) : categoryLabel}
                 </p>
                 <h2 className="mt-1.5 text-2xl font-bold text-[var(--color-primary)] font-display">
                   {t("productDetail.related")}
@@ -469,7 +535,7 @@ export default function ProductDetailPage() {
               {related.map((p) => (
                 <Link
                   key={p.id}
-                  to={`/produits/${p.category}/${p.id}`}
+                  to={productUrl(p)}
                   className="group overflow-hidden rounded-2xl border border-slate-100 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-blue-100 hover:shadow-xl hover:shadow-blue-900/10"
                 >
                   <div className="aspect-video overflow-hidden bg-slate-100">
