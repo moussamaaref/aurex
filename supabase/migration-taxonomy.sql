@@ -337,6 +337,163 @@ alter table public.aurex_collections add constraint aurex_collections_collection
   check (collection_key in ('products','categories','technologies','news','faq','distributors','heroSlides','stats','marquee','campaign','homeSections','smartPage','techPage','newsPage','aboutPage','supportPage','familles','sousFamilles','gammes','capacites','couleurs'));
 
 -- =====================================================================
+-- 9) Catalogue REX (import 2026 — idempotent)
+-- Famille / sous-famille / gamme / capacité / couleur explicites.
+-- La référence '802' existe en deux variantes : la seconde est stockée
+-- '802-2' en id/slug (référence commerciale conservée '802').
+-- =====================================================================
+
+insert into public.sous_familles (slug, famille_slug, name, sort_order) values
+  ('cuisinieres-4-feux', 'cuisinieres', '4 Feux', 4),
+  ('hottes-casquette', 'hottes', 'Casquette', 2),
+  ('hottes-pyramid', 'hottes', 'Pyramide', 3),
+  ('micro-ondes-libre', 'micro-ondes', 'Pose libre', 2),
+  ('cafetieres-multi', 'cafetieres', 'Multi', 3),
+  ('petrins-mono', 'petrins', 'Mono', 2),
+  ('petrins-multi', 'petrins', 'Multi', 3),
+  ('aspirateurs-professionnels', 'aspirateurs', 'Professionnels', 4),
+  ('aspirateurs-poussiere', 'aspirateurs', 'Poussière', 5),
+  ('aspirateurs-bali', 'aspirateurs', 'Bali', 6),
+  ('fontaines-mecanique', 'fontaines-eau', 'Mécanique', 2),
+  ('fontaines-digital', 'fontaines-eau', 'Digitale', 3)
+on conflict (slug) do nothing;
+
+insert into public.gammes (slug, sous_famille_slug, name, sort_order) values
+  ('big', 'fours-pose', 'Big', 1),
+  ('gaz-gaz', 'fours-encastrables', 'Gaz-Gaz', 2),
+  ('elec-gaz-four', 'fours-encastrables', 'Elec-Gaz', 3),
+  ('elec-elec', 'fours-encastrables', 'Elec-Elec', 4),
+  ('elec-gaz-cuisiniere', 'cuisinieres-4-feux', 'Elec-Gaz', 1),
+  ('inox-casquette', 'hottes-casquette', 'Inox', 1),
+  ('glass', 'hottes-decoratives', 'Glass', 1),
+  ('inox-pyramid', 'hottes-pyramid', 'Inox', 1),
+  ('digitale-micro-ondes', 'micro-ondes-libre', 'Digitale', 1),
+  ('mecanique-micro-ondes', 'micro-ondes-libre', 'Mécanique', 2),
+  ('tactile-lave-linge', 'lave-linge-frontal', 'Tactile', 5),
+  ('rotative-lave-linge', 'lave-linge-frontal', 'Rotative', 6),
+  ('digitale-lave-vaisselle', 'lave-vaisselle-pose-libre', 'Digitale', 1),
+  ('poudre-caps', 'cafetieres-multi', 'Poudre + capsules', 1),
+  ('rotative-petrins', 'petrins-mono', 'Rotative', 1),
+  ('digitale-petrins', 'petrins-mono', 'Digitale', 2),
+  ('rotative-petrins-multi', 'petrins-multi', 'Rotative', 1),
+  ('elec', 'cumulus-electrique', 'Elec', 1),
+  ('gaz', 'chauffe-bain-gaz', 'Gaz', 1),
+  ('sans-sac', 'aspirateurs-poussiere', 'Sans sac', 1),
+  ('avec-sac', 'aspirateurs-poussiere', 'Avec sac', 2),
+  ('sans-fil', 'aspirateurs-bali', 'Sans fil', 1),
+  ('mecanique', 'fontaines-mecanique', 'Mécanique', 1),
+  ('digitale', 'fontaines-digital', 'Digitale', 1)
+on conflict (slug) do nothing;
+
+insert into public.capacites (slug, name, value, unit, sort_order) values
+  ('65-l', '65 L', '65', 'L', 14),
+  ('60-l', '60 L', '60', 'L', 15),
+  ('25-l', '25 L', '25', 'L', 16),
+  ('20-l', '20 L', '20', 'L', 17),
+  ('8-l', '8 L', '8', 'L', 18),
+  ('15-couverts', '15 couverts', '15', 'couverts', 19),
+  ('80-l', '80 L', '80', 'L', 20),
+  ('100-l', '100 L', '100', 'L', 21),
+  ('1400-w', '1400 W', '1400', 'W', 22),
+  ('2000-w', '2000 W', '2000', 'W', 23),
+  ('1200-w', '1200 W', '1200', 'W', 24),
+  ('120-w', '120 W', '120', 'W', 25),
+  ('500-w', '500 W', '500', 'W', 26),
+  ('60-cm', '60 cm', '60', 'cm', 27)
+on conflict (slug) do nothing;
+
+insert into public.couleurs (slug, name, hex_code, sort_order) values
+  ('gris-fonce', 'Gris foncé', '#4B5563', 7),
+  ('noir-jaune', 'Noir et jaune', null, 8),
+  ('noir-rouge', 'Noir et rouge', null, 9),
+  ('blanc-noir', 'Blanc et noir', null, 10),
+  ('blanc-gris', 'Blanc et gris', null, 11)
+on conflict (slug) do nothing;
+
+-- Produits REX (colonnes legacy remplies aussi pour compatibilité)
+insert into public.products
+  (id, slug, name, reference, category_slug, famille_id, sous_famille_id, gamme_id,
+   subcategory, capacity, color, image, energy_class, description, is_active)
+values
+  ('rex-mo65', 'rex-mo65', 'Four pose libre Big — 65 L', 'REX-MO65', 'cuisson', 'fours', 'fours-pose', 'big', 'libre', '65 L', 'gris', '', 'A', 'Four pose libre Big — 65 L (réf. REX-MO65).', true),
+  ('rex-gc60gg4-s', 'rex-gc60gg4-s', 'Cuisinière 4 feux Elec-Gaz — 60 L', 'REX-GC60GG4-S', 'cuisson', 'cuisinieres', 'cuisinieres-4-feux', 'elec-gaz-cuisiniere', '4 Feux', '60 L', 'gris', '', 'A', 'Cuisinière 4 feux Elec-Gaz — 60 L (réf. REX-GC60GG4-S).', true),
+  ('rex-gc50gg4-s', 'rex-gc50gg4-s', 'Cuisinière 4 feux Elec-Gaz — 50 L', 'REX-GC50GG4-S', 'cuisson', 'cuisinieres', 'cuisinieres-4-feux', 'elec-gaz-cuisiniere', '4 Feux', '50 L', 'gris', '', 'A', 'Cuisinière 4 feux Elec-Gaz — 50 L (réf. REX-GC50GG4-S).', true),
+  ('rex-ob60gg-gs', 'rex-ob60gg-gs', 'Four encastrable Gaz-Gaz — 60 L', 'REX-OB60GG-GS', 'cuisson', 'fours', 'fours-encastrables', 'gaz-gaz', 'encastrable', '60 L', null, '', 'A', 'Four encastrable Gaz-Gaz — 60 L (réf. REX-OB60GG-GS).', true),
+  ('rex-ob60gg-gl', 'rex-ob60gg-gl', 'Four encastrable Gaz-Gaz — 60 L', 'REX-OB60GG-GL', 'cuisson', 'fours', 'fours-encastrables', 'gaz-gaz', 'encastrable', '60 L', null, '', 'A', 'Four encastrable Gaz-Gaz — 60 L (réf. REX-OB60GG-GL).', true),
+  ('rex-ob60eg-gs', 'rex-ob60eg-gs', 'Four encastrable Elec-Gaz — 60 L', 'REX-OB60EG-GS', 'cuisson', 'fours', 'fours-encastrables', 'elec-gaz-four', 'encastrable', '60 L', null, '', 'A', 'Four encastrable Elec-Gaz — 60 L (réf. REX-OB60EG-GS).', true),
+  ('rex-ob60eg-gg', 'rex-ob60eg-gg', 'Four encastrable Elec-Gaz — 60 L', 'REX-OB60EG-GG', 'cuisson', 'fours', 'fours-encastrables', 'elec-gaz-four', 'encastrable', '60 L', null, '', 'A', 'Four encastrable Elec-Gaz — 60 L (réf. REX-OB60EG-GG).', true),
+  ('rex-ob60fe-gs', 'rex-ob60fe-gs', 'Four encastrable Elec-Elec — 60 L', 'REX-OB60FE-GS', 'cuisson', 'fours', 'fours-encastrables', 'elec-elec', 'encastrable', '60 L', null, '', 'A', 'Four encastrable Elec-Elec — 60 L (réf. REX-OB60FE-GS).', true),
+  ('rex-ob60fe-gl', 'rex-ob60fe-gl', 'Four encastrable Elec-Elec — 60 L', 'REX-OB60FE-GL', 'cuisson', 'fours', 'fours-encastrables', 'elec-elec', 'encastrable', '60 L', null, '', 'A', 'Four encastrable Elec-Elec — 60 L (réf. REX-OB60FE-GL).', true),
+  ('rex-chk60x', 'rex-chk60x', 'Hotte casquette Inox — 60 cm', 'REX-CHK60X', 'cuisson', 'hottes', 'hottes-casquette', 'inox-casquette', 'Casquette', '60 cm', 'gris', '', 'A', 'Hotte casquette Inox — 60 cm (réf. REX-CHK60X).', true),
+  ('rex-chf60bl', 'rex-chf60bl', 'Hotte décorative Glass — 60 cm', 'REX-CHF60BL', 'cuisson', 'hottes', 'hottes-decoratives', 'glass', 'Decorative', '60 cm', 'Noir', '', 'A', 'Hotte décorative Glass — 60 cm (réf. REX-CHF60BL).', true),
+  ('rex-chgs60x', 'rex-chgs60x', 'Hotte pyramide Inox — 60 cm', 'REX-CHGS60X', 'cuisson', 'hottes', 'hottes-pyramid', 'inox-pyramid', 'Pyramid', '60 cm', 'gris', '', 'A', 'Hotte pyramide Inox — 60 cm (réf. REX-CHGS60X).', true),
+  ('rex-chcf60x', 'rex-chcf60x', 'Hotte pyramide Inox — 60 cm', 'REX-CHCF60X', 'cuisson', 'hottes', 'hottes-pyramid', 'inox-pyramid', 'Pyramid', '60 cm', 'gris', '', 'A', 'Hotte pyramide Inox — 60 cm (réf. REX-CHCF60X).', true),
+  ('rex-m30ag9d-bm', 'rex-m30ag9d-bm', 'Micro-ondes pose libre Digitale — 30 L', 'REX-M30AG9D-BM', 'cuisson', 'micro-ondes', 'micro-ondes-libre', 'digitale-micro-ondes', 'libre', '30 L', 'Noir', '', 'A', 'Micro-ondes pose libre Digitale — 30 L (réf. REX-M30AG9D-BM).', true),
+  ('rex-m25ag8d-b', 'rex-m25ag8d-b', 'Micro-ondes pose libre Digitale — 25 L', 'REX-M25AG8D-B', 'cuisson', 'micro-ondes', 'micro-ondes-libre', 'digitale-micro-ondes', 'libre', '25 L', 'Noir', '', 'A', 'Micro-ondes pose libre Digitale — 25 L (réf. REX-M25AG8D-B).', true),
+  ('rex-m20am7d-w', 'rex-m20am7d-w', 'Micro-ondes pose libre Digitale — 20 L', 'REX-M20AM7D-W', 'cuisson', 'micro-ondes', 'micro-ondes-libre', 'digitale-micro-ondes', 'libre', '20 L', 'Blanc', '', 'A', 'Micro-ondes pose libre Digitale — 20 L (réf. REX-M20AM7D-W).', true),
+  ('rex-m20mm7d-w', 'rex-m20mm7d-w', 'Micro-ondes pose libre Mécanique — 20 L', 'REX-M20MM7D-W', 'cuisson', 'micro-ondes', 'micro-ondes-libre', 'mecanique-micro-ondes', 'libre', '20 L', 'Blanc', '', 'A', 'Micro-ondes pose libre Mécanique — 20 L (réf. REX-M20MM7D-W).', true),
+  ('rex-wm10b714ve', 'rex-wm10b714ve', 'Lave-linge frontal Tactile — 10.5 kg', 'REX-WM10B714VE', 'lavage', 'lave-linge', 'lave-linge-frontal', 'tactile-lave-linge', 'Front', '10.5 kg', 'gris fance', '', 'A', 'Lave-linge frontal Tactile — 10.5 kg (réf. REX-WM10B714VE).', true),
+  ('rex-wm10a214ve', 'rex-wm10a214ve', 'Lave-linge frontal Rotative — 10.5 kg', 'REX-WM10A214VE', 'lavage', 'lave-linge', 'lave-linge-frontal', 'rotative-lave-linge', 'Front', '10.5 kg', 'gris fance', '', 'A', 'Lave-linge frontal Rotative — 10.5 kg (réf. REX-WM10A214VE).', true),
+  ('rex-wm12b714ve', 'rex-wm12b714ve', 'Lave-linge frontal Tactile — 12 kg', 'REX-WM12B714VE', 'lavage', 'lave-linge', 'lave-linge-frontal', 'tactile-lave-linge', 'Front', '12 kg', 'gris fance', '', 'A', 'Lave-linge frontal Tactile — 12 kg (réf. REX-WM12B714VE).', true),
+  ('rex-wm12a214ve', 'rex-wm12a214ve', 'Lave-linge frontal Rotative — 12 kg', 'REX-WM12A214VE', 'lavage', 'lave-linge', 'lave-linge-frontal', 'rotative-lave-linge', 'Front', '12 kg', 'gris fance', '', 'A', 'Lave-linge frontal Rotative — 12 kg (réf. REX-WM12A214VE).', true),
+  ('rex-dw15-b', 'rex-dw15-b', 'Lave-vaisselle pose libre Digitale — 15 couverts', 'REX-DW15-B', 'lavage', 'lave-vaisselle', 'lave-vaisselle-pose-libre', 'digitale-lave-vaisselle', 'Pose libre', '15 couverts', 'Blanc', '', 'A', 'Lave-vaisselle pose libre Digitale — 15 couverts (réf. REX-DW15-B).', true),
+  ('rex-dw15-s', 'rex-dw15-s', 'Lave-vaisselle pose libre Digitale — 15 couverts', 'REX-DW15-S', 'lavage', 'lave-vaisselle', 'lave-vaisselle-pose-libre', 'digitale-lave-vaisselle', 'Pose libre', '15 couverts', 'gris', '', 'A', 'Lave-vaisselle pose libre Digitale — 15 couverts (réf. REX-DW15-S).', true),
+  ('rex-cm5386', 'rex-cm5386', 'Cafetière multi Poudre + capsules — Noir', 'REX-CM5386', 'petit-electromenager', 'cafetieres', 'cafetieres-multi', 'poudre-caps', 'multi', null, 'Noir', '', 'A', 'Cafetière multi Poudre + capsules — Noir (réf. REX-CM5386).', true),
+  ('rex-cm5670', 'rex-cm5670', 'Cafetière multi Poudre + capsules — Noir', 'REX-CM5670', 'petit-electromenager', 'cafetieres', 'cafetieres-multi', 'poudre-caps', 'multi', null, 'Noir', '', 'A', 'Cafetière multi Poudre + capsules — Noir (réf. REX-CM5670).', true),
+  ('rex-sm3068', 'rex-sm3068', 'Pétrin mono Rotative — 8 L', 'REX-SM3068', 'petit-electromenager', 'petrins', 'petrins-mono', 'rotative-petrins', 'Mono', '8 L', 'gris', '', 'A', 'Pétrin mono Rotative — 8 L (réf. REX-SM3068).', true),
+  ('rex-sm3068g', 'rex-sm3068g', 'Pétrin mono Digitale — 8 L', 'REX-SM3068G', 'petit-electromenager', 'petrins', 'petrins-mono', 'digitale-petrins', 'Mono', '8 L', 'gris', '', 'A', 'Pétrin mono Digitale — 8 L (réf. REX-SM3068G).', true),
+  ('rex-sm3068a', 'rex-sm3068a', 'Pétrin multi Rotative — 8 L', 'REX-SM3068A', 'petit-electromenager', 'petrins', 'petrins-multi', 'rotative-petrins-multi', 'Multi', '8 L', 'gris', '', 'A', 'Pétrin multi Rotative — 8 L (réf. REX-SM3068A).', true),
+  ('rex-ewh-d30', 'rex-ewh-d30', 'Cumulus électrique Elec — 30 L', 'REX-EWH-D30', 'chauffe-eau', 'cumulus', 'cumulus-electrique', 'elec', 'ELEC', '30 L', 'blanc', '', 'A', 'Cumulus électrique Elec — 30 L (réf. REX-EWH-D30).', true),
+  ('rex-ewh-d50', 'rex-ewh-d50', 'Cumulus électrique Elec — 50 L', 'REX-EWH-D50', 'chauffe-eau', 'cumulus', 'cumulus-electrique', 'elec', 'ELEC', '50 L', 'blanc', '', 'A', 'Cumulus électrique Elec — 50 L (réf. REX-EWH-D50).', true),
+  ('rex-ewh-d85', 'rex-ewh-d85', 'Cumulus électrique Elec — 85 L', 'REX-EWH-D85', 'chauffe-eau', 'cumulus', 'cumulus-electrique', 'elec', 'ELEC', '85 L', 'blanc', '', 'A', 'Cumulus électrique Elec — 85 L (réf. REX-EWH-D85).', true),
+  ('rex-gwh-d30', 'rex-gwh-d30', 'Chauffe-bain gaz — 30 L', 'REX-GWH-D30', 'chauffe-eau', 'chauffe-bain', 'chauffe-bain-gaz', 'gaz', 'GAZ', '30 L', 'blanc', '', 'A', 'Chauffe-bain gaz — 30 L (réf. REX-GWH-D30).', true),
+  ('rex-gwh-d50', 'rex-gwh-d50', 'Chauffe-bain gaz — 50 L', 'REX-GWH-D50', 'chauffe-eau', 'chauffe-bain', 'chauffe-bain-gaz', 'gaz', 'GAZ', '50 L', 'blanc', '', 'A', 'Chauffe-bain gaz — 50 L (réf. REX-GWH-D50).', true),
+  ('tb321-80l', 'tb321-80l', 'Aspirateur professionnel — 80 L', 'TB321-80L', 'entretien-maison', 'aspirateurs', 'aspirateurs-professionnels', null, 'Aspirateur professionnel', '80 L', 'noir et jaune', '', 'A', 'Aspirateur professionnel — 80 L (réf. TB321-80L).', true),
+  ('tb321-100l', 'tb321-100l', 'Aspirateur professionnel — 100 L', 'TB321-100L', 'entretien-maison', 'aspirateurs', 'aspirateurs-professionnels', null, 'Aspirateur professionnel', '100 L', 'noir et jaune', '', 'A', 'Aspirateur professionnel — 100 L (réf. TB321-100L).', true),
+  ('hjw-1601', 'hjw-1601', 'Aspirateur poussière Sans sac — 1400 W', 'HJW-1601', 'entretien-maison', 'aspirateurs', 'aspirateurs-poussiere', 'sans-sac', 'Aspirateur poussière', '1400 W', 'noir et rouge', '', 'A', 'Aspirateur poussière Sans sac — 1400 W (réf. HJW-1601).', true),
+  ('hjx-2202', 'hjx-2202', 'Aspirateur poussière Sans sac — 2000 W', 'HJX-2202', 'entretien-maison', 'aspirateurs', 'aspirateurs-poussiere', 'sans-sac', 'Aspirateur poussière', '2000 W', 'noir et rouge', '', 'A', 'Aspirateur poussière Sans sac — 2000 W (réf. HJX-2202).', true),
+  ('hjw-1703', 'hjw-1703', 'Aspirateur poussière Avec sac — 1200 W', 'HJW-1703', 'entretien-maison', 'aspirateurs', 'aspirateurs-poussiere', 'avec-sac', 'Aspirateur poussière', '1200 W', 'noir et rouge', '', 'A', 'Aspirateur poussière Avec sac — 1200 W (réf. HJW-1703).', true),
+  ('hjc-1903', 'hjc-1903', 'Aspirateur Bali Sans fil — 120 W', 'HJC-1903', 'entretien-maison', 'aspirateurs', 'aspirateurs-bali', 'sans-fil', 'Aspirateur Bali', '120 W', 'noir et rouge', '', 'A', 'Aspirateur Bali Sans fil — 120 W (réf. HJC-1903).', true),
+  ('800', '800', 'Fontaine mécanique — 500 W', '800', 'fontaines', 'fontaines-eau', 'fontaines-mecanique', 'mecanique', 'Mécanique', '500W', 'blanc et noir', '', 'A', 'Fontaine mécanique — 500 W (réf. 800).', true),
+  ('802', '802', 'Fontaine mécanique — 500 W', '802', 'fontaines', 'fontaines-eau', 'fontaines-mecanique', 'mecanique', 'Mécanique', '500W', 'blanc et gris', '', 'A', 'Fontaine mécanique — 500 W (réf. 802).', true),
+  ('802-2', '802-2', 'Fontaine digitale — 500 W', '802-2', 'fontaines', 'fontaines-eau', 'fontaines-digital', 'digitale', 'Digital', '500W', 'gris', '', 'A', 'Fontaine digitale — 500 W (variante digitale de la réf. 802).', true),
+  ('168', '168', 'Fontaine mécanique — 500 W', '168', 'fontaines', 'fontaines-eau', 'fontaines-mecanique', 'mecanique', 'Mécanique', '500W', 'Blanc', '', 'A', 'Fontaine mécanique — 500 W (réf. 168).', true)
+on conflict (id) do nothing;
+
+insert into public.product_capacites (product_id, capacite_slug) values
+  ('rex-mo65', '65-l'), ('rex-gc60gg4-s', '60-l'), ('rex-gc50gg4-s', '50-l'),
+  ('rex-ob60gg-gs', '60-l'), ('rex-ob60gg-gl', '60-l'),
+  ('rex-ob60eg-gs', '60-l'), ('rex-ob60eg-gg', '60-l'),
+  ('rex-ob60fe-gs', '60-l'), ('rex-ob60fe-gl', '60-l'),
+  ('rex-chk60x', '60-cm'), ('rex-chf60bl', '60-cm'), ('rex-chgs60x', '60-cm'), ('rex-chcf60x', '60-cm'),
+  ('rex-m30ag9d-bm', '30-l'), ('rex-m25ag8d-b', '25-l'), ('rex-m20am7d-w', '20-l'), ('rex-m20mm7d-w', '20-l'),
+  ('rex-wm10b714ve', '10-5-kg'), ('rex-wm10a214ve', '10-5-kg'),
+  ('rex-wm12b714ve', '12-kg'), ('rex-wm12a214ve', '12-kg'),
+  ('rex-dw15-b', '15-couverts'), ('rex-dw15-s', '15-couverts'),
+  ('rex-sm3068', '8-l'), ('rex-sm3068g', '8-l'), ('rex-sm3068a', '8-l'),
+  ('rex-ewh-d30', '30-l'), ('rex-ewh-d50', '50-l'), ('rex-ewh-d85', '85-l'),
+  ('rex-gwh-d30', '30-l'), ('rex-gwh-d50', '50-l'),
+  ('tb321-80l', '80-l'), ('tb321-100l', '100-l'),
+  ('hjw-1601', '1400-w'), ('hjx-2202', '2000-w'), ('hjw-1703', '1200-w'), ('hjc-1903', '120-w'),
+  ('800', '500-w'), ('802', '500-w'), ('802-2', '500-w'), ('168', '500-w')
+on conflict do nothing;
+
+insert into public.product_couleurs (product_id, couleur_slug) values
+  ('rex-mo65', 'gris'), ('rex-gc60gg4-s', 'gris'), ('rex-gc50gg4-s', 'gris'),
+  ('rex-chk60x', 'gris'), ('rex-chf60bl', 'noir'), ('rex-chgs60x', 'gris'), ('rex-chcf60x', 'gris'),
+  ('rex-m30ag9d-bm', 'noir'), ('rex-m25ag8d-b', 'noir'), ('rex-m20am7d-w', 'blanc'), ('rex-m20mm7d-w', 'blanc'),
+  ('rex-wm10b714ve', 'gris-fonce'), ('rex-wm10a214ve', 'gris-fonce'),
+  ('rex-wm12b714ve', 'gris-fonce'), ('rex-wm12a214ve', 'gris-fonce'),
+  ('rex-dw15-b', 'blanc'), ('rex-dw15-s', 'gris'),
+  ('rex-cm5386', 'noir'), ('rex-cm5670', 'noir'),
+  ('rex-sm3068', 'gris'), ('rex-sm3068g', 'gris'), ('rex-sm3068a', 'gris'),
+  ('rex-ewh-d30', 'blanc'), ('rex-ewh-d50', 'blanc'), ('rex-ewh-d85', 'blanc'),
+  ('rex-gwh-d30', 'blanc'), ('rex-gwh-d50', 'blanc'),
+  ('tb321-80l', 'noir-jaune'), ('tb321-100l', 'noir-jaune'),
+  ('hjw-1601', 'noir-rouge'), ('hjx-2202', 'noir-rouge'), ('hjw-1703', 'noir-rouge'), ('hjc-1903', 'noir-rouge'),
+  ('800', 'blanc-noir'), ('802', 'blanc-gris'), ('802-2', 'gris'), ('168', 'blanc')
+on conflict do nothing;
+-- =====================================================================
 -- CONTRÔLES
 -- =====================================================================
 -- Aucun produit perdu :

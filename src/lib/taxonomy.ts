@@ -127,6 +127,18 @@ export const defaultSousFamilles: SousFamille[] = [
   { slug: "refrigerateurs-americains", familleSlug: "refrigerateurs", name: L("Américains") },
   { slug: "climatiseurs-split", familleSlug: "climatiseurs", name: L("Split") },
   { slug: "climatiseurs-mobiles", familleSlug: "climatiseurs", name: L("Mobiles") },
+  { slug: "cuisinieres-4-feux", familleSlug: "cuisinieres", name: L("4 Feux") },
+  { slug: "hottes-casquette", familleSlug: "hottes", name: L("Casquette") },
+  { slug: "hottes-pyramid", familleSlug: "hottes", name: L("Pyramide") },
+  { slug: "micro-ondes-libre", familleSlug: "micro-ondes", name: L("Pose libre") },
+  { slug: "cafetieres-multi", familleSlug: "cafetieres", name: L("Multi") },
+  { slug: "petrins-mono", familleSlug: "petrins", name: L("Mono") },
+  { slug: "petrins-multi", familleSlug: "petrins", name: L("Multi") },
+  { slug: "aspirateurs-professionnels", familleSlug: "aspirateurs", name: L("Professionnels") },
+  { slug: "aspirateurs-poussiere", familleSlug: "aspirateurs", name: L("Poussière") },
+  { slug: "aspirateurs-bali", familleSlug: "aspirateurs", name: L("Bali") },
+  { slug: "fontaines-mecanique", familleSlug: "fontaines-eau", name: L("Mécanique") },
+  { slug: "fontaines-digital", familleSlug: "fontaines-eau", name: L("Digitale") },
 ]
 
 export const defaultGammes: Gamme[] = [
@@ -146,6 +158,30 @@ export const defaultGammes: Gamme[] = [
   { slug: "freshcool", sousFamilleSlug: "refrigerateurs-combines", name: L("FreshCool") },
   { slug: "inverter-plus", sousFamilleSlug: "climatiseurs-split", name: L("Inverter+") },
   { slug: "pure-air", sousFamilleSlug: "purificateurs-hepa", name: L("Pure Air") },
+  { slug: "big", sousFamilleSlug: "fours-pose", name: L("Big") },
+  { slug: "gaz-gaz", sousFamilleSlug: "fours-encastrables", name: L("Gaz-Gaz") },
+  { slug: "elec-gaz-four", sousFamilleSlug: "fours-encastrables", name: L("Elec-Gaz") },
+  { slug: "elec-elec", sousFamilleSlug: "fours-encastrables", name: L("Elec-Elec") },
+  { slug: "elec-gaz-cuisiniere", sousFamilleSlug: "cuisinieres-4-feux", name: L("Elec-Gaz") },
+  { slug: "inox-casquette", sousFamilleSlug: "hottes-casquette", name: L("Inox") },
+  { slug: "glass", sousFamilleSlug: "hottes-decoratives", name: L("Glass") },
+  { slug: "inox-pyramid", sousFamilleSlug: "hottes-pyramid", name: L("Inox") },
+  { slug: "digitale-micro-ondes", sousFamilleSlug: "micro-ondes-libre", name: L("Digitale") },
+  { slug: "mecanique-micro-ondes", sousFamilleSlug: "micro-ondes-libre", name: L("Mécanique") },
+  { slug: "tactile-lave-linge", sousFamilleSlug: "lave-linge-frontal", name: L("Tactile") },
+  { slug: "rotative-lave-linge", sousFamilleSlug: "lave-linge-frontal", name: L("Rotative") },
+  { slug: "digitale-lave-vaisselle", sousFamilleSlug: "lave-vaisselle-pose-libre", name: L("Digitale") },
+  { slug: "poudre-caps", sousFamilleSlug: "cafetieres-multi", name: L("Poudre + capsules") },
+  { slug: "rotative-petrins", sousFamilleSlug: "petrins-mono", name: L("Rotative") },
+  { slug: "digitale-petrins", sousFamilleSlug: "petrins-mono", name: L("Digitale") },
+  { slug: "rotative-petrins-multi", sousFamilleSlug: "petrins-multi", name: L("Rotative") },
+  { slug: "elec", sousFamilleSlug: "cumulus-electrique", name: L("Elec") },
+  { slug: "gaz", sousFamilleSlug: "chauffe-bain-gaz", name: L("Gaz") },
+  { slug: "sans-sac", sousFamilleSlug: "aspirateurs-poussiere", name: L("Sans sac") },
+  { slug: "avec-sac", sousFamilleSlug: "aspirateurs-poussiere", name: L("Avec sac") },
+  { slug: "sans-fil", sousFamilleSlug: "aspirateurs-bali", name: L("Sans fil") },
+  { slug: "mecanique", sousFamilleSlug: "fontaines-mecanique", name: L("Mécanique") },
+  { slug: "digitale", sousFamilleSlug: "fontaines-digital", name: L("Digitale") },
 ]
 
 export const defaultCapacites: Capacite[] = [
@@ -162,6 +198,20 @@ export const defaultCapacites: Capacite[] = [
   { slug: "14-couverts", name: L("14 couverts"), value: "14", unit: "couverts" },
   { slug: "24000-btu", name: L("24 000 BTU"), value: "24000", unit: "BTU" },
   { slug: "65-m2", name: L("65 m²"), value: "65", unit: "m²" },
+  { slug: "65-l", name: L("65 L"), value: "65", unit: "L" },
+  { slug: "60-l", name: L("60 L"), value: "60", unit: "L" },
+  { slug: "25-l", name: L("25 L"), value: "25", unit: "L" },
+  { slug: "20-l", name: L("20 L"), value: "20", unit: "L" },
+  { slug: "8-l", name: L("8 L"), value: "8", unit: "L" },
+  { slug: "15-couverts", name: L("15 couverts"), value: "15", unit: "couverts" },
+  { slug: "80-l", name: L("80 L"), value: "80", unit: "L" },
+  { slug: "100-l", name: L("100 L"), value: "100", unit: "L" },
+  { slug: "1400-w", name: L("1400 W"), value: "1400", unit: "W" },
+  { slug: "2000-w", name: L("2000 W"), value: "2000", unit: "W" },
+  { slug: "1200-w", name: L("1200 W"), value: "1200", unit: "W" },
+  { slug: "120-w", name: L("120 W"), value: "120", unit: "W" },
+  { slug: "500-w", name: L("500 W"), value: "500", unit: "W" },
+  { slug: "60-cm", name: L("60 cm"), value: "60", unit: "cm" },
 ]
 
 export const defaultCouleurs: Couleur[] = [
@@ -171,6 +221,11 @@ export const defaultCouleurs: Couleur[] = [
   { slug: "inox", name: L("Inox"), hex_code: "#B8BCC0" },
   { slug: "inox-noir", name: L("Inox/Noir"), hex_code: "#3A3F44" },
   { slug: "gris", name: L("Gris"), hex_code: "#6B7280" },
+  { slug: "gris-fonce", name: L("Gris foncé"), hex_code: "#4B5563" },
+  { slug: "noir-jaune", name: L("Noir et jaune"), hex_code: null },
+  { slug: "noir-rouge", name: L("Noir et rouge"), hex_code: null },
+  { slug: "blanc-noir", name: L("Blanc et noir"), hex_code: null },
+  { slug: "blanc-gris", name: L("Blanc et gris"), hex_code: null },
 ]
 
 /** Correspondance taxonomique des produits historiques (avant saisie back-office). */
@@ -326,14 +381,14 @@ export function productPath(
   return `/produits/${categorySlug || "autres"}/${p.id ?? slug}`
 }
 
-/** Validation produit (back-office) : retourne la liste des erreurs FR. */
+/** Validation produit (back-office) : retourne la liste des erreurs FR.
+ *  Gamme non bloquante (données réelles parfois sans gamme) : le front masque le niveau absent. */
 export function validateProductTaxonomy(p: Record<string, unknown>): string[] {
   const errors: string[] = []
   const str = (v: unknown) => String(v ?? "").trim()
   if (!str(p.category ?? p.category_slug)) errors.push("Catégorie obligatoire")
   if (!str(p.famille)) errors.push("Famille obligatoire")
   if (!str(p.sousFamille ?? p.sous_famille)) errors.push("Sous-famille obligatoire")
-  if (!str(p.gamme)) errors.push("Gamme obligatoire")
   if (!str(p.name)) errors.push("Nom obligatoire")
   if (!str(p.reference)) errors.push("Référence obligatoire")
   return errors
