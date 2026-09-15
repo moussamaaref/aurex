@@ -1562,12 +1562,10 @@ function normalizeTaxonomy<T extends { slug: string }>(value: unknown, fallback:
     .map((item) => {
       const raw = { ...(item as unknown as Record<string, unknown>) }
       raw.slug = String(raw.slug ?? "").toLowerCase().trim()
-      if ("categorySlug" in raw || "category_slug" in raw || "category_id" in raw)
-        raw.categorySlug = String(pick(raw, "categorySlug", "category_slug", "category_id") ?? "").toLowerCase().trim()
-      if ("familleSlug" in raw || "famille_id" in raw)
-        raw.familleSlug = String(pick(raw, "familleSlug", "famille_id") ?? "").toLowerCase().trim()
-      if ("sousFamilleSlug" in raw || "sous_famille" in raw || "sous_famille_id" in raw)
-        raw.sousFamilleSlug = String(pick(raw, "sousFamilleSlug", "sous_famille", "sous_famille_id") ?? "").toLowerCase().trim()
+      // Clés parentes toujours définies ("" si absentes) pour des comparaisons sûres.
+      raw.categorySlug = String(pick(raw, "categorySlug", "category_slug", "category_id") ?? "").toLowerCase().trim()
+      raw.familleSlug = String(pick(raw, "familleSlug", "famille_id") ?? "").toLowerCase().trim()
+      raw.sousFamilleSlug = String(pick(raw, "sousFamilleSlug", "sous_famille", "sous_famille_id") ?? "").toLowerCase().trim()
       return raw as unknown as T
     })
     .filter((item) => Boolean(item.slug))

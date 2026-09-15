@@ -259,12 +259,12 @@ function matchEntry<T extends { slug: string; name: Localized }>(list: T[], raw:
   if (!raw) return undefined
   if (typeof raw === "string") {
     const s = raw.toLowerCase().trim()
-    return list.find((e) => e.slug.toLowerCase() === s)
+    return list.find((e) => String(e.slug ?? "").toLowerCase() === s)
   }
   if (typeof raw === "object") {
     const l = ml(raw as Localized).toLowerCase().trim()
     const s = slugify(l)
-    return list.find((e) => e.slug.toLowerCase() === s || ml(e.name).toLowerCase().trim() === l)
+    return list.find((e) => String(e.slug ?? "").toLowerCase() === s || ml(e.name).toLowerCase().trim() === l)
   }
   return undefined
 }
@@ -274,7 +274,7 @@ function legacySubMatch<T extends { slug: string; name: Localized }>(list: T[], 
   if (!sub) return undefined
   const l = sub.toLowerCase()
   const s = slugify(sub)
-  return list.find((e) => e.slug.toLowerCase() === s || ml(e.name).toLowerCase().trim() === l)
+  return list.find((e) => String(e.slug ?? "").toLowerCase() === s || ml(e.name).toLowerCase().trim() === l)
 }
 
 export function resolveFamille<T extends Famille>(p: LegacyProduct, familles: T[]): T | undefined {
@@ -304,7 +304,7 @@ function toTaxoValues(ids: string[], list: Array<{ slug: string; name: Localized
   return ids
     .map((id) => {
       const s = String(id).toLowerCase().trim()
-      const found = list.find((e) => e.slug.toLowerCase() === s)
+      const found = list.find((e) => String(e.slug ?? "").toLowerCase() === s)
       if (found) return { id: found.slug, label: found.name }
       return null
     })

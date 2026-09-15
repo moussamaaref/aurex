@@ -63,8 +63,8 @@ export default function Header() {
 
   // Recherche live : nom, référence, sous-catégorie, catégorie (insensible aux accents)
   const searchResults = useMemo(() => {
-    const norm = (value: string) =>
-      value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    const norm = (value: unknown) =>
+      String(value ?? "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     const q = norm(searchQuery.trim())
     if (q.length < 2) return []
     return products

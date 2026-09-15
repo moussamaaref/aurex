@@ -126,7 +126,7 @@ export default function ProductsPage() {
   // Options dépendantes de la hiérarchie (re-triées à chaque langue)
   const familleOptions = useMemo(() => {
     const list = category
-      ? familles.filter((f) => f.categorySlug.toLowerCase() === category.toLowerCase())
+      ? familles.filter((f) => String(f.categorySlug ?? "").toLowerCase() === category.toLowerCase())
       : [...familles]
     return [...list].sort((a, b) => ml(a.name).localeCompare(ml(b.name)))
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -134,10 +134,10 @@ export default function ProductsPage() {
 
   const sousFamilleOptions = useMemo(() => {
     const list = selectedFamille
-      ? sousFamilles.filter((s) => s.familleSlug.toLowerCase() === selectedFamille)
+      ? sousFamilles.filter((s) => String(s.familleSlug ?? "").toLowerCase() === selectedFamille)
       : category
         ? sousFamilles.filter((s) =>
-            familleOptions.some((f) => f.slug.toLowerCase() === s.familleSlug.toLowerCase()),
+            familleOptions.some((f) => String(f.slug ?? "").toLowerCase() === String(s.familleSlug ?? "").toLowerCase()),
           )
         : [...sousFamilles]
     return [...list].sort((a, b) => ml(a.name).localeCompare(ml(b.name)))
@@ -146,10 +146,10 @@ export default function ProductsPage() {
 
   const gammeOptions = useMemo(() => {
     const list = selectedSousFamille
-      ? gammes.filter((g) => g.sousFamilleSlug.toLowerCase() === selectedSousFamille)
+      ? gammes.filter((g) => String(g.sousFamilleSlug ?? "").toLowerCase() === selectedSousFamille)
       : selectedFamille || category
         ? gammes.filter((g) =>
-            sousFamilleOptions.some((s) => s.slug.toLowerCase() === g.sousFamilleSlug.toLowerCase()),
+            sousFamilleOptions.some((s) => String(s.slug ?? "").toLowerCase() === String(g.sousFamilleSlug ?? "").toLowerCase()),
           )
         : [...gammes]
     return [...list].sort((a, b) => ml(a.name).localeCompare(ml(b.name)))
@@ -161,9 +161,9 @@ export default function ProductsPage() {
     () =>
       products.filter((p) => {
         if (category && String(p.category ?? "").toLowerCase() !== category.toLowerCase()) return false
-        if (selectedFamille && productFamille(p)?.slug.toLowerCase() !== selectedFamille) return false
-        if (selectedSousFamille && productSousFamille(p)?.slug.toLowerCase() !== selectedSousFamille) return false
-        if (selectedGamme && productGamme(p)?.slug.toLowerCase() !== selectedGamme) return false
+        if (selectedFamille && String(productFamille(p)?.slug ?? "") !== selectedFamille) return false
+        if (selectedSousFamille && String(productSousFamille(p)?.slug ?? "") !== selectedSousFamille) return false
+        if (selectedGamme && String(productGamme(p)?.slug ?? "") !== selectedGamme) return false
         return true
       }),
     [category, selectedFamille, selectedSousFamille, selectedGamme],

@@ -54,15 +54,22 @@ export default function ProductDetailPage() {
   // Hiérarchie résolue (champs explicites → fallback historique → legacy)
   const famille = productFamille(product)
   const coherentFamille =
-    famille && famille.categorySlug.toLowerCase() === product.category.toLowerCase() ? famille : undefined
+    famille && String(famille.categorySlug ?? "").toLowerCase() === String(product.category ?? "").toLowerCase()
+      ? famille
+      : undefined
   const sousFamille = productSousFamille(product)
   const coherentSousFamille =
-    sousFamille && coherentFamille && sousFamille.familleSlug.toLowerCase() === coherentFamille.slug.toLowerCase()
+    sousFamille &&
+    coherentFamille &&
+    String(sousFamille.familleSlug ?? "").toLowerCase() === String(coherentFamille.slug ?? "").toLowerCase()
       ? sousFamille
       : undefined
   const gamme = productGamme(product)
   const coherentGamme =
-    gamme && coherentSousFamille && gamme.sousFamilleSlug.toLowerCase() === coherentSousFamille.slug.toLowerCase()
+    gamme &&
+    coherentSousFamille &&
+    String(gamme.sousFamilleSlug ?? "").toLowerCase() ===
+      String(coherentSousFamille.slug ?? "").toLowerCase()
       ? gamme
       : undefined
   const capacitesList = productCapacites(product)
@@ -72,13 +79,13 @@ export default function ProductDetailPage() {
   // Produits similaires : même gamme → sous-famille → famille → catégorie
   const simScore = (p: (typeof products)[number]): number => {
     if (p.id === product.id) return -1
-    const f = productFamille(p)?.slug.toLowerCase()
-    const sf = productSousFamille(p)?.slug.toLowerCase()
-    const g = productGamme(p)?.slug.toLowerCase()
-    if (coherentGamme && g === coherentGamme.slug.toLowerCase()) return 4
-    if (coherentSousFamille && sf === coherentSousFamille.slug.toLowerCase()) return 3
-    if (coherentFamille && f === coherentFamille.slug.toLowerCase()) return 2
-    if (p.category.toLowerCase() === product.category.toLowerCase()) return 1
+    const f = String(productFamille(p)?.slug ?? "").toLowerCase()
+    const sf = String(productSousFamille(p)?.slug ?? "").toLowerCase()
+    const g = String(productGamme(p)?.slug ?? "").toLowerCase()
+    if (coherentGamme && g === String(coherentGamme.slug ?? "").toLowerCase()) return 4
+    if (coherentSousFamille && sf === String(coherentSousFamille.slug ?? "").toLowerCase()) return 3
+    if (coherentFamille && f === String(coherentFamille.slug ?? "").toLowerCase()) return 2
+    if (String(p.category ?? "").toLowerCase() === String(product.category ?? "").toLowerCase()) return 1
     return 0
   }
   const related = products
