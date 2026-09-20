@@ -15,6 +15,7 @@ import {
 } from "../data"
 import { ml } from "../lib/ml"
 import { useCompare } from "../context/CompareContext"
+import Reveal from "../components/Reveal"
 
 function EnergyBadge({ cls }: { cls: string }) {
   const color =
@@ -583,7 +584,8 @@ export default function ComparePage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 sm:py-8">
-        <div className="flex flex-wrap items-center gap-2.5 mb-5 sm:mb-6 no-print bg-white rounded-[28px] border border-[#d6d6d6] shadow-sm px-3 py-3 sm:px-4">
+        <Reveal>
+        <div className="flex flex-wrap items-center gap-2.5 mb-5 sm:mb-6 no-print bg-white rounded-[28px] border border-[#d6d6d6] px-3 py-3 sm:px-4">
           <button
             type="button"
             onClick={copyLink}
@@ -719,6 +721,7 @@ export default function ComparePage() {
             {t("comparator.actions.clear")}
           </button>
         </div>
+        </Reveal>
 
         {categorySet.size > 1 && (
           <div
@@ -871,6 +874,7 @@ export default function ComparePage() {
           )}
         </div>
 
+        <Reveal>
         <div className="hidden md:block bg-white rounded-[28px] border border-[#d6d6d6] overflow-hidden shadow-sm">
           <div className="overflow-x-auto overscroll-x-contain">
             <table className="w-full min-w-[860px] text-sm font-sans border-collapse">
@@ -1075,8 +1079,10 @@ export default function ComparePage() {
             </table>
           </div>
         </div>
+        </Reveal>
 
         {recommendation && (
+          <Reveal>
           <section className="mt-8 relative overflow-hidden rounded-[28px] bg-[#1d1d1f] p-5 sm:p-8">
             {/* Décors */}
             <div className="absolute top-0 right-0 w-56 h-56 rounded-full bg-[#0071e3]/20 blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
@@ -1121,6 +1127,7 @@ export default function ComparePage() {
               </Link>
             </div>
           </section>
+          </Reveal>
         )}
 
         <div

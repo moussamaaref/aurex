@@ -5,6 +5,7 @@ import { technologies, products, productUrl } from "../data"
 import { loadRemoteCollection } from "../lib/contentStore"
 import { ml, mlFr } from "../lib/ml"
 import { tx } from "../lib/langText"
+import Reveal from "../components/Reveal"
 
 function ArrowIcon({ className = "w-4 h-4" }: { className?: string }) {
   return (
@@ -171,13 +172,13 @@ export default function TechnologiesPage() {
       {/* ═══════════ GRILLE TECHS ═══════════ */}
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((tech) => {
+          {filtered.map((tech, ti) => {
             const open = activeTech === tech.id
             return (
+              <Reveal key={tech.id} delay={Math.min(ti, 5) * 60} className="h-full">
               <button
-                key={tech.id}
                 onClick={() => setActiveTech(open ? null : tech.id)}
-                className={`group text-left rounded-[28px] overflow-hidden border transition-all duration-300 bg-white ${
+                className={`group text-left rounded-[28px] overflow-hidden border transition-all duration-300 bg-white h-full w-full ${
                   open
                     ? "border-[#0071e3] shadow-xl shadow-[#0071e3]/15 ring-2 ring-[#0071e3]/20"
                     : "border-[#d6d6d6] hover:shadow-xl hover:shadow-[#1d1d1f]/10 hover:border-[#0071e3]/30 hover:-translate-y-1.5"
@@ -274,6 +275,7 @@ export default function TechnologiesPage() {
                   </div>
                 </div>
               </button>
+              </Reveal>
             )
           })}
         </div>
@@ -282,6 +284,7 @@ export default function TechnologiesPage() {
       {/* ═══════════ CTA ═══════════ */}
       <section className="py-20 bg-[#f5f5f7]">
         <div className="max-w-7xl mx-auto px-6">
+          <Reveal>
           <div className="relative rounded-[28px] bg-[#1d1d1f] p-12 lg:p-16 text-center overflow-hidden">
             <div
               className="absolute inset-0 opacity-[0.05]"
@@ -307,6 +310,7 @@ export default function TechnologiesPage() {
               </Link>
             </div>
           </div>
+          </Reveal>
         </div>
       </section>
     </div>

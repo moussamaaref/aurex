@@ -14,6 +14,7 @@ import {
 } from "../data"
 import { ml } from "../lib/ml"
 import CompareButton from "../components/CompareButton"
+import Reveal from "../components/Reveal"
 
 function EnergyBadge({ cls }: { cls: string }) {
   const color =
@@ -170,6 +171,7 @@ export default function ProductDetailPage() {
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
           {/* ══ Galerie ══ */}
+          <Reveal variant="left">
           <div className="space-y-4">
             <div
               className={`overflow-hidden bg-white shadow-sm ${
@@ -256,8 +258,10 @@ export default function ProductDetailPage() {
               </div>
             )}
           </div>
+          </Reveal>
 
           {/* ══ Fiche ══ */}
+          <Reveal variant="right" delay={120}>
           <div>
             <div className="mb-4 flex flex-wrap items-center gap-2">
               <EnergyBadge cls={product.energyClass} />
@@ -371,9 +375,11 @@ export default function ProductDetailPage() {
               </Link>
             </div>
           </div>
+          </Reveal>
         </div>
 
         {/* ══ Onglets ══ */}
+        <Reveal>
         <div className="mt-16 rounded-[28px] border border-[#d6d6d6] bg-white shadow-sm">
           <div className="flex overflow-x-auto border-b border-[#d6d6d6] px-4 sm:px-6">
             {[
@@ -513,6 +519,7 @@ export default function ProductDetailPage() {
             )}
           </div>
         </div>
+        </Reveal>
 
         {/* ══ Produits similaires ══ */}
         {related.length > 0 && (
@@ -539,11 +546,11 @@ export default function ProductDetailPage() {
               )}
             </div>
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
-              {related.map((p) => (
+              {related.map((p, ri) => (
+                <Reveal key={p.id} delay={Math.min(ri, 2) * 80} className="h-full">
                 <Link
-                  key={p.id}
                   to={productUrl(p)}
-                  className="group overflow-hidden rounded-[28px] border border-[#d6d6d6] bg-white transition-all duration-300 hover:-translate-y-1 hover:border-[#d6d6d6] hover:shadow-xl hover:shadow-blue-900/10"
+                  className="group overflow-hidden rounded-[28px] border border-[#d6d6d6] bg-white transition-all duration-300 hover:-translate-y-1 hover:border-[#d6d6d6] hover:shadow-xl hover:shadow-blue-900/10 h-full block"
                 >
                   <div className="aspect-video overflow-hidden bg-white">
                     <img
@@ -559,6 +566,7 @@ export default function ProductDetailPage() {
                     </h3>
                   </div>
                 </Link>
+                </Reveal>
               ))}
             </div>
           </div>

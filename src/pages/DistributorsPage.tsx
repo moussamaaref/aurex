@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { ml, mlFr } from "../lib/ml"
+import Reveal from "../components/Reveal"
 import L from "leaflet"
 
 interface Distributor {
@@ -428,8 +429,8 @@ export default function DistributorsPage() {
                     filtered.map((distributor) => {
                       const isActive = selected === distributor
                       return (
+                        <Reveal key={distributor.id}>
                         <button
-                          key={distributor.id}
                           type="button"
                           onClick={() => handleSelect(distributor)}
                           className={`group w-full rounded-[10px] border p-3.5 text-start transition-all ${
@@ -454,6 +455,7 @@ export default function DistributorsPage() {
                             {ml(distributor.commune)}, {ml(distributor.wilaya)}
                           </span>
                         </button>
+                        </Reveal>
                       )
                     })
                   )}

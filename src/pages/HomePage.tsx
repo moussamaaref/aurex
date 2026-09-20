@@ -5,6 +5,7 @@ import { categories, products, technologies, newsItems, productUrl } from "../da
 import { loadRemoteCollection } from "../lib/contentStore"
 import { ml, mlFr, type Localized } from "../lib/ml"
 import { tx } from "../lib/langText"
+import Reveal from "../components/Reveal"
 
 /* ─────────────────────────────────────────────
    CSS à ajouter dans index.css (si absent) :
@@ -225,7 +226,7 @@ function ProductCard({ product, index = 0 }: { product: (typeof products)[0]; in
   return (
     <Link
       to={productUrl(product)}
-      className="group bg-white rounded-[28px] border border-[#d6d6d6] overflow-hidden hover:shadow-2xl hover:shadow-[var(--color-primary)]/10 hover:-translate-y-1.5 hover:border-[#d6d6d6] transition-all duration-300 flex flex-col"
+      className="group bg-white rounded-[28px] border border-[#d6d6d6] overflow-hidden hover:shadow-2xl hover:shadow-[var(--color-primary)]/10 hover:-translate-y-1.5 hover:border-[#d6d6d6] transition-all duration-300 flex flex-col h-full"
       style={{ animationDelay: `${index * 80}ms` }}
     >
       <div className="relative bg-gradient-to-br from-gray-50 to-gray-100 aspect-square overflow-hidden">
@@ -726,30 +727,32 @@ export default function HomePage() {
       {/* ═══════════ CATEGORIES ═══════════ */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-end justify-between mb-12">
-            <div>
-              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0066cc]" style={{ fontFamily: "var(--font-display)" }}>
-                {tx(sec.categoriesEyebrow, t("home.categories.subtitle"))}
-              </span>
-              <h2 className="text-4xl font-bold text-[var(--color-primary)] mt-2" style={{ fontFamily: "var(--font-display)" }}>
-                {tx(sec.categoriesTitle, t("home.categories.title"))}
-              </h2>
+          <Reveal>
+            <div className="flex items-end justify-between mb-12">
+              <div>
+                <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0066cc]" style={{ fontFamily: "var(--font-display)" }}>
+                  {tx(sec.categoriesEyebrow, t("home.categories.subtitle"))}
+                </span>
+                <h2 className="text-4xl font-bold text-[var(--color-primary)] mt-2" style={{ fontFamily: "var(--font-display)" }}>
+                  {tx(sec.categoriesTitle, t("home.categories.title"))}
+                </h2>
+              </div>
+              <Link
+                to="/produits"
+                className="text-sm text-[#0066cc] hover:text-[var(--color-primary)] font-medium transition-colors hidden md:flex items-center gap-1.5 group font-sans"
+              >
+                {t("common.seeAll")}
+                <ArrowIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              </Link>
             </div>
-            <Link
-              to="/produits"
-              className="text-sm text-[#0066cc] hover:text-[var(--color-primary)] font-medium transition-colors hidden md:flex items-center gap-1.5 group font-sans"
-            >
-              {t("common.seeAll")}
-              <ArrowIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-            </Link>
-          </div>
+          </Reveal>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {categories.map((cat) => (
+            {categories.map((cat, ci) => (
+              <Reveal key={cat.slug} delay={Math.min(ci, 5) * 70} className="h-full">
               <Link
-                key={cat.slug}
                 to={`/produits/${cat.slug}`}
-                className="group relative rounded-[28px] overflow-hidden bg-white aspect-[3/4] shadow-sm hover:shadow-xl hover:shadow-[var(--color-primary)]/15 hover:-translate-y-1.5 transition-all duration-300"
+                className="group relative rounded-[28px] overflow-hidden bg-white aspect-[3/4] shadow-sm hover:shadow-xl hover:shadow-[var(--color-primary)]/15 hover:-translate-y-1.5 transition-all duration-300 h-full block"
               >
                 <img
                   src={cat.image}
@@ -772,6 +775,7 @@ export default function HomePage() {
                   </svg>
                 </div>
               </Link>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -781,6 +785,7 @@ export default function HomePage() {
       <section className="bg-[#F5F8FD] py-20">
         <div className="mx-auto max-w-7xl px-6">
           <div className="max-w-4xl">
+            <Reveal>
             <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#0066cc]">
               {tx(sec.lineupEyebrow, t("products.lineup.eyebrow"))}
             </p>
@@ -790,6 +795,7 @@ export default function HomePage() {
             >
               {tx(sec.lineupTitle, t("products.lineup.title"))}
             </h2>
+            </Reveal>
             <p className="mt-4 text-sm leading-relaxed text-[#333336]">
               {tx(sec.lineupIntro, t("products.lineup.intro"))}
             </p>
@@ -845,7 +851,9 @@ export default function HomePage() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {products.slice(0, 4).map((p, i) => (
-            <ProductCard key={p.id} product={p} index={i} />
+            <Reveal key={p.id} delay={Math.min(i, 3) * 80} className="h-full">
+              <ProductCard product={p} index={i} />
+            </Reveal>
           ))}
         </div>
       </section>
@@ -865,6 +873,7 @@ export default function HomePage() {
           }}
         />
         <div className="relative max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <Reveal variant="left">
           <div>
             <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0066cc]" style={{ fontFamily: "var(--font-display)" }}>
               {sec.smartEyebrow || "AUREX SmartConnect"}
@@ -910,6 +919,7 @@ export default function HomePage() {
               <ArrowIcon className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
             </Link>
           </div>
+          </Reveal>
 
           <div className="relative">
             <img
@@ -940,6 +950,7 @@ export default function HomePage() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-end justify-between mb-12">
+            <Reveal>
             <div>
               <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0066cc]" style={{ fontFamily: "var(--font-display)" }}>
                 {tx(sec.techSubtitle, t("home.technologies.subtitle"))}
@@ -948,6 +959,7 @@ export default function HomePage() {
                 {tx(sec.techTitle, t("home.technologies.title"))}
               </h2>
             </div>
+            </Reveal>
             <Link
               to="/technologies"
               className="text-sm text-[#0066cc] hover:text-[var(--color-primary)] font-medium transition-colors hidden md:flex items-center gap-1.5 group font-sans"
@@ -958,11 +970,11 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {technologies.slice(0, 3).map((tech) => (
+            {technologies.slice(0, 3).map((tech, ti) => (
+              <Reveal key={tech.id} delay={Math.min(ti, 2) * 80} className="h-full">
               <Link
-                key={tech.id}
                 to="/technologies"
-                className="group relative rounded-[28px] overflow-hidden bg-black aspect-video shadow-md hover:shadow-2xl hover:shadow-[var(--color-primary)]/20 hover:-translate-y-1 transition-all duration-300"
+                className="group relative rounded-[28px] overflow-hidden bg-black aspect-video shadow-md hover:shadow-2xl hover:shadow-[var(--color-primary)]/20 hover:-translate-y-1 transition-all duration-300 h-full block"
               >
                 <img
                   src={tech.image}
@@ -987,6 +999,7 @@ export default function HomePage() {
                   </div>
                 </div>
               </Link>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -996,6 +1009,7 @@ export default function HomePage() {
       <section className="py-20 bg-[#f5f5f7]">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-end justify-between mb-12">
+            <Reveal>
             <div>
               <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0066cc]" style={{ fontFamily: "var(--font-display)" }}>
                 {tx(sec.newsSubtitle, t("home.news.subtitle"))}
@@ -1004,6 +1018,7 @@ export default function HomePage() {
                 {tx(sec.newsTitle, t("home.news.title"))}
               </h2>
             </div>
+            </Reveal>
             <Link
               to="/actualites"
               className="text-sm text-[#0066cc] hover:text-[var(--color-primary)] font-medium transition-colors hidden md:flex items-center gap-1.5 group font-sans"
@@ -1014,10 +1029,10 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {newsItems.map((news) => (
+            {newsItems.map((news, ni) => (
+              <Reveal key={news.id} delay={Math.min(ni, 2) * 80} className="h-full">
               <article
-                key={news.id}
-                className="group bg-white rounded-[28px] overflow-hidden border border-[#d6d6d6] hover:shadow-xl hover:shadow-[var(--color-primary)]/10 hover:-translate-y-1 hover:border-[#d6d6d6] transition-all duration-300"
+                className="group bg-white rounded-[28px] overflow-hidden border border-[#d6d6d6] hover:shadow-xl hover:shadow-[var(--color-primary)]/10 hover:-translate-y-1 hover:border-[#d6d6d6] transition-all duration-300 h-full"
               >
                 <div className="relative overflow-hidden aspect-video">
                   <img
@@ -1032,7 +1047,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="p-5">
-                  <time className="text-xs text-[#707070] font-sans">{news.date}</time>
+                  <time className="text-xs text-[#707070] font-sans">{ml(news.date)}</time>
                   <h3 className="text-sm font-semibold text-[#1d1d1f] mt-2 leading-snug group-hover:text-[var(--color-primary)] transition-colors font-sans line-clamp-2">
                     {ml(news.title)}
                   </h3>
@@ -1045,6 +1060,7 @@ export default function HomePage() {
                   </span>
                 </div>
               </article>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -1054,8 +1070,9 @@ export default function HomePage() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="rounded-[28px] bg-white border border-[#d6d6d6] p-10 lg:p-16 relative overflow-hidden">
-            <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div>
+              <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <Reveal variant="left">
+                <div>
                 <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0066cc]" style={{ fontFamily: "var(--font-display)" }}>
                   {tx(sec.supportSubtitle, t("home.support.subtitle"))}
                 </span>
@@ -1082,6 +1099,7 @@ export default function HomePage() {
                   </Link>
                 </div>
               </div>
+              </Reveal>
 
               <div className="grid grid-cols-2 gap-4">
                 {[
@@ -1089,11 +1107,11 @@ export default function HomePage() {
                   { icon: "🔧", title: sec.supportFeatAssistanceTitle, desc: sec.supportFeatAssistanceDesc, titleKey: "home.support.features.assistance.title", descKey: "home.support.features.assistance.desc", href: "/support" },
                   { icon: "⚙️", title: sec.supportFeatPartsTitle, desc: sec.supportFeatPartsDesc, titleKey: "home.support.features.parts.title", descKey: "home.support.features.parts.desc", href: "/support#pieces" },
                   { icon: "❓", title: sec.supportFeatFaqTitle, desc: sec.supportFeatFaqDesc, titleKey: "home.support.features.faq.title", descKey: "home.support.features.faq.desc", href: "/support#faq" },
-                ].map((item) => (
+                ].map((item, si) => (
+                  <Reveal key={item.titleKey} delay={Math.min(si, 3) * 70} className="h-full">
                   <Link
-                    key={item.titleKey}
                     to={item.href}
-                    className="group bg-white rounded-[28px] p-5 border border-[#d6d6d6] hover:border-[var(--color-accent)]/50 hover:shadow-lg hover:shadow-[var(--color-accent)]/10 hover:-translate-y-1 transition-all duration-300"
+                    className="group bg-white rounded-[28px] p-5 border border-[#d6d6d6] hover:border-[var(--color-accent)]/50 hover:shadow-lg hover:shadow-[var(--color-accent)]/10 hover:-translate-y-1 transition-all duration-300 h-full block"
                   >
                     <span className="inline-flex w-11 h-11 items-center justify-center rounded-[10px] bg-[#f5f5f7] text-xl group-hover:bg-[var(--color-accent)] group-hover:scale-110 transition-all duration-300">
                       {item.icon}
@@ -1103,6 +1121,7 @@ export default function HomePage() {
                     </h4>
                     <p className="text-xs text-[#474747] mt-1 font-sans">{tx(item.desc, t(item.descKey))}</p>
                   </Link>
+                  </Reveal>
                 ))}
               </div>
             </div>

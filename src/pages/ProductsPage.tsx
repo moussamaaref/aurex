@@ -19,6 +19,7 @@ import {
 } from "../data"
 import { ml } from "../lib/ml"
 import CompareButton from "../components/CompareButton"
+import Reveal from "../components/Reveal"
 import { useCompare } from "../context/CompareContext"
 
 const energyClasses = ["A+++", "A++", "A+", "A"]
@@ -661,11 +662,11 @@ export default function ProductsPage() {
               </div>
             ) : viewMode === "grid" ? (
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                {filtered.map((product) => (
+                {filtered.map((product, pi) => (
+                  <Reveal key={product.id} delay={Math.min(pi, 7) * 50} className="h-full">
                   <Link
-                    key={product.id}
                     to={productUrl(product)}
-                    className="group overflow-hidden rounded-[28px] border border-[#d6d6d6] bg-white transition-all duration-300 hover:-translate-y-1.5 hover:border-[#d6d6d6]/50 hover:shadow-2xl hover:shadow-blue-900/12 flex flex-col"
+                    className="group overflow-hidden rounded-[28px] border border-[#d6d6d6] bg-white transition-all duration-300 hover:-translate-y-1.5 hover:border-[#d6d6d6]/50 hover:shadow-2xl hover:shadow-blue-900/12 flex flex-col h-full"
                   >
                     <div className="relative aspect-square overflow-hidden bg-white flex-shrink-0">
                       <img
@@ -727,13 +728,14 @@ export default function ProductsPage() {
                       </div>
                     </div>
                   </Link>
+                  </Reveal>
                 ))}
               </div>
             ) : (
               <div className="space-y-4">
-                {filtered.map((product) => (
+                {filtered.map((product, pi) => (
+                  <Reveal key={product.id} delay={Math.min(pi, 5) * 60}>
                   <Link
-                    key={product.id}
                     to={productUrl(product)}
                     className="group flex flex-col sm:flex-row gap-5 rounded-[28px] border border-[#d6d6d6] bg-white p-4 transition-all duration-300 hover:-translate-y-1 hover:border-[#d6d6d6]/50 hover:shadow-xl hover:shadow-blue-900/12"
                   >
@@ -787,6 +789,7 @@ export default function ProductsPage() {
                       </div>
                     </div>
                   </Link>
+                  </Reveal>
                 ))}
               </div>
             )}

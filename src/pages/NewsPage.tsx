@@ -5,6 +5,7 @@ import { newsItems } from "../data"
 import { loadRemoteCollection } from "../lib/contentStore"
 import { ml } from "../lib/ml"
 import { tx } from "../lib/langText"
+import Reveal from "../components/Reveal"
 
 /* ── Icône flèche réutilisable ── */
 function ArrowIcon({ className = "w-4 h-4" }: { className?: string }) {
@@ -156,7 +157,8 @@ export default function NewsPage() {
 
         {/* ═══════════ ARTICLE À LA UNE ═══════════ */}
         {featured && (
-          <article className="group grid lg:grid-cols-[1.15fr_0.85fr] bg-white rounded-[28px] overflow-hidden border border-[#d6d6d6] shadow-[0_20px_60px_rgba(10,36,99,0.09)] mb-8 hover:shadow-[0_28px_80px_rgba(10,36,99,0.14)] transition-shadow duration-500">
+          <Reveal>
+          <article className="group grid lg:grid-cols-[1.15fr_0.85fr] bg-white rounded-[28px] overflow-hidden border border-[#d6d6d6] mb-8">
             {/* Image */}
             <div className="relative min-h-[280px] lg:min-h-[400px] overflow-hidden">
               <img
@@ -198,15 +200,16 @@ export default function NewsPage() {
               </div>
             </div>
           </article>
+          </Reveal>
         )}
 
         {/* ═══════════ GRILLE D'ARTICLES ═══════════ */}
         {remaining.length > 0 && (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {remaining.map((news, idx) => (
+              <Reveal key={news.id} delay={Math.min(idx, 5) * 70} className="h-full">
               <article
-                key={news.id}
-                className="group bg-white rounded-[28px] overflow-hidden border border-[#d6d6d6] hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#1d1d1f]/10 hover:border-transparent transition-all duration-300 flex flex-col"
+                className="group bg-white rounded-[28px] overflow-hidden border border-[#d6d6d6] hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#1d1d1f]/10 hover:border-transparent transition-all duration-300 flex flex-col h-full"
                 style={{ transitionDelay: `${idx * 30}ms` }}
               >
                 {/* Image */}
@@ -247,6 +250,7 @@ export default function NewsPage() {
                   </div>
                 </div>
               </article>
+              </Reveal>
             ))}
           </div>
         )}

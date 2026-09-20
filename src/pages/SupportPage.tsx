@@ -5,6 +5,7 @@ import { products, productUrl } from "../data"
 import { loadRemoteCollection } from "../lib/contentStore"
 import { ml } from "../lib/ml"
 import { tx } from "../lib/langText"
+import Reveal from "../components/Reveal"
 
 const compatibleProducts = products.filter((p) => p.connectivity)
 
@@ -234,9 +235,9 @@ export default function SmartHomePage() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {features.map((feat, idx) => (
+            <Reveal key={idx} delay={Math.min(idx, 5) * 60} className="h-full">
             <div
-              key={idx}
-              className="group bg-white rounded-[28px] p-7 border border-[#d6d6d6] hover:shadow-xl hover:shadow-[#0071e3]/10 hover:border-[#0071e3]/40 hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden"
+              className="group bg-white rounded-[28px] p-7 border border-[#d6d6d6] hover:shadow-xl hover:shadow-[#0071e3]/10 hover:border-[#0071e3]/40 hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden h-full"
             >
               <div className="absolute top-0 right-0 w-20 h-20 rounded-full bg-[#0071e3]/5 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="relative">
@@ -252,6 +253,7 @@ export default function SmartHomePage() {
                 <p className="text-sm text-[#474747] leading-relaxed font-sans">{feat.desc}</p>
               </div>
             </div>
+            </Reveal>
           ))}
         </div>
       </section>
