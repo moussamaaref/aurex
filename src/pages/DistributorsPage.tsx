@@ -166,42 +166,34 @@ export default function DistributorsPage() {
 
   return (
     <div className="min-h-screen bg-[#f5f5f7] pt-24">
-      {/* ══ Header ══ */}
-      <section className="relative overflow-hidden bg-[var(--color-primary)] px-6 pb-24 pt-14 text-white">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-[var(--color-accent)]/25 blur-3xl"
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -bottom-32 left-1/3 h-72 w-72 rounded-full bg-cyan-400/15 blur-3xl"
-        />
+      {/* ══ Header — galerie blanche ══ */}
+      <section className="relative overflow-hidden bg-white px-6 pb-14 pt-14 border-b border-[#d6d6d6]">
         <div className="relative mx-auto max-w-7xl">
-          <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-blue-300 font-display">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-[#0066cc] font-display">
             {t("distributors.eyebrow")}
           </p>
-          <h1 className="mt-3 text-4xl font-bold lg:text-5xl font-display">
+          <h1 className="mt-3 text-5xl font-semibold lg:text-6xl font-display text-[#1d1d1f] tracking-tight">
             {t("distributors.title")}
           </h1>
-          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-blue-100/90 font-sans">
+          <p className="mt-4 max-w-2xl text-[17px] leading-relaxed text-[#333336] font-sans">
             {t("distributors.description")}
           </p>
 
           {/* Stats */}
-          <div className="mt-8 flex flex-wrap gap-3">
-            <div className="flex items-center gap-3 rounded-[28px] border border-white/15 bg-white/10 px-5 py-3 backdrop-blur-sm">
-              <span className="text-2xl font-bold font-display">{distributors.length}</span>
-              <span className="text-xs font-medium text-blue-200">{t("distributors.statsPoints")}</span>
+          <div className="mt-8 flex flex-wrap gap-8 border-t border-[#d6d6d6] pt-6">
+            <div className="flex items-baseline gap-2">
+              <span className="text-3xl font-semibold font-display text-[#1d1d1f] tracking-tight">{distributors.length}</span>
+              <span className="text-xs font-medium text-[#707070]">{t("distributors.statsPoints")}</span>
             </div>
-            <div className="flex items-center gap-3 rounded-[28px] border border-white/15 bg-white/10 px-5 py-3 backdrop-blur-sm">
-              <span className="text-2xl font-bold font-display">{wilayas.length}</span>
-              <span className="text-xs font-medium text-blue-200">{t("distributors.statsWilayas")}</span>
+            <div className="flex items-baseline gap-2">
+              <span className="text-3xl font-semibold font-display text-[#1d1d1f] tracking-tight">{wilayas.length}</span>
+              <span className="text-xs font-medium text-[#707070]">{t("distributors.statsWilayas")}</span>
             </div>
-            <div className="flex items-center gap-3 rounded-[28px] border border-white/15 bg-white/10 px-5 py-3 backdrop-blur-sm">
-              <span className="text-2xl font-bold font-display">
+            <div className="flex items-baseline gap-2">
+              <span className="text-3xl font-semibold font-display text-[#1d1d1f] tracking-tight">
                 {distributors.filter((d) => d.email).length}
               </span>
-              <span className="text-xs font-medium text-blue-200">{t("distributors.statsAgencies")}</span>
+              <span className="text-xs font-medium text-[#707070]">{t("distributors.statsAgencies")}</span>
             </div>
           </div>
         </div>
@@ -209,7 +201,7 @@ export default function DistributorsPage() {
 
       <main className="mx-auto max-w-7xl px-4 pb-16 sm:px-6">
         {/* ══ Filtres (carte flottante) ══ */}
-        <div className="relative z-10 -mt-12 mb-6 rounded-[28px] border border-[#d6d6d6] bg-white p-4 shadow-lg shadow-slate-900/5 sm:p-5">
+        <div className="relative z-10 mt-6 mb-6 rounded-[28px] border border-[#d6d6d6] bg-white p-4 sm:p-5">
           <div className="grid gap-4 lg:grid-cols-[1fr_1fr_auto_auto]">
             <label className="text-[11px] font-bold uppercase tracking-wider text-[#707070] font-sans">
               {t("distributors.wilaya")}

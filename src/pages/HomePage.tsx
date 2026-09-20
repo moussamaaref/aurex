@@ -600,7 +600,7 @@ export default function HomePage() {
 
       {/* ═══════════ STATS BAR ═══════════ */}
       <section className="bg-white border-b border-[#E8EDF4] relative">
-        <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[var(--color-accent)]/40 to-transparent" />
+          <div className="absolute top-0 left-0 right-0 h-px bg-[#d6d6d6]" />
         <div className="max-w-7xl mx-auto px-6 py-9 grid grid-cols-2 md:grid-cols-4 gap-6 md:divide-x md:divide-[#E8EDF4]">
           {stats.map((stat, i) => (
             <div key={`${ml(stat.label)}-${i}`} className="md:pl-8 first:pl-0 group">

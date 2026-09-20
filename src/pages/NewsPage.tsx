@@ -78,27 +78,12 @@ export default function NewsPage() {
   return (
     <div className="bg-[#f5f5f7] pt-28">
 
-      {/* ═══════════ HERO ═══════════ */}
-      <section className="relative overflow-hidden bg-[#1d1d1f] text-white">
-        {/* Arrière-plan dégradé */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_20%,rgba(30,94,243,0.55),transparent_40%),linear-gradient(120deg,#1d1d1f,#1d1d1f)]" />
-        {/* Cercles décoratifs */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-[#0071e3]/10 blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
-        <div className="absolute bottom-0 left-10 w-64 h-64 rounded-full bg-[#0071e3]/10 blur-2xl translate-y-1/2 pointer-events-none" />
-        {/* Grille décorative */}
-        <div
-          className="absolute inset-0 opacity-[0.04] pointer-events-none"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px)",
-            backgroundSize: "64px 64px",
-          }}
-        />
-
-        <div className="relative max-w-7xl mx-auto px-6 py-20 lg:py-28">
+      {/* ═══════════ HERO — galerie blanche ═══════════ */}
+      <section className="relative overflow-hidden bg-white">
+        <div className="relative max-w-7xl mx-auto px-6 py-16 lg:py-20">
           {/* Eyebrow pill */}
           <span
-            className="inline-flex items-center gap-2.5 text-[10px] font-bold tracking-[0.22em] uppercase text-white bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2 mb-6 shadow-lg"
+            className="inline-flex items-center gap-2.5 text-[11px] font-semibold tracking-[0.2em] uppercase text-[#0066cc] bg-[#f5f5f7] rounded-full px-4 py-2 mb-6"
             style={{ fontFamily: "var(--font-display)" }}
           >
             <span className="w-1.5 h-1.5 rounded-full bg-[#0071e3] animate-pulse" />
@@ -106,37 +91,30 @@ export default function NewsPage() {
           </span>
 
           <h1
-            className="max-w-3xl text-5xl md:text-7xl font-bold leading-[0.95] mt-2"
+            className="max-w-3xl text-5xl md:text-6xl font-semibold leading-[1.06] tracking-tight mt-2 text-[#1d1d1f]"
             style={{ fontFamily: "var(--font-display)" }}
           >
             {tx(np.newsHeroTitle, t("newsPage.title"))}
           </h1>
-          <p className="max-w-xl text-base md:text-lg text-blue-100/80 leading-relaxed mt-6">
+          <p className="max-w-xl text-[17px] text-[#333336] leading-relaxed mt-6">
             {tx(np.newsHeroDesc, t("newsPage.description"))}
           </p>
 
           {/* Mini-stats */}
-          <div className="mt-10 flex flex-wrap gap-8 border-t border-white/10 pt-8">
+          <div className="mt-10 flex flex-wrap gap-8 border-t border-[#d6d6d6] pt-8">
             <div>
-              <p className="text-3xl font-bold text-white" style={{ fontFamily: "var(--font-display)" }}>
+              <p className="text-3xl font-semibold text-[#1d1d1f]" style={{ fontFamily: "var(--font-display)" }}>
                 {newsItems.length}
               </p>
-              <p className="text-xs text-blue-200 mt-0.5 uppercase tracking-wider">{tx(np.newsStatArticles, t("newsPage.statsArticles"))}</p>
+              <p className="text-xs text-[#707070] mt-0.5 uppercase tracking-wider">{tx(np.newsStatArticles, t("newsPage.statsArticles"))}</p>
             </div>
             <div>
-              <p className="text-3xl font-bold text-white" style={{ fontFamily: "var(--font-display)" }}>
+              <p className="text-3xl font-semibold text-[#1d1d1f]" style={{ fontFamily: "var(--font-display)" }}>
                 {new Set(newsItems.map((n) => n.category)).size}
               </p>
-              <p className="text-xs text-blue-200 mt-0.5 uppercase tracking-wider">{tx(np.newsStatCategories, t("newsPage.statsCategories"))}</p>
+              <p className="text-xs text-[#707070] mt-0.5 uppercase tracking-wider">{tx(np.newsStatCategories, t("newsPage.statsCategories"))}</p>
             </div>
           </div>
-        </div>
-
-        {/* Vague de transition */}
-        <div className="relative h-10 overflow-hidden">
-          <svg viewBox="0 0 1440 40" preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
-            <path d="M0,40 C360,0 1080,0 1440,40 L1440,40 L0,40 Z" fill="#f5f5f7" />
-          </svg>
         </div>
       </section>
 

@@ -524,33 +524,19 @@ export default function ComparePage() {
   if (selected.length === 0) {
     return (
       <div className="min-h-screen bg-[#f5f5f7] pt-28">
-        {/* Hero header — empty state */}
-        <div className="relative overflow-hidden bg-[#1d1d1f]">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(30,94,243,0.5),transparent_40%),linear-gradient(120deg,#1d1d1f,#1d1d1f)]" />
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-[#0071e3]/10 blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
-          <div
-            className="absolute inset-0 opacity-[0.04] pointer-events-none"
-            style={{
-              backgroundImage: "linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px)",
-              backgroundSize: "64px 64px",
-            }}
-          />
-          <div className="relative max-w-7xl mx-auto px-6 py-14 lg:py-20">
-            <EmptyBreadcrumb t={t} light />
+        {/* Hero header — empty state, galerie blanche */}
+        <div className="relative overflow-hidden bg-white border-b border-[#d6d6d6]">
+          <div className="relative max-w-7xl mx-auto px-6 py-12 lg:py-16">
+            <EmptyBreadcrumb t={t} />
             <h1
-              className="text-4xl lg:text-5xl font-bold text-white mt-4"
+              className="text-4xl lg:text-5xl font-semibold text-[#1d1d1f] mt-4 tracking-tight"
               style={{ fontFamily: "var(--font-display)" }}
             >
               {t("comparator.title")}
             </h1>
-            <p className="text-blue-100/80 mt-3 max-w-xl font-sans text-sm leading-relaxed">
+            <p className="text-[#333336] mt-3 max-w-xl font-sans text-[17px] leading-relaxed">
               {t("comparator.subtitle")}
             </p>
-          </div>
-          <div className="relative h-8 overflow-hidden">
-            <svg viewBox="0 0 1440 32" preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
-              <path d="M0,32 C360,0 1080,0 1440,32 L1440,32 L0,32 Z" fill="#f5f5f7" />
-            </svg>
           </div>
         </div>
 
@@ -563,33 +549,24 @@ export default function ComparePage() {
 
   return (
     <div className="min-h-screen bg-[#f5f5f7] pt-28">
-      {/* Hero header — with products */}
-      <div className="relative overflow-hidden bg-[#1d1d1f]">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(30,94,243,0.5),transparent_40%),linear-gradient(120deg,#1d1d1f,#1d1d1f)]" />
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-[#0071e3]/10 blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
-        <div
-          className="absolute inset-0 opacity-[0.04] pointer-events-none"
-          style={{
-            backgroundImage: "linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px)",
-            backgroundSize: "64px 64px",
-          }}
-        />
-        <div className="relative max-w-7xl mx-auto px-6 py-14 lg:py-20">
-          <EmptyBreadcrumb t={t} light />
+      {/* Hero header — with products, galerie blanche */}
+      <div className="relative overflow-hidden bg-white border-b border-[#d6d6d6]">
+        <div className="relative max-w-7xl mx-auto px-6 py-12 lg:py-16">
+          <EmptyBreadcrumb t={t} />
           <div className="flex flex-wrap items-end justify-between gap-4 mt-4">
             <div>
               <h1
-                className="text-4xl lg:text-5xl font-bold text-white"
+                className="text-4xl lg:text-5xl font-semibold text-[#1d1d1f] tracking-tight"
                 style={{ fontFamily: "var(--font-display)" }}
               >
                 {t("comparator.title")}
               </h1>
-              <p className="text-blue-100/80 mt-3 max-w-xl font-sans text-sm leading-relaxed">
+              <p className="text-[#333336] mt-3 max-w-xl font-sans text-[17px] leading-relaxed">
                 {t("comparator.subtitle")}
               </p>
             </div>
             <span
-              className="inline-flex items-center gap-2 text-sm text-white font-sans bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-5 py-2"
+              className="inline-flex items-center gap-2 text-sm text-[#333336] font-sans bg-[#f5f5f7] rounded-full px-5 py-2"
               role="status"
             >
               <span className="w-2 h-2 rounded-full bg-[#0071e3] animate-pulse" />
@@ -598,15 +575,10 @@ export default function ComparePage() {
             </span>
           </div>
           {selected.length === 1 && (
-            <p className="text-xs text-blue-200/70 mt-3 font-sans">
+            <p className="text-xs text-[#707070] mt-3 font-sans">
               {t("comparator.needsTwo")}
             </p>
           )}
-        </div>
-        <div className="relative h-8 overflow-hidden">
-          <svg viewBox="0 0 1440 32" preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
-            <path d="M0,32 C360,0 1080,0 1440,32 L1440,32 L0,32 Z" fill="#f5f5f7" />
-          </svg>
         </div>
       </div>
 

@@ -105,49 +105,34 @@ export default function TechnologiesPage() {
 
   return (
     <div className="min-h-screen bg-[#f5f5f7] pt-24">
-      {/* ═══════════ HERO ═══════════ */}
-      <section className="relative bg-[#1d1d1f] overflow-hidden py-20 lg:py-24">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-[#0071e3] blur-3xl -translate-y-1/2 translate-x-1/3" />
-          <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-[#0071e3] blur-2xl translate-y-1/2 -translate-x-1/4" />
-        </div>
-        <div
-          className="absolute inset-0 opacity-[0.05]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px)",
-            backgroundSize: "64px 64px",
-          }}
-        />
+      {/* ═══════════ HERO — galerie blanche ═══════════ */}
+      <section className="relative bg-white overflow-hidden py-16 lg:py-20 border-b border-[#d6d6d6]">
         <div className="relative max-w-7xl mx-auto px-6">
           <div className="max-w-2xl">
             <span
-              className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#4d8dff]"
+              className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#0066cc]"
               style={{ fontFamily: "var(--font-display)" }}
             >
               {tx(tp.techHeroSubtitle, t("technologies.hero.subtitle"))}
             </span>
             <h1
-              className="text-5xl lg:text-6xl font-bold text-white mt-3 leading-tight"
+              className="text-5xl lg:text-6xl font-semibold text-[#1d1d1f] mt-3 leading-[1.06] tracking-tight"
               style={{ fontFamily: "var(--font-display)", whiteSpace: "pre-line" }}
             >
               {tx(tp.techHeroTitle, t("technologies.hero.title"))}
             </h1>
-            <p className="text-blue-100/80 mt-5 leading-relaxed font-sans text-base">
+            <p className="text-[#333336] mt-5 leading-relaxed font-sans text-[17px]">
               {tx(tp.techHeroDesc, t("technologies.hero.desc"))}
             </p>
           </div>
-          {/* Stats dans le hero sombre */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-14 pt-8 border-t border-white/10">
-            {stats.map((stat, i) => (
-              <div key={stat.label} className="group">
-                <p
-                  className="text-3xl lg:text-4xl font-bold text-white font-display flex items-center gap-2"
-                >
-                  <span className="w-1 h-8 rounded-full bg-[#0071e3] group-hover:h-10 transition-all duration-300" style={{ transitionDelay: `${i * 50}ms` }} />
+          {/* Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12 pt-8 border-t border-[#d6d6d6]">
+            {stats.map((stat) => (
+              <div key={stat.label}>
+                <p className="text-3xl lg:text-4xl font-semibold text-[#1d1d1f] font-display tracking-tight">
                   {stat.value}
                 </p>
-                <p className="text-xs text-blue-200/70 mt-1.5 font-sans">{stat.label}</p>
+                <p className="text-xs text-[#707070] mt-1.5 font-sans">{stat.label}</p>
               </div>
             ))}
           </div>

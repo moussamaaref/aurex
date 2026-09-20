@@ -201,9 +201,8 @@ export default function AboutPage() {
       <section className="bg-[#f5f5f7] py-16">
         <div className="mx-auto max-w-4xl px-6">
           <Reveal>
-            <div className="relative rounded-[28px] border border-[#d6d6d6] bg-white p-8 sm:p-12 shadow-xl shadow-[#1d1d1f]/5 overflow-hidden">
-              <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-[#0071e3] to-[#1d1d1f]" />
-              <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-[#0071e3]/5 blur-2xl" />
+            <div className="relative rounded-[28px] border border-[#d6d6d6] bg-white p-8 sm:p-12 overflow-hidden">
+              <div className="absolute top-0 left-0 w-1 h-full bg-[#0071e3]" />
               <span
                 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#0071e3]"
                 style={{ fontFamily: "var(--font-display)" }}
@@ -273,11 +272,10 @@ export default function AboutPage() {
           </Reveal>
           <Reveal delay={150}>
             <div className="relative">
-              <div className="absolute -inset-3 rounded-[28px] bg-gradient-to-br from-[#0071e3]/20 to-transparent blur-xl" />
               <img
                 src={ap.aboutMissionImage || "https://images.unsplash.com/photo-1639405069836-f82aa6dcb900?w=700&h=700&fit=crop&auto=format"}
                 alt=""
-                className="relative rounded-[28px] w-full object-cover shadow-2xl"
+                className="relative rounded-[28px] w-full object-cover"
               />
               <div className="absolute -bottom-5 -right-5 bg-white rounded-[28px] p-4 shadow-2xl flex items-center gap-3 animate-float">
                 <div className="w-11 h-11 rounded-[10px] bg-[#f5f5f7] flex items-center justify-center">
@@ -357,7 +355,7 @@ export default function AboutPage() {
           </Reveal>
           <div className="relative">
             {/* Ligne dégradée animée */}
-            <div className="absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2 bg-gradient-to-b from-[#0071e3]/40 via-[#E2E8F0] to-transparent" />
+            <div className="absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2 bg-[#d6d6d6]" />
             <div className="space-y-10">
               {milestones.map((m, i) => {
                 const left = i % 2 === 0

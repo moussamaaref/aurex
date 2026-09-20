@@ -300,65 +300,50 @@ export default function ProductsPage() {
 
   return (
     <div className="min-h-screen bg-[#f5f5f7] pt-24">
-      {/* ══ Hero catégorie / titre général ══ */}
+      {/* ══ Hero catégorie / titre général — galerie blanche ══ */}
       {currentCategory ? (
-        <section
-          className="relative overflow-hidden px-6 pb-20 pt-12 text-white"
-          style={{ backgroundColor: categoryColor(currentCategory.slug, currentCategory.color) }}
-        >
-          <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-[var(--color-accent)]/25 blur-3xl" />
-          <div aria-hidden="true" className="pointer-events-none absolute -bottom-32 left-1/4 h-72 w-72 rounded-full bg-cyan-400/15 blur-3xl" />
+        <section className="relative overflow-hidden bg-white px-6 pb-14 pt-12 border-b border-[#d6d6d6]">
           <div className="relative mx-auto max-w-7xl">
             <nav className="mb-5 flex items-center gap-2 text-xs font-sans" aria-label="Breadcrumb">
-              <Link to="/" className="text-blue-200 transition-colors hover:text-white">{t("products.breadcrumb.home")}</Link>
-              <span className="text-blue-400">/</span>
-              <Link to="/produits" className="text-blue-200 transition-colors hover:text-white">{t("products.breadcrumb.products")}</Link>
-              <span className="text-blue-400">/</span>
-              <span className="font-semibold text-white">{ml(currentCategory.label)}</span>
+              <Link to="/" className="text-[#707070] transition-colors hover:text-[#1d1d1f]">{t("products.breadcrumb.home")}</Link>
+              <span className="text-[#d6d6d6]">/</span>
+              <Link to="/produits" className="text-[#707070] transition-colors hover:text-[#1d1d1f]">{t("products.breadcrumb.products")}</Link>
+              <span className="text-[#d6d6d6]">/</span>
+              <span className="font-semibold text-[#1d1d1f]">{ml(currentCategory.label)}</span>
             </nav>
-            <h1 className="text-4xl font-bold lg:text-5xl font-display">{ml(currentCategory.label)}</h1>
-            <p className="mt-4 max-w-xl text-sm leading-relaxed text-blue-100/90 font-sans">{ml(currentCategory.description)}</p>
-            <p className="mt-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-xs font-semibold backdrop-blur-sm">
+            <p
+              className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#0066cc]"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
+              {t("products.breadcrumb.products")}
+            </p>
+            <h1 className="mt-2 text-5xl font-semibold lg:text-6xl font-display text-[#1d1d1f] tracking-tight">{ml(currentCategory.label)}</h1>
+            <p className="mt-4 max-w-xl text-[17px] leading-relaxed text-[#333336] font-sans">{ml(currentCategory.description)}</p>
+            <p className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#f5f5f7] px-4 py-1.5 text-xs font-semibold text-[#333336]">
               {filtered.length} {filtered.length === 1 ? t("products.results.one") : t("products.results.other")}
             </p>
           </div>
         </section>
       ) : (
-        <section className="relative overflow-hidden bg-[var(--color-primary)] text-white">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(30,94,243,0.5),transparent_40%),linear-gradient(120deg,#1d1d1f,var(--color-primary))]" />
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-[var(--color-accent)]/10 blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
-          <div className="absolute bottom-0 left-1/4 h-56 w-56 rounded-full bg-cyan-400/10 blur-3xl pointer-events-none" />
-          <div
-            className="absolute inset-0 opacity-[0.04] pointer-events-none"
-            style={{
-              backgroundImage: "linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px)",
-              backgroundSize: "64px 64px",
-            }}
-          />
-          <div className="relative mx-auto max-w-7xl px-6 pb-20 pt-12">
+        <section className="relative overflow-hidden bg-white border-b border-[#d6d6d6]">
+          <div className="relative mx-auto max-w-7xl px-6 pb-14 pt-12">
             <nav className="mb-5 flex items-center gap-2 text-xs font-sans" aria-label="Breadcrumb">
-              <Link to="/" className="text-blue-200/70 transition-colors hover:text-white">{t("products.breadcrumb.home")}</Link>
-              <span className="text-blue-400/50">/</span>
-              <span className="font-semibold text-white">{t("products.breadcrumb.products")}</span>
+              <Link to="/" className="text-[#707070] transition-colors hover:text-[#1d1d1f]">{t("products.breadcrumb.home")}</Link>
+              <span className="text-[#d6d6d6]">/</span>
+              <span className="font-semibold text-[#1d1d1f]">{t("products.breadcrumb.products")}</span>
             </nav>
-            <span
-              className="inline-flex items-center gap-2.5 text-[10px] font-bold tracking-[0.22em] uppercase text-white bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2 mb-5 shadow-lg"
+            <p
+              className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#0066cc]"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] animate-pulse" />
               EUREX
-            </span>
-            <h1 className="text-4xl font-bold lg:text-5xl font-display text-white">
+            </p>
+            <h1 className="mt-2 text-5xl font-semibold lg:text-6xl font-display text-[#1d1d1f] tracking-tight">
               {t("products.allProducts")}
             </h1>
-            <p className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-xs font-semibold backdrop-blur-sm">
+            <p className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#f5f5f7] px-4 py-1.5 text-xs font-semibold text-[#333336]">
               {filtered.length} {filtered.length === 1 ? t("products.results.one") : t("products.results.other")}
             </p>
-          </div>
-          <div className="relative h-8 overflow-hidden">
-            <svg viewBox="0 0 1440 32" preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
-              <path d="M0,32 C360,0 1080,0 1440,32 L1440,32 L0,32 Z" fill="#f8fafc" />
-            </svg>
           </div>
         </section>
       )}
