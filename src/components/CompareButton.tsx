@@ -94,14 +94,14 @@ export default function CompareButton({
               ? t("comparator.inCompare")
               : t("comparator.addToCompare")
         }
-        className={`inline-flex items-center justify-center gap-1.5 text-xs font-medium rounded-lg px-3 py-2 border transition-colors font-sans ${
+        className={`inline-flex items-center justify-center gap-1.5 text-xs font-medium rounded-full px-3 py-2 border transition-colors font-sans ${
           className ?? ""
         } ${
           added
-            ? "bg-[#0A2463] text-white border-[#0A2463]"
+            ? "bg-[#1d1d1f] text-white border-[#1d1d1f]"
             : full
-              ? "bg-gray-50 text-gray-300 border-gray-100 cursor-not-allowed"
-              : "bg-white text-[#1E5EF3] border-[#1E5EF3]/25 hover:bg-[#EFF3FB] hover:border-[#1E5EF3]/40"
+              ? "bg-[#f5f5f7] text-gray-300 border-[#d6d6d6] cursor-not-allowed"
+              : "bg-[#e2e2e5] text-[#333336] border-transparent hover:bg-[#d6d6d6]"
         }`}
       >
         {added ? (
@@ -120,14 +120,14 @@ export default function CompareButton({
       onClick={handleClick}
       aria-pressed={added}
       title={full ? t("comparator.maxReached", { max }) : undefined}
-      className={`flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm font-medium transition-colors font-sans ${
+      className={`flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-medium transition-colors font-sans ${
         className ?? ""
       } ${
         added
-          ? "bg-[#0A2463] text-white"
+          ? "bg-[#1d1d1f] text-white"
           : full
-            ? "bg-gray-100 text-gray-300 border border-gray-100 cursor-not-allowed"
-            : "border border-[#0A2463]/20 text-[#0A2463] hover:bg-[#EFF3FB]"
+            ? "bg-[#f5f5f7] text-gray-300 border border-[#d6d6d6] cursor-not-allowed"
+            : "bg-[#0071e3] text-white hover:bg-[#0063bf]"
       }`}
     >
       {added ? <CheckIcon /> : <ScaleIcon />}

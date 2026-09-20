@@ -50,7 +50,7 @@ export default function Footer() {
   }
 
   return (
-    <footer className="bg-[#0D1117] text-white">
+    <footer className="bg-[#f5f5f7] text-[#1d1d1f] border-t border-[#d6d6d6]">
       {/* Main footer */}
       <div className="max-w-7xl mx-auto px-6 pt-16 pb-12">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-8">
@@ -84,7 +84,7 @@ export default function Footer() {
             </div>
 
             <p
-              className="text-sm text-gray-400 leading-relaxed max-w-xs"
+              className="text-sm text-[#474747] leading-relaxed max-w-xs"
               style={{ fontFamily: "var(--font-sans)" }}
             >
               <span
@@ -95,7 +95,7 @@ export default function Footer() {
             {/* Newsletter */}
             <div className="mt-6">
               <p
-                className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3"
+                className="text-xs font-semibold text-[#707070] uppercase tracking-widest mb-3"
                 style={{ fontFamily: "var(--font-display)" }}
               >
                 {t("footer.stayInformed")}
@@ -104,11 +104,11 @@ export default function Footer() {
                 <input
                   type="email"
                   placeholder={t("footer.emailPlaceholder")}
-                  className="flex-1 bg-white/5 border border-white/10 rounded px-3 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[var(--color-accent)] transition-colors"
+                  className="flex-1 bg-white border border-[#d6d6d6] rounded-[10px] px-3 py-2.5 text-sm text-[#1d1d1f] placeholder-gray-500 focus:outline-none focus:border-[var(--color-accent)] transition-colors"
                   style={{ fontFamily: "var(--font-sans)" }}
                 />
                 <button
-                  className="bg-[var(--color-accent)] hover:bg-[#1a51d4] transition-colors text-white px-4 py-2.5 rounded text-sm font-medium whitespace-nowrap"
+                  className="bg-[var(--color-accent)] hover:bg-[#0063bf] transition-colors text-white px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap"
                   style={{ fontFamily: "var(--font-sans)" }}
                 >
                   {t("footer.subscribe")}
@@ -141,7 +141,7 @@ export default function Footer() {
                     target={s.href.startsWith("http") ? "_blank" : undefined}
                     rel={s.href.startsWith("http") ? "noreferrer" : undefined}
                     aria-label={s.label}
-                    className="w-8 h-8 rounded-lg bg-white/5 hover:bg-[var(--color-accent)] border border-white/10 hover:border-[var(--color-accent)] flex items-center justify-center text-xs text-gray-400 hover:text-white transition-all"
+                    className="w-8 h-8 rounded-[10px] bg-white hover:bg-[var(--color-accent)] border border-[#d6d6d6] hover:border-[var(--color-accent)] flex items-center justify-center text-xs text-[#474747] hover:text-white transition-all"
                     style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
                   >
                     {s.icon}
@@ -155,7 +155,7 @@ export default function Footer() {
           {Object.entries(footerLinks).map(([group, links]) => (
             <div key={group}>
               <h4
-                className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-500 mb-4"
+                className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#707070] mb-4"
                 style={{ fontFamily: "var(--font-display)" }}
               >
                 {group}
@@ -165,7 +165,7 @@ export default function Footer() {
                   <li key={link.label}>
                     <Link
                       to={link.href}
-                      className="text-sm text-gray-400 hover:text-white transition-colors"
+                      className="text-sm text-[#474747] hover:text-[#1d1d1f] transition-colors"
                       style={{ fontFamily: "var(--font-sans)" }}
                     >
                       {link.label}
@@ -178,7 +178,7 @@ export default function Footer() {
         </div>
 
         {/* Contact info */}
-        <div className="mt-12 pt-8 border-t border-white/10 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="mt-12 pt-8 border-t border-[#d6d6d6] grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
             {
               icon: (
@@ -244,18 +244,18 @@ export default function Footer() {
             },
           ].map((info) => (
             <div key={info.label} className="flex items-start gap-3">
-              <div className="w-7 h-7 rounded-lg bg-[var(--color-accent)]/20 flex items-center justify-center text-[var(--color-accent)] flex-shrink-0 mt-0.5">
+              <div className="w-7 h-7 rounded-[10px] bg-white border border-[#d6d6d6] flex items-center justify-center text-[#0066cc] flex-shrink-0 mt-0.5">
                 {info.icon}
               </div>
               <div>
                 <p
-                  className="text-xs text-gray-500 font-medium"
+                  className="text-xs text-[#707070] font-medium"
                   style={{ fontFamily: "var(--font-sans)" }}
                 >
                   {info.label}
                 </p>
                 <p
-                  className="text-sm text-gray-300 mt-0.5"
+                  className="text-sm text-[#1d1d1f] mt-0.5"
                   style={{ fontFamily: "var(--font-sans)" }}
                 >
                   {info.value}
@@ -267,10 +267,10 @@ export default function Footer() {
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t border-white/5 bg-black/20">
+      <div className="border-t border-[#d6d6d6] bg-white">
         <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-2">
           <p
-            className="text-xs text-gray-600"
+            className="text-xs text-[#707070]"
             style={{ fontFamily: "var(--font-sans)" }}
           >
             {t("footer.copyright")}
@@ -285,7 +285,7 @@ export default function Footer() {
               <a
                 key={label}
                 href="#"
-                className="text-xs text-gray-600 hover:text-gray-400 transition-colors"
+                className="text-xs text-[#707070] hover:text-[#1d1d1f] transition-colors"
                 style={{ fontFamily: "var(--font-sans)" }}
               >
                 {label}

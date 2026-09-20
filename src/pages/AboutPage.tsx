@@ -146,7 +146,7 @@ export default function AboutPage() {
   const introduction = ap.aboutIntroParagraphs && ap.aboutIntroParagraphs.length > 0 && i18n.language === "fr" ? ap.aboutIntroParagraphs : tIntroduction
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] pt-24">
+    <div className="min-h-screen bg-[#f5f5f7] pt-24">
       {/* ═══════════ HERO ═══════════ */}
       <section className="relative overflow-hidden min-h-[480px] flex items-end">
         <div className="absolute inset-0">
@@ -156,8 +156,8 @@ export default function AboutPage() {
             aria-hidden="true"
             className="w-full h-full object-cover animate-ken-burns"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#061540]/90 via-[#0A2463]/60 to-[#0A2463]/30" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#061540]/70 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#1d1d1f]/90 via-[#1d1d1f]/60 to-[#1d1d1f]/30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1d1d1f]/70 to-transparent" />
         </div>
         <div className="relative max-w-7xl mx-auto px-6 py-24 w-full">
           <span
@@ -188,7 +188,7 @@ export default function AboutPage() {
             { value: ml(ap.aboutStat4Value) || "500+", label: tx(ap.aboutStat4Label, t("about.stats.employees", { defaultValue: "Collaborateurs" })) },
           ].map((s, i) => (
             <Reveal key={s.label} delay={i * 80} className="md:pl-8 first:pl-0 text-center md:text-left group">
-              <p className="text-3xl font-bold text-[#0A2463] font-display group-hover:text-[#1E5EF3] transition-colors">
+              <p className="text-3xl font-bold text-[#1d1d1f] font-display group-hover:text-[#0071e3] transition-colors">
                 {s.value}
               </p>
               <p className="text-xs text-[#64748B] mt-1 font-sans">{s.label}</p>
@@ -198,30 +198,30 @@ export default function AboutPage() {
       </section>
 
       {/* ═══════════ INTRODUCTION ═══════════ */}
-      <section className="bg-[#F9FAFB] py-16">
+      <section className="bg-[#f5f5f7] py-16">
         <div className="mx-auto max-w-4xl px-6">
           <Reveal>
-            <div className="relative rounded-3xl border border-blue-100 bg-white p-8 sm:p-12 shadow-xl shadow-[#0A2463]/5 overflow-hidden">
-              <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-[#1E5EF3] to-[#0A2463]" />
-              <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-[#1E5EF3]/5 blur-2xl" />
+            <div className="relative rounded-[28px] border border-[#d6d6d6] bg-white p-8 sm:p-12 shadow-xl shadow-[#1d1d1f]/5 overflow-hidden">
+              <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-[#0071e3] to-[#1d1d1f]" />
+              <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-[#0071e3]/5 blur-2xl" />
               <span
-                className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#1E5EF3]"
+                className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#0071e3]"
                 style={{ fontFamily: "var(--font-display)" }}
               >
                 {tx(ap.aboutIntroTitle, t("about.introductionTitle"))}
               </span>
-              <div className="mt-5 space-y-4 text-sm leading-8 text-gray-600 font-sans">
+              <div className="mt-5 space-y-4 text-sm leading-8 text-[#333336] font-sans">
                 {introduction.map((paragraph, i) => (
                   <p key={`${ml(paragraph).slice(0, 24)}-${i}`}>{ml(paragraph)}</p>
                 ))}
               </div>
               <div className="mt-8 border-t border-blue-50 pt-6 flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0A2463] to-[#1E5EF3] flex items-center justify-center text-white font-bold font-display text-lg shadow-lg shadow-[#1E5EF3]/30">
+                <div className="w-12 h-12 rounded-[28px] bg-[#1d1d1f] flex items-center justify-center text-white font-bold font-display text-lg">
                   A
                 </div>
                 <p>
-                  <span className="block text-lg font-bold text-[#0A2463] font-display">AUREX</span>
-                  <span className="block text-sm font-medium text-[#1E5EF3] font-sans">
+                  <span className="block text-lg font-bold text-[#1d1d1f] font-display">AUREX</span>
+                  <span className="block text-sm font-medium text-[#0071e3] font-sans">
                     {tx(ap.aboutTagline, t("about.tagline"))}
                   </span>
                 </p>
@@ -237,34 +237,34 @@ export default function AboutPage() {
           <Reveal>
             <div>
               <span
-                className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#1E5EF3]"
+                className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0071e3]"
                 style={{ fontFamily: "var(--font-display)" }}
               >
                 {tx(ap.aboutMissionSubtitle, t("about.mission.subtitle"))}
               </span>
               <h2
-                className="text-4xl font-bold text-[#0A2463] mt-3 leading-tight"
+                className="text-4xl font-bold text-[#1d1d1f] mt-3 leading-tight"
                 style={{ fontFamily: "var(--font-display)", whiteSpace: "pre-line" }}
               >
                 {tx(ap.aboutMissionTitle, t("about.mission.title"))}
               </h2>
-              <p className="text-gray-600 mt-5 leading-relaxed font-sans text-sm">
+              <p className="text-[#333336] mt-5 leading-relaxed font-sans text-sm">
                 {tx(ap.aboutMissionDesc1, t("about.mission.desc1"))}
               </p>
-              <p className="text-gray-600 mt-4 leading-relaxed font-sans text-sm">
+              <p className="text-[#333336] mt-4 leading-relaxed font-sans text-sm">
                 {tx(ap.aboutMissionDesc2, t("about.mission.desc2"))}
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
                   to="/produits"
-                  className="group inline-flex items-center gap-2 bg-[#1E5EF3] text-white font-semibold px-7 py-4 rounded-xl text-sm font-sans hover:bg-[#1a51d4] transition-all shadow-lg shadow-[#1E5EF3]/25 hover:-translate-y-0.5"
+                  className="group inline-flex items-center gap-2 bg-[#0071e3] text-white font-semibold px-7 py-4 rounded-full text-sm font-sans hover:bg-[#0063bf] transition-colors"
                 >
                   {tx(ap.aboutMissionCta1, t("about.mission.seeProducts"))}
                   <ArrowIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </Link>
                 <Link
                   to="/support"
-                  className="inline-flex items-center gap-2 border border-[#0A2463]/20 text-[#0A2463] font-medium px-7 py-4 rounded-xl text-sm font-sans hover:bg-[#EFF3FB] hover:-translate-y-0.5 transition-all"
+                  className="inline-flex items-center gap-2 bg-[#e2e2e5] text-[#333336] font-medium px-7 py-4 rounded-full text-sm font-sans hover:bg-[#d6d6d6] transition-colors"
                 >
                   {tx(ap.aboutMissionCta2, t("about.mission.savContact"))}
                 </Link>
@@ -273,23 +273,23 @@ export default function AboutPage() {
           </Reveal>
           <Reveal delay={150}>
             <div className="relative">
-              <div className="absolute -inset-3 rounded-3xl bg-gradient-to-br from-[#1E5EF3]/20 to-transparent blur-xl" />
+              <div className="absolute -inset-3 rounded-[28px] bg-gradient-to-br from-[#0071e3]/20 to-transparent blur-xl" />
               <img
                 src={ap.aboutMissionImage || "https://images.unsplash.com/photo-1639405069836-f82aa6dcb900?w=700&h=700&fit=crop&auto=format"}
                 alt=""
-                className="relative rounded-3xl w-full object-cover shadow-2xl"
+                className="relative rounded-[28px] w-full object-cover shadow-2xl"
               />
-              <div className="absolute -bottom-5 -right-5 bg-white rounded-2xl p-4 shadow-2xl flex items-center gap-3 animate-float">
-                <div className="w-11 h-11 rounded-xl bg-[#EFF3FB] flex items-center justify-center">
-                  <svg className="w-5 h-5 text-[#1E5EF3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <div className="absolute -bottom-5 -right-5 bg-white rounded-[28px] p-4 shadow-2xl flex items-center gap-3 animate-float">
+                <div className="w-11 h-11 rounded-[10px] bg-[#f5f5f7] flex items-center justify-center">
+                  <svg className="w-5 h-5 text-[#0071e3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                   </svg>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#0A2463] font-sans">
+                  <p className="text-xs font-bold text-[#1d1d1f] font-sans">
                     {tx(ap.aboutQualityBadge, t("about.quality.badge", { defaultValue: "Qualité certifiée" }))}
                   </p>
-                  <p className="text-[10px] text-gray-400 font-sans">
+                  <p className="text-[10px] text-[#707070] font-sans">
                     {tx(ap.aboutQualityBadgeSub, t("about.quality.badgeSub", { defaultValue: "ISO 9001 — Normes internationales" }))}
                   </p>
                 </div>
@@ -300,17 +300,17 @@ export default function AboutPage() {
       </section>
 
       {/* ═══════════ VALEURS ═══════════ */}
-      <section className="py-20 bg-[#F9FAFB]">
+      <section className="py-20 bg-[#f5f5f7]">
         <div className="max-w-7xl mx-auto px-6">
           <Reveal className="text-center mb-14">
             <span
-              className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#1E5EF3]"
+              className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0071e3]"
               style={{ fontFamily: "var(--font-display)" }}
             >
               {tx(ap.aboutValuesSubtitle, t("about.values.subtitle"))}
             </span>
             <h2
-              className="text-4xl font-bold text-[#0A2463] mt-3"
+              className="text-4xl font-bold text-[#1d1d1f] mt-3"
               style={{ fontFamily: "var(--font-display)" }}
             >
               {tx(ap.aboutValuesTitle, t("about.values.title"))}
@@ -319,18 +319,18 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             {values.map((val, i) => (
               <Reveal key={val.title} delay={i * 100}>
-                <div className="group bg-white rounded-2xl p-7 border border-gray-100 hover:shadow-xl hover:shadow-[#1E5EF3]/10 hover:border-[#1E5EF3]/40 hover:-translate-y-1.5 transition-all duration-300 h-full relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-16 h-16 rounded-full bg-[#1E5EF3]/5 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <span className="relative inline-flex w-12 h-12 items-center justify-center rounded-xl bg-[#EFF3FB] text-2xl group-hover:bg-[#1E5EF3] group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-sm">
+                <div className="group bg-white rounded-[28px] p-7 border border-[#d6d6d6] hover:shadow-xl hover:shadow-[#0071e3]/10 hover:border-[#0071e3]/40 hover:-translate-y-1.5 transition-all duration-300 h-full relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-16 h-16 rounded-full bg-[#0071e3]/5 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <span className="relative inline-flex w-12 h-12 items-center justify-center rounded-[10px] bg-[#f5f5f7] text-2xl group-hover:bg-[#0071e3] group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-sm">
                     {val.icon}
                   </span>
                   <h3
-                    className="relative text-lg font-bold text-[#0A2463] mt-4 mb-2 group-hover:text-[#1E5EF3] transition-colors"
+                    className="relative text-lg font-bold text-[#1d1d1f] mt-4 mb-2 group-hover:text-[#0071e3] transition-colors"
                     style={{ fontFamily: "var(--font-display)" }}
                   >
                     {val.title}
                   </h3>
-                  <p className="relative text-sm text-gray-500 leading-relaxed font-sans">{val.desc}</p>
+                  <p className="relative text-sm text-[#474747] leading-relaxed font-sans">{val.desc}</p>
                 </div>
               </Reveal>
             ))}
@@ -343,13 +343,13 @@ export default function AboutPage() {
         <div className="max-w-4xl mx-auto px-6">
           <Reveal className="text-center mb-14">
             <span
-              className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#1E5EF3]"
+              className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0071e3]"
               style={{ fontFamily: "var(--font-display)" }}
             >
               {tx(ap.aboutHistorySubtitle, t("about.history.subtitle"))}
             </span>
             <h2
-              className="text-4xl font-bold text-[#0A2463] mt-3"
+              className="text-4xl font-bold text-[#1d1d1f] mt-3"
               style={{ fontFamily: "var(--font-display)" }}
             >
               {tx(ap.aboutHistoryTitle, t("about.history.title"))}
@@ -357,7 +357,7 @@ export default function AboutPage() {
           </Reveal>
           <div className="relative">
             {/* Ligne dégradée animée */}
-            <div className="absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2 bg-gradient-to-b from-[#1E5EF3]/40 via-[#E2E8F0] to-transparent" />
+            <div className="absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2 bg-gradient-to-b from-[#0071e3]/40 via-[#E2E8F0] to-transparent" />
             <div className="space-y-10">
               {milestones.map((m, i) => {
                 const left = i % 2 === 0
@@ -369,19 +369,19 @@ export default function AboutPage() {
                       }`}
                     >
                       <div className={`flex-1 ${i % 2 !== 0 ? "md:text-right" : ""}`}>
-                        <div className="group bg-[#F9FAFB] rounded-2xl border border-gray-100 p-5 hover:border-[#1E5EF3]/40 hover:bg-white hover:shadow-lg hover:shadow-[#1E5EF3]/10 transition-all duration-300">
-                          <span className="inline-flex items-center gap-2 text-[10px] font-bold tracking-widest text-[#1E5EF3] font-display">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#1E5EF3] animate-pulse-dot" />
+                        <div className="group bg-[#f5f5f7] rounded-[28px] border border-[#d6d6d6] p-5 hover:border-[#0071e3]/40 hover:bg-white hover:shadow-lg hover:shadow-[#0071e3]/10 transition-all duration-300">
+                          <span className="inline-flex items-center gap-2 text-[10px] font-bold tracking-widest text-[#0071e3] font-display">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#0071e3] animate-pulse-dot" />
                             {m.year}
                           </span>
-                          <h4 className="font-bold text-[#0A2463] mt-1.5 font-display text-base group-hover:text-[#1E5EF3] transition-colors">
+                          <h4 className="font-bold text-[#1d1d1f] mt-1.5 font-display text-base group-hover:text-[#0071e3] transition-colors">
                             {m.title}
                           </h4>
-                          <p className="text-xs text-gray-500 mt-2 leading-relaxed font-sans">{m.desc}</p>
+                          <p className="text-xs text-[#474747] mt-2 leading-relaxed font-sans">{m.desc}</p>
                         </div>
                       </div>
                       <div className="relative z-10 flex-shrink-0 mt-6 hidden md:block">
-                        <div className="w-4 h-4 rounded-full bg-[#1E5EF3] border-4 border-white shadow-md group-hover:scale-125 transition-transform" />
+                        <div className="w-4 h-4 rounded-full bg-[#0071e3] border-4 border-white shadow-md group-hover:scale-125 transition-transform" />
                       </div>
                       <div className="flex-1 hidden md:block" />
                     </div>
@@ -394,12 +394,10 @@ export default function AboutPage() {
       </section>
 
       {/* ═══════════ CTA FINAL ═══════════ */}
-      <section className="py-20 bg-[#F9FAFB]">
+      <section className="py-20 bg-[#f5f5f7]">
         <div className="max-w-7xl mx-auto px-6">
           <Reveal>
-            <div className="relative rounded-3xl bg-gradient-to-br from-[#0A2463] to-[#1E5EF3] p-12 lg:p-16 text-center overflow-hidden shadow-2xl shadow-[#0A2463]/30">
-              <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-[#1E5EF3]/40 blur-3xl" />
-              <div className="absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-white/10 blur-3xl" />
+            <div className="relative rounded-[28px] bg-[#1d1d1f] p-12 lg:p-16 text-center overflow-hidden">
               <div className="relative">
                 <h2
                   className="text-3xl lg:text-5xl font-bold text-white"
@@ -417,14 +415,14 @@ export default function AboutPage() {
                 <div className="flex flex-wrap justify-center gap-4 mt-8">
                   <Link
                     to="/produits"
-                    className="group inline-flex items-center gap-2 bg-white text-[#0A2463] font-semibold px-8 py-4 rounded-xl text-sm font-sans hover:bg-blue-50 hover:-translate-y-0.5 transition-all shadow-xl"
+                    className="group inline-flex items-center gap-2 bg-white text-[#1d1d1f] font-semibold px-8 py-4 rounded-full text-sm font-sans hover:bg-[#f5f5f7] transition-colors"
                   >
                     {tx(ap.aboutCtaButton1, t("about.cta.button", { defaultValue: "Découvrir le catalogue" }))}
                     <ArrowIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                   </Link>
                   <Link
                     to="/support"
-                    className="inline-flex items-center gap-2 text-white border border-white/40 font-medium px-8 py-4 rounded-xl text-sm font-sans hover:bg-white/10 hover:-translate-y-0.5 transition-all backdrop-blur-sm"
+                    className="inline-flex items-center gap-2 text-white border border-white/40 font-medium px-8 py-4 rounded-full text-sm font-sans hover:bg-white/10 transition-colors backdrop-blur-sm"
                   >
                     {tx(ap.aboutCtaButton2, t("about.cta.support", { defaultValue: "Contacter le SAV" }))}
                   </Link>

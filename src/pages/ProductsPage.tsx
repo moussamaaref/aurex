@@ -52,7 +52,7 @@ function EnergyBadge({ cls }: { cls: string }) {
           : "bg-yellow-500"
   return (
     <span
-      className={`${color} text-white text-[10px] font-bold px-1.5 py-0.5 rounded-md font-display tracking-wider shadow-sm`}
+      className={`${color} text-white text-[10px] font-bold px-1.5 py-0.5 rounded-[10px] font-display tracking-wider shadow-sm`}
     >
       {cls}
     </span>
@@ -74,14 +74,14 @@ function TaxoSelect({
   options: Array<{ value: string; label: string }>
 }) {
   return (
-    <div className="border-t border-slate-100 pt-5">
-      <label className="mb-3 block text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400 font-display">
+    <div className="border-t border-[#d6d6d6] pt-5">
+      <label className="mb-3 block text-[11px] font-bold uppercase tracking-[0.18em] text-[#707070] font-display">
         {label}
       </label>
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 outline-none focus:border-[var(--color-accent)]"
+        className="w-full rounded-[10px] border border-[#d6d6d6] bg-[#f5f5f7] px-3 py-2 text-sm text-[#333336] outline-none focus:border-[var(--color-accent)]"
       >
         <option value="">{allLabel}</option>
         {options.map((o) => (
@@ -299,7 +299,7 @@ export default function ProductsPage() {
   const smartIcon = "w-3.5 h-3.5"
 
   return (
-    <div className="min-h-screen bg-slate-50 pt-24">
+    <div className="min-h-screen bg-[#f5f5f7] pt-24">
       {/* ══ Hero catégorie / titre général ══ */}
       {currentCategory ? (
         <section
@@ -325,7 +325,7 @@ export default function ProductsPage() {
         </section>
       ) : (
         <section className="relative overflow-hidden bg-[var(--color-primary)] text-white">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(30,94,243,0.5),transparent_40%),linear-gradient(120deg,#061540,var(--color-primary))]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(30,94,243,0.5),transparent_40%),linear-gradient(120deg,#1d1d1f,var(--color-primary))]" />
           <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-[var(--color-accent)]/10 blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
           <div className="absolute bottom-0 left-1/4 h-56 w-56 rounded-full bg-cyan-400/10 blur-3xl pointer-events-none" />
           <div
@@ -368,11 +368,11 @@ export default function ProductsPage() {
         <div className="mb-8 flex flex-wrap gap-2">
           <Link
             to="/produits"
-            className={`rounded-xl px-5 py-2.5 text-sm font-semibold transition-all font-sans ${
-              !category
-                ? "bg-[var(--color-primary)] text-white shadow-lg shadow-blue-900/20"
-                : "bg-white text-slate-500 hover:bg-slate-50 hover:text-[var(--color-primary)] hover:shadow-sm"
-            }`}
+                className={`rounded-full px-5 py-2.5 text-sm font-semibold transition-all font-sans ${
+                  !category
+                    ? "bg-[var(--color-accent)] text-white"
+                    : "bg-white text-[#474747] hover:bg-[#f5f5f7] hover:text-[var(--color-primary)]"
+                }`}
           >
             {t("common.all")}
           </Link>
@@ -383,11 +383,10 @@ export default function ProductsPage() {
               <Link
                 key={cat.slug}
                 to={`/produits/${cat.slug}`}
-                style={isActive ? { backgroundColor: color } : undefined}
-                className={`rounded-xl px-5 py-2.5 text-sm font-semibold transition-all font-sans ${
+                className={`rounded-full px-5 py-2.5 text-sm font-semibold transition-all font-sans ${
                   isActive
-                    ? "text-white shadow-lg shadow-blue-900/20"
-                    : "bg-white text-slate-500 hover:bg-slate-50 hover:text-[var(--color-primary)] hover:shadow-sm"
+                    ? "text-white bg-[var(--color-accent)]"
+                    : "bg-white text-[#474747] hover:bg-[#f5f5f7] hover:text-[var(--color-primary)]"
                 }`}
               >
                 {!isActive && (
@@ -405,7 +404,7 @@ export default function ProductsPage() {
         <div className="flex gap-8">
           {/* ══ Sidebar filtres ══ */}
           <aside className="hidden w-60 flex-shrink-0 lg:block">
-            <div className="sticky top-24 rounded-2xl border border-slate-100 bg-white shadow-sm overflow-hidden">
+            <div className="sticky top-24 rounded-[28px] border border-[#d6d6d6] bg-white shadow-sm overflow-hidden">
               {/* En-tête sidebar */}
               <div className="px-5 py-4 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)] text-white">
                 <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-200" style={{ fontFamily: "var(--font-display)" }}>
@@ -415,15 +414,15 @@ export default function ProductsPage() {
               <div className="p-5 space-y-6">
                 <div className="space-y-2.5">
                   {energyClasses.map((cls) => (
-                    <label key={cls} className="group flex cursor-pointer items-center gap-2.5 rounded-xl p-2 transition-colors hover:bg-slate-50">
+                    <label key={cls} className="group flex cursor-pointer items-center gap-2.5 rounded-[10px] p-2 transition-colors hover:bg-[#f5f5f7]">
                       <input
                         type="checkbox"
                         checked={selectedEnergy.includes(cls)}
                         onChange={() => toggleEnergy(cls)}
-                        className="h-4 w-4 rounded border-slate-300 text-[var(--color-accent)] accent-[var(--color-accent)]"
+                        className="h-4 w-4 rounded border-[#d6d6d6] text-[#0066cc] accent-[var(--color-accent)]"
                       />
                       <EnergyBadge cls={cls} />
-                      <span className="text-sm text-slate-600 transition-colors group-hover:text-slate-900 font-sans">
+                      <span className="text-sm text-[#333336] transition-colors group-hover:text-[#1d1d1f] font-sans">
                         {cls}
                       </span>
                     </label>
@@ -474,31 +473,31 @@ export default function ProductsPage() {
                   options={couleurOptions.map((o) => ({ value: o.id.toLowerCase(), label: ml(o.label) }))}
                 />
 
-                <div className="border-t border-slate-100 pt-5">
-                  <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400 font-display">
+                <div className="border-t border-[#d6d6d6] pt-5">
+                  <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-[#707070] font-display">
                     {t("products.filters.connectivity")}
                   </p>
-                  <label className="group flex cursor-pointer items-center gap-2.5 rounded-xl p-2 transition-colors hover:bg-slate-50">
+                  <label className="group flex cursor-pointer items-center gap-2.5 rounded-[10px] p-2 transition-colors hover:bg-[#f5f5f7]">
                     <input
                       type="checkbox"
                       checked={connectedOnly}
                       onChange={(e) => setConnectedOnly(e.target.checked)}
-                      className="h-4 w-4 rounded border-slate-300 accent-[var(--color-accent)]"
+                      className="h-4 w-4 rounded border-[#d6d6d6] accent-[var(--color-accent)]"
                     />
                     <div className="flex items-center gap-1.5">
-                      <svg className={`${smartIcon} text-[var(--color-accent)]`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <svg className={`${smartIcon} text-[#0066cc]`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
                       </svg>
-                      <span className="text-sm text-slate-600 font-sans">SmartConnect</span>
+                      <span className="text-sm text-[#333336] font-sans">SmartConnect</span>
                     </div>
                   </label>
                 </div>
 
                 {hasFilters && (
-                  <div className="border-t border-slate-100 pt-4">
+                  <div className="border-t border-[#d6d6d6] pt-4">
                     <button
                       onClick={resetFilters}
-                      className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-red-100 bg-red-50 px-3 py-2 text-xs font-semibold text-red-600 transition-all hover:bg-red-100 hover:border-red-200 font-sans"
+                      className="inline-flex w-full items-center justify-center gap-1.5 rounded-full border border-red-100 bg-red-50 px-3 py-2 text-xs font-semibold text-red-600 transition-colors hover:bg-red-100 hover:border-red-200 font-sans"
                     >
                       <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -514,11 +513,11 @@ export default function ProductsPage() {
           {/* ══ Contenu ══ */}
           <div className="min-w-0 flex-1">
             {/* Barre d'outils */}
-            <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-100 bg-white p-3 shadow-sm">
+            <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-[28px] border border-[#d6d6d6] bg-white p-3 shadow-sm">
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setFiltersOpen(true)}
-                  className="flex items-center gap-2 rounded-xl border border-slate-200 px-3.5 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 lg:hidden font-sans"
+                  className="flex items-center gap-2 rounded-full border border-[#d6d6d6] px-3.5 py-2 text-sm font-medium text-[#333336] transition-colors hover:bg-[#f5f5f7] lg:hidden font-sans"
                 >
                   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -533,7 +532,7 @@ export default function ProductsPage() {
                     <button
                       key={cls}
                       onClick={() => toggleEnergy(cls)}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-[var(--color-primary)] transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-[#f5f5f7] px-3 py-1 text-xs font-semibold text-[var(--color-primary)] transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600"
                     >
                       <EnergyBadge cls={cls} />
                       <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -548,7 +547,7 @@ export default function ProductsPage() {
                         setSelectedSousFamille("")
                         setSelectedGamme("")
                       }}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-[var(--color-primary)] transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-[#f5f5f7] px-3 py-1 text-xs font-semibold text-[var(--color-primary)] transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600"
                     >
                       {taxonomyLabel("famille", selectedFamille)}
                       <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -562,7 +561,7 @@ export default function ProductsPage() {
                         setSelectedSousFamille("")
                         setSelectedGamme("")
                       }}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-[var(--color-primary)] transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-[#f5f5f7] px-3 py-1 text-xs font-semibold text-[var(--color-primary)] transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600"
                     >
                       {taxonomyLabel("sousFamille", selectedSousFamille)}
                       <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -573,7 +572,7 @@ export default function ProductsPage() {
                   {selectedGamme && (
                     <button
                       onClick={() => setSelectedGamme("")}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-[var(--color-primary)] transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-[#f5f5f7] px-3 py-1 text-xs font-semibold text-[var(--color-primary)] transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600"
                     >
                       {taxonomyLabel("gamme", selectedGamme)}
                       <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -584,7 +583,7 @@ export default function ProductsPage() {
                   {selectedCapacite && (
                     <button
                       onClick={() => setSelectedCapacite("")}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-[var(--color-primary)] transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-[#f5f5f7] px-3 py-1 text-xs font-semibold text-[var(--color-primary)] transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600"
                     >
                       {taxonomyLabel("capacite", selectedCapacite)}
                       <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -595,7 +594,7 @@ export default function ProductsPage() {
                   {selectedCouleur && (
                     <button
                       onClick={() => setSelectedCouleur("")}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-[var(--color-primary)] transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-[#f5f5f7] px-3 py-1 text-xs font-semibold text-[var(--color-primary)] transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600"
                     >
                       {taxonomyLabel("couleur", selectedCouleur)}
                       <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -606,7 +605,7 @@ export default function ProductsPage() {
                   {connectedOnly && (
                     <button
                       onClick={() => setConnectedOnly(false)}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-[var(--color-primary)] transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-[#f5f5f7] px-3 py-1 text-xs font-semibold text-[var(--color-primary)] transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600"
                     >
                       SmartConnect
                       <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -621,14 +620,14 @@ export default function ProductsPage() {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 outline-none transition focus:border-[var(--color-accent)] focus:ring-4 focus:ring-blue-100 font-sans hover:bg-slate-100 cursor-pointer"
+                  className="rounded-[10px] border border-[#d6d6d6] bg-[#f5f5f7] px-3 py-2 text-sm text-[#333336] outline-none transition focus:border-[var(--color-accent)] focus:ring-4 focus:ring-blue-100 font-sans hover:bg-white cursor-pointer"
                 >
                   {sortOptions.map((opt) => (
                     <option key={opt.value} value={opt.value}>{opt.label}</option>
                   ))}
                 </select>
 
-                <div className="flex overflow-hidden rounded-xl border border-slate-200">
+                <div className="flex overflow-hidden rounded-full border border-[#d6d6d6]">
                   {(["grid", "list"] as const).map((mode) => (
                     <button
                       key={mode}
@@ -637,7 +636,7 @@ export default function ProductsPage() {
                       className={`p-2.5 transition-colors ${
                         viewMode === mode
                           ? "bg-[var(--color-primary)] text-white"
-                          : "bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+                          : "bg-[#f5f5f7] text-[#707070] hover:bg-white hover:text-[#333336]"
                       }`}
                     >
                       {mode === "grid" ? (
@@ -657,20 +656,20 @@ export default function ProductsPage() {
 
             {/* ══ Grille / Liste ══ */}
             {filtered.length === 0 ? (
-              <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-white py-24 text-center">
+              <div className="flex flex-col items-center justify-center rounded-[28px] border border-dashed border-[#d6d6d6] bg-white py-24 text-center">
                 <div className="relative w-20 h-20 mb-6 mx-auto">
-                  <div className="absolute inset-0 rounded-2xl bg-[var(--color-accent)]/10 blur-lg" />
-                  <div className="relative w-20 h-20 bg-[#EFF3FB] rounded-2xl flex items-center justify-center border border-blue-100 shadow-sm">
-                    <svg className="h-10 w-10 text-[var(--color-accent)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <div className="absolute inset-0 rounded-[28px] bg-[var(--color-accent)]/10 blur-lg" />
+                  <div className="relative w-20 h-20 bg-[#f5f5f7] rounded-[28px] flex items-center justify-center border border-[#d6d6d6] shadow-sm">
+                    <svg className="h-10 w-10 text-[#0066cc]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                     </svg>
                   </div>
                 </div>
                 <p className="text-xl font-bold text-[var(--color-primary)] font-display">{t("products.noResults")}</p>
-                <p className="mt-2 max-w-sm text-sm text-slate-500 font-sans leading-relaxed">{t("products.noResultsDesc")}</p>
+                <p className="mt-2 max-w-sm text-sm text-[#474747] font-sans leading-relaxed">{t("products.noResultsDesc")}</p>
                 <button
                   onClick={resetFilters}
-                  className="mt-8 rounded-xl bg-[var(--color-primary)] px-7 py-3.5 text-sm font-semibold text-white transition-all hover:bg-[#061540] hover:-translate-y-0.5 hover:shadow-lg hover:shadow-blue-900/20"
+                  className="mt-8 rounded-full bg-[var(--color-accent)] px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#0063bf]"
                 >
                   {t("common.resetFilters")}
                 </button>
@@ -681,9 +680,9 @@ export default function ProductsPage() {
                   <Link
                     key={product.id}
                     to={productUrl(product)}
-                    className="group overflow-hidden rounded-2xl border border-slate-100 bg-white transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-100/50 hover:shadow-2xl hover:shadow-blue-900/12 flex flex-col"
+                    className="group overflow-hidden rounded-[28px] border border-[#d6d6d6] bg-white transition-all duration-300 hover:-translate-y-1.5 hover:border-[#d6d6d6]/50 hover:shadow-2xl hover:shadow-blue-900/12 flex flex-col"
                   >
-                    <div className="relative aspect-square overflow-hidden bg-slate-100 flex-shrink-0">
+                    <div className="relative aspect-square overflow-hidden bg-white flex-shrink-0">
                       <img
                         src={product.image}
                         alt={ml(product.name)}
@@ -695,7 +694,7 @@ export default function ProductsPage() {
                         {product.badges.map((badge) => (
                           <span
                             key={ml(badge)}
-                            className={`rounded-md px-2 py-1 text-[10px] font-bold tracking-wider shadow-sm backdrop-blur-sm ${badgeStyle(ml(badge))}`}
+                            className={`rounded-[10px] px-2 py-1 text-[10px] font-bold tracking-wider shadow-sm backdrop-blur-sm ${badgeStyle(ml(badge))}`}
                           >
                             {ml(badge)}
                           </span>
@@ -720,19 +719,19 @@ export default function ProductsPage() {
                       </div>
                     </div>
                     <div className="p-4 flex flex-col flex-1">
-                      <p className="mb-1 font-mono text-[10px] uppercase tracking-widest text-slate-400">{product.reference}</p>
-                      <h3 className="mb-2 line-clamp-2 text-sm font-semibold leading-snug text-slate-900 transition-colors group-hover:text-[var(--color-primary)]">
+                      <p className="mb-1 font-mono text-[10px] uppercase tracking-widest text-[#707070]">{product.reference}</p>
+                      <h3 className="mb-2 line-clamp-2 text-sm font-semibold leading-snug text-[#1d1d1f] transition-colors group-hover:text-[var(--color-primary)]">
                         {ml(product.name)}
                       </h3>
                       <div className="mb-3 flex flex-wrap items-center gap-2">
                         <EnergyBadge cls={product.energyClass} />
                         {ml(product.capacity) && (
-                          <span className="text-xs text-slate-500 font-sans bg-slate-50 border border-slate-100 px-2 py-0.5 rounded-md">{ml(product.capacity)}</span>
+                          <span className="text-xs text-[#474747] font-sans bg-[#f5f5f7] border border-[#d6d6d6] px-2 py-0.5 rounded-[10px]">{ml(product.capacity)}</span>
                         )}
                       </div>
-                      <div className="mt-auto border-t border-slate-50 pt-3">
+                      <div className="mt-auto border-t border-[#d6d6d6] pt-3">
                         <div className="mb-3 flex items-center justify-end">
-                          <span className="flex items-center gap-1 text-xs font-semibold text-[var(--color-accent)] transition-all group-hover:gap-2">
+                          <span className="flex items-center gap-1 text-xs font-semibold text-[#0066cc] transition-all group-hover:gap-2">
                             {t("common.view")}
                             <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12l-7.5 7.5M21 12H3" />
@@ -751,9 +750,9 @@ export default function ProductsPage() {
                   <Link
                     key={product.id}
                     to={productUrl(product)}
-                    className="group flex flex-col sm:flex-row gap-5 rounded-2xl border border-slate-100 bg-white p-4 transition-all duration-300 hover:-translate-y-1 hover:border-blue-100/50 hover:shadow-xl hover:shadow-blue-900/12"
+                    className="group flex flex-col sm:flex-row gap-5 rounded-[28px] border border-[#d6d6d6] bg-white p-4 transition-all duration-300 hover:-translate-y-1 hover:border-[#d6d6d6]/50 hover:shadow-xl hover:shadow-blue-900/12"
                   >
-                    <div className="relative h-48 w-full sm:h-36 sm:w-36 flex-shrink-0 overflow-hidden rounded-xl bg-slate-100">
+                    <div className="relative h-48 w-full sm:h-36 sm:w-36 flex-shrink-0 overflow-hidden rounded-[10px] bg-white">
                       <img
                         src={product.image}
                         alt={ml(product.name)}
@@ -764,34 +763,34 @@ export default function ProductsPage() {
                     <div className="min-w-0 flex-1 flex flex-col justify-center">
                       <div className="flex items-start justify-between gap-4">
                         <div>
-                          <p className="font-mono text-[10px] uppercase tracking-widest text-slate-400">{product.reference}</p>
-                          <h3 className="mt-1 text-base font-semibold text-slate-900 transition-colors group-hover:text-[var(--color-primary)]">
+                          <p className="font-mono text-[10px] uppercase tracking-widest text-[#707070]">{product.reference}</p>
+                          <h3 className="mt-1 text-base font-semibold text-[#1d1d1f] transition-colors group-hover:text-[var(--color-primary)]">
                             {ml(product.name)}
                           </h3>
                         </div>
                         <div className="flex flex-shrink-0 flex-col items-end gap-1.5">
                           {product.badges.map((badge) => (
-                            <span key={ml(badge)} className={`rounded-md px-2 py-0.5 text-[10px] font-bold tracking-wider ${badgeStyle(ml(badge))}`}>
+                            <span key={ml(badge)} className={`rounded-[10px] px-2 py-0.5 text-[10px] font-bold tracking-wider ${badgeStyle(ml(badge))}`}>
                               {ml(badge)}
                             </span>
                           ))}
                         </div>
                       </div>
-                      <p className="mt-2 line-clamp-2 text-sm text-slate-500 leading-relaxed max-w-2xl">{ml(product.description)}</p>
+                      <p className="mt-2 line-clamp-2 text-sm text-[#474747] leading-relaxed max-w-2xl">{ml(product.description)}</p>
                       <div className="mt-4 flex flex-wrap items-center gap-3">
                         <EnergyBadge cls={product.energyClass} />
-                        {ml(product.capacity) && <span className="text-xs text-slate-500 bg-slate-50 border border-slate-100 px-2 py-0.5 rounded-md">{ml(product.capacity)}</span>}
+                        {ml(product.capacity) && <span className="text-xs text-[#474747] bg-[#f5f5f7] border border-[#d6d6d6] px-2 py-0.5 rounded-[10px]">{ml(product.capacity)}</span>}
                         {product.connectivity && (
-                          <span className="flex items-center gap-1.5 text-xs font-medium text-[var(--color-accent)] bg-blue-50 px-2.5 py-1 rounded-md">
+                          <span className="flex items-center gap-1.5 text-xs font-medium text-[#0066cc] bg-[#f5f5f7] px-2.5 py-1 rounded-[10px]">
                             <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] animate-pulse" />
                             SmartConnect
                           </span>
                         )}
                       </div>
                     </div>
-                    <div className="flex flex-col items-end justify-between sm:w-48 sm:pl-4 sm:border-l border-slate-100">
+                    <div className="flex flex-col items-end justify-between sm:w-48 sm:pl-4 sm:border-l border-[#d6d6d6]">
                       <div className="flex flex-col items-end w-full">
-                        <span className="flex items-center gap-1 text-xs font-semibold text-[var(--color-accent)] transition-all group-hover:gap-2">
+                        <span className="flex items-center gap-1 text-xs font-semibold text-[#0066cc] transition-all group-hover:gap-2">
                           {t("common.view")}
                           <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12l-7.5 7.5M21 12H3" />
@@ -816,7 +815,7 @@ export default function ProductsPage() {
           <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
               <p className="flex items-center gap-2 text-sm font-bold text-white">
-                <svg className="h-4 w-4 text-[var(--color-accent)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg className="h-4 w-4 text-[#0066cc]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
                 </svg>
                 {t("comparator.countShort")}
@@ -837,8 +836,8 @@ export default function ProductsPage() {
               {Array.from({ length: max }, (_, index) => {
                 const product = selectedProducts[index]
                 return product ? (
-                  <div key={product.id} className="flex min-w-0 items-center gap-2 rounded-xl border border-white/10 bg-white/10 backdrop-blur-sm p-2">
-                    <img src={product.image} alt={ml(product.name)} className="h-12 w-12 flex-shrink-0 rounded-lg object-cover" />
+                  <div key={product.id} className="flex min-w-0 items-center gap-2 rounded-[10px] border border-white/10 bg-white/10 backdrop-blur-sm p-2">
+                    <img src={product.image} alt={ml(product.name)} className="h-12 w-12 flex-shrink-0 rounded-[10px] object-cover" />
                     <span className="min-w-0 flex-1">
                       <span className="block truncate font-mono text-[9px] uppercase tracking-wider text-blue-300/60">{product.reference}</span>
                       <span className="mt-1 block line-clamp-2 text-xs font-semibold leading-snug text-white">{ml(product.name)}</span>
@@ -853,7 +852,7 @@ export default function ProductsPage() {
                     </button>
                   </div>
                 ) : (
-                  <div key={`empty-${index}`} className="flex min-h-[76px] min-w-0 items-center justify-center rounded-xl border border-dashed border-white/15 px-3 py-4 text-center text-xs font-medium text-blue-200/40">
+                  <div key={`empty-${index}`} className="flex min-h-[76px] min-w-0 items-center justify-center rounded-[10px] border border-dashed border-white/15 px-3 py-4 text-center text-xs font-medium text-blue-200/40">
                     {t("comparator.addMoreCta")}
                   </div>
                 )
@@ -861,9 +860,9 @@ export default function ProductsPage() {
             </div>
             <Link
               to="/comparateur"
-              className={`mt-3 flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-bold transition-all ${
+              className={`mt-3 flex w-full items-center justify-center gap-2 rounded-full px-5 py-3.5 text-sm font-bold transition-colors ${
                 selectedProducts.length > 1
-                  ? "bg-[var(--color-accent)] text-white shadow-lg shadow-[var(--color-accent)]/30 hover:-translate-y-0.5 hover:bg-[#1a51d4] hover:shadow-xl"
+                  ? "bg-[var(--color-accent)] text-white shadow-lg shadow-[var(--color-accent)]/30 hover:-translate-y-0.5 hover:bg-[#0063bf] hover:shadow-xl"
                   : "pointer-events-none bg-white/10 text-white/30"
               }`}
               aria-disabled={selectedProducts.length < 2}
@@ -882,10 +881,10 @@ export default function ProductsPage() {
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="absolute inset-0 bg-[var(--color-primary)]/40 backdrop-blur-sm" onClick={() => setFiltersOpen(false)} />
           <div className="animate-slide-up absolute bottom-0 left-0 right-0 rounded-t-3xl bg-white p-6 shadow-2xl">
-            <div className="mx-auto mb-6 h-1.5 w-12 rounded-full bg-slate-200" />
+            <div className="mx-auto mb-6 h-1.5 w-12 rounded-full bg-[#d6d6d6]" />
             <div className="mb-6 flex items-center justify-between">
               <h3 className="text-xl font-bold text-[var(--color-primary)] font-display">{t("products.mobileFilters")}</h3>
-              <button onClick={() => setFiltersOpen(false)} className="rounded-full p-2 text-slate-400 transition-colors hover:bg-slate-100">
+              <button onClick={() => setFiltersOpen(false)} className="rounded-full p-2 text-[#707070] transition-colors hover:bg-white">
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -893,7 +892,7 @@ export default function ProductsPage() {
             </div>
             <div className="space-y-6">
               <div>
-                <h4 className="mb-4 text-xs font-bold uppercase tracking-widest text-slate-400 font-display">
+                <h4 className="mb-4 text-xs font-bold uppercase tracking-widest text-[#707070] font-display">
                   {t("products.filters.energyClass")}
                 </h4>
                 <div className="flex flex-wrap gap-2.5">
@@ -901,10 +900,10 @@ export default function ProductsPage() {
                     <button
                       key={cls}
                       onClick={() => toggleEnergy(cls)}
-                      className={`rounded-xl border px-4 py-2.5 text-sm font-semibold transition-colors font-sans flex items-center gap-2 ${
+                      className={`rounded-full border px-4 py-2.5 text-sm font-semibold transition-colors font-sans flex items-center gap-2 ${
                         selectedEnergy.includes(cls)
                           ? "border-[var(--color-primary)] bg-[var(--color-primary)] text-white shadow-md shadow-[var(--color-primary)]/20"
-                          : "border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300 hover:bg-slate-100"
+                          : "border-[#d6d6d6] bg-[#f5f5f7] text-[#333336] hover:border-[#d6d6d6] hover:bg-white"
                       }`}
                     >
                       <EnergyBadge cls={cls} />
@@ -913,7 +912,7 @@ export default function ProductsPage() {
                   ))}
                 </div>
               </div>
-              <div className="border-t border-slate-100 pt-2">
+              <div className="border-t border-[#d6d6d6] pt-2">
                 <TaxoSelect
                   label={t("products.filters.famille")}
                   value={selectedFamille}
@@ -957,21 +956,21 @@ export default function ProductsPage() {
                   options={couleurOptions.map((o) => ({ value: o.id.toLowerCase(), label: ml(o.label) }))}
                 />
               </div>
-              <div className="border-t border-slate-100 pt-6">
-                <label className="flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <div className="border-t border-[#d6d6d6] pt-6">
+                <label className="flex cursor-pointer items-center justify-between gap-3 rounded-[10px] border border-[#d6d6d6] bg-[#f5f5f7] p-4">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-[var(--color-accent)]">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-[#0066cc]">
                       <svg className={smartIcon} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
                       </svg>
                     </div>
-                    <span className="text-sm font-semibold text-slate-700 font-sans">{t("products.smartConnectOnly")}</span>
+                    <span className="text-sm font-semibold text-[#333336] font-sans">{t("products.smartConnectOnly")}</span>
                   </div>
                   <input
                     type="checkbox"
                     checked={connectedOnly}
                     onChange={(e) => setConnectedOnly(e.target.checked)}
-                    className="h-5 w-5 rounded border-slate-300 accent-[var(--color-accent)]"
+                    className="h-5 w-5 rounded border-[#d6d6d6] accent-[var(--color-accent)]"
                   />
                 </label>
               </div>
@@ -979,14 +978,14 @@ export default function ProductsPage() {
               <div className="flex flex-col gap-3 pt-2">
                 <button
                   onClick={() => setFiltersOpen(false)}
-                  className="w-full rounded-xl bg-[var(--color-primary)] py-4 text-sm font-bold text-white transition-all hover:bg-[#061540] hover:-translate-y-0.5 hover:shadow-lg shadow-[var(--color-primary)]/20 font-sans"
+                  className="w-full rounded-full bg-[var(--color-accent)] py-4 text-sm font-bold text-white transition-colors hover:bg-[#0063bf] font-sans"
                 >
                   {t("products.viewResults", { count: filtered.length })}
                 </button>
                 {hasFilters && (
                   <button
                     onClick={resetFilters}
-                    className="w-full rounded-xl bg-red-50 py-3 text-sm font-semibold text-red-600 transition-colors hover:bg-red-100 font-sans"
+                    className="w-full rounded-full bg-red-50 py-3 text-sm font-semibold text-red-600 transition-colors hover:bg-red-100 font-sans"
                   >
                     {t("common.resetFilters")}
                   </button>

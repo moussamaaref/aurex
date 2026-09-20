@@ -381,7 +381,7 @@ export const defaultPages = {
 
 export type PagesState = typeof defaultPages
 
-export const defaultTheme = { primary: "#0A2463", accent: "#1E5EF3", surface: "#F9FAFB" }
+export const defaultTheme = { primary: "#1d1d1f", accent: "#0071e3", surface: "#f5f5f7" }
 
 export type ThemeState = typeof defaultTheme
 

@@ -115,7 +115,7 @@ export default function ComparePage() {
         label: t("comparator.rows.reference"),
         raw: (p) => p.reference,
         render: (p) => (
-          <span className="font-mono text-xs text-gray-500">{p.reference}</span>
+          <span className="font-mono text-xs text-[#474747]">{p.reference}</span>
         ),
       },
       {
@@ -123,7 +123,7 @@ export default function ComparePage() {
         label: t("comparator.rows.category"),
         raw: (p) => catLabel(p),
         render: (p) => (
-          <span className="text-sm font-medium text-gray-700">
+          <span className="text-sm font-medium text-[#333336]">
             {catLabel(p)}
           </span>
         ),
@@ -138,7 +138,7 @@ export default function ComparePage() {
         render: (p) => {
           const f = productFamille(p)
           return (
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm font-medium text-[#333336]">
               {f ? ml(f.name) : EMPTY}
             </span>
           )
@@ -154,7 +154,7 @@ export default function ComparePage() {
         render: (p) => {
           const s = productSousFamille(p)
           return (
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm font-medium text-[#333336]">
               {s ? ml(s.name) : EMPTY}
             </span>
           )
@@ -170,7 +170,7 @@ export default function ComparePage() {
         render: (p) => {
           const g = productGamme(p)
           return (
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm font-medium text-[#333336]">
               {g ? ml(g.name) : EMPTY}
             </span>
           )
@@ -187,7 +187,7 @@ export default function ComparePage() {
               {vals.map((v) => (
                 <span
                   key={v.id}
-                  className="text-xs font-medium text-[#0A2463] bg-[#EFF3FB] border border-blue-100 rounded-full px-2 py-0.5 font-sans"
+                  className="text-xs font-medium text-[#1d1d1f] bg-[#f5f5f7] border border-[#d6d6d6] rounded-full px-2 py-0.5 font-sans"
                 >
                   {ml(v.label)}
                 </span>
@@ -209,7 +209,7 @@ export default function ComparePage() {
               {vals.map((v) => (
                 <span
                   key={v.id}
-                  className="text-xs font-medium text-[#0A2463] bg-[#EFF3FB] border border-blue-100 rounded-full px-2 py-0.5 font-sans"
+                  className="text-xs font-medium text-[#1d1d1f] bg-[#f5f5f7] border border-[#d6d6d6] rounded-full px-2 py-0.5 font-sans"
                 >
                   {ml(v.label)}
                 </span>
@@ -230,14 +230,14 @@ export default function ComparePage() {
               {p.badges.map((badge) => (
                 <span
                   key={ml(badge)}
-                  className="text-[10px] font-bold px-2 py-0.5 rounded font-display tracking-wider bg-[#0A2463] text-white"
+                  className="text-[10px] font-bold px-2 py-0.5 rounded font-display tracking-wider bg-[#1d1d1f] text-white"
                 >
                   {ml(badge)}
                 </span>
               ))}
             </div>
           ) : (
-            <span className="text-sm text-gray-400 font-sans">
+            <span className="text-sm text-[#707070] font-sans">
               {t("comparator.rows.noStatus")}
             </span>
           ),
@@ -261,7 +261,7 @@ export default function ComparePage() {
         render: (p) => (
           <span className="flex items-center gap-2">
             <EnergyBadge cls={p.energyClass} />
-            <span className="text-sm text-gray-700">{p.energyClass}</span>
+            <span className="text-sm text-[#333336]">{p.energyClass}</span>
           </span>
         ),
       },
@@ -273,7 +273,7 @@ export default function ComparePage() {
           p.connectivity ? (
             <span className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-800">
               <svg
-                className="w-4 h-4 text-[#1E5EF3]"
+                className="w-4 h-4 text-[#0071e3]"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -289,7 +289,7 @@ export default function ComparePage() {
               {t("comparator.rows.connected")}
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1.5 text-sm text-gray-500">
+            <span className="inline-flex items-center gap-1.5 text-sm text-[#474747]">
               <svg
                 className="w-4 h-4"
                 fill="none"
@@ -369,7 +369,7 @@ export default function ComparePage() {
               {p.technologies.map((tech) => (
                 <span
                   key={ml(tech)}
-                  className="text-xs font-medium text-[#0A2463] bg-[#EFF3FB] border border-blue-100 rounded-full px-2 py-0.5 font-sans"
+                  className="text-xs font-medium text-[#1d1d1f] bg-[#f5f5f7] border border-[#d6d6d6] rounded-full px-2 py-0.5 font-sans"
                 >
                   {ml(tech)}
                 </span>
@@ -523,11 +523,11 @@ export default function ComparePage() {
 
   if (selected.length === 0) {
     return (
-      <div className="min-h-screen bg-[#F9FAFB] pt-28">
+      <div className="min-h-screen bg-[#f5f5f7] pt-28">
         {/* Hero header — empty state */}
-        <div className="relative overflow-hidden bg-[#0A2463]">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(30,94,243,0.5),transparent_40%),linear-gradient(120deg,#061540,#0A2463)]" />
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-[#1E5EF3]/10 blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
+        <div className="relative overflow-hidden bg-[#1d1d1f]">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(30,94,243,0.5),transparent_40%),linear-gradient(120deg,#1d1d1f,#1d1d1f)]" />
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-[#0071e3]/10 blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
           <div
             className="absolute inset-0 opacity-[0.04] pointer-events-none"
             style={{
@@ -549,7 +549,7 @@ export default function ComparePage() {
           </div>
           <div className="relative h-8 overflow-hidden">
             <svg viewBox="0 0 1440 32" preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
-              <path d="M0,32 C360,0 1080,0 1440,32 L1440,32 L0,32 Z" fill="#F9FAFB" />
+              <path d="M0,32 C360,0 1080,0 1440,32 L1440,32 L0,32 Z" fill="#f5f5f7" />
             </svg>
           </div>
         </div>
@@ -562,11 +562,11 @@ export default function ComparePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] pt-28">
+    <div className="min-h-screen bg-[#f5f5f7] pt-28">
       {/* Hero header — with products */}
-      <div className="relative overflow-hidden bg-[#0A2463]">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(30,94,243,0.5),transparent_40%),linear-gradient(120deg,#061540,#0A2463)]" />
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-[#1E5EF3]/10 blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
+      <div className="relative overflow-hidden bg-[#1d1d1f]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(30,94,243,0.5),transparent_40%),linear-gradient(120deg,#1d1d1f,#1d1d1f)]" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-[#0071e3]/10 blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
         <div
           className="absolute inset-0 opacity-[0.04] pointer-events-none"
           style={{
@@ -592,7 +592,7 @@ export default function ComparePage() {
               className="inline-flex items-center gap-2 text-sm text-white font-sans bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-5 py-2"
               role="status"
             >
-              <span className="w-2 h-2 rounded-full bg-[#1E5EF3] animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-[#0071e3] animate-pulse" />
               <strong className="font-semibold">{selected.length}</strong>
               {" "}{selected.length === 1 ? t("comparator.countOne") : t("comparator.count", { count: selected.length })}
             </span>
@@ -605,17 +605,17 @@ export default function ComparePage() {
         </div>
         <div className="relative h-8 overflow-hidden">
           <svg viewBox="0 0 1440 32" preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
-            <path d="M0,32 C360,0 1080,0 1440,32 L1440,32 L0,32 Z" fill="#F9FAFB" />
+            <path d="M0,32 C360,0 1080,0 1440,32 L1440,32 L0,32 Z" fill="#f5f5f7" />
           </svg>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 sm:py-8">
-        <div className="flex flex-wrap items-center gap-2.5 mb-5 sm:mb-6 no-print bg-white rounded-2xl border border-gray-100 shadow-sm px-3 py-3 sm:px-4">
+        <div className="flex flex-wrap items-center gap-2.5 mb-5 sm:mb-6 no-print bg-white rounded-[28px] border border-[#d6d6d6] shadow-sm px-3 py-3 sm:px-4">
           <button
             type="button"
             onClick={copyLink}
-            className="inline-flex items-center gap-2 text-sm font-medium text-gray-700 border border-gray-200 bg-gray-50 rounded-xl px-4 py-2 hover:bg-[#EFF3FB] hover:border-[#1E5EF3]/30 hover:text-[#1E5EF3] transition-all duration-200 font-sans"
+            className="inline-flex items-center gap-2 text-sm font-medium text-[#333336] border border-[#d6d6d6] bg-[#f5f5f7] rounded-full px-4 py-2 hover:border-[#0071e3]/30 hover:text-[#0066cc] transition-colors duration-200 font-sans"
           >
             {copied ? (
               <>
@@ -659,7 +659,7 @@ export default function ComparePage() {
           <button
             type="button"
             onClick={() => window.print()}
-            className="inline-flex items-center gap-2 text-sm font-medium text-gray-700 border border-gray-200 bg-gray-50 rounded-xl px-4 py-2 hover:bg-[#EFF3FB] hover:border-[#1E5EF3]/30 hover:text-[#1E5EF3] transition-all duration-200 font-sans"
+            className="inline-flex items-center gap-2 text-sm font-medium text-[#333336] border border-[#d6d6d6] bg-[#f5f5f7] rounded-full px-4 py-2 hover:border-[#0071e3]/30 hover:text-[#0066cc] transition-colors duration-200 font-sans"
           >
             <svg
               className="w-4 h-4"
@@ -683,10 +683,10 @@ export default function ComparePage() {
             onClick={() => setHideIdentical((v) => !v)}
             aria-pressed={hideIdentical}
             title={t("comparator.hideIdenticalTitle")}
-            className={`inline-flex items-center gap-2 text-sm font-medium rounded-xl px-4 py-2 transition-all duration-200 font-sans ${
+            className={`inline-flex items-center gap-2 text-sm font-medium rounded-full px-4 py-2 transition-colors duration-200 font-sans ${
               hideIdentical
-                ? "bg-[#0A2463] text-white border border-[#0A2463] shadow-lg shadow-[#0A2463]/20"
-                : "text-gray-700 border border-gray-200 bg-gray-50 hover:bg-[#EFF3FB] hover:border-[#1E5EF3]/30 hover:text-[#1E5EF3]"
+                ? "bg-[#1d1d1f] text-white border border-[#1d1d1f] shadow-lg shadow-[#1d1d1f]/20"
+                : "text-[#333336] border border-[#d6d6d6] bg-[#f5f5f7] hover:bg-[#f5f5f7] hover:border-[#0071e3]/30 hover:text-[#0071e3]"
             }`}
           >
             <svg
@@ -728,7 +728,7 @@ export default function ComparePage() {
           <button
             type="button"
             onClick={() => setConfirmClear(true)}
-            className="inline-flex items-center gap-2 text-sm font-medium text-red-600 border border-red-100 bg-red-50 rounded-xl px-4 py-2 hover:bg-red-100 hover:border-red-200 transition-all duration-200 font-sans"
+            className="inline-flex items-center gap-2 text-sm font-medium text-red-600 border border-red-100 bg-red-50 rounded-full px-4 py-2 hover:bg-red-100 hover:border-red-200 transition-colors duration-200 font-sans"
           >
             <svg
               className="w-4 h-4"
@@ -750,7 +750,7 @@ export default function ComparePage() {
 
         {categorySet.size > 1 && (
           <div
-            className="flex items-start gap-2 text-xs text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-3 mb-6 font-sans no-print"
+            className="flex items-start gap-2 text-xs text-red-700 bg-red-50 border border-red-200 rounded-[10px] px-4 py-3 mb-6 font-sans no-print"
             role="note"
           >
             <svg
@@ -771,21 +771,21 @@ export default function ComparePage() {
           </div>
         )}
 
-        <p className="text-xs text-gray-500 mb-3 md:hidden font-sans">
+        <p className="text-xs text-[#474747] mb-3 md:hidden font-sans">
           {t("comparator.mobileHint")}
         </p>
 
         <div className="md:hidden space-y-3">
-          <div className="sticky top-[104px] z-20 -mx-4 bg-[#F9FAFB]/95 px-4 py-2 backdrop-blur-sm sm:-mx-6 sm:px-6">
+          <div className="sticky top-[104px] z-20 -mx-4 bg-[#f5f5f7]/95 px-4 py-2 backdrop-blur-sm sm:-mx-6 sm:px-6">
             <div className="overflow-x-auto overscroll-x-contain pb-1">
               <div className="flex gap-3">
                 {selected.map((p) => (
                   <div
                     key={p.id}
-                    className="w-[calc((100vw-3.5rem)/2)] min-w-[150px] max-w-[190px] shrink-0 rounded-2xl border border-gray-100 bg-white p-2.5 shadow-md sm:w-[220px] sm:p-3"
+                    className="w-[calc((100vw-3.5rem)/2)] min-w-[150px] max-w-[190px] shrink-0 rounded-[28px] border border-[#d6d6d6] bg-white p-2.5 shadow-md sm:w-[220px] sm:p-3"
                   >
                     <Link to={productUrl(p)} className="block">
-                      <div className="mb-2.5 aspect-[4/3] overflow-hidden rounded-xl bg-gray-50 sm:mb-3 sm:aspect-square">
+                      <div className="mb-2.5 aspect-[4/3] overflow-hidden rounded-[10px] bg-[#f5f5f7] sm:mb-3 sm:aspect-square">
                         <img
                           src={p.image}
                           alt={ml(p.name)}
@@ -794,10 +794,10 @@ export default function ComparePage() {
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <p className="text-[9px] text-gray-400 font-mono tracking-wider uppercase">
+                      <p className="text-[9px] text-[#707070] font-mono tracking-wider uppercase">
                         {p.reference}
                       </p>
-                      <p className="mt-1 line-clamp-2 text-[11px] font-semibold leading-snug text-gray-900 sm:text-xs">
+                      <p className="mt-1 line-clamp-2 text-[11px] font-semibold leading-snug text-[#1d1d1f] sm:text-xs">
                         {ml(p.name)}
                       </p>
                     </Link>
@@ -805,7 +805,7 @@ export default function ComparePage() {
                       <button
                         type="button"
                         onClick={() => setReplacingId(p.id)}
-                        className="flex-1 rounded-lg bg-[#EFF3FB] px-1.5 py-2 text-[10px] font-semibold text-[#1E5EF3] sm:px-2 sm:text-[11px]"
+                        className="flex-1 rounded-[10px] bg-[#f5f5f7] px-1.5 py-2 text-[10px] font-semibold text-[#0071e3] sm:px-2 sm:text-[11px]"
                       >
                         {t("comparator.replace")}
                       </button>
@@ -813,7 +813,7 @@ export default function ComparePage() {
                         type="button"
                         onClick={() => remove(p.id)}
                         aria-label={t("comparator.remove")}
-                        className="w-9 text-gray-500 border border-gray-200 rounded-lg flex items-center justify-center"
+                        className="w-9 text-[#474747] border border-[#d6d6d6] rounded-[10px] flex items-center justify-center"
                       >
                         ×
                       </button>
@@ -827,7 +827,7 @@ export default function ComparePage() {
           {selected.length === 1 && (
             <Link
               to={`/produits/${selected[0].category}`}
-              className="flex items-center justify-center gap-2 bg-white border border-dashed border-gray-300 rounded-xl px-4 py-3 text-sm font-semibold text-[#1E5EF3]"
+              className="flex items-center justify-center gap-2 bg-white border border-dashed border-gray-300 rounded-[10px] px-4 py-3 text-sm font-semibold text-[#0071e3]"
             >
               <ScaleIcon className="w-4 h-4" />
               {t("comparator.addMoreCta")}
@@ -844,20 +844,20 @@ export default function ComparePage() {
               return (
                 <div key={row.key}>
                   {group !== previousGroup && (
-                    <h2 className="text-xs font-bold uppercase tracking-[0.16em] text-[#0A2463] px-1 pt-5 pb-2">
+                    <h2 className="text-xs font-bold uppercase tracking-[0.16em] text-[#1d1d1f] px-1 pt-5 pb-2">
                       {t(`comparator.groups.${group}`)}
                     </h2>
                   )}
                   <section
-                    className={`bg-white rounded-xl border overflow-hidden ${
-                      isDiff ? "border-amber-200" : "border-gray-100"
+                    className={`bg-white rounded-[10px] border overflow-hidden ${
+                      isDiff ? "border-amber-200" : "border-[#d6d6d6]"
                     }`}
                   >
                     <h3
                       className={`px-4 py-3 text-[11px] font-bold uppercase tracking-wider ${
                         isDiff
                           ? "bg-amber-50 text-amber-800"
-                          : "bg-[#F8FAFC] text-gray-500"
+                          : "bg-[#F8FAFC] text-[#474747]"
                       }`}
                     >
                       <span className="flex items-center gap-2">
@@ -872,11 +872,11 @@ export default function ComparePage() {
                     <div
                       className={`grid ${
                         selected.length === 3 ? "grid-cols-3" : "grid-cols-2"
-                      } divide-x divide-gray-100`}
+                      } divide-x divide-[#d6d6d6]`}
                     >
                       {selected.map((p) => (
                         <div key={p.id} className="p-4 min-w-0">
-                          <p className="text-[10px] text-gray-400 font-medium truncate mb-2">
+                          <p className="text-[10px] text-[#707070] font-medium truncate mb-2">
                             {ml(p.name)}
                           </p>
                           <div className="min-h-6">{row.render(p)}</div>
@@ -893,22 +893,22 @@ export default function ComparePage() {
               )
             })
           ) : (
-            <div className="bg-white rounded-xl border border-gray-100 p-6 text-center text-sm text-gray-500">
+            <div className="bg-white rounded-[28px] border border-[#d6d6d6] p-6 text-center text-sm text-[#474747]">
               {t("comparator.allIdentical")}
             </div>
           )}
         </div>
 
-        <div className="hidden md:block bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
+        <div className="hidden md:block bg-white rounded-[28px] border border-[#d6d6d6] overflow-hidden shadow-sm">
           <div className="overflow-x-auto overscroll-x-contain">
             <table className="w-full min-w-[860px] text-sm font-sans border-collapse">
               <thead>
                 <tr>
                   <th
-                    className="sticky start-0 z-20 bg-white w-44 min-w-44 p-5 text-start align-top border-b border-gray-100"
+                    className="sticky start-0 z-20 bg-white w-44 min-w-44 p-5 text-start align-top border-b border-[#d6d6d6]"
                     scope="col"
                   >
-                    <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 font-display">
+                    <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#707070] font-display">
                       {t("comparator.attributes")}
                     </span>
                   </th>
@@ -916,10 +916,10 @@ export default function ComparePage() {
                     <th
                       key={p.id}
                       scope="col"
-                      className="min-w-[210px] w-[210px] p-5 text-start align-top border-b border-gray-100 bg-white"
+                      className="min-w-[210px] w-[210px] p-5 text-start align-top border-b border-[#d6d6d6] bg-white"
                     >
                       <div className="flex flex-col gap-3">
-                        <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-gray-50 border border-gray-100">
+                        <div className="relative w-full aspect-square rounded-[10px] overflow-hidden bg-[#f5f5f7] border border-[#d6d6d6]">
                           <Link
                             to={productUrl(p)}
                             aria-label={ml(p.name)}
@@ -934,19 +934,19 @@ export default function ComparePage() {
                             {p.badges.slice(0, 1).map((badge) => (
                               <span
                                 key={ml(badge)}
-                                className="text-[9px] font-bold px-2 py-0.5 rounded font-display tracking-wider bg-[#0A2463] text-white"
+                                className="text-[9px] font-bold px-2 py-0.5 rounded font-display tracking-wider bg-[#1d1d1f] text-white"
                               >
                                 {ml(badge)}
                               </span>
                             ))}
                           </div>
                         </div>
-                        <p className="text-[10px] text-gray-400 font-mono tracking-widest uppercase -mt-1">
+                        <p className="text-[10px] text-[#707070] font-mono tracking-widest uppercase -mt-1">
                           {p.reference}
                         </p>
                         <Link
                           to={productUrl(p)}
-                          className="text-sm font-semibold text-gray-900 hover:text-[#0A2463] transition-colors font-sans line-clamp-2 leading-snug"
+                          className="text-sm font-semibold text-[#1d1d1f] hover:text-[#1d1d1f] transition-colors font-sans line-clamp-2 leading-snug"
                         >
                           {ml(p.name)}
                         </Link>
@@ -958,7 +958,7 @@ export default function ComparePage() {
                               name: ml(p.name),
                             })}
                             title={t("comparator.replaceTitle")}
-                            className="inline-flex items-center gap-1.5 text-xs font-medium text-[#1E5EF3] hover:text-[#0A2463] border border-blue-100 bg-[#EFF3FB] rounded-lg px-2.5 py-1.5 hover:bg-[#E4ECFB] transition-colors font-sans"
+                            className="inline-flex items-center gap-1.5 text-xs font-medium text-[#0071e3] hover:text-[#1d1d1f] border border-[#d6d6d6] bg-[#f5f5f7] rounded-[10px] px-2.5 py-1.5 hover:bg-[#E4ECFB] transition-colors font-sans"
                           >
                             <svg
                               className="w-3.5 h-3.5"
@@ -979,7 +979,7 @@ export default function ComparePage() {
                           <button
                             type="button"
                             onClick={() => remove(p.id)}
-                            className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-red-600 border border-gray-200 rounded-lg px-2.5 py-1.5 hover:border-red-200 transition-colors font-sans"
+                            className="inline-flex items-center gap-1.5 text-xs font-medium text-[#474747] hover:text-red-600 border border-[#d6d6d6] rounded-[10px] px-2.5 py-1.5 hover:border-red-200 transition-colors font-sans"
                           >
                             <svg
                               className="w-3.5 h-3.5"
@@ -1004,16 +1004,16 @@ export default function ComparePage() {
                   {selected.length === 1 && (
                     <th
                       scope="col"
-                      className="min-w-[190px] p-5 align-top border-b border-gray-100 bg-white"
+                      className="min-w-[190px] p-5 align-top border-b border-[#d6d6d6] bg-white"
                     >
-                      <div className="border-2 border-dashed border-gray-200 rounded-xl h-full min-h-[300px] flex flex-col items-center justify-center gap-3 p-4 text-center">
+                      <div className="border-2 border-dashed border-[#d6d6d6] rounded-[10px] h-full min-h-[300px] flex flex-col items-center justify-center gap-3 p-4 text-center">
                         <ScaleIcon className="w-6 h-6 text-gray-300" />
-                        <p className="text-xs text-gray-500 font-sans">
+                        <p className="text-xs text-[#474747] font-sans">
                           {t("comparator.addMoreCta")}
                         </p>
                         <Link
                           to={`/produits/${selected[0].category}`}
-                          className="text-xs font-medium text-[#1E5EF3] hover:underline font-sans"
+                          className="text-xs font-medium text-[#0071e3] hover:underline font-sans"
                         >
                           {t("comparator.browse")}
                         </Link>
@@ -1036,7 +1036,7 @@ export default function ComparePage() {
                         className={`sticky start-0 z-10 w-44 min-w-44 p-5 text-start align-top text-xs font-display uppercase tracking-wide border-b border-gray-50 ${
                           isDiff
                             ? "bg-amber-50 text-amber-800 border-s-4 border-s-amber-400"
-                            : "bg-white text-gray-500"
+                            : "bg-white text-[#474747]"
                         }`}
                       >
                         <span className="flex items-center gap-2">
@@ -1093,7 +1093,7 @@ export default function ComparePage() {
                   <tr>
                     <td
                       colSpan={selected.length + 1}
-                      className="p-8 text-center text-sm text-gray-500 font-sans"
+                      className="p-8 text-center text-sm text-[#474747] font-sans"
                     >
                       {t("comparator.allIdentical")}
                     </td>
@@ -1105,10 +1105,10 @@ export default function ComparePage() {
         </div>
 
         {recommendation && (
-          <section className="mt-8 relative overflow-hidden rounded-3xl bg-[#0A2463] p-5 sm:p-8">
+          <section className="mt-8 relative overflow-hidden rounded-[28px] bg-[#1d1d1f] p-5 sm:p-8">
             {/* Décors */}
-            <div className="absolute top-0 right-0 w-56 h-56 rounded-full bg-[#1E5EF3]/20 blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-40 h-40 rounded-full bg-[#1E5EF3]/10 blur-2xl translate-y-1/2 -translate-x-1/4 pointer-events-none" />
+            <div className="absolute top-0 right-0 w-56 h-56 rounded-full bg-[#0071e3]/20 blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-40 h-40 rounded-full bg-[#0071e3]/10 blur-2xl translate-y-1/2 -translate-x-1/4 pointer-events-none" />
             <div
               className="absolute inset-0 opacity-[0.04] pointer-events-none"
               style={{
@@ -1140,7 +1140,7 @@ export default function ComparePage() {
               </div>
               <Link
                 to={productUrl(recommendation.winner)}
-                className="relative inline-flex flex-shrink-0 items-center gap-2 justify-center rounded-xl bg-white text-[#0A2463] px-6 py-3.5 text-sm font-semibold transition-all hover:bg-blue-50 hover:shadow-lg hover:-translate-y-0.5 font-sans"
+                className="relative inline-flex flex-shrink-0 items-center gap-2 justify-center rounded-full bg-white text-[#1d1d1f] px-6 py-3.5 text-sm font-semibold transition-colors hover:bg-[#f5f5f7] font-sans"
               >
                 {t("comparator.recommendation.viewProduct")}
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} aria-hidden="true">
@@ -1152,7 +1152,7 @@ export default function ComparePage() {
         )}
 
         <div
-          className="mt-4 flex items-center gap-2 text-xs text-gray-500 font-sans no-print"
+          className="mt-4 flex items-center gap-2 text-xs text-[#474747] font-sans no-print"
           aria-label={t("comparator.legend")}
         >
           <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-400 text-white text-[11px] font-bold">
@@ -1162,7 +1162,7 @@ export default function ComparePage() {
         </div>
 
         {ids.length >= max && (
-          <p className="mt-3 text-xs text-gray-500 font-sans no-print">
+          <p className="mt-3 text-xs text-[#474747] font-sans no-print">
             {t("comparator.maxReached", { max })}
           </p>
         )}
@@ -1170,7 +1170,7 @@ export default function ComparePage() {
         <div className="mt-10 no-print">
           <Link
             to="/produits"
-            className="inline-flex items-center gap-2 text-sm font-medium text-[#1E5EF3] hover:text-[#0A2463] transition-colors font-sans"
+            className="inline-flex items-center gap-2 text-sm font-medium text-[#0071e3] hover:text-[#1d1d1f] transition-colors font-sans"
           >
             <svg
               className="w-4 h-4"
@@ -1202,8 +1202,8 @@ export default function ComparePage() {
             className="absolute inset-0 bg-black/40"
             onClick={() => setConfirmClear(false)}
           />
-          <div className="relative bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm">
-            <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center mb-4">
+          <div className="relative bg-white rounded-[28px] shadow-xl p-6 w-full max-w-sm">
+            <div className="w-10 h-10 rounded-[10px] bg-red-50 flex items-center justify-center mb-4">
               <svg
                 className="w-5 h-5 text-red-600"
                 fill="none"
@@ -1220,26 +1220,26 @@ export default function ComparePage() {
               </svg>
             </div>
             <h2
-              className="text-lg font-bold text-gray-900"
+              className="text-lg font-bold text-[#1d1d1f]"
               style={{ fontFamily: "var(--font-display)" }}
             >
               {t("comparator.clearConfirm.title")}
             </h2>
-            <p className="text-sm text-gray-500 mt-2 font-sans leading-relaxed">
+            <p className="text-sm text-[#474747] mt-2 font-sans leading-relaxed">
               {t("comparator.clearConfirm.message")}
             </p>
             <div className="flex justify-end gap-3 mt-6">
               <button
                 type="button"
                 onClick={() => setConfirmClear(false)}
-                className="text-sm font-medium text-gray-600 border border-gray-200 rounded-lg px-4 py-2.5 hover:bg-gray-50 transition-colors font-sans"
+                className="text-sm font-medium text-[#333336] border border-[#d6d6d6] rounded-[10px] px-4 py-2.5 hover:bg-[#f5f5f7] transition-colors font-sans"
               >
                 {t("comparator.clearConfirm.cancel")}
               </button>
               <button
                 type="button"
                 onClick={doClear}
-                className="text-sm font-semibold text-white bg-red-600 rounded-lg px-4 py-2.5 hover:bg-red-700 transition-colors font-sans"
+                className="text-sm font-semibold text-white bg-red-600 rounded-[10px] px-4 py-2.5 hover:bg-red-700 transition-colors font-sans"
               >
                 {t("comparator.clearConfirm.confirm")}
               </button>
@@ -1261,18 +1261,18 @@ export default function ComparePage() {
             className="absolute inset-0 bg-black/40"
             onClick={() => setReplacingId(null)}
           />
-          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-lg flex flex-col max-h-[80vh]">
-            <div className="flex items-start justify-between gap-4 p-6 pb-4 border-b border-gray-100">
+          <div className="relative bg-white rounded-[28px] shadow-xl w-full max-w-lg flex flex-col max-h-[80vh]">
+            <div className="flex items-start justify-between gap-4 p-6 pb-4 border-b border-[#d6d6d6]">
               <div>
                 <h2
-                  className="text-lg font-bold text-gray-900"
+                  className="text-lg font-bold text-[#1d1d1f]"
                   style={{ fontFamily: "var(--font-display)" }}
                 >
                   {t("comparator.replaceModal.title", {
                     name: ml(replacingProduct.name),
                   })}
                 </h2>
-                <p className="text-sm text-gray-500 mt-1 font-sans">
+                <p className="text-sm text-[#474747] mt-1 font-sans">
                   {t("comparator.replaceModal.subtitle")}
                 </p>
               </div>
@@ -1280,7 +1280,7 @@ export default function ComparePage() {
                 type="button"
                 onClick={() => setReplacingId(null)}
                 aria-label={t("comparator.close")}
-                className="p-1.5 text-gray-400 hover:text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                className="p-1.5 text-[#707070] hover:text-[#333336] rounded-[10px] hover:bg-[#f5f5f7] transition-colors"
               >
                 <svg
                   className="w-5 h-5"
@@ -1301,13 +1301,13 @@ export default function ComparePage() {
             <div className="overflow-y-auto p-6">
               {replaceCandidates.length === 0 ? (
                 <div className="text-center py-8">
-                  <p className="text-sm text-gray-500 font-sans">
+                  <p className="text-sm text-[#474747] font-sans">
                     {t("comparator.replaceModal.empty")}
                   </p>
                   <Link
                     to="/produits"
                     onClick={() => setReplacingId(null)}
-                    className="inline-block mt-4 text-sm font-medium text-[#1E5EF3] hover:text-[#0A2463] font-sans"
+                    className="inline-block mt-4 text-sm font-medium text-[#0071e3] hover:text-[#1d1d1f] font-sans"
                   >
                     {t("comparator.replaceModal.browse")}
                   </Link>
@@ -1319,15 +1319,15 @@ export default function ComparePage() {
                       key={c.id}
                       type="button"
                       onClick={() => applyReplace(c.id)}
-                      className="group flex items-center gap-3 border border-gray-100 rounded-xl p-3 text-start hover:border-[#1E5EF3]/40 hover:bg-[#F7FAFF] transition-colors"
+                      className="group flex items-center gap-3 border border-[#d6d6d6] rounded-[10px] p-3 text-start hover:border-[#0071e3]/40 hover:bg-[#F7FAFF] transition-colors"
                     >
                       <img
                         src={c.image}
                         alt=""
-                        className="w-12 h-12 rounded-lg object-cover bg-gray-50 flex-shrink-0"
+                        className="w-12 h-12 rounded-[10px] object-cover bg-[#f5f5f7] flex-shrink-0"
                       />
                       <span className="flex-1 min-w-0">
-                        <span className="block text-xs font-medium text-gray-900 line-clamp-2 leading-snug font-sans">
+                        <span className="block text-xs font-medium text-[#1d1d1f] line-clamp-2 leading-snug font-sans">
                           {ml(c.name)}
                         </span>
                       </span>
@@ -1344,9 +1344,9 @@ export default function ComparePage() {
 }
 
 function EmptyBreadcrumb({ t, light }: { t: TFunction; light?: boolean }) {
-  const base = light ? "text-white/50" : "text-gray-400"
-  const hover = light ? "hover:text-white/80" : "hover:text-gray-600"
-  const active = light ? "text-white/80" : "text-gray-700"
+  const base = light ? "text-white/50" : "text-[#707070]"
+  const hover = light ? "hover:text-white/80" : "hover:text-[#333336]"
+  const active = light ? "text-white/80" : "text-[#333336]"
   return (
     <nav
       className={`flex items-center gap-2 text-xs mb-4 font-sans ${base}`}
@@ -1370,23 +1370,23 @@ function EmptyState({ t }: { t: TFunction }) {
     <div className="text-center max-w-2xl mx-auto">
       {/* Icône centrale */}
       <div className="relative w-20 h-20 mx-auto mb-6">
-        <div className="absolute inset-0 rounded-2xl bg-[#1E5EF3]/10 blur-lg" />
-        <div className="relative w-20 h-20 bg-[#EFF3FB] rounded-2xl flex items-center justify-center border border-blue-100 shadow-sm">
-          <ScaleIcon className="w-10 h-10 text-[#1E5EF3]" />
+        <div className="absolute inset-0 rounded-[28px] bg-[#0071e3]/10 blur-lg" />
+        <div className="relative w-20 h-20 bg-[#f5f5f7] rounded-[28px] flex items-center justify-center border border-[#d6d6d6] shadow-sm">
+          <ScaleIcon className="w-10 h-10 text-[#0071e3]" />
         </div>
       </div>
       <h2
-        className="text-2xl font-bold text-[#0A2463]"
+        className="text-2xl font-bold text-[#1d1d1f]"
         style={{ fontFamily: "var(--font-display)" }}
       >
         {t("comparator.empty.title")}
       </h2>
-      <p className="text-gray-500 mt-3 text-sm font-sans leading-relaxed max-w-md mx-auto">
+      <p className="text-[#474747] mt-3 text-sm font-sans leading-relaxed max-w-md mx-auto">
         {t("comparator.empty.desc")}
       </p>
       <Link
         to="/produits"
-        className="inline-flex items-center gap-2 mt-7 bg-[#0A2463] text-white font-semibold px-7 py-3.5 rounded-xl text-sm font-sans hover:bg-[#061540] transition-all hover:shadow-xl hover:shadow-[#0A2463]/20 hover:-translate-y-0.5"
+        className="inline-flex items-center gap-2 mt-7 bg-[var(--color-accent)] text-white font-semibold px-7 py-3.5 rounded-full text-sm font-sans hover:bg-[#0063bf] transition-colors"
       >
         {t("comparator.empty.browse")}
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} aria-hidden="true">
@@ -1394,7 +1394,7 @@ function EmptyState({ t }: { t: TFunction }) {
         </svg>
       </Link>
 
-      <p className="mt-14 text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-5 font-display">
+      <p className="mt-14 text-[10px] font-bold tracking-[0.2em] uppercase text-[#707070] mb-5 font-display">
         {t("comparator.empty.suggestions")}
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -1412,16 +1412,16 @@ function SuggestionCard({ product, t }: { product: Product; t: TFunction }) {
   const full = ids.length >= max && !added
 
   return (
-    <div className="flex items-center gap-4 bg-white rounded-2xl border border-gray-100 p-4 text-start hover:border-[#1E5EF3]/30 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+    <div className="flex items-center gap-4 bg-white rounded-[28px] border border-[#d6d6d6] p-4 text-start hover:border-[#0071e3]/30 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
       <div className="relative flex-shrink-0">
         <img
           src={product.image}
           alt={ml(product.name)}
-          className="w-16 h-16 rounded-xl object-cover bg-gray-50"
+          className="w-16 h-16 rounded-[10px] object-cover bg-[#f5f5f7]"
         />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-semibold text-gray-900 font-sans line-clamp-2 leading-snug">
+        <p className="text-xs font-semibold text-[#1d1d1f] font-sans line-clamp-2 leading-snug">
           {ml(product.name)}
         </p>
       </div>
@@ -1436,12 +1436,12 @@ function SuggestionCard({ product, t }: { product: Product; t: TFunction }) {
               ? t("comparator.inCompare")
               : t("comparator.addToCompare")
         }
-        className={`flex-shrink-0 inline-flex items-center gap-1 text-xs font-semibold rounded-xl px-3 py-2 border transition-all duration-200 font-sans ${
+        className={`flex-shrink-0 inline-flex items-center gap-1 text-xs font-semibold rounded-full px-3 py-2 border transition-colors duration-200 font-sans ${
           added
-            ? "bg-[#0A2463] text-white border-[#0A2463] shadow-lg shadow-[#0A2463]/20"
+            ? "bg-[#1d1d1f] text-white border-[#1d1d1f] shadow-lg shadow-[#1d1d1f]/20"
             : full
-              ? "bg-gray-50 text-gray-300 border-gray-100 cursor-not-allowed"
-              : "bg-white text-[#1E5EF3] border-[#1E5EF3]/25 hover:bg-[#EFF3FB] hover:border-[#1E5EF3]/60"
+              ? "bg-[#f5f5f7] text-gray-300 border-[#d6d6d6] cursor-not-allowed"
+              : "bg-white text-[#0071e3] border-[#0071e3]/25 hover:bg-[#f5f5f7] hover:border-[#0071e3]/60"
         }`}
       >
         {added ? t("comparator.added") : t("comparator.compare")}

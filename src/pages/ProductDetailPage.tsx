@@ -26,7 +26,7 @@ function EnergyBadge({ cls }: { cls: string }) {
           : "bg-yellow-500"
   return (
     <span
-      className={`${color} text-white text-xs font-bold px-2 py-1 rounded-md font-display tracking-wider shadow-sm`}
+      className={`${color} text-white text-xs font-bold px-2 py-1 rounded-[10px] font-display tracking-wider shadow-sm`}
     >
       {cls}
     </span>
@@ -135,18 +135,18 @@ export default function ProductDetailPage() {
           : "bg-[var(--color-accent)] text-white"
 
   return (
-    <div className="min-h-screen bg-slate-50 pt-24">
+    <div className="min-h-screen bg-[#f5f5f7] pt-24">
       {/* ══ Breadcrumb ══ */}
-      <div className="border-b border-slate-100 bg-white">
+      <div className="border-b border-[#d6d6d6] bg-white">
         <div className="mx-auto max-w-7xl px-4 py-3.5 sm:px-6">
           <nav
-            className="flex flex-wrap items-center gap-1.5 text-xs text-slate-400"
+            className="flex flex-wrap items-center gap-1.5 text-xs text-[#707070]"
             aria-label="Breadcrumb"
           >
             {crumbs.map((crumb, i) => (
               <span key={`${crumb.label}-${i}`} className="flex items-center gap-1.5">
                 {i > 0 && (
-                  <svg className="h-3 w-3 text-slate-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <svg className="h-3 w-3 text-[#d6d6d6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                   </svg>
                 )}
@@ -159,7 +159,7 @@ export default function ProductDetailPage() {
                 )}
               </span>
             ))}
-            <svg className="h-3 w-3 text-slate-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="h-3 w-3 text-[#d6d6d6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
             </svg>
             <span className="font-medium text-[var(--color-primary)]">{ml(product.name)}</span>
@@ -175,7 +175,7 @@ export default function ProductDetailPage() {
               className={`overflow-hidden bg-white shadow-sm ${
                 isImageFullscreen
                   ? "fixed inset-0 z-[70] flex h-[100dvh] w-screen items-center justify-center rounded-none border-0"
-                  : "relative aspect-square rounded-2xl border border-slate-100"
+                  : "relative aspect-square rounded-[28px] border border-[#d6d6d6]"
               }`}
             >
               <div
@@ -217,7 +217,7 @@ export default function ProductDetailPage() {
                 }
                 onPointerDown={(event) => event.stopPropagation()}
                 onClick={() => setIsImageFullscreen((value) => !value)}
-                className="absolute right-4 top-4 rounded-xl bg-white/90 p-3 text-[var(--color-primary)] shadow-lg backdrop-blur transition-colors hover:bg-[var(--color-accent)] hover:text-white"
+                className="absolute right-4 top-4 rounded-[10px] bg-white/90 p-3 text-[var(--color-primary)] shadow-lg backdrop-blur transition-colors hover:bg-[var(--color-accent)] hover:text-white"
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                   {isImageFullscreen ? (
@@ -231,7 +231,7 @@ export default function ProductDetailPage() {
                 {product.badges.map((badge) => (
                   <span
                     key={ml(badge)}
-                    className={`rounded-md px-2.5 py-1.5 text-[10px] font-bold tracking-wider shadow-sm ${badgeStyle(ml(badge))}`}
+                    className={`rounded-[10px] px-2.5 py-1.5 text-[10px] font-bold tracking-wider shadow-sm ${badgeStyle(ml(badge))}`}
                   >
                     {ml(badge)}
                   </span>
@@ -244,10 +244,10 @@ export default function ProductDetailPage() {
                   <button
                     key={i}
                     onClick={() => selectImage(i)}
-                    className={`relative aspect-square overflow-hidden rounded-xl border-2 bg-white transition-all ${
+                    className={`relative aspect-square overflow-hidden rounded-[10px] border-2 bg-white transition-all ${
                       selectedImage === i
                         ? "border-[var(--color-accent)] shadow-md ring-2 ring-blue-100"
-                        : "border-slate-100 hover:border-slate-300 hover:shadow-sm"
+                        : "border-[#d6d6d6] hover:border-[#d6d6d6] hover:shadow-sm"
                     }`}
                   >
                     <img src={img} alt="" className="h-full w-full object-cover" />
@@ -262,7 +262,7 @@ export default function ProductDetailPage() {
             <div className="mb-4 flex flex-wrap items-center gap-2">
               <EnergyBadge cls={product.energyClass} />
               {product.connectivity && (
-                <span className="flex items-center gap-1.5 rounded-full border border-blue-100 bg-blue-50 px-2.5 py-1 text-xs font-semibold text-[var(--color-accent)]">
+                <span className="flex items-center gap-1.5 rounded-full border border-[#d6d6d6] bg-[#f5f5f7] px-2.5 py-1 text-xs font-semibold text-[#0066cc]">
                   <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
                   </svg>
@@ -270,13 +270,13 @@ export default function ProductDetailPage() {
                 </span>
               )}
             </div>
-            <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-slate-400">
+            <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-[#707070]">
               {product.reference}
             </p>
             <h1 className="text-3xl font-bold leading-tight text-[var(--color-primary)] lg:text-4xl font-display">
               {ml(product.name)}
             </h1>
-            <p className="mt-4 text-sm leading-relaxed text-slate-600">
+            <p className="mt-4 text-sm leading-relaxed text-[#333336]">
               {ml(product.description)}
             </p>
 
@@ -308,12 +308,12 @@ export default function ProductDetailPage() {
                 .map((spec) => (
                   <div
                     key={(spec as { label: string }).label}
-                    className="rounded-xl border border-slate-100 bg-white p-3.5 shadow-sm transition-shadow hover:shadow-md"
+                    className="rounded-[10px] border border-[#d6d6d6] bg-white p-3.5 shadow-sm transition-shadow hover:shadow-md"
                   >
-                    <p className="font-display text-[10px] uppercase tracking-widest text-slate-400">
+                    <p className="font-display text-[10px] uppercase tracking-widest text-[#707070]">
                       {(spec as { label: string }).label}
                     </p>
-                    <p className="mt-1 text-sm font-semibold text-slate-900">
+                    <p className="mt-1 text-sm font-semibold text-[#1d1d1f]">
                       {(spec as { value: string }).value}
                     </p>
                   </div>
@@ -323,14 +323,14 @@ export default function ProductDetailPage() {
             {/* Technologies */}
             {product.technologies.length > 0 && (
               <div className="mt-5">
-                <p className="mb-2.5 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400 font-display">
+                <p className="mb-2.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#707070] font-display">
                   {t("productDetail.technologiesTitle")}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {product.technologies.map((tech) => (
                     <span
                       key={ml(tech)}
-                      className="rounded-full border border-blue-100 bg-[#EFF3FB] px-3.5 py-1.5 text-xs font-semibold text-[var(--color-primary)] transition-colors hover:border-blue-200 hover:bg-blue-50"
+                      className="rounded-full border border-[#d6d6d6] bg-[#f5f5f7] px-3.5 py-1.5 text-xs font-semibold text-[var(--color-primary)] transition-colors hover:border-blue-200 hover:bg-[#f5f5f7]"
                     >
                       {ml(tech)}
                     </span>
@@ -340,12 +340,12 @@ export default function ProductDetailPage() {
             )}
 
             {/* CTA */}
-            <div className="mt-8 rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
+            <div className="mt-8 rounded-[28px] border border-[#d6d6d6] bg-white p-6 shadow-sm">
               <div className="flex flex-wrap gap-3">
                 {!hideWhereToBuy && (
                   <Link
                     to="/distributeurs"
-                    className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[var(--color-primary)] px-6 py-3.5 text-sm font-bold text-white shadow-md shadow-blue-900/20 transition-all hover:-translate-y-0.5 hover:bg-[#12348f] hover:shadow-lg"
+                    className="flex flex-1 items-center justify-center gap-2 rounded-[10px] bg-[var(--color-primary)] px-6 py-3.5 text-sm font-bold text-white shadow-md shadow-blue-900/20 transition-all hover:-translate-y-0.5 hover:bg-[#0063bf] hover:shadow-lg"
                   >
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -362,7 +362,7 @@ export default function ProductDetailPage() {
               </div>
               <Link
                 to="/support"
-                className="mt-4 inline-flex items-center gap-2 rounded-lg px-2 py-1 text-xs font-medium text-slate-500 transition-colors hover:text-[var(--color-primary)]"
+                className="mt-4 inline-flex items-center gap-2 rounded-[10px] px-2 py-1 text-xs font-medium text-[#474747] transition-colors hover:text-[var(--color-primary)]"
               >
                 <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -374,8 +374,8 @@ export default function ProductDetailPage() {
         </div>
 
         {/* ══ Onglets ══ */}
-        <div className="mt-16 rounded-2xl border border-slate-100 bg-white shadow-sm">
-          <div className="flex overflow-x-auto border-b border-slate-100 px-4 sm:px-6">
+        <div className="mt-16 rounded-[28px] border border-[#d6d6d6] bg-white shadow-sm">
+          <div className="flex overflow-x-auto border-b border-[#d6d6d6] px-4 sm:px-6">
             {[
               { key: "features" as const, label: t("productDetail.tabs.features") },
               { key: "specs" as const, label: t("productDetail.tabs.specs") },
@@ -386,8 +386,8 @@ export default function ProductDetailPage() {
                 onClick={() => setActiveTab(tab.key)}
                 className={`-mb-px whitespace-nowrap border-b-2 px-6 py-4 text-sm font-semibold transition-colors ${
                   activeTab === tab.key
-                    ? "border-[var(--color-accent)] text-[var(--color-accent)]"
-                    : "border-transparent text-slate-400 hover:text-slate-700"
+                    ? "border-[var(--color-accent)] text-[#0066cc]"
+                    : "border-transparent text-[#707070] hover:text-[#333336]"
                 }`}
               >
                 {tab.label}
@@ -401,20 +401,20 @@ export default function ProductDetailPage() {
                 {product.features.map((feat) => (
                   <li
                     key={ml(feat)}
-                    className="flex items-start gap-3 rounded-xl border border-slate-100 bg-slate-50/60 p-4 transition-colors hover:border-blue-100 hover:bg-blue-50/40"
+                    className="flex items-start gap-3 rounded-[10px] border border-[#d6d6d6] bg-[#f5f5f7]/60 p-4 transition-colors hover:border-[#d6d6d6] hover:bg-[#f5f5f7]/40"
                   >
                     <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-accent)]/10">
-                      <svg className="h-3 w-3 text-[var(--color-accent)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <svg className="h-3 w-3 text-[#0066cc]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
-                    <span className="text-sm text-slate-700">{ml(feat)}</span>
+                    <span className="text-sm text-[#333336]">{ml(feat)}</span>
                   </li>
                 ))}
               </ul>
             )}
             {activeTab === "specs" && (
-              <div className="overflow-hidden rounded-xl border border-slate-100">
+              <div className="overflow-hidden rounded-[10px] border border-[#d6d6d6]">
                 <table className="w-full text-sm">
                   <tbody>
                     {[
@@ -442,12 +442,12 @@ export default function ProductDetailPage() {
                       .map((row, i) => (
                         <tr
                           key={(row as { label: string }).label}
-                          className={i % 2 === 0 ? "bg-white" : "bg-slate-50/70"}
+                          className={i % 2 === 0 ? "bg-white" : "bg-[#f5f5f7]/70"}
                         >
-                          <td className="w-1/2 border-b border-slate-50 px-5 py-3.5 font-medium text-slate-500">
+                          <td className="w-1/2 border-b border-[#d6d6d6] px-5 py-3.5 font-medium text-[#474747]">
                             {(row as { label: string }).label}
                           </td>
-                          <td className="border-b border-slate-50 px-5 py-3.5 font-semibold text-slate-900">
+                          <td className="border-b border-[#d6d6d6] px-5 py-3.5 font-semibold text-[#1d1d1f]">
                             {(row as { value: string }).value}
                           </td>
                         </tr>
@@ -486,22 +486,22 @@ export default function ProductDetailPage() {
                 ].map((doc) => (
                   <div
                     key={doc.name}
-                    className="flex items-center justify-between rounded-xl border border-slate-100 bg-white p-4 transition-all hover:border-blue-100 hover:shadow-md hover:shadow-blue-900/5"
+                    className="flex items-center justify-between rounded-[10px] border border-[#d6d6d6] bg-white p-4 transition-all hover:border-[#d6d6d6] hover:shadow-md hover:shadow-blue-900/5"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-[#EFF3FB]">
-                        <svg className="h-5 w-5 text-[var(--color-accent)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-[10px] bg-[#f5f5f7]">
+                        <svg className="h-5 w-5 text-[#0066cc]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                           <path strokeLinecap="round" strokeLinejoin="round" d={doc.icon} />
                         </svg>
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-slate-900">{doc.name}</p>
-                        <p className="text-xs text-slate-400">
+                        <p className="text-sm font-semibold text-[#1d1d1f]">{doc.name}</p>
+                        <p className="text-xs text-[#707070]">
                           {doc.type} · {doc.size}
                         </p>
                       </div>
                     </div>
-                    <button className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-semibold text-[var(--color-accent)] transition-colors hover:bg-blue-50 hover:text-[var(--color-primary)]">
+                    <button className="flex items-center gap-1.5 rounded-[10px] px-3 py-2 text-sm font-semibold text-[#0066cc] transition-colors hover:bg-[#f5f5f7] hover:text-[var(--color-primary)]">
                       <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                       </svg>
@@ -519,7 +519,7 @@ export default function ProductDetailPage() {
           <div className="mt-14">
             <div className="mb-7 flex items-end justify-between">
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--color-accent)] font-display">
+                <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#0066cc] font-display">
               {coherentGamme ? ml(coherentGamme.name) : categoryLabel}
                 </p>
                 <h2 className="mt-1.5 text-2xl font-bold text-[var(--color-primary)] font-display">
@@ -529,7 +529,7 @@ export default function ProductDetailPage() {
               {category && (
                 <Link
                   to={`/produits/${category.slug}`}
-                  className="hidden items-center gap-1.5 text-sm font-semibold text-[var(--color-accent)] transition-all hover:gap-2.5 sm:flex"
+                  className="hidden items-center gap-1.5 text-sm font-semibold text-[#0066cc] transition-all hover:gap-2.5 sm:flex"
                 >
                   {t("common.viewAll")}
                   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -543,9 +543,9 @@ export default function ProductDetailPage() {
                 <Link
                   key={p.id}
                   to={productUrl(p)}
-                  className="group overflow-hidden rounded-2xl border border-slate-100 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-blue-100 hover:shadow-xl hover:shadow-blue-900/10"
+                  className="group overflow-hidden rounded-[28px] border border-[#d6d6d6] bg-white transition-all duration-300 hover:-translate-y-1 hover:border-[#d6d6d6] hover:shadow-xl hover:shadow-blue-900/10"
                 >
-                  <div className="aspect-video overflow-hidden bg-slate-100">
+                  <div className="aspect-video overflow-hidden bg-white">
                     <img
                       src={p.image}
                       alt={ml(p.name)}
@@ -553,8 +553,8 @@ export default function ProductDetailPage() {
                     />
                   </div>
                   <div className="p-4">
-                    <p className="font-mono text-[10px] uppercase tracking-widest text-slate-400">{p.reference}</p>
-                    <h3 className="mt-1 text-sm font-semibold text-slate-900 transition-colors group-hover:text-[var(--color-primary)]">
+                    <p className="font-mono text-[10px] uppercase tracking-widest text-[#707070]">{p.reference}</p>
+                    <h3 className="mt-1 text-sm font-semibold text-[#1d1d1f] transition-colors group-hover:text-[var(--color-primary)]">
                       {ml(p.name)}
                     </h3>
                   </div>

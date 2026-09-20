@@ -43,25 +43,25 @@ function Layout({ children }: { children: React.ReactNode }) {
 function NotFound() {
   const { t } = useTranslation()
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#F9FAFB] pt-24 px-6 text-center">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#f5f5f7] pt-24 px-6 text-center">
       <p
-        className="text-6xl font-bold text-[#0A2463]"
+        className="text-6xl font-bold text-[#1d1d1f]"
         style={{ fontFamily: "var(--font-display)" }}
       >
         404
       </p>
       <h1
-        className="text-2xl font-bold text-gray-900 mt-4"
+        className="text-2xl font-bold text-[#1d1d1f] mt-4"
         style={{ fontFamily: "var(--font-display)" }}
       >
         {t("notFound.title")}
       </h1>
-      <p className="text-gray-500 mt-2 font-sans text-sm">
+      <p className="text-[#474747] mt-2 font-sans text-sm">
         {t("notFound.desc")}
       </p>
       <a
         href="/"
-        className="mt-8 bg-[#0A2463] text-white font-semibold px-6 py-3 rounded-xl text-sm font-sans hover:bg-[#061540] transition-colors inline-flex"
+        className="mt-8 bg-[#1d1d1f] text-white font-semibold px-6 py-3 rounded-[10px] text-sm font-sans hover:bg-[#1d1d1f] transition-colors inline-flex"
       >
         {t("notFound.backHome")}
       </a>
@@ -120,12 +120,16 @@ function RemoteContentSync() {
     // Versionnage du cache : un schéma de données périmé (anciennes synchros
     // partielle) est purgé pour ne jamais empoisonner les filtres avec des
     // entrées incomplètes. À bumper à chaque changement de schéma.
+    // v4 : redesign Apple — réinitialise aussi les couleurs de thème stockées
+    // (présentation uniquement ; contenus, logo et contacts conservés).
     try {
-      if (localStorage.getItem("aurex-cache-version") !== "3") {
+      if (localStorage.getItem("aurex-cache-version") !== "4") {
         Object.keys(localStorage)
           .filter((k) => k.startsWith("aurex-data-"))
           .forEach((k) => localStorage.removeItem(k))
-        localStorage.setItem("aurex-cache-version", "3")
+        localStorage.removeItem("aurex-admin-theme")
+        localStorage.removeItem("aurex-site-settings")
+        localStorage.setItem("aurex-cache-version", "4")
       }
     } catch {
       // stockage indisponible : on continue sans cache
@@ -221,7 +225,7 @@ export default function App() {
         <SiteSettingsProvider>
           <CompareProvider>
             <Layout>
-              <Suspense fallback={<div className="flex min-h-[60vh] items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-[#1E5EF3]" /></div>}>
+              <Suspense fallback={<div className="flex min-h-[60vh] items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-4 border-[#d6d6d6] border-t-[#0071e3]" /></div>}>
                 <Routes>
                   <Route path="/" element={<HomePage />} />
                   <Route path="/produits" element={<ProductsPage />} />
