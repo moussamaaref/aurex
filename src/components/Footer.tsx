@@ -60,7 +60,7 @@ export default function Footer() {
               {settings.showLogoIcon && (
                 <div className="w-11 h-11 rounded-lg flex items-center justify-center overflow-hidden" style={{ backgroundColor: settings.logoIconBg }}>
                   {settings.logoIconUrl ? (
-                    <img src={settings.logoIconUrl} alt="icon" className="w-8 h-8 object-contain" />
+                    <img loading="lazy" decoding="async" src={settings.logoIconUrl} alt="icon" className="w-8 h-8 object-contain" />
                   ) : (
                     <svg width="22" height="22" viewBox="0 0 20 20" fill="none">
                       <rect x="3" y="3" width="6" height="6" fill="white" opacity="0.9" />
@@ -71,7 +71,7 @@ export default function Footer() {
                   )}
                 </div>
               )}
-              {settings.showLogoImage && <img src={settings.logoUrl || "/aurex-logo.png"} alt="AUREX" className="h-10 w-auto object-contain" onError={handleLogoError} />}
+              {settings.showLogoImage && <img loading="lazy" decoding="async" src={settings.logoUrl || "/aurex-logo.png"} alt="AUREX" className="h-10 w-auto object-contain" onError={handleLogoError} />}
               {settings.showLogoText ? (
                 <span className="text-[27px] font-bold tracking-[-0.08em]" style={{ color: settings.logoTextColor }}>
                   {settings.logoText}
@@ -95,7 +95,7 @@ export default function Footer() {
             {/* Newsletter */}
             <div className="mt-6">
               <p
-                className="text-xs font-semibold text-[#707070] uppercase tracking-widest mb-3"
+                className="text-xs font-semibold text-[#5a5a5e] uppercase tracking-widest mb-3"
                 style={{ fontFamily: "var(--font-display)" }}
               >
                 {t("footer.stayInformed")}
@@ -108,7 +108,7 @@ export default function Footer() {
                   style={{ fontFamily: "var(--font-sans)" }}
                 />
                 <button
-                  className="bg-[var(--color-accent)] hover:bg-[#0063bf] transition-colors text-white px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap"
+                  className="bg-[var(--color-accent)] hover:bg-[#00628f] transition-colors text-white px-4 py-3 rounded-full text-sm font-medium whitespace-nowrap"
                   style={{ fontFamily: "var(--font-sans)" }}
                 >
                   {t("footer.subscribe")}
@@ -141,7 +141,7 @@ export default function Footer() {
                     target={s.href.startsWith("http") ? "_blank" : undefined}
                     rel={s.href.startsWith("http") ? "noreferrer" : undefined}
                     aria-label={s.label}
-                    className="w-8 h-8 rounded-[10px] bg-white hover:bg-[var(--color-accent)] border border-[#d6d6d6] hover:border-[var(--color-accent)] flex items-center justify-center text-xs text-[#474747] hover:text-white transition-all"
+                    className="w-11 h-11 rounded-[10px] bg-white hover:bg-[var(--color-accent)] border border-[#d6d6d6] hover:border-[var(--color-accent)] flex items-center justify-center text-xs text-[#474747] hover:text-white transition-all"
                     style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
                   >
                     {s.icon}
@@ -155,7 +155,7 @@ export default function Footer() {
           {Object.entries(footerLinks).map(([group, links]) => (
             <div key={group}>
               <h4
-                className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#707070] mb-4"
+                className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#5a5a5e] mb-4"
                 style={{ fontFamily: "var(--font-display)" }}
               >
                 {group}
@@ -165,7 +165,7 @@ export default function Footer() {
                   <li key={link.label}>
                     <Link
                       to={link.href}
-                      className="text-sm text-[#474747] hover:text-[#1d1d1f] transition-colors"
+                      className="inline-flex min-h-11 items-center text-sm text-[#474747] hover:text-[#1d1d1f] transition-colors lg:min-h-0"
                       style={{ fontFamily: "var(--font-sans)" }}
                     >
                       {link.label}
@@ -244,12 +244,12 @@ export default function Footer() {
             },
           ].map((info) => (
             <div key={info.label} className="flex items-start gap-3">
-              <div className="w-7 h-7 rounded-[10px] bg-white border border-[#d6d6d6] flex items-center justify-center text-[#0066cc] flex-shrink-0 mt-0.5">
+              <div className="w-7 h-7 rounded-[10px] bg-white border border-[#d6d6d6] flex items-center justify-center text-[#0077b3] flex-shrink-0 mt-0.5">
                 {info.icon}
               </div>
               <div>
                 <p
-                  className="text-xs text-[#707070] font-medium"
+                  className="text-xs text-[#5a5a5e] font-medium"
                   style={{ fontFamily: "var(--font-sans)" }}
                 >
                   {info.label}
@@ -270,7 +270,7 @@ export default function Footer() {
       <div className="border-t border-[#d6d6d6] bg-white">
         <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-2">
           <p
-            className="text-xs text-[#707070]"
+            className="text-xs text-[#5a5a5e]"
             style={{ fontFamily: "var(--font-sans)" }}
           >
             {t("footer.copyright")}
@@ -285,7 +285,7 @@ export default function Footer() {
               <a
                 key={label}
                 href="#"
-                className="text-xs text-[#707070] hover:text-[#1d1d1f] transition-colors"
+                className="text-xs text-[#5a5a5e] hover:text-[#1d1d1f] transition-colors"
                 style={{ fontFamily: "var(--font-sans)" }}
               >
                 {label}

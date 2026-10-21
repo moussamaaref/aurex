@@ -96,8 +96,8 @@ export default function SmartHomePage() {
       {/* ═══════════ HERO ═══════════ */}
       <section className="relative bg-[#1d1d1f] overflow-hidden py-24 lg:py-32">
         <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-[#0071e3] blur-3xl -translate-y-1/2 translate-x-1/3" />
-          <div className="absolute bottom-0 left-0 w-96 h-96 rounded-full bg-[#0071e3] blur-2xl translate-y-1/2 -translate-x-1/4" />
+          <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-[#0077b3] blur-3xl -translate-y-1/2 translate-x-1/3" />
+          <div className="absolute bottom-0 left-0 w-96 h-96 rounded-full bg-[#0077b3] blur-2xl translate-y-1/2 -translate-x-1/4" />
         </div>
         {/* Grille décorative */}
         <div
@@ -110,8 +110,8 @@ export default function SmartHomePage() {
         />
         <div className="relative max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div>
-            <div className="inline-flex items-center gap-2.5 bg-[#0071e3]/20 border border-[#0071e3]/30 rounded-full px-4 py-2 mb-8 shadow-lg backdrop-blur-sm">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#0071e3] animate-pulse-dot" />
+            <div className="inline-flex items-center gap-2.5 bg-[#0077b3]/20 border border-[#0077b3]/30 rounded-full px-4 py-2 mb-8 shadow-lg backdrop-blur-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#0077b3] animate-pulse-dot" />
               <span
                 className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#4d8dff]"
                 style={{ fontFamily: "var(--font-display)" }}
@@ -134,7 +134,7 @@ export default function SmartHomePage() {
             <div className="flex flex-wrap gap-3 mt-8">
               <a
                 href="#app"
-                className="group inline-flex items-center gap-2 bg-[#0071e3] hover:bg-[#0063bf] text-white font-semibold px-7 py-4 rounded-full transition-colors text-sm font-sans"
+                className="group inline-flex items-center gap-2 bg-[#0077b3] hover:bg-[#00628f] text-white font-semibold px-7 py-4 rounded-full transition-colors text-sm font-sans"
               >
                 {tx(sup.supHeroCta1, t("smartHome.hero.downloadApp"))}
                 <ArrowIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -149,10 +149,10 @@ export default function SmartHomePage() {
           </div>
 
           <div className="relative">
-            <div className="absolute -inset-3 rounded-[28px] bg-gradient-to-br from-[#0071e3]/40 to-transparent blur-xl" />
-            <img
+            <div className="absolute -inset-3 rounded-[28px] bg-gradient-to-br from-[#0077b3]/40 to-transparent blur-xl" />
+            <img fetchPriority="high" decoding="async"
               src={sup.supHeroImage || "https://images.unsplash.com/photo-1558002038-1055907df827?w=700&h=800&fit=crop&auto=format"}
-              alt=""
+              alt="Support AUREX"
               className="relative w-full rounded-[28px] shadow-2xl object-cover animate-float"
             />
             {/* Carte machine terminée */}
@@ -177,7 +177,7 @@ export default function SmartHomePage() {
                     className="w-3 rounded-t transition-all duration-300 hover:opacity-80"
                     style={{
                       height: `${h * 0.4}px`,
-                      background: i === 5 ? "#0071e3" : "#E2E8F0",
+                      background: i === 5 ? "#0077b3" : "#E2E8F0",
                     }}
                   />
                 ))}
@@ -198,10 +198,10 @@ export default function SmartHomePage() {
           ].map((s) => (
             <div key={s.step} className="flex items-start gap-5 group">
               <div className="relative flex-shrink-0">
-                <div className="w-14 h-14 rounded-[28px] bg-[#f5f5f7] flex items-center justify-center text-2xl group-hover:bg-[#0071e3] group-hover:scale-110 transition-all duration-300 shadow-sm">
+                <div className="w-14 h-14 rounded-[28px] bg-[#f5f5f7] flex items-center justify-center text-2xl group-hover:bg-[#0077b3] group-hover:scale-110 transition-all duration-300 shadow-sm">
                   {s.icon}
                 </div>
-                <span className="absolute -top-2 -right-2 text-[10px] font-bold text-[#0071e3] bg-white border border-[#d6d6d6] rounded-full px-1.5 py-0.5 shadow-sm">
+                <span className="absolute -top-2 -right-2 text-[10px] font-bold text-[#0077b3] bg-white border border-[#d6d6d6] rounded-full px-1.5 py-0.5 shadow-sm">
                   {s.step}
                 </span>
               </div>
@@ -218,7 +218,7 @@ export default function SmartHomePage() {
       <section className="py-24 max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
           <span
-            className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0071e3]"
+            className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0077b3]"
             style={{ fontFamily: "var(--font-display)" }}
           >
             {tx(sup.supFeatSubtitle, t("smartHome.features.subtitle"))}
@@ -237,15 +237,15 @@ export default function SmartHomePage() {
           {features.map((feat, idx) => (
             <Reveal key={idx} delay={Math.min(idx, 5) * 60} className="h-full">
             <div
-              className="group bg-white rounded-[28px] p-7 border border-[#d6d6d6] hover:shadow-xl hover:shadow-[#0071e3]/10 hover:border-[#0071e3]/40 hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden h-full"
+              className="group bg-white rounded-[28px] p-7 border border-[#d6d6d6] hover:shadow-xl hover:shadow-[#0077b3]/10 hover:border-[#0077b3]/40 hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden h-full"
             >
-              <div className="absolute top-0 right-0 w-20 h-20 rounded-full bg-[#0071e3]/5 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute top-0 right-0 w-20 h-20 rounded-full bg-[#0077b3]/5 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="relative">
-                <span className="inline-flex w-12 h-12 items-center justify-center rounded-[10px] bg-[#f5f5f7] text-2xl group-hover:bg-[#0071e3] group-hover:scale-110 transition-all duration-300 shadow-sm">
+                <span className="inline-flex w-12 h-12 items-center justify-center rounded-[10px] bg-[#f5f5f7] text-2xl group-hover:bg-[#0077b3] group-hover:scale-110 transition-all duration-300 shadow-sm">
                   {featureIcons[idx]}
                 </span>
                 <h3
-                  className="text-base font-bold text-[#1d1d1f] mt-4 mb-2 group-hover:text-[#0071e3] transition-colors"
+                  className="text-base font-bold text-[#1d1d1f] mt-4 mb-2 group-hover:text-[#0077b3] transition-colors"
                   style={{ fontFamily: "var(--font-display)" }}
                 >
                   {feat.title}
@@ -264,7 +264,7 @@ export default function SmartHomePage() {
           <div className="flex items-end justify-between mb-12">
             <div>
               <span
-                className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0071e3]"
+                className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0077b3]"
                 style={{ fontFamily: "var(--font-display)" }}
               >
                 {sup.supCompatEyebrow || "SmartConnect"}
@@ -278,7 +278,7 @@ export default function SmartHomePage() {
             </div>
             <Link
               to="/produits"
-              className="group text-sm text-[#0071e3] font-medium font-sans hidden md:flex items-center gap-1.5 hover:text-[#1d1d1f] transition-colors"
+              className="group text-sm text-[#0077b3] font-medium font-sans hidden md:flex items-center gap-1.5 hover:text-[#1d1d1f] transition-colors"
             >
               {t("smartHome.compatible.seeAll")}
               <ArrowIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -289,10 +289,10 @@ export default function SmartHomePage() {
               <Link
                 key={p.id}
                 to={productUrl(p)}
-                className="group flex gap-4 bg-white border border-[#d6d6d6] rounded-[28px] p-4 hover:shadow-xl hover:shadow-[#1d1d1f]/10 hover:border-[#0071e3]/40 hover:-translate-y-1 transition-all duration-300"
+                className="group flex gap-4 bg-white border border-[#d6d6d6] rounded-[28px] p-4 hover:shadow-xl hover:shadow-[#1d1d1f]/10 hover:border-[#0077b3]/40 hover:-translate-y-1 transition-all duration-300"
               >
                 <div className="relative w-20 h-20 bg-[#f5f5f7] rounded-[10px] overflow-hidden flex-shrink-0">
-                  <img
+                  <img loading="lazy" decoding="async"
                     src={p.image}
                     alt={ml(p.name)}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
@@ -300,15 +300,15 @@ export default function SmartHomePage() {
                   <span className="absolute bottom-0.5 right-0.5 w-3 h-3 rounded-full bg-green-400 border-2 border-white" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-[10px] text-[#707070] font-mono tracking-widest uppercase">
+                  <p className="text-[10px] text-[#5a5a5e] font-mono tracking-widest uppercase">
                     {p.reference}
                   </p>
                   <h3 className="text-sm font-semibold text-[#1d1d1f] mt-1 group-hover:text-[#1d1d1f] transition-colors font-sans line-clamp-2">
                     {ml(p.name)}
                   </h3>
-                  <div className="flex items-center gap-1.5 mt-2 bg-[#0071e3]/10 rounded-full px-2.5 py-1 w-fit">
+                  <div className="flex items-center gap-1.5 mt-2 bg-[#0077b3]/10 rounded-full px-2.5 py-1 w-fit">
                     <svg
-                      className="w-3 h-3 text-[#0071e3]"
+                      className="w-3 h-3 text-[#0077b3]"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -320,7 +320,7 @@ export default function SmartHomePage() {
                         d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"
                       />
                     </svg>
-                    <span className="text-[10px] text-[#0071e3] font-semibold font-sans">
+                    <span className="text-[10px] text-[#0077b3] font-semibold font-sans">
                       {t("common.smartConnect")}
                     </span>
                   </div>
@@ -370,8 +370,8 @@ export default function SmartHomePage() {
       {/* ═══════════ APP CTA ═══════════ */}
       <section id="app" className="py-24 bg-[#1d1d1f] relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full bg-[#0071e3] blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-64 h-64 rounded-full bg-[#0071e3] blur-2xl" />
+          <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full bg-[#0077b3] blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 w-64 h-64 rounded-full bg-[#0077b3] blur-2xl" />
         </div>
         <div
           className="absolute inset-0 opacity-[0.05]"

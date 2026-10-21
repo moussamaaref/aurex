@@ -111,7 +111,7 @@ export default function TechnologiesPage() {
         <div className="relative max-w-7xl mx-auto px-6">
           <div className="max-w-2xl">
             <span
-              className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#0066cc]"
+              className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#0077b3]"
               style={{ fontFamily: "var(--font-display)" }}
             >
               {tx(tp.techHeroSubtitle, t("technologies.hero.subtitle"))}
@@ -133,7 +133,7 @@ export default function TechnologiesPage() {
                 <p className="text-3xl lg:text-4xl font-semibold text-[#1d1d1f] font-display tracking-tight">
                   {stat.value}
                 </p>
-                <p className="text-xs text-[#707070] mt-1.5 font-sans">{stat.label}</p>
+                <p className="text-xs text-[#5a5a5e] mt-1.5 font-sans">{stat.label}</p>
               </div>
             ))}
           </div>
@@ -151,14 +151,14 @@ export default function TechnologiesPage() {
                 onClick={() => setActiveCategory(cat.key)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all font-sans ${
                   active
-                    ? "bg-[#0071e3] text-white shadow-lg shadow-[#0071e3]/30"
-                    : "bg-white text-[#333336] border border-[#d6d6d6] hover:border-[#0071e3]/50 hover:text-[#0071e3] hover:-translate-y-0.5"
+                    ? "bg-[#0077b3] text-white shadow-lg shadow-[#0077b3]/30"
+                    : "bg-white text-[#333336] border border-[#d6d6d6] hover:border-[#0077b3]/50 hover:text-[#0077b3] hover:-translate-y-0.5"
                 }`}
               >
                 {ml(cat.label)}
                 <span
                   className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${
-                    active ? "bg-white/20 text-white" : "bg-[#f5f5f7] text-[#0071e3]"
+                    active ? "bg-white/20 text-white" : "bg-[#f5f5f7] text-[#0077b3]"
                   }`}
                 >
                   {countFor(cat.key)}
@@ -180,12 +180,12 @@ export default function TechnologiesPage() {
                 onClick={() => setActiveTech(open ? null : tech.id)}
                 className={`group text-left rounded-[28px] overflow-hidden border transition-all duration-300 bg-white h-full w-full ${
                   open
-                    ? "border-[#0071e3] shadow-xl shadow-[#0071e3]/15 ring-2 ring-[#0071e3]/20"
-                    : "border-[#d6d6d6] hover:shadow-xl hover:shadow-[#1d1d1f]/10 hover:border-[#0071e3]/30 hover:-translate-y-1.5"
+                    ? "border-[#0077b3] shadow-xl shadow-[#0077b3]/15 ring-2 ring-[#0077b3]/20"
+                    : "border-[#d6d6d6] hover:shadow-xl hover:shadow-[#1d1d1f]/10 hover:border-[#0077b3]/30 hover:-translate-y-1.5"
                 }`}
               >
                 <div className="relative aspect-video overflow-hidden">
-                  <img
+                  <img loading="lazy" decoding="async"
                     src={tech.image}
                     alt={ml(tech.name)}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80"
@@ -199,7 +199,7 @@ export default function TechnologiesPage() {
                   {/* Indicateur d'expansion */}
                   <div
                     className={`absolute top-3 right-3 w-8 h-8 rounded-full backdrop-blur-md flex items-center justify-center transition-all duration-300 ${
-                      open ? "bg-[#0071e3] text-white rotate-180" : "bg-white/15 text-white border border-white/25"
+                      open ? "bg-[#0077b3] text-white rotate-180" : "bg-white/15 text-white border border-white/25"
                     }`}
                   >
                     <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -213,12 +213,12 @@ export default function TechnologiesPage() {
 
                 <div className="p-5">
                   <div className="flex items-center gap-2 mb-3">
-                    <div className="w-6 h-6 rounded-full bg-[#0071e3]/10 flex items-center justify-center group-hover:bg-[#0071e3] group-hover:scale-110 transition-all duration-300">
-                      <svg className="w-3.5 h-3.5 text-[#0071e3] group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <div className="w-6 h-6 rounded-full bg-[#0077b3]/10 flex items-center justify-center group-hover:bg-[#0077b3] group-hover:scale-110 transition-all duration-300">
+                      <svg className="w-3.5 h-3.5 text-[#0077b3] group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                       </svg>
                     </div>
-                    <p className="text-xs font-semibold text-[#0071e3] font-sans">{ml(tech.benefit)}</p>
+                    <p className="text-xs font-semibold text-[#0077b3] font-sans">{ml(tech.benefit)}</p>
                   </div>
                   <p className="text-sm text-[#333336] leading-relaxed font-sans line-clamp-3">
                     {ml(tech.description)}
@@ -232,7 +232,7 @@ export default function TechnologiesPage() {
                   >
                     <div className="overflow-hidden">
                       <div className="mt-4 pt-4 border-t border-[#d6d6d6]">
-                        <p className="text-[10px] font-bold tracking-widest uppercase text-[#707070] mb-3 font-display">
+                        <p className="text-[10px] font-bold tracking-widest uppercase text-[#5a5a5e] mb-3 font-display">
                           {t("technologies.productsWith", { name: ml(tech.name) })}
                         </p>
                         <div className="space-y-1.5">
@@ -243,23 +243,23 @@ export default function TechnologiesPage() {
                                   key={p.id}
                                   to={productUrl(p)}
                                   onClick={(e) => e.stopPropagation()}
-                                  className="group/p flex items-center gap-3 hover:bg-[#f5f5f7] rounded-[10px] p-2 transition-colors border border-transparent hover:border-[#0071e3]/20"
+                                  className="group/p flex items-center gap-3 hover:bg-[#f5f5f7] rounded-[10px] p-2 transition-colors border border-transparent hover:border-[#0077b3]/20"
                                 >
-                                  <img src={p.image} alt={ml(p.name)} className="w-11 h-11 object-cover rounded-[10px] shadow-sm" />
+                                  <img loading="lazy" decoding="async" src={p.image} alt={ml(p.name)} className="w-11 h-11 object-cover rounded-[10px] shadow-sm" />
                                   <div className="min-w-0 flex-1">
                                     <p className="text-xs font-semibold text-[#1d1d1f] font-sans truncate group-hover/p:text-[#1d1d1f] transition-colors">
                                       {ml(p.name)}
                                     </p>
-                                    <p className="text-[10px] text-[#707070] font-mono">{p.reference}</p>
+                                    <p className="text-[10px] text-[#5a5a5e] font-mono">{p.reference}</p>
                                   </div>
-                                  <ArrowIcon className="w-3.5 h-3.5 text-[#0071e3] flex-shrink-0 opacity-0 group-hover/p:opacity-100 transition-opacity" />
+                                  <ArrowIcon className="w-3.5 h-3.5 text-[#0077b3] flex-shrink-0 opacity-0 group-hover/p:opacity-100 transition-opacity" />
                                 </Link>
                               ))}
                               {compatibleProducts.length > 2 && (
                                 <Link
                                   to="/produits"
                                   onClick={(e) => e.stopPropagation()}
-                                  className="inline-flex items-center gap-1.5 text-xs font-medium text-[#0071e3] hover:text-[#1d1d1f] px-2 pt-1 font-sans transition-colors"
+                                  className="inline-flex items-center gap-1.5 text-xs font-medium text-[#0077b3] hover:text-[#1d1d1f] px-2 pt-1 font-sans transition-colors"
                                 >
                                   +{compatibleProducts.length - 2} {t("technologies.more", { defaultValue: "autres" })}
                                   <ArrowIcon className="w-3 h-3" />

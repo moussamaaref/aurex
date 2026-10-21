@@ -76,7 +76,7 @@ function TaxoSelect({
 }) {
   return (
     <div className="border-t border-[#d6d6d6] pt-5">
-      <label className="mb-3 block text-[11px] font-bold uppercase tracking-[0.18em] text-[#707070] font-display">
+      <label className="mb-3 block text-[11px] font-bold uppercase tracking-[0.18em] text-[#5a5a5e] font-display">
         {label}
       </label>
       <select
@@ -306,14 +306,14 @@ export default function ProductsPage() {
         <section className="relative overflow-hidden bg-white px-6 pb-14 pt-12 border-b border-[#d6d6d6]">
           <div className="relative mx-auto max-w-7xl">
             <nav className="mb-5 flex items-center gap-2 text-xs font-sans" aria-label="Breadcrumb">
-              <Link to="/" className="text-[#707070] transition-colors hover:text-[#1d1d1f]">{t("products.breadcrumb.home")}</Link>
+              <Link to="/" className="text-[#5a5a5e] transition-colors hover:text-[#1d1d1f]">{t("products.breadcrumb.home")}</Link>
               <span className="text-[#d6d6d6]">/</span>
-              <Link to="/produits" className="text-[#707070] transition-colors hover:text-[#1d1d1f]">{t("products.breadcrumb.products")}</Link>
+              <Link to="/produits" className="text-[#5a5a5e] transition-colors hover:text-[#1d1d1f]">{t("products.breadcrumb.products")}</Link>
               <span className="text-[#d6d6d6]">/</span>
               <span className="font-semibold text-[#1d1d1f]">{ml(currentCategory.label)}</span>
             </nav>
             <p
-              className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#0066cc]"
+              className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#0077b3]"
               style={{ fontFamily: "var(--font-display)" }}
             >
               {t("products.breadcrumb.products")}
@@ -329,12 +329,12 @@ export default function ProductsPage() {
         <section className="relative overflow-hidden bg-white border-b border-[#d6d6d6]">
           <div className="relative mx-auto max-w-7xl px-6 pb-14 pt-12">
             <nav className="mb-5 flex items-center gap-2 text-xs font-sans" aria-label="Breadcrumb">
-              <Link to="/" className="text-[#707070] transition-colors hover:text-[#1d1d1f]">{t("products.breadcrumb.home")}</Link>
+              <Link to="/" className="text-[#5a5a5e] transition-colors hover:text-[#1d1d1f]">{t("products.breadcrumb.home")}</Link>
               <span className="text-[#d6d6d6]">/</span>
               <span className="font-semibold text-[#1d1d1f]">{t("products.breadcrumb.products")}</span>
             </nav>
             <p
-              className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#0066cc]"
+              className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#0077b3]"
               style={{ fontFamily: "var(--font-display)" }}
             >
               EUREX
@@ -405,7 +405,7 @@ export default function ProductsPage() {
                         type="checkbox"
                         checked={selectedEnergy.includes(cls)}
                         onChange={() => toggleEnergy(cls)}
-                        className="h-4 w-4 rounded border-[#d6d6d6] text-[#0066cc] accent-[var(--color-accent)]"
+                        className="h-4 w-4 rounded border-[#d6d6d6] text-[#0077b3] accent-[var(--color-accent)]"
                       />
                       <EnergyBadge cls={cls} />
                       <span className="text-sm text-[#333336] transition-colors group-hover:text-[#1d1d1f] font-sans">
@@ -460,7 +460,7 @@ export default function ProductsPage() {
                 />
 
                 <div className="border-t border-[#d6d6d6] pt-5">
-                  <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-[#707070] font-display">
+                  <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-[#5a5a5e] font-display">
                     {t("products.filters.connectivity")}
                   </p>
                   <label className="group flex cursor-pointer items-center gap-2.5 rounded-[10px] p-2 transition-colors hover:bg-[#f5f5f7]">
@@ -471,7 +471,7 @@ export default function ProductsPage() {
                       className="h-4 w-4 rounded border-[#d6d6d6] accent-[var(--color-accent)]"
                     />
                     <div className="flex items-center gap-1.5">
-                      <svg className={`${smartIcon} text-[#0066cc]`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <svg className={`${smartIcon} text-[#0077b3]`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
                       </svg>
                       <span className="text-sm text-[#333336] font-sans">SmartConnect</span>
@@ -622,7 +622,7 @@ export default function ProductsPage() {
                       className={`p-2.5 transition-colors ${
                         viewMode === mode
                           ? "bg-[var(--color-primary)] text-white"
-                          : "bg-[#f5f5f7] text-[#707070] hover:bg-white hover:text-[#333336]"
+                          : "bg-[#f5f5f7] text-[#5a5a5e] hover:bg-white hover:text-[#333336]"
                       }`}
                     >
                       {mode === "grid" ? (
@@ -646,7 +646,7 @@ export default function ProductsPage() {
                 <div className="relative w-20 h-20 mb-6 mx-auto">
                   <div className="absolute inset-0 rounded-[28px] bg-[var(--color-accent)]/10 blur-lg" />
                   <div className="relative w-20 h-20 bg-[#f5f5f7] rounded-[28px] flex items-center justify-center border border-[#d6d6d6] shadow-sm">
-                    <svg className="h-10 w-10 text-[#0066cc]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <svg className="h-10 w-10 text-[#0077b3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                     </svg>
                   </div>
@@ -655,7 +655,7 @@ export default function ProductsPage() {
                 <p className="mt-2 max-w-sm text-sm text-[#474747] font-sans leading-relaxed">{t("products.noResultsDesc")}</p>
                 <button
                   onClick={resetFilters}
-                  className="mt-8 rounded-full bg-[var(--color-accent)] px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#0063bf]"
+                  className="mt-8 rounded-full bg-[var(--color-accent)] px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#00628f]"
                 >
                   {t("common.resetFilters")}
                 </button>
@@ -669,7 +669,7 @@ export default function ProductsPage() {
                     className="group overflow-hidden rounded-[28px] border border-[#d6d6d6] bg-white transition-all duration-300 hover:-translate-y-1.5 hover:border-[#d6d6d6]/50 hover:shadow-2xl hover:shadow-blue-900/12 flex flex-col h-full"
                   >
                     <div className="relative aspect-square overflow-hidden bg-white flex-shrink-0">
-                      <img
+                      <img loading="lazy" decoding="async"
                         src={product.image}
                         alt={ml(product.name)}
                         className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
@@ -705,7 +705,7 @@ export default function ProductsPage() {
                       </div>
                     </div>
                     <div className="p-4 flex flex-col flex-1">
-                      <p className="mb-1 font-mono text-[10px] uppercase tracking-widest text-[#707070]">{product.reference}</p>
+                      <p className="mb-1 font-mono text-[10px] uppercase tracking-widest text-[#5a5a5e]">{product.reference}</p>
                       <h3 className="mb-2 line-clamp-2 text-sm font-semibold leading-snug text-[#1d1d1f] transition-colors group-hover:text-[var(--color-primary)]">
                         {ml(product.name)}
                       </h3>
@@ -717,7 +717,7 @@ export default function ProductsPage() {
                       </div>
                       <div className="mt-auto border-t border-[#d6d6d6] pt-3">
                         <div className="mb-3 flex items-center justify-end">
-                          <span className="flex items-center gap-1 text-xs font-semibold text-[#0066cc] transition-all group-hover:gap-2">
+                          <span className="flex items-center gap-1 text-xs font-semibold text-[#0077b3] transition-all group-hover:gap-2">
                             {t("common.view")}
                             <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12l-7.5 7.5M21 12H3" />
@@ -740,7 +740,7 @@ export default function ProductsPage() {
                     className="group flex flex-col sm:flex-row gap-5 rounded-[28px] border border-[#d6d6d6] bg-white p-4 transition-all duration-300 hover:-translate-y-1 hover:border-[#d6d6d6]/50 hover:shadow-xl hover:shadow-blue-900/12"
                   >
                     <div className="relative h-48 w-full sm:h-36 sm:w-36 flex-shrink-0 overflow-hidden rounded-[10px] bg-white">
-                      <img
+                      <img loading="lazy" decoding="async"
                         src={product.image}
                         alt={ml(product.name)}
                         className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
@@ -750,7 +750,7 @@ export default function ProductsPage() {
                     <div className="min-w-0 flex-1 flex flex-col justify-center">
                       <div className="flex items-start justify-between gap-4">
                         <div>
-                          <p className="font-mono text-[10px] uppercase tracking-widest text-[#707070]">{product.reference}</p>
+                          <p className="font-mono text-[10px] uppercase tracking-widest text-[#5a5a5e]">{product.reference}</p>
                           <h3 className="mt-1 text-base font-semibold text-[#1d1d1f] transition-colors group-hover:text-[var(--color-primary)]">
                             {ml(product.name)}
                           </h3>
@@ -768,7 +768,7 @@ export default function ProductsPage() {
                         <EnergyBadge cls={product.energyClass} />
                         {ml(product.capacity) && <span className="text-xs text-[#474747] bg-[#f5f5f7] border border-[#d6d6d6] px-2 py-0.5 rounded-[10px]">{ml(product.capacity)}</span>}
                         {product.connectivity && (
-                          <span className="flex items-center gap-1.5 text-xs font-medium text-[#0066cc] bg-[#f5f5f7] px-2.5 py-1 rounded-[10px]">
+                          <span className="flex items-center gap-1.5 text-xs font-medium text-[#0077b3] bg-[#f5f5f7] px-2.5 py-1 rounded-[10px]">
                             <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] animate-pulse" />
                             SmartConnect
                           </span>
@@ -777,7 +777,7 @@ export default function ProductsPage() {
                     </div>
                     <div className="flex flex-col items-end justify-between sm:w-48 sm:pl-4 sm:border-l border-[#d6d6d6]">
                       <div className="flex flex-col items-end w-full">
-                        <span className="flex items-center gap-1 text-xs font-semibold text-[#0066cc] transition-all group-hover:gap-2">
+                        <span className="flex items-center gap-1 text-xs font-semibold text-[#0077b3] transition-all group-hover:gap-2">
                           {t("common.view")}
                           <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12l-7.5 7.5M21 12H3" />
@@ -803,7 +803,7 @@ export default function ProductsPage() {
           <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
               <p className="flex items-center gap-2 text-sm font-bold text-white">
-                <svg className="h-4 w-4 text-[#0066cc]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg className="h-4 w-4 text-[#0077b3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
                 </svg>
                 {t("comparator.countShort")}
@@ -825,7 +825,7 @@ export default function ProductsPage() {
                 const product = selectedProducts[index]
                 return product ? (
                   <div key={product.id} className="flex min-w-0 items-center gap-2 rounded-[10px] border border-white/10 bg-white/10 backdrop-blur-sm p-2">
-                    <img src={product.image} alt={ml(product.name)} className="h-12 w-12 flex-shrink-0 rounded-[10px] object-cover" />
+                    <img loading="lazy" decoding="async" src={product.image} alt={ml(product.name)} className="h-12 w-12 flex-shrink-0 rounded-[10px] object-cover" />
                     <span className="min-w-0 flex-1">
                       <span className="block truncate font-mono text-[9px] uppercase tracking-wider text-blue-300/60">{product.reference}</span>
                       <span className="mt-1 block line-clamp-2 text-xs font-semibold leading-snug text-white">{ml(product.name)}</span>
@@ -850,7 +850,7 @@ export default function ProductsPage() {
               to="/comparateur"
               className={`mt-3 flex w-full items-center justify-center gap-2 rounded-full px-5 py-3.5 text-sm font-bold transition-colors ${
                 selectedProducts.length > 1
-                  ? "bg-[var(--color-accent)] text-white shadow-lg shadow-[var(--color-accent)]/30 hover:-translate-y-0.5 hover:bg-[#0063bf] hover:shadow-xl"
+                  ? "bg-[var(--color-accent)] text-white shadow-lg shadow-[var(--color-accent)]/30 hover:-translate-y-0.5 hover:bg-[#00628f] hover:shadow-xl"
                   : "pointer-events-none bg-white/10 text-white/30"
               }`}
               aria-disabled={selectedProducts.length < 2}
@@ -872,7 +872,7 @@ export default function ProductsPage() {
             <div className="mx-auto mb-6 h-1.5 w-12 rounded-full bg-[#d6d6d6]" />
             <div className="mb-6 flex items-center justify-between">
               <h3 className="text-xl font-bold text-[var(--color-primary)] font-display">{t("products.mobileFilters")}</h3>
-              <button onClick={() => setFiltersOpen(false)} className="rounded-full p-2 text-[#707070] transition-colors hover:bg-white">
+              <button onClick={() => setFiltersOpen(false)} className="rounded-full p-2 text-[#5a5a5e] transition-colors hover:bg-white">
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -880,7 +880,7 @@ export default function ProductsPage() {
             </div>
             <div className="space-y-6">
               <div>
-                <h4 className="mb-4 text-xs font-bold uppercase tracking-widest text-[#707070] font-display">
+                <h4 className="mb-4 text-xs font-bold uppercase tracking-widest text-[#5a5a5e] font-display">
                   {t("products.filters.energyClass")}
                 </h4>
                 <div className="flex flex-wrap gap-2.5">
@@ -947,7 +947,7 @@ export default function ProductsPage() {
               <div className="border-t border-[#d6d6d6] pt-6">
                 <label className="flex cursor-pointer items-center justify-between gap-3 rounded-[10px] border border-[#d6d6d6] bg-[#f5f5f7] p-4">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-[#0066cc]">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-[#0077b3]">
                       <svg className={smartIcon} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
                       </svg>
@@ -966,7 +966,7 @@ export default function ProductsPage() {
               <div className="flex flex-col gap-3 pt-2">
                 <button
                   onClick={() => setFiltersOpen(false)}
-                  className="w-full rounded-full bg-[var(--color-accent)] py-4 text-sm font-bold text-white transition-colors hover:bg-[#0063bf] font-sans"
+                  className="w-full rounded-full bg-[var(--color-accent)] py-4 text-sm font-bold text-white transition-colors hover:bg-[#00628f] font-sans"
                 >
                   {t("products.viewResults", { count: filtered.length })}
                 </button>

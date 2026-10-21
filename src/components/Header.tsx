@@ -239,7 +239,7 @@ export default function Header() {
             <div className="flex items-center gap-1">
               <Link
                 to="/comparateur"
-                className="relative p-2 text-[#474747] hover:text-[var(--color-primary)] transition-colors rounded-[10px] hover:bg-[#f5f5f7]"
+                className="relative inline-flex min-h-11 min-w-11 items-center justify-center p-2 text-[#474747] hover:text-[var(--color-primary)] transition-colors rounded-[10px] hover:bg-[#f5f5f7]"
                 aria-label={`${t("header.comparator")}${
                   compareIds.length > 0
                     ? ` (${compareIds.length} ${t("comparator.countShort", {
@@ -272,7 +272,7 @@ export default function Header() {
 
               <button
                 onClick={() => (searchOpen ? closeSearch() : setSearchOpen(true))}
-                className="p-2 text-[#474747] hover:text-[var(--color-primary)] transition-colors rounded-[10px] hover:bg-[#f5f5f7]"
+                className="inline-flex min-h-11 min-w-11 items-center justify-center p-2 text-[#474747] hover:text-[var(--color-primary)] transition-colors rounded-[10px] hover:bg-[#f5f5f7]"
                 aria-label={t("header.searchLabel")}
               >
                 {searchOpen ? (
@@ -330,7 +330,7 @@ export default function Header() {
               {!hideWhereToBuy && !isDistributors && (
                 <Link
                   to="/distributeurs"
-                  className="hidden md:flex items-center gap-1.5 bg-[var(--color-accent)] text-white text-sm font-semibold px-4 py-2.5 rounded-[10px] hover:bg-[#0063bf] transition-colors ml-2 shadow-sm shadow-blue-200"
+                  className="hidden md:flex items-center gap-1.5 bg-[var(--color-accent)] text-white text-sm font-semibold px-4 py-2.5 rounded-[10px] hover:bg-[#00628f] transition-colors ml-2 shadow-sm shadow-blue-200"
                   style={{ fontFamily: "var(--font-sans)" }}
                 >
                 <svg
@@ -357,7 +357,7 @@ export default function Header() {
 
               <button
                 onClick={() => setMobileOpen((v) => !v)}
-                className="lg:hidden p-2 text-[#474747] hover:text-[var(--color-primary)] transition-colors rounded-[10px] ml-1"
+                className="lg:hidden inline-flex min-h-11 min-w-11 items-center justify-center p-2 text-[#474747] hover:text-[var(--color-primary)] transition-colors rounded-[10px] ml-1"
                 aria-label={t("header.menuLabel")}
               >
                 <svg
@@ -409,7 +409,7 @@ export default function Header() {
                   style={{ fontFamily: "var(--font-sans)" }}
                 />
                 <svg
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#707070]"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#5a5a5e]"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -430,7 +430,7 @@ export default function Header() {
                     {searchResults.length > 0 ? (
                       <>
                         <p
-                          className="px-4 pt-3 text-[10px] font-bold uppercase tracking-[0.18em] text-[#707070]"
+                          className="px-4 pt-3 text-[10px] font-bold uppercase tracking-[0.18em] text-[#5a5a5e]"
                           style={{ fontFamily: "var(--font-display)" }}
                         >
                           {t("header.searchResults")} ({searchResults.length})
@@ -452,7 +452,7 @@ export default function Header() {
                                   <span className="block truncate text-sm font-semibold text-[#1d1d1f]" style={{ fontFamily: "var(--font-sans)" }}>
                                     {ml(p.name)}
                                   </span>
-                                  <span className="block truncate font-mono text-[10px] uppercase tracking-wider text-[#707070]">
+                                  <span className="block truncate font-mono text-[10px] uppercase tracking-wider text-[#5a5a5e]">
                                     {p.reference}
                                   </span>
                                 </span>
@@ -466,7 +466,7 @@ export default function Header() {
                         <Link
                           to="/produits"
                           onClick={closeSearch}
-                          className="block border-t border-[#d6d6d6] px-4 py-3 text-center text-xs font-semibold text-[#0066cc] transition-colors hover:bg-[#f5f5f7]"
+                          className="block border-t border-[#d6d6d6] px-4 py-3 text-center text-xs font-semibold text-[#0077b3] transition-colors hover:bg-[#f5f5f7]"
                           style={{ fontFamily: "var(--font-sans)" }}
                         >
                           {t("header.searchSeeAll")}
@@ -495,7 +495,7 @@ export default function Header() {
               <div className="grid grid-cols-4 gap-8">
                 <div className="col-span-3">
                   <p
-                    className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#707070] mb-5"
+                    className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#5a5a5e] mb-5"
                     style={{ fontFamily: "var(--font-display)" }}
                   >
                     {t("header.categoriesTitle")}
@@ -541,7 +541,7 @@ export default function Header() {
                   </div>
                   <Link
                     to="/produits"
-                    className="inline-flex items-center gap-1.5 mt-6 text-sm font-medium text-[#0066cc] hover:text-[var(--color-primary)] transition-colors"
+                    className="inline-flex items-center gap-1.5 mt-6 text-sm font-medium text-[#0077b3] hover:text-[var(--color-primary)] transition-colors"
                     style={{ fontFamily: "var(--font-sans)" }}
                   >
                     {t("header.seeAllProducts")}
@@ -563,7 +563,7 @@ export default function Header() {
 
                 <div className="border-l border-[#d6d6d6] pl-8">
                   <p
-                    className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#707070] mb-5"
+                    className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#5a5a5e] mb-5"
                     style={{ fontFamily: "var(--font-display)" }}
                   >
                     {t("header.featured")}
@@ -632,7 +632,7 @@ export default function Header() {
                         <span className="flex items-center gap-2">
                           {link.href === "/comparateur" && (
                             <svg
-                              className="w-4 h-4 text-[#707070] group-hover:text-[#0066cc] transition-colors"
+                              className="w-4 h-4 text-[#5a5a5e] group-hover:text-[#0077b3] transition-colors"
                               fill="none"
                               viewBox="0 0 24 24"
                               stroke="currentColor"
@@ -665,7 +665,7 @@ export default function Header() {
                             )}
                         </span>
                         <svg
-                          className="w-4 h-4 text-[#707070] group-hover:text-[#0066cc] transition-colors"
+                          className="w-4 h-4 text-[#5a5a5e] group-hover:text-[#0077b3] transition-colors"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -696,7 +696,7 @@ export default function Header() {
               <div className="grid grid-cols-[1.2fr_2fr_1fr] items-center gap-8">
                 <div>
                   <p
-                    className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0066cc] mb-2"
+                    className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0077b3] mb-2"
                     style={{ fontFamily: "var(--font-display)" }}
                   >
                     {t(`header.navItems.${hoveredNav}`)}
@@ -749,7 +749,7 @@ export default function Header() {
                   >
                     {t(`header.navItems.${item.key}`)}
                     <svg
-                      className="w-4 h-4 text-[#707070]"
+                      className="w-4 h-4 text-[#5a5a5e]"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -784,7 +784,7 @@ export default function Header() {
               >
                 <span className="flex items-center gap-2">
                   <svg
-                    className="w-4 h-4 text-[#707070]"
+                    className="w-4 h-4 text-[#5a5a5e]"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -806,7 +806,7 @@ export default function Header() {
                   )}
                 </span>
                 <svg
-                  className="w-4 h-4 text-[#707070]"
+                  className="w-4 h-4 text-[#5a5a5e]"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -825,7 +825,7 @@ export default function Header() {
               {!hideWhereToBuy && !isDistributors && (
                 <Link
                   to="/distributeurs"
-                  className="flex items-center justify-center gap-2 bg-[var(--color-accent)] text-white font-medium py-3 rounded-[10px] hover:bg-[#0063bf] transition-colors"
+                  className="flex items-center justify-center gap-2 bg-[var(--color-accent)] text-white font-medium py-3 rounded-[10px] hover:bg-[#00628f] transition-colors"
                   style={{ fontFamily: "var(--font-sans)" }}
                 >
                 <svg

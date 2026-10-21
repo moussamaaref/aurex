@@ -107,7 +107,7 @@ export default function AboutPage() {
       {/* ═══════════ HERO ═══════════ */}
       <section className="relative overflow-hidden min-h-[480px] flex items-end">
         <div className="absolute inset-0">
-          <img
+          <img fetchPriority="high" decoding="async"
             src={ap.aboutHeroImage || "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=1600&h=600&fit=crop&auto=format"}
             alt=""
             aria-hidden="true"
@@ -145,7 +145,7 @@ export default function AboutPage() {
             { value: ml(ap.aboutStat4Value) || "500+", label: tx(ap.aboutStat4Label, t("about.stats.employees", { defaultValue: "Collaborateurs" })) },
           ].map((s, i) => (
             <Reveal key={s.label} delay={i * 80} className="md:pl-8 first:pl-0 text-center md:text-left group">
-              <p className="text-3xl font-bold text-[#1d1d1f] font-display group-hover:text-[#0071e3] transition-colors">
+              <p className="text-3xl font-bold text-[#1d1d1f] font-display group-hover:text-[#0077b3] transition-colors">
                 {s.value}
               </p>
               <p className="text-xs text-[#64748B] mt-1 font-sans">{s.label}</p>
@@ -159,9 +159,9 @@ export default function AboutPage() {
         <div className="mx-auto max-w-4xl px-6">
           <Reveal>
             <div className="relative rounded-[28px] border border-[#d6d6d6] bg-white p-8 sm:p-12 overflow-hidden">
-              <div className="absolute top-0 left-0 w-1 h-full bg-[#0071e3]" />
+              <div className="absolute top-0 left-0 w-1 h-full bg-[#0077b3]" />
               <span
-                className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#0071e3]"
+                className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#0077b3]"
                 style={{ fontFamily: "var(--font-display)" }}
               >
                 {tx(ap.aboutIntroTitle, t("about.introductionTitle"))}
@@ -177,7 +177,7 @@ export default function AboutPage() {
                 </div>
                 <p>
                   <span className="block text-lg font-bold text-[#1d1d1f] font-display">AUREX</span>
-                  <span className="block text-sm font-medium text-[#0071e3] font-sans">
+                  <span className="block text-sm font-medium text-[#0077b3] font-sans">
                     {tx(ap.aboutTagline, t("about.tagline"))}
                   </span>
                 </p>
@@ -193,7 +193,7 @@ export default function AboutPage() {
           <Reveal>
             <div>
               <span
-                className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0071e3]"
+                className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0077b3]"
                 style={{ fontFamily: "var(--font-display)" }}
               >
                 {tx(ap.aboutMissionSubtitle, t("about.mission.subtitle"))}
@@ -213,7 +213,7 @@ export default function AboutPage() {
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
                   to="/produits"
-                  className="group inline-flex items-center gap-2 bg-[#0071e3] text-white font-semibold px-7 py-4 rounded-full text-sm font-sans hover:bg-[#0063bf] transition-colors"
+                  className="group inline-flex items-center gap-2 bg-[#0077b3] text-white font-semibold px-7 py-4 rounded-full text-sm font-sans hover:bg-[#00628f] transition-colors"
                 >
                   {tx(ap.aboutMissionCta1, t("about.mission.seeProducts"))}
                   <ArrowIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -229,14 +229,14 @@ export default function AboutPage() {
           </Reveal>
           <Reveal delay={150}>
             <div className="relative">
-              <img
+              <img loading="lazy" decoding="async"
                 src={ap.aboutMissionImage || "https://images.unsplash.com/photo-1639405069836-f82aa6dcb900?w=700&h=700&fit=crop&auto=format"}
-                alt=""
+                alt="AUREX"
                 className="relative rounded-[28px] w-full object-cover"
               />
               <div className="absolute -bottom-5 -right-5 bg-white rounded-[28px] p-4 shadow-2xl flex items-center gap-3 animate-float">
                 <div className="w-11 h-11 rounded-[10px] bg-[#f5f5f7] flex items-center justify-center">
-                  <svg className="w-5 h-5 text-[#0071e3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <svg className="w-5 h-5 text-[#0077b3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                   </svg>
                 </div>
@@ -244,7 +244,7 @@ export default function AboutPage() {
                   <p className="text-xs font-bold text-[#1d1d1f] font-sans">
                     {tx(ap.aboutQualityBadge, t("about.quality.badge", { defaultValue: "Qualité certifiée" }))}
                   </p>
-                  <p className="text-[10px] text-[#707070] font-sans">
+                  <p className="text-[10px] text-[#5a5a5e] font-sans">
                     {tx(ap.aboutQualityBadgeSub, t("about.quality.badgeSub", { defaultValue: "ISO 9001 — Normes internationales" }))}
                   </p>
                 </div>
@@ -259,7 +259,7 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto px-6">
           <Reveal className="text-center mb-14">
             <span
-              className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0071e3]"
+              className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0077b3]"
               style={{ fontFamily: "var(--font-display)" }}
             >
               {tx(ap.aboutValuesSubtitle, t("about.values.subtitle"))}
@@ -274,13 +274,13 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             {values.map((val, i) => (
               <Reveal key={val.title} delay={i * 100}>
-                <div className="group bg-white rounded-[28px] p-7 border border-[#d6d6d6] hover:shadow-xl hover:shadow-[#0071e3]/10 hover:border-[#0071e3]/40 hover:-translate-y-1.5 transition-all duration-300 h-full relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-16 h-16 rounded-full bg-[#0071e3]/5 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <span className="relative inline-flex w-12 h-12 items-center justify-center rounded-[10px] bg-[#f5f5f7] text-2xl group-hover:bg-[#0071e3] group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-sm">
+                <div className="group bg-white rounded-[28px] p-7 border border-[#d6d6d6] hover:shadow-xl hover:shadow-[#0077b3]/10 hover:border-[#0077b3]/40 hover:-translate-y-1.5 transition-all duration-300 h-full relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-16 h-16 rounded-full bg-[#0077b3]/5 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <span className="relative inline-flex w-12 h-12 items-center justify-center rounded-[10px] bg-[#f5f5f7] text-2xl group-hover:bg-[#0077b3] group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-sm">
                     {val.icon}
                   </span>
                   <h3
-                    className="relative text-lg font-bold text-[#1d1d1f] mt-4 mb-2 group-hover:text-[#0071e3] transition-colors"
+                    className="relative text-lg font-bold text-[#1d1d1f] mt-4 mb-2 group-hover:text-[#0077b3] transition-colors"
                     style={{ fontFamily: "var(--font-display)" }}
                   >
                     {val.title}
@@ -298,7 +298,7 @@ export default function AboutPage() {
         <div className="max-w-4xl mx-auto px-6">
           <Reveal className="text-center mb-14">
             <span
-              className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0071e3]"
+              className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0077b3]"
               style={{ fontFamily: "var(--font-display)" }}
             >
               {tx(ap.aboutHistorySubtitle, t("about.history.subtitle"))}
@@ -324,19 +324,19 @@ export default function AboutPage() {
                       }`}
                     >
                       <div className={`flex-1 ${i % 2 !== 0 ? "md:text-right" : ""}`}>
-                        <div className="group bg-[#f5f5f7] rounded-[28px] border border-[#d6d6d6] p-5 hover:border-[#0071e3]/40 hover:bg-white hover:shadow-lg hover:shadow-[#0071e3]/10 transition-all duration-300">
-                          <span className="inline-flex items-center gap-2 text-[10px] font-bold tracking-widest text-[#0071e3] font-display">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#0071e3] animate-pulse-dot" />
+                        <div className="group bg-[#f5f5f7] rounded-[28px] border border-[#d6d6d6] p-5 hover:border-[#0077b3]/40 hover:bg-white hover:shadow-lg hover:shadow-[#0077b3]/10 transition-all duration-300">
+                          <span className="inline-flex items-center gap-2 text-[10px] font-bold tracking-widest text-[#0077b3] font-display">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#0077b3] animate-pulse-dot" />
                             {m.year}
                           </span>
-                          <h4 className="font-bold text-[#1d1d1f] mt-1.5 font-display text-base group-hover:text-[#0071e3] transition-colors">
+                          <h4 className="font-bold text-[#1d1d1f] mt-1.5 font-display text-base group-hover:text-[#0077b3] transition-colors">
                             {m.title}
                           </h4>
                           <p className="text-xs text-[#474747] mt-2 leading-relaxed font-sans">{m.desc}</p>
                         </div>
                       </div>
                       <div className="relative z-10 flex-shrink-0 mt-6 hidden md:block">
-                        <div className="w-4 h-4 rounded-full bg-[#0071e3] border-4 border-white shadow-md group-hover:scale-125 transition-transform" />
+                        <div className="w-4 h-4 rounded-full bg-[#0077b3] border-4 border-white shadow-md group-hover:scale-125 transition-transform" />
                       </div>
                       <div className="flex-1 hidden md:block" />
                     </div>

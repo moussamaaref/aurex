@@ -1,5 +1,6 @@
 const ar = {
   common: {
+    skipToContent: "انتقل إلى المحتوى",
     seeAll: "عرض الكل",
     seeMore: "اقرأ المزيد ←",
     view: "عرض ←",

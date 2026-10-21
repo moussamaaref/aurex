@@ -165,7 +165,7 @@ const defaultSiteSettings: SiteSettings = {
   logoUrl: null,
   faviconUrl: null,
   primaryColor: "#1d1d1f",
-  accentColor: "#0071e3",
+  accentColor: "#0077b3",
   surfaceColor: "#f5f5f7",
   contactEmail: "support@aurex-dz.com",
   contactPhone: "+213 21 XX XX XX",

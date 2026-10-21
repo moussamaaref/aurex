@@ -1,5 +1,6 @@
 const fr = {
   common: {
+    skipToContent: "Aller au contenu",
     seeAll: "Voir tout",
     seeMore: "Voir la suite →",
     view: "Voir →",
