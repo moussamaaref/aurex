@@ -510,10 +510,10 @@ export default function HomePage() {
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 pb-24 pt-40 w-full">
-          <div className="max-w-2xl">
+          <div className="max-w-4xl">
             <div key={currentSlide + "-tag"} className="animate-fade-in">
               <span
-                className="inline-flex items-center gap-2.5 text-[10px] font-bold tracking-[0.2em] uppercase text-white bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2 mb-6 shadow-lg"
+                className="inline-flex items-center gap-2.5 text-xs font-semibold tracking-[-0.12px] uppercase text-white mb-6"
                 style={{ fontFamily: "var(--font-display)" }}
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] animate-pulse-dot" />
@@ -523,7 +523,7 @@ export default function HomePage() {
 
             <h1
               key={currentSlide + "-title"}
-              className="text-5xl sm:text-7xl font-bold text-white leading-[0.95] tracking-tight mb-6 drop-shadow-md"
+              className="text-5xl sm:text-7xl lg:text-[80px] font-semibold text-white leading-[1.05] tracking-tight lg:tracking-[-1.2px] mb-6"
               style={{ fontFamily: "var(--font-display)", whiteSpace: "pre-line" }}
             >
               {tx((slide as HeroSlide).title, slide.titleKey ? t(slide.titleKey) : "")}

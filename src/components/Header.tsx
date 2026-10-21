@@ -196,7 +196,7 @@ export default function Header() {
                 >
                   <Link
                     to={item.href}
-                    className={`flex items-center gap-0.5 px-3.5 py-2 text-sm font-medium transition-colors duration-150 relative group
+                    className={`flex items-center gap-0.5 whitespace-nowrap px-2.5 xl:px-3.5 py-2 text-sm font-medium transition-colors duration-150 relative group
                       ${
                         isActive(item.href)
                           ? "text-[var(--color-primary)]"
@@ -223,7 +223,7 @@ export default function Header() {
                       </svg>
                     )}
                     <span
-                      className={`absolute bottom-0 left-3.5 right-3.5 h-0.5 bg-[var(--color-accent)] transition-transform duration-200 origin-left
+                      className={`absolute bottom-0 left-2.5 right-2.5 xl:left-3.5 xl:right-3.5 h-0.5 bg-[var(--color-accent)] transition-transform duration-200 origin-left
                       ${
                         isActive(item.href)
                           ? "scale-x-100"

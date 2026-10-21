@@ -414,3 +414,10 @@ Full-bleed bands stacked vertically, each band a horizontal slice of #ffffff or 
   --radius-full: 980px;
 }
 ```
+
+## Adaptations AUREX
+
+Cette référence est appliquée avec trois écarts volontaires :
+- **Bleu de marque** : `#0077b3` (accent, liens, boutons) remplace `#0071e3` / `#0066cc` ; survol `#00628f`.
+- **Gris secondaire** : `#5a5a5e` au lieu de `#707070` (≥ 6:1 sur `#f5f5f7`, conforme WCAG AA).
+- **Heroes** : visuels photographiques sombres conservés (images issues du CMS) ; typographie alignée sur la référence (80px / 600 / interlignage 1,05 / -1,2px), étiquette de lancement sans pastille.

@@ -277,7 +277,7 @@ export default function ProductDetailPage() {
             <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-[#5a5a5e]">
               {product.reference}
             </p>
-            <h1 className="text-3xl font-bold leading-tight text-[var(--color-primary)] lg:text-4xl font-display">
+            <h1 className="text-3xl font-semibold leading-tight tracking-tight text-[var(--color-primary)] lg:text-4xl font-display">
               {ml(product.name)}
             </h1>
             <p className="mt-4 text-sm leading-relaxed text-[#333336]">

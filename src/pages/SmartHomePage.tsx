@@ -120,7 +120,7 @@ export default function SmartHomePage() {
               </span>
             </div>
             <h1
-              className="text-5xl lg:text-7xl font-bold text-white leading-tight"
+              className="text-5xl lg:text-[80px] font-semibold text-white leading-[1.05] tracking-tight lg:tracking-[-1.2px]"
               style={{ fontFamily: "var(--font-display)", whiteSpace: "pre-line" }}
             >
               {tx(sp.heroTitle, t("smartHome.hero.title"))}

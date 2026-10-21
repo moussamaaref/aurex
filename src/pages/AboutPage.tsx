@@ -124,7 +124,7 @@ export default function AboutPage() {
             {tx(ap.aboutHeroSubtitle, t("about.hero.subtitle"))}
           </span>
           <h1
-            className="text-5xl lg:text-7xl font-bold text-white mt-3 leading-tight animate-slide-up"
+            className="text-5xl lg:text-[80px] font-semibold text-white mt-3 leading-[1.05] tracking-tight lg:tracking-[-1.2px] animate-slide-up"
             style={{ fontFamily: "var(--font-display)", whiteSpace: "pre-line" }}
           >
             {tx(ap.aboutHeroTitle, t("about.hero.title"))}
