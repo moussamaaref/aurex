@@ -29,12 +29,14 @@ function ScrollToTop() {
 }
 
 function Layout({ children }: { children: React.ReactNode }) {
+  const { t } = useTranslation()
   const { pathname } = useLocation()
   const isAdmin = pathname.startsWith("/admin")
   return (
     <div className="min-h-screen flex flex-col">
+      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-white focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-[#1d1d1f] focus:outline-2">{t("common.skipToContent")}</a>
       {!isAdmin && <Header />}
-      <main className="flex-1">{children}</main>
+      <main id="main" tabIndex={-1} className="flex-1 outline-none">{children}</main>
       {!isAdmin && <Footer />}
     </div>
   )
@@ -225,7 +227,7 @@ export default function App() {
         <SiteSettingsProvider>
           <CompareProvider>
             <Layout>
-              <Suspense fallback={<div className="flex min-h-[60vh] items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-4 border-[#d6d6d6] border-t-[#0071e3]" /></div>}>
+              <Suspense fallback={<div className="flex min-h-[60vh] items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-4 border-[#d6d6d6] border-t-[#0077b3]" /></div>}>
                 <Routes>
                   <Route path="/" element={<HomePage />} />
                   <Route path="/produits" element={<ProductsPage />} />

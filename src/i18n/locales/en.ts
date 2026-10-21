@@ -1,5 +1,6 @@
 const en = {
   common: {
+    skipToContent: "Skip to content",
     seeAll: "See all",
     seeMore: "Read more →",
     view: "View →",

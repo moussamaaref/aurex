@@ -272,10 +272,10 @@ function ProductCard({ product, index = 0 }: { product: (typeof products)[0]; in
             setLiked((v) => !v)
           }}
           aria-label="Favori"
-          className="absolute top-3 right-3 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform"
+          className="absolute top-1.5 right-1.5 w-11 h-11 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform"
         >
           <svg
-            className={`w-4 h-4 transition-colors ${liked ? "text-red-500 fill-red-500" : "text-[#707070]"}`}
+            className={`w-4 h-4 transition-colors ${liked ? "text-red-500 fill-red-500" : "text-[#5a5a5e]"}`}
             fill={liked ? "currentColor" : "none"}
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -310,10 +310,10 @@ function ProductCard({ product, index = 0 }: { product: (typeof products)[0]; in
       </div>
 
       <div className="p-4 flex flex-col flex-1">
-        <p className="text-[10px] text-[#707070] font-mono tracking-widest uppercase mb-1">
+        <p className="text-[10px] text-[#5a5a5e] font-mono tracking-widest uppercase mb-1">
           {product.reference}
         </p>
-        <h3 className="text-sm font-semibold text-[#1d1d1f] font-sans leading-snug mb-2 group-hover:text-[var(--color-primary)] transition-colors line-clamp-2">
+        <h3 className="text-[17px] font-semibold text-[#1d1d1f] font-sans leading-snug mb-2 group-hover:text-[var(--color-primary)] transition-colors line-clamp-2">
           {ml(product.name)}
         </h3>
         <div className="flex items-center gap-2 flex-wrap mb-3">
@@ -330,7 +330,7 @@ function ProductCard({ product, index = 0 }: { product: (typeof products)[0]; in
           )}
         </div>
         <div className="mt-auto flex items-center justify-end pt-3 border-t border-gray-50">
-          <span className="w-7 h-7 rounded-full bg-[var(--color-accent)]/10 text-[#0066cc] flex items-center justify-center group-hover:bg-[var(--color-accent)] group-hover:text-white transition-colors">
+          <span className="w-7 h-7 rounded-full bg-[var(--color-accent)]/10 text-[#0077b3] flex items-center justify-center group-hover:bg-[var(--color-accent)] group-hover:text-white transition-colors">
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
             </svg>
@@ -523,7 +523,7 @@ export default function HomePage() {
 
             <h1
               key={currentSlide + "-title"}
-              className="text-5xl sm:text-7xl font-bold text-white leading-[0.95] tracking-tight mb-6 drop-shadow-md animate-slide-up"
+              className="text-5xl sm:text-7xl font-bold text-white leading-[0.95] tracking-tight mb-6 drop-shadow-md"
               style={{ fontFamily: "var(--font-display)", whiteSpace: "pre-line" }}
             >
               {tx((slide as HeroSlide).title, slide.titleKey ? t(slide.titleKey) : "")}
@@ -543,7 +543,7 @@ export default function HomePage() {
             >
               <Link
                 to={(slide as HeroSlide).ctaHref ?? slide.ctaHref ?? "/produits"}
-                className="group/btn inline-flex items-center gap-2 bg-[var(--color-accent)] hover:bg-[#0063bf] text-white font-semibold px-7 py-4 rounded-full transition-colors text-sm"
+                className="group/btn inline-flex items-center gap-2 bg-[var(--color-accent)] hover:bg-[#00628f] text-white font-semibold px-7 py-4 rounded-full transition-colors text-sm"
                 style={{ fontFamily: "var(--font-sans)" }}
               >
                 {tx((slide as HeroSlide).cta, slide.ctaKey ? t(slide.ctaKey) : "")}
@@ -561,7 +561,7 @@ export default function HomePage() {
         </div>
 
         {/* Indicateurs avec barre de progression */}
-        <div className="absolute bottom-8 right-8 z-10 flex items-center gap-3">
+        <div className="absolute bottom-8 right-8 z-10 flex items-center gap-0">
           {heroSlides.map((_, i) => (
             <button
               key={i}
@@ -569,7 +569,7 @@ export default function HomePage() {
                 setCurrentSlide(i)
                 setIsPlaying(false)
               }}
-              className="group flex flex-col items-start gap-1"
+              className="group flex min-h-11 min-w-6 items-center justify-center px-2"
               aria-label={`Slide ${i + 1}`}
             >
               <span
@@ -606,7 +606,7 @@ export default function HomePage() {
           {stats.map((stat, i) => (
             <div key={`${ml(stat.label)}-${i}`} className="md:pl-8 first:pl-0 group">
               <p
-                className="text-3xl lg:text-4xl font-bold text-[var(--color-primary)] font-display transition-colors group-hover:text-[#0066cc]"
+                className="text-3xl lg:text-4xl font-bold text-[var(--color-primary)] font-display transition-colors group-hover:text-[#0077b3]"
               >
                 <CountUp target={stat.value} suffix={ml(stat.suffix)} />
               </p>
@@ -674,22 +674,22 @@ export default function HomePage() {
             {/* Carte sombre */}
             <div className="flex-1 relative rounded-[28px] overflow-hidden bg-black flex items-center p-7 gap-6 min-h-32 group border border-white/5 hover:border-[var(--color-accent)]/40 transition-colors">
               <div className="relative flex-shrink-0">
-                <img
+                <img loading="lazy" decoding="async"
                   src={campaign.darkImage || "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?w=200&h=200&fit=crop&auto=format"}
-                  alt=""
+                  alt={tx(campaign.darkTitle, t("home.ex9000Washing"))}
                   className="w-24 h-24 object-cover rounded-[28px] transition-transform duration-500 group-hover:scale-105 group-hover:rotate-1"
                 />
                 <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-[var(--color-accent)] border-2 border-black" />
               </div>
               <div>
-                <span className="text-[10px] font-bold tracking-widest uppercase text-[#0066cc]" style={{ fontFamily: "var(--font-display)" }}>
+                <span className="text-[10px] font-bold tracking-widest uppercase text-[#0077b3]" style={{ fontFamily: "var(--font-display)" }}>
                   {tx(campaign.darkTag, t("home.newWashing"))}
                 </span>
                 <h3 className="text-xl font-bold text-white mt-1" style={{ fontFamily: "var(--font-display)" }}>
                   {tx(campaign.darkTitle, t("home.ex9000Washing"))}
                 </h3>
-                <p className="text-xs text-[#707070] mt-1 font-sans">{tx(campaign.darkSpecs, t("home.ex9000Specs"))}</p>
-                <Link to={campaign.darkHref || "/produits/lavage/ex9000-wm"} className="inline-flex items-center gap-1.5 text-xs text-[#0066cc] hover:text-white mt-3 font-sans transition-colors group/l">
+                <p className="text-xs text-[#a1a1a6] mt-1 font-sans">{tx(campaign.darkSpecs, t("home.ex9000Specs"))}</p>
+                <Link to={campaign.darkHref || "/produits/lavage/ex9000-wm"} className="inline-flex min-h-11 items-center gap-1.5 text-xs text-[#4db3e6] hover:text-white mt-3 font-sans transition-colors group/l">
                   {t("home.discoverMore")}
                   <ArrowIcon className="w-3 h-3 transition-transform group-hover/l:translate-x-1" />
                 </Link>
@@ -699,9 +699,9 @@ export default function HomePage() {
             {/* Carte claire */}
             <div className="flex-1 relative rounded-[28px] overflow-hidden bg-white flex items-center p-7 gap-6 min-h-32 group border border-[#d6d6d6] hover:border-[var(--color-accent)]/40 transition-colors">
               <div className="relative flex-shrink-0">
-                <img
+                <img loading="lazy" decoding="async"
                   src={campaign.lightImage || "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=200&h=200&fit=crop&auto=format"}
-                  alt=""
+                  alt={tx(campaign.lightTitle, t("home.ex7000Fridge"))}
                   className="w-24 h-24 object-cover rounded-[28px] transition-transform duration-500 group-hover:scale-105 group-hover:-rotate-1"
                 />
                 <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-amber-400 border-2 border-[#F1F5FB]" />
@@ -714,7 +714,7 @@ export default function HomePage() {
                   {tx(campaign.lightTitle, t("home.ex7000Fridge"))}
                 </h3>
                 <p className="text-xs text-[#474747] mt-1 font-sans">{tx(campaign.lightSpecs, t("home.ex7000Specs"))}</p>
-                <Link to={campaign.lightHref || "/produits/refrigerateurs/ex7000-fridge"} className="inline-flex items-center gap-1.5 text-xs text-[#0066cc] hover:text-[var(--color-primary)] mt-3 font-sans transition-colors group/l">
+                <Link to={campaign.lightHref || "/produits/refrigerateurs/ex7000-fridge"} className="inline-flex min-h-11 items-center gap-1.5 text-xs text-[#0077b3] hover:text-[var(--color-primary)] mt-3 font-sans transition-colors group/l">
                   {t("home.discoverMore")}
                   <ArrowIcon className="w-3 h-3 transition-transform group-hover/l:translate-x-1" />
                 </Link>
@@ -730,7 +730,7 @@ export default function HomePage() {
           <Reveal>
             <div className="flex items-end justify-between mb-12">
               <div>
-                <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0066cc]" style={{ fontFamily: "var(--font-display)" }}>
+                <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0077b3]" style={{ fontFamily: "var(--font-display)" }}>
                   {tx(sec.categoriesEyebrow, t("home.categories.subtitle"))}
                 </span>
                 <h2 className="text-4xl font-bold text-[var(--color-primary)] mt-2" style={{ fontFamily: "var(--font-display)" }}>
@@ -739,7 +739,7 @@ export default function HomePage() {
               </div>
               <Link
                 to="/produits"
-                className="text-sm text-[#0066cc] hover:text-[var(--color-primary)] font-medium transition-colors hidden md:flex items-center gap-1.5 group font-sans"
+                className="text-sm text-[#0077b3] hover:text-[var(--color-primary)] font-medium transition-colors hidden md:flex items-center gap-1.5 group font-sans"
               >
                 {t("common.seeAll")}
                 <ArrowIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -754,14 +754,14 @@ export default function HomePage() {
                 to={`/produits/${cat.slug}`}
                 className="group relative rounded-[28px] overflow-hidden bg-white aspect-[3/4] shadow-sm hover:shadow-xl hover:shadow-[var(--color-primary)]/15 hover:-translate-y-1.5 transition-all duration-300 h-full block"
               >
-                <img
+                <img loading="lazy" decoding="async"
                   src={cat.image}
                   alt={ml(cat.label)}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-primary)]/90 via-[var(--color-primary)]/25 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <h3 className="text-white font-bold text-sm leading-tight" style={{ fontFamily: "var(--font-display)" }}>
+                  <h3 className="text-white font-bold text-[17px] leading-tight" style={{ fontFamily: "var(--font-display)" }}>
                     {ml(cat.label)}
                   </h3>
                   <p className="text-blue-200 text-[10px] mt-0.5" style={{ fontFamily: "var(--font-sans)" }}>
@@ -786,7 +786,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-6">
           <div className="max-w-4xl">
             <Reveal>
-            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#0066cc]">
+            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#0077b3]">
               {tx(sec.lineupEyebrow, t("products.lineup.eyebrow"))}
             </p>
             <h2
@@ -813,7 +813,7 @@ export default function HomePage() {
                 }
                 return (
                   <div key={key} className="rounded-[28px] border border-[#d6d6d6] bg-white p-5 shadow-sm">
-                    <h3 className="text-sm font-bold text-[var(--color-primary)]">
+                    <h3 className="text-base font-bold text-[var(--color-primary)]">
                       {tx(ov[key].title, t(`products.lineup.categories.${key}.title`))}
                     </h3>
                     <p className="mt-2 text-xs leading-relaxed text-[#474747]">
@@ -834,7 +834,7 @@ export default function HomePage() {
       <section className="py-20 max-w-7xl mx-auto px-6">
         <div className="flex items-end justify-between mb-12">
           <div>
-            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0066cc]" style={{ fontFamily: "var(--font-display)" }}>
+            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0077b3]" style={{ fontFamily: "var(--font-display)" }}>
               {tx(sec.featuredSubtitle, t("home.featured.subtitle"))}
             </span>
             <h2 className="text-4xl font-bold text-[var(--color-primary)] mt-2" style={{ fontFamily: "var(--font-display)" }}>
@@ -843,7 +843,7 @@ export default function HomePage() {
           </div>
           <Link
             to="/produits"
-            className="text-sm text-[#0066cc] hover:text-[var(--color-primary)] font-medium transition-colors hidden md:flex items-center gap-1.5 group font-sans"
+            className="text-sm text-[#0077b3] hover:text-[var(--color-primary)] font-medium transition-colors hidden md:flex items-center gap-1.5 group font-sans"
           >
             {t("home.featured.allCatalog")}
             <ArrowIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -875,7 +875,7 @@ export default function HomePage() {
         <div className="relative max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <Reveal variant="left">
           <div>
-            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0066cc]" style={{ fontFamily: "var(--font-display)" }}>
+            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0077b3]" style={{ fontFamily: "var(--font-display)" }}>
               {sec.smartEyebrow || "AUREX SmartConnect"}
             </span>
             <h2
@@ -912,7 +912,7 @@ export default function HomePage() {
             </div>
             <Link
               to="/smart-home"
-              className="group/btn inline-flex items-center gap-2 mt-8 bg-[var(--color-accent)] hover:bg-[#0063bf] text-white font-semibold px-7 py-4 rounded-full transition-colors text-sm"
+              className="group/btn inline-flex items-center gap-2 mt-8 bg-[var(--color-accent)] hover:bg-[#00628f] text-white font-semibold px-7 py-4 rounded-full transition-colors text-sm"
               style={{ fontFamily: "var(--font-sans)" }}
             >
               {tx(sec.smartCta, t("home.smartHomeSection.cta"))}
@@ -922,9 +922,9 @@ export default function HomePage() {
           </Reveal>
 
           <div className="relative">
-            <img
+            <img loading="lazy" decoding="async"
               src={sec.smartImage || "https://images.unsplash.com/photo-1558002038-1055907df827?w=600&h=700&fit=crop&auto=format"}
-              alt=""
+              alt="AUREX SmartConnect"
               className="relative rounded-[28px] w-full object-cover animate-float"
             />
             <div className="absolute -bottom-5 -left-5 bg-white rounded-[28px] p-4 shadow-2xl flex items-center gap-3 animate-float" style={{ animationDelay: "1.5s" }}>
@@ -952,7 +952,7 @@ export default function HomePage() {
           <div className="flex items-end justify-between mb-12">
             <Reveal>
             <div>
-              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0066cc]" style={{ fontFamily: "var(--font-display)" }}>
+              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0077b3]" style={{ fontFamily: "var(--font-display)" }}>
                 {tx(sec.techSubtitle, t("home.technologies.subtitle"))}
               </span>
               <h2 className="text-4xl font-bold text-[var(--color-primary)] mt-2" style={{ fontFamily: "var(--font-display)" }}>
@@ -962,7 +962,7 @@ export default function HomePage() {
             </Reveal>
             <Link
               to="/technologies"
-              className="text-sm text-[#0066cc] hover:text-[var(--color-primary)] font-medium transition-colors hidden md:flex items-center gap-1.5 group font-sans"
+              className="text-sm text-[#0077b3] hover:text-[var(--color-primary)] font-medium transition-colors hidden md:flex items-center gap-1.5 group font-sans"
             >
               {t("home.technologies.allTechs")}
               <ArrowIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -976,7 +976,7 @@ export default function HomePage() {
                 to="/technologies"
                 className="group relative rounded-[28px] overflow-hidden bg-black aspect-video shadow-md hover:shadow-2xl hover:shadow-[var(--color-primary)]/20 hover:-translate-y-1 transition-all duration-300 h-full block"
               >
-                <img
+                <img loading="lazy" decoding="async"
                   src={tech.image}
                   alt={ml(tech.name)}
                   className="w-full h-full object-cover opacity-50 group-hover:opacity-40 group-hover:scale-105 transition-all duration-700"
@@ -1011,7 +1011,7 @@ export default function HomePage() {
           <div className="flex items-end justify-between mb-12">
             <Reveal>
             <div>
-              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0066cc]" style={{ fontFamily: "var(--font-display)" }}>
+              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0077b3]" style={{ fontFamily: "var(--font-display)" }}>
                 {tx(sec.newsSubtitle, t("home.news.subtitle"))}
               </span>
               <h2 className="text-4xl font-bold text-[var(--color-primary)] mt-2" style={{ fontFamily: "var(--font-display)" }}>
@@ -1021,7 +1021,7 @@ export default function HomePage() {
             </Reveal>
             <Link
               to="/actualites"
-              className="text-sm text-[#0066cc] hover:text-[var(--color-primary)] font-medium transition-colors hidden md:flex items-center gap-1.5 group font-sans"
+              className="text-sm text-[#0077b3] hover:text-[var(--color-primary)] font-medium transition-colors hidden md:flex items-center gap-1.5 group font-sans"
             >
               {t("home.news.allNews")}
               <ArrowIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -1035,7 +1035,7 @@ export default function HomePage() {
                 className="group bg-white rounded-[28px] overflow-hidden border border-[#d6d6d6] hover:shadow-xl hover:shadow-[var(--color-primary)]/10 hover:-translate-y-1 hover:border-[#d6d6d6] transition-all duration-300 h-full"
               >
                 <div className="relative overflow-hidden aspect-video">
-                  <img
+                  <img loading="lazy" decoding="async"
                     src={news.image}
                     alt={ml(news.title)}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
@@ -1047,14 +1047,14 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="p-5">
-                  <time className="text-xs text-[#707070] font-sans">{ml(news.date)}</time>
-                  <h3 className="text-sm font-semibold text-[#1d1d1f] mt-2 leading-snug group-hover:text-[var(--color-primary)] transition-colors font-sans line-clamp-2">
+                  <time className="text-xs text-[#5a5a5e] font-sans">{ml(news.date)}</time>
+                  <h3 className="text-[17px] font-semibold text-[#1d1d1f] mt-2 leading-snug group-hover:text-[var(--color-primary)] transition-colors font-sans line-clamp-2">
                     {ml(news.title)}
                   </h3>
                   <p className="text-xs text-[#474747] mt-2 leading-relaxed font-sans line-clamp-2">
                     {ml(news.excerpt)}
                   </p>
-                  <span className="inline-flex items-center gap-1.5 mt-4 text-xs font-medium text-[#0066cc] group-hover:gap-3 transition-all font-sans">
+                  <span className="inline-flex items-center gap-1.5 mt-4 text-xs font-medium text-[#0077b3] group-hover:gap-3 transition-all font-sans">
                     {t("common.seeMore")}
                     <ArrowIcon className="w-3 h-3" />
                   </span>
@@ -1073,7 +1073,7 @@ export default function HomePage() {
               <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <Reveal variant="left">
                 <div>
-                <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0066cc]" style={{ fontFamily: "var(--font-display)" }}>
+                <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0077b3]" style={{ fontFamily: "var(--font-display)" }}>
                   {tx(sec.supportSubtitle, t("home.support.subtitle"))}
                 </span>
                 <h2
@@ -1086,7 +1086,7 @@ export default function HomePage() {
                 <div className="flex flex-wrap gap-3 mt-8">
                   <Link
                     to="/support"
-                    className="group inline-flex items-center gap-2 bg-[var(--color-accent)] text-white font-semibold px-6 py-3.5 rounded-full hover:bg-[#0063bf] transition-colors text-sm font-sans"
+                    className="group inline-flex items-center gap-2 bg-[var(--color-accent)] text-white font-semibold px-6 py-3.5 rounded-full hover:bg-[#00628f] transition-colors text-sm font-sans"
                   >
                     {tx(sec.supportCta1, t("home.support.accessSupport"))}
                     <ArrowIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />

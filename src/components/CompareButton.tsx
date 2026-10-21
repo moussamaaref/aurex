@@ -127,7 +127,7 @@ export default function CompareButton({
           ? "bg-[#1d1d1f] text-white"
           : full
             ? "bg-[#f5f5f7] text-gray-300 border border-[#d6d6d6] cursor-not-allowed"
-            : "bg-[#0071e3] text-white hover:bg-[#0063bf]"
+            : "bg-[#0077b3] text-white hover:bg-[#00628f]"
       }`}
     >
       {added ? <CheckIcon /> : <ScaleIcon />}

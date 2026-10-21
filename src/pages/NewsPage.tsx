@@ -84,10 +84,10 @@ export default function NewsPage() {
         <div className="relative max-w-7xl mx-auto px-6 py-16 lg:py-20">
           {/* Eyebrow pill */}
           <span
-            className="inline-flex items-center gap-2.5 text-[11px] font-semibold tracking-[0.2em] uppercase text-[#0066cc] bg-[#f5f5f7] rounded-full px-4 py-2 mb-6"
+            className="inline-flex items-center gap-2.5 text-[11px] font-semibold tracking-[0.2em] uppercase text-[#0077b3] bg-[#f5f5f7] rounded-full px-4 py-2 mb-6"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-[#0071e3] animate-pulse" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#0077b3] animate-pulse" />
             {tx(np.newsHeroEyebrow, t("newsPage.eyebrow"))}
           </span>
 
@@ -107,13 +107,13 @@ export default function NewsPage() {
               <p className="text-3xl font-semibold text-[#1d1d1f]" style={{ fontFamily: "var(--font-display)" }}>
                 {newsItems.length}
               </p>
-              <p className="text-xs text-[#707070] mt-0.5 uppercase tracking-wider">{tx(np.newsStatArticles, t("newsPage.statsArticles"))}</p>
+              <p className="text-xs text-[#5a5a5e] mt-0.5 uppercase tracking-wider">{tx(np.newsStatArticles, t("newsPage.statsArticles"))}</p>
             </div>
             <div>
               <p className="text-3xl font-semibold text-[#1d1d1f]" style={{ fontFamily: "var(--font-display)" }}>
                 {new Set(newsItems.map((n) => n.category)).size}
               </p>
-              <p className="text-xs text-[#707070] mt-0.5 uppercase tracking-wider">{tx(np.newsStatCategories, t("newsPage.statsCategories"))}</p>
+              <p className="text-xs text-[#5a5a5e] mt-0.5 uppercase tracking-wider">{tx(np.newsStatCategories, t("newsPage.statsCategories"))}</p>
             </div>
           </div>
         </div>
@@ -125,7 +125,7 @@ export default function NewsPage() {
         <div className="flex flex-wrap items-center justify-between gap-5 mb-10">
           <div>
             <p
-              className="text-xs uppercase tracking-[0.2em] text-[#0071e3] font-bold"
+              className="text-xs uppercase tracking-[0.2em] text-[#0077b3] font-bold"
               style={{ fontFamily: "var(--font-display)" }}
             >
               {tx(np.newsSectionEyebrow, t("newsPage.latest"))}
@@ -146,7 +146,7 @@ export default function NewsPage() {
                 className={`rounded-full px-5 py-2 text-xs font-semibold transition-all duration-200 ${
                   category === item
                     ? "bg-[#1d1d1f] text-white shadow-lg shadow-[#1d1d1f]/20 scale-105"
-                    : "bg-white text-[#64748B] border border-[#d6d6d6] hover:border-[#0071e3] hover:text-[#0071e3] hover:shadow-sm"
+                    : "bg-white text-[#64748B] border border-[#d6d6d6] hover:border-[#0077b3] hover:text-[#0077b3] hover:shadow-sm"
                 }`}
               >
                 {item === "all" ? tx(np.newsFilterAll, t("newsPage.all")) : item}
@@ -161,14 +161,14 @@ export default function NewsPage() {
           <article className="group grid lg:grid-cols-[1.15fr_0.85fr] bg-white rounded-[28px] overflow-hidden border border-[#d6d6d6] mb-8">
             {/* Image */}
             <div className="relative min-h-[280px] lg:min-h-[400px] overflow-hidden">
-              <img
+              <img loading="lazy" decoding="async"
                 src={featured.image}
                 alt={ml(featured.title)}
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#1d1d1f]/40 via-transparent to-transparent" />
               {/* Badge */}
-              <span className="absolute top-5 left-5 inline-flex items-center gap-2 bg-[#0071e3] text-white rounded-full px-4 py-2 text-[10px] uppercase tracking-widest font-bold shadow-lg">
+              <span className="absolute top-5 left-5 inline-flex items-center gap-2 bg-[#0077b3] text-white rounded-full px-4 py-2 text-[10px] uppercase tracking-widest font-bold shadow-lg">
                 <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
                 {tx(np.newsFeaturedBadge, t("newsPage.featured"))}
               </span>
@@ -188,10 +188,10 @@ export default function NewsPage() {
                 {ml(featured.title)}
               </h3>
               {/* Trait animé */}
-              <div className="w-10 h-0.5 bg-[#0071e3] mt-5 mb-5 group-hover:w-16 transition-all duration-500" />
+              <div className="w-10 h-0.5 bg-[#0077b3] mt-5 mb-5 group-hover:w-16 transition-all duration-500" />
               <p className="text-[#64748B] leading-relaxed text-sm">{ml(featured.excerpt)}</p>
               <div className="mt-8 flex items-center gap-4">
-                <span className="inline-flex items-center gap-2 text-sm font-semibold text-[#0071e3] group-hover:gap-3 transition-all duration-300">
+                <span className="inline-flex items-center gap-2 text-sm font-semibold text-[#0077b3] group-hover:gap-3 transition-all duration-300">
                   {t("common.seeMore")}
                   <ArrowIcon className="w-4 h-4" />
                 </span>
@@ -214,7 +214,7 @@ export default function NewsPage() {
               >
                 {/* Image */}
                 <div className="relative aspect-[16/9] overflow-hidden flex-shrink-0">
-                  <img
+                  <img loading="lazy" decoding="async"
                     src={news.image}
                     alt={ml(news.title)}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
@@ -235,14 +235,14 @@ export default function NewsPage() {
                 <div className="p-6 flex flex-col flex-1">
                   <p className="text-xs text-[#94A3B8] font-mono">{ml(news.date)}</p>
                   <h3
-                    className="text-lg text-[#1d1d1f] font-bold leading-snug mt-2 group-hover:text-[#0071e3] transition-colors duration-200 line-clamp-2"
+                    className="text-lg text-[#1d1d1f] font-bold leading-snug mt-2 group-hover:text-[#0077b3] transition-colors duration-200 line-clamp-2"
                     style={{ fontFamily: "var(--font-display)" }}
                   >
                     {ml(news.title)}
                   </h3>
                   <p className="text-sm text-[#64748B] leading-relaxed mt-3 line-clamp-2 flex-1">{ml(news.excerpt)}</p>
                   <div className="flex items-center justify-between mt-5 pt-4 border-t border-[#F1F5F9]">
-                    <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#0071e3]">
+                    <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#0077b3]">
                       {t("common.seeMore")}
                       <ArrowIcon className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform duration-200" />
                     </span>
@@ -270,8 +270,8 @@ export default function NewsPage() {
         {/* ═══════════ BANNIÈRE SUPPORT ═══════════ */}
         <section className="mt-16 relative overflow-hidden rounded-[28px] bg-[#1d1d1f] p-8 md:p-12 flex flex-col md:flex-row md:items-center justify-between gap-7">
           {/* Décors */}
-          <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-[#0071e3]/20 blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-[#0071e3]/10 blur-2xl translate-y-1/2 -translate-x-1/4 pointer-events-none" />
+          <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-[#0077b3]/20 blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-[#0077b3]/10 blur-2xl translate-y-1/2 -translate-x-1/4 pointer-events-none" />
           <div
             className="absolute inset-0 opacity-[0.04] pointer-events-none"
             style={{

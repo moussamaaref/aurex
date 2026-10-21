@@ -141,7 +141,7 @@ export default function ProductDetailPage() {
       <div className="border-b border-[#d6d6d6] bg-white">
         <div className="mx-auto max-w-7xl px-4 py-3.5 sm:px-6">
           <nav
-            className="flex flex-wrap items-center gap-1.5 text-xs text-[#707070]"
+            className="flex flex-wrap items-center gap-1.5 text-xs text-[#5a5a5e]"
             aria-label="Breadcrumb"
           >
             {crumbs.map((crumb, i) => (
@@ -197,7 +197,7 @@ export default function ProductDetailPage() {
                     key={`${img}-${index}`}
                     className="flex min-w-full snap-center snap-always items-center justify-center"
                   >
-                    <img
+                    <img fetchPriority="high" decoding="async"
                       src={img}
                       alt={`${ml(product.name)} ${index + 1}`}
                       draggable={false}
@@ -252,7 +252,7 @@ export default function ProductDetailPage() {
                         : "border-[#d6d6d6] hover:border-[#d6d6d6] hover:shadow-sm"
                     }`}
                   >
-                    <img src={img} alt="" className="h-full w-full object-cover" />
+                    <img loading="lazy" decoding="async" src={img} alt={`${ml(product.name)} ${i + 1}`} className="h-full w-full object-cover" />
                   </button>
                 ))}
               </div>
@@ -266,7 +266,7 @@ export default function ProductDetailPage() {
             <div className="mb-4 flex flex-wrap items-center gap-2">
               <EnergyBadge cls={product.energyClass} />
               {product.connectivity && (
-                <span className="flex items-center gap-1.5 rounded-full border border-[#d6d6d6] bg-[#f5f5f7] px-2.5 py-1 text-xs font-semibold text-[#0066cc]">
+                <span className="flex items-center gap-1.5 rounded-full border border-[#d6d6d6] bg-[#f5f5f7] px-2.5 py-1 text-xs font-semibold text-[#0077b3]">
                   <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
                   </svg>
@@ -274,7 +274,7 @@ export default function ProductDetailPage() {
                 </span>
               )}
             </div>
-            <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-[#707070]">
+            <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-[#5a5a5e]">
               {product.reference}
             </p>
             <h1 className="text-3xl font-bold leading-tight text-[var(--color-primary)] lg:text-4xl font-display">
@@ -314,7 +314,7 @@ export default function ProductDetailPage() {
                     key={(spec as { label: string }).label}
                     className="rounded-[10px] border border-[#d6d6d6] bg-white p-3.5 shadow-sm transition-shadow hover:shadow-md"
                   >
-                    <p className="font-display text-[10px] uppercase tracking-widest text-[#707070]">
+                    <p className="font-display text-[10px] uppercase tracking-widest text-[#5a5a5e]">
                       {(spec as { label: string }).label}
                     </p>
                     <p className="mt-1 text-sm font-semibold text-[#1d1d1f]">
@@ -327,7 +327,7 @@ export default function ProductDetailPage() {
             {/* Technologies */}
             {product.technologies.length > 0 && (
               <div className="mt-5">
-                <p className="mb-2.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#707070] font-display">
+                <p className="mb-2.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#5a5a5e] font-display">
                   {t("productDetail.technologiesTitle")}
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -349,7 +349,7 @@ export default function ProductDetailPage() {
                 {!hideWhereToBuy && (
                   <Link
                     to="/distributeurs"
-                    className="flex flex-1 items-center justify-center gap-2 rounded-[10px] bg-[var(--color-primary)] px-6 py-3.5 text-sm font-bold text-white shadow-md shadow-blue-900/20 transition-all hover:-translate-y-0.5 hover:bg-[#0063bf] hover:shadow-lg"
+                    className="flex flex-1 items-center justify-center gap-2 rounded-[10px] bg-[var(--color-primary)] px-6 py-3.5 text-sm font-bold text-white shadow-md shadow-blue-900/20 transition-all hover:-translate-y-0.5 hover:bg-[#00628f] hover:shadow-lg"
                   >
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -392,8 +392,8 @@ export default function ProductDetailPage() {
                 onClick={() => setActiveTab(tab.key)}
                 className={`-mb-px whitespace-nowrap border-b-2 px-6 py-4 text-sm font-semibold transition-colors ${
                   activeTab === tab.key
-                    ? "border-[var(--color-accent)] text-[#0066cc]"
-                    : "border-transparent text-[#707070] hover:text-[#333336]"
+                    ? "border-[var(--color-accent)] text-[#0077b3]"
+                    : "border-transparent text-[#5a5a5e] hover:text-[#333336]"
                 }`}
               >
                 {tab.label}
@@ -410,7 +410,7 @@ export default function ProductDetailPage() {
                     className="flex items-start gap-3 rounded-[10px] border border-[#d6d6d6] bg-[#f5f5f7]/60 p-4 transition-colors hover:border-[#d6d6d6] hover:bg-[#f5f5f7]/40"
                   >
                     <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-accent)]/10">
-                      <svg className="h-3 w-3 text-[#0066cc]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <svg className="h-3 w-3 text-[#0077b3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
@@ -496,18 +496,18 @@ export default function ProductDetailPage() {
                   >
                     <div className="flex items-center gap-3">
                       <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-[10px] bg-[#f5f5f7]">
-                        <svg className="h-5 w-5 text-[#0066cc]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <svg className="h-5 w-5 text-[#0077b3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                           <path strokeLinecap="round" strokeLinejoin="round" d={doc.icon} />
                         </svg>
                       </div>
                       <div>
                         <p className="text-sm font-semibold text-[#1d1d1f]">{doc.name}</p>
-                        <p className="text-xs text-[#707070]">
+                        <p className="text-xs text-[#5a5a5e]">
                           {doc.type} · {doc.size}
                         </p>
                       </div>
                     </div>
-                    <button className="flex items-center gap-1.5 rounded-[10px] px-3 py-2 text-sm font-semibold text-[#0066cc] transition-colors hover:bg-[#f5f5f7] hover:text-[var(--color-primary)]">
+                    <button className="flex items-center gap-1.5 rounded-[10px] px-3 py-2 text-sm font-semibold text-[#0077b3] transition-colors hover:bg-[#f5f5f7] hover:text-[var(--color-primary)]">
                       <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                       </svg>
@@ -526,7 +526,7 @@ export default function ProductDetailPage() {
           <div className="mt-14">
             <div className="mb-7 flex items-end justify-between">
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#0066cc] font-display">
+                <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#0077b3] font-display">
               {coherentGamme ? ml(coherentGamme.name) : categoryLabel}
                 </p>
                 <h2 className="mt-1.5 text-2xl font-bold text-[var(--color-primary)] font-display">
@@ -536,7 +536,7 @@ export default function ProductDetailPage() {
               {category && (
                 <Link
                   to={`/produits/${category.slug}`}
-                  className="hidden items-center gap-1.5 text-sm font-semibold text-[#0066cc] transition-all hover:gap-2.5 sm:flex"
+                  className="hidden items-center gap-1.5 text-sm font-semibold text-[#0077b3] transition-all hover:gap-2.5 sm:flex"
                 >
                   {t("common.viewAll")}
                   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -553,14 +553,14 @@ export default function ProductDetailPage() {
                   className="group overflow-hidden rounded-[28px] border border-[#d6d6d6] bg-white transition-all duration-300 hover:-translate-y-1 hover:border-[#d6d6d6] hover:shadow-xl hover:shadow-blue-900/10 h-full block"
                 >
                   <div className="aspect-video overflow-hidden bg-white">
-                    <img
+                    <img loading="lazy" decoding="async"
                       src={p.image}
                       alt={ml(p.name)}
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>
                   <div className="p-4">
-                    <p className="font-mono text-[10px] uppercase tracking-widest text-[#707070]">{p.reference}</p>
+                    <p className="font-mono text-[10px] uppercase tracking-widest text-[#5a5a5e]">{p.reference}</p>
                     <h3 className="mt-1 text-sm font-semibold text-[#1d1d1f] transition-colors group-hover:text-[var(--color-primary)]">
                       {ml(p.name)}
                     </h3>
