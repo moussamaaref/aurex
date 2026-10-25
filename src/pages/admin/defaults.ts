@@ -1,4 +1,4 @@
-import { categories, faqItems, newsItems, products, technologies } from "../../data"
+import { categories, defaultStories, faqItems, newsItems, products, technologies } from "../../data"
 import {
   defaultCapacites,
   defaultCouleurs,
@@ -349,6 +349,25 @@ export function collectionTemplate(key: CollectionKey): Record<string, unknown> 
         slug: "",
         is_published: true,
       }
+    case "stories":
+      return {
+        id: `nouvelle-story-${Date.now()}`,
+        product_id: "",
+        name: "",
+        title: "",
+        is_new: false,
+        cover: "",
+        scenes: [
+          { kind: "first-look", title: "", text: "", image: "", video: "" },
+          { kind: "explore", title: "", text: "", image: "", video: "" },
+        ],
+        cta_label: "",
+        cta_href: "",
+        lang: "all",
+        published_at: new Date().toISOString().slice(0, 10),
+        is_active: true,
+        sort_order: 0,
+      }
     case "faq":
       return { question: "", answer: "", sort_order: 0, is_active: true }
     case "distributors":
@@ -466,6 +485,7 @@ export function defaultCollections(): Record<CollectionKey, unknown[]> {
     })),
     technologies,
     news: newsItems,
+    stories: defaultStories,
     faq: faqItems,
     distributors: [],
     heroSlides: [

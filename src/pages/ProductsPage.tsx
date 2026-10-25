@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react"
-import { Link, useParams, useSearchParams } from "react-router-dom"
+import { Link, Navigate, useNavigate, useParams, useSearchParams, useLocation } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import {
   categories,
@@ -18,6 +18,9 @@ import {
   type TaxoValue,
 } from "../data"
 import { ml } from "../lib/ml"
+import { canonicalCategory } from "../lib/taxonomy"
+import { useP } from "../content/lang"
+import { productsUi, usageProFirst } from "../content/products"
 import CompareButton from "../components/CompareButton"
 import Reveal from "../components/Reveal"
 import { useCompare } from "../context/CompareContext"
@@ -26,14 +29,11 @@ const energyClasses = ["A+++", "A++", "A+", "A"]
 
 // Couleur par catégorie (modifiable aussi depuis /admin via le champ "Couleur" des catégories)
 const CATEGORY_COLORS: Record<string, string> = {
-  lavage: "#057593",
-  "lave-vaisselle": "#7C3AED",
-  "petit-electromenager": "#8B5E3C",
-  "chauffe-eau": "#EA580C",
-  "entretien-maison": "#0C0042",
-  fontaines: "#06B6D4",
-  cuisson: "#E82E25",
-  autres: "#475569",
+  "cuisine-encastrable": "#b64400",
+  "soin-linge-entretien": "#0077b3",
+  "eau-confort": "#00a1b3",
+  "petit-electro-coffee": "#8668ff",
+  "refrigeration-conservation": "#03873a",
 }
 
 function categoryColor(slug?: string | null, override?: string | null): string {
@@ -93,14 +93,30 @@ function TaxoSelect({
   )
 }
 
+/** Anciennes URLs de catégorie (lavage, cuisson…) → nouvelles catégories du brief. */
 export default function ProductsPage() {
+  const { category } = useParams<{ category?: string }>()
+  const { search } = useLocation()
+  if (category && canonicalCategory(category) !== category.toLowerCase()) {
+    return <Navigate to={`/produits/${canonicalCategory(category)}${search}`} replace />
+  }
+  return <ProductsPageInner />
+}
+
+function ProductsPageInner() {
   const { t, i18n } = useTranslation()
+  const { p } = useP()
+  const navigate = useNavigate()
   const { category } = useParams<{ category?: string }>()
   const [searchParams] = useSearchParams()
+  const badgeParam = (searchParams.get("badge") ?? "").toLowerCase()
+  const usageParam = (searchParams.get("usage") ?? "").toLowerCase()
   const { ids, max, remove, clear } = useCompare()
 
   const [selectedEnergy, setSelectedEnergy] = useState<string[]>([])
   const [connectedOnly, setConnectedOnly] = useState(false)
+  const [wifiOnly, setWifiOnly] = useState(false)
+  const [bluetoothOnly, setBluetoothOnly] = useState(false)
   // Hiérarchie dépendante : Catégorie → Famille → Sous-famille → Gamme (+ Capacité, Couleur)
   const [selectedFamille, setSelectedFamille] = useState("")
   const [selectedSousFamille, setSelectedSousFamille] = useState("")
@@ -222,13 +238,27 @@ export default function ProductsPage() {
     if (selectedEnergy.length > 0)
       list = list.filter((p) => selectedEnergy.includes(p.energyClass))
     if (connectedOnly) list = list.filter((p) => p.connectivity)
+    if (wifiOnly) list = list.filter((p) => p.wifi ?? p.connectivity)
+    if (bluetoothOnly) list = list.filter((p) => p.bluetooth ?? p.connectivity)
+    if (badgeParam) {
+      const wanted = badgeParam === "promotion" ? "Promotion" : badgeParam === "best-seller" ? "Best Seller" : badgeParam === "nouveau" ? "Nouveau" : ""
+      if (wanted) list = list.filter((p) => p.badges?.includes(wanted as (typeof p.badges)[number]))
+    }
     if (selectedCapacite) list = list.filter(matchCapacite)
     if (selectedCouleur) list = list.filter(matchCouleur)
     if (sortBy === "newest")
       list = list.filter((p) => p.isNew).concat(list.filter((p) => !p.isNew))
+    // ?usage=pro : les appareils haute performance passent au premier plan
+    if (usageParam === "pro") {
+      const rank = (p: (typeof products)[number]) => {
+        const i = usageProFirst.indexOf(String(productFamille(p)?.slug ?? ""))
+        return i === -1 ? 99 : i
+      }
+      list = [...list].sort((a, b) => rank(a) - rank(b))
+    }
     return list
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scopedProducts, selectedEnergy, connectedOnly, selectedCapacite, selectedCouleur, sortBy])
+  }, [scopedProducts, selectedEnergy, connectedOnly, wifiOnly, bluetoothOnly, badgeParam, usageParam, selectedCapacite, selectedCouleur, sortBy])
 
   const toggleEnergy = (cls: string) => {
     setSelectedEnergy((prev) =>
@@ -244,6 +274,8 @@ export default function ProductsPage() {
     setSelectedCapacite("")
     setSelectedCouleur("")
     setConnectedOnly(false)
+    setWifiOnly(false)
+    setBluetoothOnly(false)
   }
 
   const hasFilters =
@@ -253,6 +285,8 @@ export default function ProductsPage() {
     Boolean(selectedGamme) ||
     Boolean(selectedCapacite) ||
     Boolean(selectedCouleur) ||
+    wifiOnly ||
+    bluetoothOnly ||
     connectedOnly
 
   const taxonomyLabel = (kind: "famille" | "sousFamille" | "gamme" | "capacite" | "couleur", slug: string): string => {
@@ -285,8 +319,87 @@ export default function ProductsPage() {
     setSelectedGamme(q("gamme"))
     setSelectedCapacite(q("capacite"))
     setSelectedCouleur(q("couleur"))
+    const conn = q("connectivite")
+    setWifiOnly(conn === "wifi")
+    setBluetoothOnly(conn === "bluetooth")
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category, searchParams, i18n.language])
+
+  /** Champs de filtres (sidebar desktop + tiroir mobile) : Famille → Sous-famille → Classification → Gamme → Capacité → Couleur → Connectivité. */
+  const renderFilterFields = () => (
+    <>
+      <TaxoSelect
+        label={p(productsUi.filters.famille)}
+        value={category ? canonicalCategory(category) : ""}
+        onChange={(v) => navigate(v ? `/produits/${v}` : "/produits")}
+        allLabel={p(productsUi.filters.allFamilles)}
+        options={categories.map((c) => ({ value: c.slug, label: ml(c.label) }))}
+      />
+      <TaxoSelect
+        label={p(productsUi.filters.sousFamille)}
+        value={selectedFamille}
+        onChange={(v) => {
+          setSelectedFamille(v.toLowerCase())
+          setSelectedSousFamille("")
+          setSelectedGamme("")
+        }}
+        allLabel={p(productsUi.filters.allSousFamilles)}
+        options={familleOptions.map((f) => ({ value: f.slug.toLowerCase(), label: ml(f.name) }))}
+      />
+      <TaxoSelect
+        label={p(productsUi.filters.classification)}
+        value={selectedSousFamille}
+        onChange={(v) => {
+          setSelectedSousFamille(v.toLowerCase())
+          setSelectedGamme("")
+        }}
+        allLabel={p(productsUi.filters.allClassifications)}
+        options={sousFamilleOptions.map((s) => ({ value: s.slug.toLowerCase(), label: ml(s.name) }))}
+      />
+      <TaxoSelect
+        label={p(productsUi.filters.gamme)}
+        value={selectedGamme}
+        onChange={(v) => setSelectedGamme(v.toLowerCase())}
+        allLabel={p(productsUi.filters.allGammes)}
+        options={gammeOptions.map((g) => ({ value: g.slug.toLowerCase(), label: ml(g.name) }))}
+      />
+      <TaxoSelect
+        label={p(productsUi.filters.capacite)}
+        value={selectedCapacite}
+        onChange={(v) => setSelectedCapacite(v.toLowerCase())}
+        allLabel={p(productsUi.filters.allCapacites)}
+        options={capaciteOptions.map((o) => ({ value: o.id.toLowerCase(), label: ml(o.label) }))}
+      />
+      <TaxoSelect
+        label={p(productsUi.filters.couleur)}
+        value={selectedCouleur}
+        onChange={(v) => setSelectedCouleur(v.toLowerCase())}
+        allLabel={p(productsUi.filters.allCouleurs)}
+        options={couleurOptions.map((o) => ({ value: o.id.toLowerCase(), label: ml(o.label) }))}
+      />
+      <div className="border-t border-[#d6d6d6] pt-5">
+        <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-[#5a5a5e] font-display">
+          {p(productsUi.filters.connectivite)}
+        </p>
+        {(
+          [
+            { key: "wifi", label: productsUi.filters.wifi, checked: wifiOnly, set: setWifiOnly },
+            { key: "bluetooth", label: productsUi.filters.bluetooth, checked: bluetoothOnly, set: setBluetoothOnly },
+          ] as const
+        ).map((c) => (
+          <label key={c.key} className="group flex min-h-11 cursor-pointer items-center gap-2.5 rounded-[10px] p-2 transition-colors hover:bg-[#f5f5f7]">
+            <input
+              type="checkbox"
+              checked={c.checked}
+              onChange={(e) => c.set(e.target.checked)}
+              className="h-4 w-4 rounded border-[#d6d6d6] accent-[var(--color-accent)]"
+            />
+            <span className="text-sm text-[#333336] font-sans">{p(c.label)}</span>
+          </label>
+        ))}
+      </div>
+    </>
+  )
 
   const badgeStyle = (badge: string) =>
     badge === "Nouveau"
@@ -337,7 +450,7 @@ export default function ProductsPage() {
               className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#0077b3]"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              EUREX
+              AUREX
             </p>
             <h1 className="mt-2 text-5xl font-semibold lg:text-6xl font-display text-[#1d1d1f] tracking-tight">
               {t("products.allProducts")}
@@ -382,6 +495,9 @@ export default function ProductsPage() {
                   />
                 )}
                 {ml(cat.label)}
+                <span className={`ms-2 text-xs font-medium ${isActive ? "text-white/80" : "text-[#5a5a5e]"}`}>
+                  {products.filter((x) => x.category === cat.slug).length}
+                </span>
               </Link>
             )
           })}
@@ -415,69 +531,7 @@ export default function ProductsPage() {
                   ))}
                 </div>
 
-                {/* Hiérarchie dépendante : Famille → Sous-famille → Gamme */}
-                <TaxoSelect
-                  label={t("products.filters.famille")}
-                  value={selectedFamille}
-                  onChange={(v) => {
-                    setSelectedFamille(v.toLowerCase())
-                    setSelectedSousFamille("")
-                    setSelectedGamme("")
-                  }}
-                  allLabel={t("products.filters.allFamilles")}
-                  options={familleOptions.map((f) => ({ value: f.slug.toLowerCase(), label: ml(f.name) }))}
-                />
-                <TaxoSelect
-                  label={t("products.filters.sousFamille")}
-                  value={selectedSousFamille}
-                  onChange={(v) => {
-                    setSelectedSousFamille(v.toLowerCase())
-                    setSelectedGamme("")
-                  }}
-                  allLabel={t("products.filters.allSousFamilles")}
-                  options={sousFamilleOptions.map((s) => ({ value: s.slug.toLowerCase(), label: ml(s.name) }))}
-                />
-                <TaxoSelect
-                  label={t("products.filters.gamme")}
-                  value={selectedGamme}
-                  onChange={(v) => setSelectedGamme(v.toLowerCase())}
-                  allLabel={t("products.filters.allGammes")}
-                  options={gammeOptions.map((g) => ({ value: g.slug.toLowerCase(), label: ml(g.name) }))}
-                />
-                <TaxoSelect
-                  label={t("products.filters.capacite")}
-                  value={selectedCapacite}
-                  onChange={(v) => setSelectedCapacite(v.toLowerCase())}
-                  allLabel={t("products.filters.allCapacites")}
-                  options={capaciteOptions.map((o) => ({ value: o.id.toLowerCase(), label: ml(o.label) }))}
-                />
-                <TaxoSelect
-                  label={t("products.filters.couleur")}
-                  value={selectedCouleur}
-                  onChange={(v) => setSelectedCouleur(v.toLowerCase())}
-                  allLabel={t("products.filters.allCouleurs")}
-                  options={couleurOptions.map((o) => ({ value: o.id.toLowerCase(), label: ml(o.label) }))}
-                />
-
-                <div className="border-t border-[#d6d6d6] pt-5">
-                  <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-[#5a5a5e] font-display">
-                    {t("products.filters.connectivity")}
-                  </p>
-                  <label className="group flex cursor-pointer items-center gap-2.5 rounded-[10px] p-2 transition-colors hover:bg-[#f5f5f7]">
-                    <input
-                      type="checkbox"
-                      checked={connectedOnly}
-                      onChange={(e) => setConnectedOnly(e.target.checked)}
-                      className="h-4 w-4 rounded border-[#d6d6d6] accent-[var(--color-accent)]"
-                    />
-                    <div className="flex items-center gap-1.5">
-                      <svg className={`${smartIcon} text-[#0077b3]`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
-                      </svg>
-                      <span className="text-sm text-[#333336] font-sans">SmartConnect</span>
-                    </div>
-                  </label>
-                </div>
+                {renderFilterFields()}
 
                 {hasFilters && (
                   <div className="border-t border-[#d6d6d6] pt-4">
@@ -900,68 +954,7 @@ export default function ProductsPage() {
                   ))}
                 </div>
               </div>
-              <div className="border-t border-[#d6d6d6] pt-2">
-                <TaxoSelect
-                  label={t("products.filters.famille")}
-                  value={selectedFamille}
-                  onChange={(v) => {
-                    setSelectedFamille(v.toLowerCase())
-                    setSelectedSousFamille("")
-                    setSelectedGamme("")
-                  }}
-                  allLabel={t("products.filters.allFamilles")}
-                  options={familleOptions.map((f) => ({ value: f.slug.toLowerCase(), label: ml(f.name) }))}
-                />
-                <TaxoSelect
-                  label={t("products.filters.sousFamille")}
-                  value={selectedSousFamille}
-                  onChange={(v) => {
-                    setSelectedSousFamille(v.toLowerCase())
-                    setSelectedGamme("")
-                  }}
-                  allLabel={t("products.filters.allSousFamilles")}
-                  options={sousFamilleOptions.map((s) => ({ value: s.slug.toLowerCase(), label: ml(s.name) }))}
-                />
-                <TaxoSelect
-                  label={t("products.filters.gamme")}
-                  value={selectedGamme}
-                  onChange={(v) => setSelectedGamme(v.toLowerCase())}
-                  allLabel={t("products.filters.allGammes")}
-                  options={gammeOptions.map((g) => ({ value: g.slug.toLowerCase(), label: ml(g.name) }))}
-                />
-                <TaxoSelect
-                  label={t("products.filters.capacite")}
-                  value={selectedCapacite}
-                  onChange={(v) => setSelectedCapacite(v.toLowerCase())}
-                  allLabel={t("products.filters.allCapacites")}
-                  options={capaciteOptions.map((o) => ({ value: o.id.toLowerCase(), label: ml(o.label) }))}
-                />
-                <TaxoSelect
-                  label={t("products.filters.couleur")}
-                  value={selectedCouleur}
-                  onChange={(v) => setSelectedCouleur(v.toLowerCase())}
-                  allLabel={t("products.filters.allCouleurs")}
-                  options={couleurOptions.map((o) => ({ value: o.id.toLowerCase(), label: ml(o.label) }))}
-                />
-              </div>
-              <div className="border-t border-[#d6d6d6] pt-6">
-                <label className="flex cursor-pointer items-center justify-between gap-3 rounded-[10px] border border-[#d6d6d6] bg-[#f5f5f7] p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-[#0077b3]">
-                      <svg className={smartIcon} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
-                      </svg>
-                    </div>
-                    <span className="text-sm font-semibold text-[#333336] font-sans">{t("products.smartConnectOnly")}</span>
-                  </div>
-                  <input
-                    type="checkbox"
-                    checked={connectedOnly}
-                    onChange={(e) => setConnectedOnly(e.target.checked)}
-                    className="h-5 w-5 rounded border-[#d6d6d6] accent-[var(--color-accent)]"
-                  />
-                </label>
-              </div>
+              {renderFilterFields()}
               
               <div className="flex flex-col gap-3 pt-2">
                 <button

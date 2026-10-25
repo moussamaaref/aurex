@@ -10,6 +10,7 @@ export const collectionLabels: Record<CollectionKey, string> = {
   couleurs: "Couleurs",
   technologies: "Technologies",
   news: "Actualités",
+  stories: "Stories produit (Nouveautés)",
   faq: "FAQ",
   distributors: "Distributeurs",
   heroSlides: "Hero — Slides",
@@ -34,29 +35,24 @@ export const collectionGroups: CollectionGroup[] = [
   {
     id: "catalogue",
     label: "Catalogue",
-    keys: ["products", "categories", "familles", "sousFamilles", "gammes", "capacites", "couleurs", "technologies", "news", "faq", "distributors"],
+    keys: ["products", "categories", "familles", "sousFamilles", "gammes", "capacites", "couleurs", "technologies", "news", "stories", "faq", "distributors"],
   },
-  {
-    id: "site-content",
-    label: "Contenu du site",
-    keys: [
-      "heroSlides",
-      "stats",
-      "marquee",
-      "campaign",
-      "homeSections",
-      "smartPage",
-      "techPage",
-      "newsPage",
-      "aboutPage",
-      "supportPage",
-    ],
-  },
+  // Les anciennes pages éditoriales (Hero, Smart Home, Technologies, À propos, Support…) sont désormais
+  // pilotées par le contenu du website brief 2026 (src/content) : retirées de la liste d'édition.
 ]
 
 // Labels des champs de collections (données métier)
 export const fieldLabels: Record<string, string> = {
   id: "Identifiant",
+  product_id: "Produit lié (id du produit)",
+  cover: "Image de couverture",
+  scenes: "Scènes (3 à 5 : premier regard, conception, quotidien, performance, découvrir le modèle)",
+  kind: "Type de scène (first-look, design, everyday, performance, explore)",
+  video: "Vidéo (URL, facultatif)",
+  text: "Texte de la scène",
+  cta_label: "Libellé du CTA (dernière scène)",
+  cta_href: "Lien du CTA (fiche produit)",
+  lang: "Langue du contenu (all, fr, en, ar)",
   name: "Nom",
   label: "Libellé",
   title: "Titre",
