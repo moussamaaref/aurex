@@ -8,6 +8,7 @@ export type CollectionKey =
   | "couleurs"
   | "technologies"
   | "news"
+  | "stories"
   | "faq"
   | "distributors"
   | "heroSlides"

@@ -15,28 +15,15 @@ import {
 } from "../data"
 import { ml } from "../lib/ml"
 
-const navItems = [
-  { key: "products", href: "/produits", hasMega: true },
-  { key: "smartHome", href: "/smart-home" },
-  { key: "technologies", href: "/technologies" },
-  { key: "news", href: "/actualites" },
-  { key: "about", href: "/a-propos" },
-  { key: "support", href: "/support" },
-]
+import { navItems, navLabels, navDetails, productsSide, megaLabels } from "../content/nav"
+import { categoryContent } from "../content/categories"
+import { useP } from "../content/lang"
 
-const megaCats = [
-  { slug: "lavage", catKey: "washing" },
-  { slug: "lave-vaisselle", catKey: "dishwasher" },
-  { slug: "petit-electromenager", catKey: "smallAppliances" },
-  { slug: "chauffe-eau", catKey: "waterHeating" },
-  { slug: "entretien-maison", catKey: "homeCare" },
-  { slug: "fontaines", catKey: "waterFountains" },
-  { slug: "cuisson", catKey: "cooking" },
-  { slug: "autres", catKey: "otherAppliances" },
-]
+const megaCats = categoryContent
 
 export default function Header() {
   const { t, i18n } = useTranslation()
+  const { p } = useP()
   const { ids: compareIds } = useCompare()
   const { settings } = useSiteSettings()
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -204,7 +191,7 @@ export default function Header() {
                       }`}
                     style={{ fontFamily: "var(--font-sans)" }}
                   >
-                    {t(`header.navItems.${item.key}`)}
+                    {p(navLabels[item.key])}
                     {item.hasMega && (
                       <svg
                         className={`w-3.5 h-3.5 ml-0.5 transition-transform duration-200 ${
@@ -498,7 +485,7 @@ export default function Header() {
                     className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#5a5a5e] mb-5"
                     style={{ fontFamily: "var(--font-display)" }}
                   >
-                    {t("header.categoriesTitle")}
+                    {p(megaLabels.categories)}
                   </p>
                   <div className="grid grid-cols-3 gap-2">
                     {megaCats.map((cat) => (
@@ -527,13 +514,13 @@ export default function Header() {
                             className="text-sm font-semibold text-gray-800 group-hover:text-[var(--color-primary)] transition-colors"
                             style={{ fontFamily: "var(--font-sans)" }}
                           >
-                            {t(`header.megaCategories.${cat.catKey}.label`)}
+                            {p(cat.name)}
                           </p>
                           <p
                             className="text-xs text-[#474747] mt-0.5"
                             style={{ fontFamily: "var(--font-sans)" }}
                           >
-                            {t(`header.megaCategories.${cat.catKey}.desc`)}
+                            {p(cat.highlight)}
                           </p>
                         </div>
                       </Link>
@@ -544,7 +531,7 @@ export default function Header() {
                     className="inline-flex items-center gap-1.5 mt-6 text-sm font-medium text-[#0077b3] hover:text-[var(--color-primary)] transition-colors"
                     style={{ fontFamily: "var(--font-sans)" }}
                   >
-                    {t("header.seeAllProducts")}
+                    {p(megaLabels.seeAll)}
                     <svg
                       className="w-4 h-4"
                       fill="none"
@@ -566,49 +553,37 @@ export default function Header() {
                     className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#5a5a5e] mb-5"
                     style={{ fontFamily: "var(--font-display)" }}
                   >
-                    {t("header.featured")}
+                    {p(megaLabels.featured)}
                   </p>
-                  <div className="rounded-[10px] overflow-hidden bg-[#1d1d1f]">
-                    <div className="p-5 text-white">
+                  <div className="rounded-[28px] overflow-hidden bg-[#f5f5f7]">
+                    <div className="p-5">
                       <span
-                        className="text-[10px] font-bold tracking-[0.18em] uppercase text-blue-200"
+                        className="text-xs font-semibold text-[#0077b3]"
                         style={{ fontFamily: "var(--font-display)" }}
                       >
-                        {t("header.new")}
+                        2026
                       </span>
                       <h4
-                        className="text-lg font-bold leading-tight mt-1.5"
-                        style={{
-                          fontFamily: "var(--font-display)",
-                          whiteSpace: "pre-line",
-                        }}
+                        className="text-lg font-semibold leading-tight mt-1.5 text-[#1d1d1f]"
+                        style={{ fontFamily: "var(--font-display)" }}
                       >
-                        {t("header.ex9000Series")}
+                        {p(productsSide.lineup.title)}
                       </h4>
                       <p
-                        className="text-xs text-blue-100 mt-2 leading-relaxed"
+                        className="text-sm text-[#5a5a5e] mt-2 leading-relaxed"
                         style={{ fontFamily: "var(--font-sans)" }}
                       >
-                        {t("header.ex9000Desc")}
+                        {p(productsSide.lineup.text)}
                       </p>
                       <Link
-                        to="/produits"
-                        className="inline-flex items-center gap-1.5 mt-4 text-xs font-semibold text-white border border-white/30 rounded-[10px] px-3 py-2 hover:bg-white/10 transition-colors"
+                        to={productsSide.lineup.href}
+                        onClick={() => setHoveredNav(null)}
+                        className="inline-flex min-h-11 items-center gap-1.5 mt-3 text-sm font-semibold text-[#0077b3] hover:underline"
                         style={{ fontFamily: "var(--font-sans)" }}
                       >
                         {t("header.discover")}
-                        <svg
-                          className="w-3 h-3"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          strokeWidth={2.5}
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M9 5l7 7-7 7"
-                          />
+                        <svg className="w-3 h-3 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                         </svg>
                       </Link>
                     </div>
@@ -616,12 +591,8 @@ export default function Header() {
 
                   <div className="mt-5 space-y-2">
                     {[
-                      { labelKey: "header.smartHome", href: "/smart-home" },
-                      { labelKey: "header.comparator", href: "/comparateur" },
-                      {
-                        labelKey: "header.noticesAndService",
-                        href: "/support",
-                      },
+                      { label: productsSide.compare.label, href: productsSide.compare.href },
+                      { label: productsSide.notices.label, href: productsSide.notices.href },
                     ].map((link) => (
                       <Link
                         key={link.href}
@@ -655,7 +626,7 @@ export default function Header() {
                             className="text-sm text-[#333336] group-hover:text-[var(--color-primary)] transition-colors"
                             style={{ fontFamily: "var(--font-sans)" }}
                           >
-                            {t(link.labelKey)}
+                            {p(link.label)}
                           </span>
                           {link.href === "/comparateur" &&
                             compareIds.length > 0 && (
@@ -699,28 +670,28 @@ export default function Header() {
                     className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0077b3] mb-2"
                     style={{ fontFamily: "var(--font-display)" }}
                   >
-                    {t(`header.navItems.${hoveredNav}`)}
+                    {p(navLabels[hoveredNav as keyof typeof navLabels])}
                   </p>
                   <h3
                     className="text-2xl font-bold text-[var(--color-primary)] leading-tight"
                     style={{ fontFamily: "var(--font-display)" }}
                   >
-                    {t(`header.navDetails.${hoveredNav}.title`)}
+                    {p(navDetails[hoveredNav as keyof typeof navDetails].title)}
                   </h3>
                 </div>
                 <p
                   className="text-sm text-[#64748B] leading-relaxed max-w-xl"
                   style={{ fontFamily: "var(--font-sans)" }}
                 >
-                  {t(`header.navDetails.${hoveredNav}.description`)}
+                  {p(navDetails[hoveredNav as keyof typeof navDetails].description)}
                 </p>
                 <Link
-                  to={t(`header.navDetails.${hoveredNav}.href`)}
+                  to={navItems.find((n) => n.key === hoveredNav)?.href ?? "/"}
                   onClick={() => setHoveredNav(null)}
                   className="justify-self-end inline-flex items-center gap-2 bg-[#f5f5f7] text-[var(--color-primary)] hover:bg-[var(--color-accent)] hover:text-white font-semibold text-sm px-4 py-3 rounded-full transition-colors"
                   style={{ fontFamily: "var(--font-sans)" }}
                 >
-                  {t(`header.navDetails.${hoveredNav}.action`)}
+                  {p(navDetails[hoveredNav as keyof typeof navDetails].action)}
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                   </svg>
@@ -747,7 +718,7 @@ export default function Header() {
                     className="flex items-center justify-between py-3 px-3 text-[#333336] font-medium rounded-[10px] hover:bg-[#f5f5f7] hover:text-[var(--color-primary)] transition-colors"
                     style={{ fontFamily: "var(--font-sans)" }}
                   >
-                    {t(`header.navItems.${item.key}`)}
+                    {p(navLabels[item.key])}
                     <svg
                       className="w-4 h-4 text-[#5a5a5e]"
                       fill="none"
@@ -770,7 +741,7 @@ export default function Header() {
                           to={`/produits/${cat.slug}`}
                           className="rounded-[10px] px-2 py-2 text-xs text-[#474747] hover:bg-[#f5f5f7] hover:text-[var(--color-primary)]"
                         >
-                          {t(`header.megaCategories.${cat.catKey}.label`)}
+                          {p(cat.name)}
                         </Link>
                       ))}
                     </div>

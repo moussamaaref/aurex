@@ -1,3 +1,5 @@
+import { useP } from "../content/lang"
+import { specUi } from "../content/products"
 import { useRef, useState } from "react"
 import { Link, useParams, Navigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
@@ -39,6 +41,7 @@ const hideWhereToBuy = true
 
 export default function ProductDetailPage() {
   const { t } = useTranslation()
+  const { p } = useP()
   const { id, slug } = useParams<{ id?: string; slug?: string }>()
   const product = findProduct(id ?? slug)
   const [selectedImage, setSelectedImage] = useState(0)
@@ -383,8 +386,8 @@ export default function ProductDetailPage() {
         <div className="mt-16 rounded-[28px] border border-[#d6d6d6] bg-white shadow-sm">
           <div className="flex overflow-x-auto border-b border-[#d6d6d6] px-4 sm:px-6">
             {[
-              { key: "features" as const, label: t("productDetail.tabs.features") },
-              { key: "specs" as const, label: t("productDetail.tabs.specs") },
+              { key: "features" as const, label: p(specUi.features) },
+              { key: "specs" as const, label: p(specUi.specs) },
               { key: "docs" as const, label: t("productDetail.tabs.docs") },
             ].map((tab) => (
               <button
@@ -424,25 +427,22 @@ export default function ProductDetailPage() {
                 <table className="w-full text-sm">
                   <tbody>
                     {[
-                      { label: t("productDetail.specsTable.reference"), value: product.reference },
-                      { label: t("productDetail.specsTable.category"), value: categoryLabel },
-                      coherentFamille && { label: t("productDetail.specsTable.famille"), value: ml(coherentFamille.name) },
-                      coherentSousFamille && { label: t("productDetail.specsTable.sousFamille"), value: ml(coherentSousFamille.name) },
-                      coherentGamme && { label: t("productDetail.specsTable.gamme"), value: ml(coherentGamme.name) },
-                      capacitesList.length > 0 && { label: t("productDetail.specsTable.capacity"), value: capacitesList.map((v) => ml(v.label)).join(", ") },
-                      { label: t("productDetail.specsTable.energyClass"), value: product.energyClass },
-                      ml(product.noiseLevel) && { label: t("productDetail.specsTable.noiseLevel"), value: ml(product.noiseLevel) },
-                      product.dimensions && { label: t("productDetail.specsTable.width"), value: `${product.dimensions.w} cm` },
-                      product.dimensions && { label: t("productDetail.specsTable.height"), value: `${product.dimensions.h} cm` },
-                      product.dimensions && { label: t("productDetail.specsTable.depth"), value: `${product.dimensions.d} cm` },
-                      couleursList.length > 0 && { label: t("productDetail.specsTable.color"), value: couleursList.map((v) => ml(v.label)).join(", ") },
+                      { label: p(specUi.reference), value: product.reference },
+                      capacitesList.length > 0 && { label: p(specUi.capacity), value: capacitesList.map((v) => ml(v.label)).join(", ") },
+                      product.energyClass && { label: p(specUi.energyClass), value: product.energyClass },
+                      product.dimensions && { label: p(specUi.dimensions), value: `${product.dimensions.w} × ${product.dimensions.h} × ${product.dimensions.d} cm` },
+                      couleursList.length > 0 && { label: p(specUi.color), value: couleursList.map((v) => ml(v.label)).join(", ") },
                       {
-                        label: t("productDetail.specsTable.wifi"),
+                        label: p(specUi.connectivity),
                         value: product.connectivity
-                          ? t("productDetail.specsTable.yesSmartConnect")
-                          : t("productDetail.specsTable.no"),
+                          ? [product.wifi ?? true ? "Wi-Fi" : "", product.bluetooth ?? true ? "Bluetooth" : ""].filter(Boolean).join(" · ")
+                          : p(specUi.none),
                       },
-                      { label: t("productDetail.specsTable.technologies"), value: product.technologies.map((id) => ml(id)).join(", ") },
+                      ml(product.noiseLevel) && { label: p(specUi.noise), value: ml(product.noiseLevel) },
+                      (coherentSousFamille || coherentFamille) && {
+                        label: p(specUi.installation),
+                        value: ml((coherentSousFamille ?? coherentFamille)!.name),
+                      },
                     ]
                       .filter(Boolean)
                       .map((row, i) => (

@@ -1,1133 +1,400 @@
-import { useState, useEffect, useRef } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Link } from "react-router-dom"
-import { useTranslation } from "react-i18next"
-import { categories, products, technologies, newsItems, productUrl } from "../data"
-import { loadRemoteCollection } from "../lib/contentStore"
-import { ml, mlFr, type Localized } from "../lib/ml"
-import { tx } from "../lib/langText"
+import { categories, products, type Product } from "../data"
+import { ml } from "../lib/ml"
+import { useP } from "../content/lang"
+import { categoryContent } from "../content/categories"
+import { heroSlides, lineUp, why, categoriesSection, sav, promo } from "../content/home"
+import { smartTech } from "../content/smartTech"
 import Reveal from "../components/Reveal"
+import LineUpCard from "../components/LineUpCard"
+import SmartTechSection from "../components/SmartTechSection"
+import Icon from "../components/Icon"
 
-/* ─────────────────────────────────────────────
-   CSS à ajouter dans index.css (si absent) :
-
-    @keyframes ken-burns { 0%{transform:scale(1)} 100%{transform:scale(1.12)} }
-    .animate-ken-burns{ animation:ken-burns 16s ease-out forwards; }
-   @keyframes fade-in { from{opacity:0} to{opacity:1} }
-   .animate-fade-in{ animation:fade-in .6s ease-out both; }
-   @keyframes slide-up { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
-   .animate-slide-up{ animation:slide-up .7s cubic-bezier(.22,1,.36,1) both; }
-   .delay-200{animation-delay:.2s} .delay-400{animation-delay:.4s}
-   @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
-   .animate-float{ animation:float 6s ease-in-out infinite; }
-   @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-   .animate-marquee{ animation:marquee 30s linear infinite; }
-   @keyframes pulse-dot { 0%,100%{box-shadow:0 0 0 0 rgba(30,94,243,.5)} 50%{box-shadow:0 0 0 8px rgba(30,94,243,0)} }
-   .animate-pulse-dot{ animation:pulse-dot 2s ease-in-out infinite; }
-───────────────────────────────────────────── */
-
-const defaultHeroSlides = [
-  {
-    tagKey: "home.hero.0.tag",
-    titleKey: "home.hero.0.title",
-    subKey: "home.hero.0.subtitle",
-    ctaKey: "home.hero.0.cta",
-    ctaSecKey: "home.hero.0.ctaSec",
-    ctaHref: "/produits",
-    ctaSecHref: "/smart-home",
-    image: "/Spinova3.jpeg",
-  },
-  {
-    tagKey: "home.hero.1.tag",
-    titleKey: "home.hero.1.title",
-    subKey: "home.hero.1.subtitle",
-    ctaKey: "home.hero.1.cta",
-    ctaSecKey: "home.hero.1.ctaSec",
-    ctaHref: "/smart-home",
-    ctaSecHref: "/produits",
-    image: "/Gustiva.jpeg",
-  },
-  {
-    tagKey: "home.hero.2.tag",
-    titleKey: "home.hero.2.title",
-    subKey: "home.hero.2.subtitle",
-    ctaKey: "home.hero.2.cta",
-    ctaSecKey: "home.hero.2.ctaSec",
-    ctaHref: "/produits/refrigerateurs",
-    ctaSecHref: "/technologies",
-    image: "/Vacuum.jpeg",
-  },
-]
-
-type HeroSlide = {
-  id?: string
-  tag?: string
-  title?: string
-  subtitle?: string
-  cta?: string
-  ctaSec?: string
-  ctaHref?: string
-  ctaSecHref?: string
-  image?: string
-  tagKey?: string
-  titleKey?: string
-  subKey?: string
-  ctaKey?: string
-  ctaSecKey?: string
-  is_active?: boolean
+/** Quatre « Hero Products » représentant la diversité de la gamme : un par catégorie, les plus mis en avant d'abord. */
+function pickHeroProducts(list: Product[]): Product[] {
+  const score = (p: Product) =>
+    (p.badges?.includes("Best Seller") ? 2 : 0) + (p.badges?.includes("Nouveau") || p.isNew ? 1 : 0)
+  const picked: Product[] = []
+  for (const cat of categoryContent) {
+    const best = list
+      .filter((p) => p.category === cat.slug)
+      .sort((a, b) => score(b) - score(a))[0]
+    if (best) picked.push(best)
+    if (picked.length === 4) return picked
+  }
+  for (const p of list) {
+    if (picked.length === 4) break
+    if (!picked.includes(p)) picked.push(p)
+  }
+  return picked
 }
 
-function normalizeHeroSlides(raw: unknown): HeroSlide[] {
-  if (!Array.isArray(raw) || raw.length === 0) return defaultHeroSlides as unknown as HeroSlide[]
-  return (raw as HeroSlide[]).filter((s) => s && typeof s === "object" && (s as HeroSlide).is_active !== false).map((s) => ({
-    ...s,
-    image: (s as HeroSlide).image || (defaultHeroSlides[0] as HeroSlide).image,
-  }))
-}
-
-type StatItem = { value: number; suffix: Localized; label: Localized; is_active?: boolean }
-const defaultStats: StatItem[] = [
-  { value: 120, suffix: "+", label: "Produits" },
-  { value: 6, suffix: "", label: "Gammes" },
-  { value: 48, suffix: "", label: "Points de vente" },
-  { value: 10, suffix: " ans", label: "Garantie" },
-]
-function normalizeStats(raw: unknown): StatItem[] {
-  if (!Array.isArray(raw) || raw.length === 0) return defaultStats
-  return (raw as StatItem[]).filter((s) => s && typeof s === "object" && (s as StatItem).is_active !== false).map((s) => {
-    const rawValue = (s as StatItem).value as unknown
-    return {
-      value: typeof rawValue === "number" ? rawValue : Number(mlFr(rawValue as string | { fr?: string; ar?: string; en?: string })) || 0,
-      suffix: (s as StatItem).suffix ?? "",
-      label: (s as StatItem).label ?? "",
-      is_active: true,
-    }
-  })
-}
-
-export type MarqueeItem = string | { fr?: string; ar?: string; en?: string }
-const defaultMarquee: MarqueeItem[] = ["Garantie 10 ans", "Livraison 48h", "Installation offerte", "SmartConnect", "Classe A+++", "SAV national", "Paiement en 3x"]
-function normalizeMarquee(raw: unknown): MarqueeItem[] {
-  if (!Array.isArray(raw) || raw.length === 0) return defaultMarquee
-  const items = (raw as unknown[]).filter(
-    (t) => (typeof t === "string" && t.trim()) || (t && typeof t === "object" && (ml(t as MarqueeItem) || "").trim()),
-  ) as MarqueeItem[]
-  return items.length > 0 ? items : defaultMarquee
-}
-
-export type HomeSections = Record<string, string | undefined> & { is_active?: boolean }
-const defaultHomeSections: HomeSections = {}
-function normalizeHomeSections(raw: unknown): HomeSections {
-  if (!Array.isArray(raw) || raw.length === 0) return defaultHomeSections
-  const first = (raw as HomeSections[]).find((c) => c && typeof c === "object" && c.is_active !== false)
-  return first ?? defaultHomeSections
-}
-
-export type CampaignData = {
-  badge?: string
-  title?: string
-  description?: string
-  cta?: string
-  href?: string
-  darkImage?: string
-  darkTag?: string
-  darkTitle?: string
-  darkSpecs?: string
-  darkHref?: string
-  lightImage?: string
-  lightTag?: string
-  lightTitle?: string
-  lightSpecs?: string
-  lightHref?: string
-  is_active?: boolean
-}
-const defaultCampaign: CampaignData = {
-  badge: "Offre exclusive — été 2026",
-  title: "Climatiseurs\nEX6000 Inverter+",
-  description: "Jusqu'à -20 % sur les splits, installation offerte jusqu'au 30 sept. 2026.",
-  cta: "Profiter de l'offre",
-  href: "/produits/climatisation",
-  darkTag: "Nouveauté",
-  darkTitle: "Lave-linge EX9000",
-  darkSpecs: "9 kg — A+++ — SmartConnect",
-  darkHref: "/produits/lavage/ex9000-wm",
-  lightTag: "Best Seller",
-  lightTitle: "Réfrigérateur EX7000",
-  lightSpecs: "350 L — A++ — No Frost",
-  lightHref: "/produits/refrigerateurs/ex7000-fridge",
-}
-function normalizeCampaign(raw: unknown): CampaignData {
-  if (!Array.isArray(raw) || raw.length === 0) return defaultCampaign
-  const first = (raw as CampaignData[]).find((c) => c && typeof c === "object" && c.is_active !== false)
-  return first ?? defaultCampaign
-}
-
-/* ── Compteur animé au scroll ── */
-function CountUp({ target, suffix = "", duration = 1400 }: { target: number; suffix?: string; duration?: number }) {
-  const ref = useRef<HTMLSpanElement>(null)
-  const [value, setValue] = useState(0)
-  const started = useRef(false)
+/* ──────────────── 1. HERO — diaporama de 4 diapositives ──────────────── */
+function Hero() {
+  const { p } = useP()
+  const [index, setIndex] = useState(0)
+  const [paused, setPaused] = useState(false)
+  const reduced = typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
 
   useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !started.current) {
-          started.current = true
-          const t0 = performance.now()
-          const tick = (now: number) => {
-            const p = Math.min((now - t0) / duration, 1)
-            setValue(Math.round(target * (1 - Math.pow(1 - p, 3))))
-            if (p < 1) requestAnimationFrame(tick)
-          }
-          requestAnimationFrame(tick)
-        }
-      },
-      { threshold: 0.4 },
-    )
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [target, duration])
+    if (paused || reduced) return
+    const id = window.setInterval(() => setIndex((i) => (i + 1) % heroSlides.length), 7500)
+    return () => window.clearInterval(id)
+  }, [paused, reduced])
+
+  const slide = heroSlides[index]
 
   return (
-    <span ref={ref}>
-      {value}
-      {suffix}
-    </span>
-  )
-}
-
-function EnergyBadge({ cls }: { cls: string }) {
-  const color =
-    cls === "A+++"
-      ? "bg-gradient-to-r from-green-500 to-emerald-500"
-      : cls === "A++"
-        ? "bg-green-500"
-        : cls === "A+"
-          ? "bg-lime-500"
-          : "bg-yellow-500"
-  return (
-    <span
-      className={`${color} text-white text-[10px] font-bold px-2 py-0.5 rounded-[10px] font-display tracking-wider shadow-sm`}
+    <section
+      className="relative isolate flex min-h-[640px] items-end overflow-hidden bg-[#1d1d1f] lg:min-h-[760px]"
+      aria-roledescription="carousel"
+      aria-label="AUREX"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
     >
-      {cls}
-    </span>
-  )
-}
-
-function ProductCard({ product, index = 0 }: { product: (typeof products)[0]; index?: number }) {
-  const { t } = useTranslation()
-  const [liked, setLiked] = useState(false)
-  const imageAt = (width: number) =>
-    product.image
-      .replace(/w=\d+/, `w=${width}`)
-      .replace("auto=format", "auto=format&q=90&fm=webp")
-
-  return (
-    <Link
-      to={productUrl(product)}
-      className="group bg-white rounded-[28px] border border-[#d6d6d6] overflow-hidden hover:shadow-2xl hover:shadow-[var(--color-primary)]/10 hover:-translate-y-1.5 hover:border-[#d6d6d6] transition-all duration-300 flex flex-col h-full"
-      style={{ animationDelay: `${index * 80}ms` }}
-    >
-      <div className="relative bg-gradient-to-br from-gray-50 to-gray-100 aspect-square overflow-hidden">
+      {heroSlides.map((s, i) => (
         <img
-          src={product.image}
-          srcSet={`${imageAt(800)} 1x, ${imageAt(1200)} 2x`}
-          sizes="(min-width: 1024px) 280px, (min-width: 640px) 42vw, 90vw"
-          alt={ml(product.name)}
-          loading="lazy"
+          key={s.id}
+          src={s.image}
+          alt=""
+          aria-hidden="true"
           decoding="async"
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+          fetchPriority={i === 0 ? "high" : "auto"}
+          loading={i === 0 ? "eager" : "lazy"}
+          className={`absolute inset-0 -z-10 h-full w-full object-cover transition-opacity duration-1000 ${
+            i === index ? "opacity-100" : "opacity-0"
+          }`}
         />
-        {/* Vignette douce */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-primary)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      ))}
+      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black/75 via-black/40 to-transparent rtl:bg-gradient-to-l" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-        <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-          {product.badges.map((badge) => {
-            const badgeLabel = ml(badge)
+      <div className="mx-auto w-full max-w-7xl px-6 pb-24 pt-40">
+        <div key={slide.id} className="max-w-4xl" aria-live="polite">
+          {(slide.badge || slide.tag) && (
+            <p className="mb-6 inline-flex flex-wrap items-center gap-x-3 text-xs font-semibold uppercase tracking-[0.14em] text-white/90">
+              {slide.badge && <span>{p(slide.badge)}</span>}
+              {slide.tag && (
+                <span className="inline-flex items-center gap-2 before:h-1.5 before:w-1.5 before:rounded-full before:bg-[#4db3e6]">
+                  {p(slide.tag)}
+                </span>
+              )}
+            </p>
+          )}
+          <h1
+            className="text-5xl font-semibold leading-[1.05] tracking-tight text-white sm:text-7xl lg:text-[80px] lg:tracking-[-1.2px]"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            {p(slide.title)}
+          </h1>
+          <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/85 sm:text-lg">{p(slide.subtitle)}</p>
+          <div className="mt-9 flex flex-wrap items-center gap-3">
+            <Link
+              to={slide.primary.href}
+              className="group inline-flex min-h-12 items-center gap-2 rounded-full bg-[var(--color-accent)] px-7 text-[15px] font-semibold text-white transition-colors hover:bg-[#00628f] active:scale-[0.98]"
+            >
+              {p(slide.primary.label)}
+              <Icon name="arrow" className="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1" strokeWidth={2} />
+            </Link>
+            <Link
+              to={slide.secondary.href}
+              className="inline-flex min-h-12 items-center rounded-full border border-white/60 px-7 text-[15px] font-semibold text-white transition-colors hover:bg-white/10 active:scale-[0.98]"
+            >
+              {p(slide.secondary.label)}
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      <div className="absolute bottom-6 right-6 flex items-center rtl:left-6 rtl:right-auto" role="tablist">
+        {heroSlides.map((s, i) => (
+          <button
+            key={s.id}
+            role="tab"
+            aria-selected={i === index}
+            aria-label={`${i + 1} / ${heroSlides.length}`}
+            onClick={() => setIndex(i)}
+            className="group flex min-h-11 min-w-7 items-center justify-center px-1"
+          >
+            <span className={`block h-1.5 rounded-full transition-all duration-300 ${i === index ? "w-10 bg-white" : "w-1.5 bg-white/50 group-hover:bg-white/80"}`} />
+          </button>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+/* ──────────────── 2. PRODUCT LINE-UP 2026 ──────────────── */
+function LineUp() {
+  const { p } = useP()
+  const heroProducts = useMemo(() => pickHeroProducts(products), [])
+  return (
+    <section className="bg-white py-20 lg:py-[90px]" aria-labelledby="lineup-title">
+      <div className="mx-auto max-w-7xl px-6">
+        <Reveal>
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h2 id="lineup-title" className="text-4xl font-semibold leading-none tracking-tight text-[#1d1d1f] lg:text-[40px]" style={{ fontFamily: "var(--font-display)" }}>
+                {p(lineUp.title)}
+              </h2>
+              <p className="mt-3 text-[17px] text-[#474747]">{p(lineUp.subtitle)}</p>
+            </div>
+            <Link to="/produits" className="inline-flex min-h-11 items-center gap-1.5 text-[15px] font-semibold text-[#0077b3] hover:underline">
+              {p(lineUp.seeAll)}
+              <Icon name="arrow" className="h-4 w-4 rtl:-scale-x-100" strokeWidth={2} />
+            </Link>
+          </div>
+        </Reveal>
+        {/* Quatre cartes sur une seule ligne (desktop), mêmes dimensions, espacement régulier */}
+        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {heroProducts.map((product, i) => (
+            <Reveal key={product.id} delay={i * 80} className="h-full">
+              <LineUpCard product={product} cta={p(lineUp.cardCta)} />
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ──────────────── 3. POURQUOI AUREX ──────────────── */
+function WhyAurex() {
+  const { p } = useP()
+  return (
+    <section id="pourquoi-aurex" className="scroll-mt-24 bg-[#f5f5f7] py-20 lg:py-[90px]" aria-labelledby="why-title">
+      <div className="mx-auto max-w-7xl px-6">
+        {/* Composition éditoriale asymétrique : texte d'un côté, grande image lifestyle de l'autre */}
+        <div className="grid items-center gap-12 lg:grid-cols-12">
+          <div className="lg:col-span-5">
+            <Reveal>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0077b3]">{p(why.heading)}</p>
+              <h2 id="why-title" className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight text-[#1d1d1f] lg:text-[48px]" style={{ fontFamily: "var(--font-display)" }}>
+                {p(why.headline)}
+              </h2>
+            </Reveal>
+            <Reveal delay={150}>
+              <p className="mt-6 text-[17px] leading-relaxed text-[#474747]">{p(why.intro)}</p>
+              <Link to="/a-propos" className="mt-6 inline-flex min-h-11 items-center gap-1.5 text-[15px] font-semibold text-[#0077b3] hover:underline">
+                {p(why.cta)}
+                <Icon name="arrow" className="h-4 w-4 rtl:-scale-x-100" strokeWidth={2} />
+              </Link>
+            </Reveal>
+          </div>
+          <div className="lg:col-span-7">
+            <Reveal variant="scale" delay={100}>
+              <img
+                loading="lazy"
+                decoding="async"
+                src={why.image}
+                alt={p(why.imageAlt)}
+                width={1400}
+                height={1100}
+                className="aspect-[5/4] w-full rounded-[28px] object-cover"
+              />
+            </Reveal>
+          </div>
+        </div>
+
+        {/* Quatre piliers : liste éditoriale secondaire, pas une grille de cartes produit */}
+        <div className="mt-16 grid gap-x-10 gap-y-10 border-t border-[#d6d6d6] pt-10 sm:grid-cols-2 lg:grid-cols-4">
+          {why.pillars.map((pillar, i) => (
+            <Reveal key={pillar.icon} delay={i * 90}>
+              <div className="text-[#0077b3]">
+                <Icon name={pillar.icon} className="h-7 w-7" />
+              </div>
+              <h3 className="mt-4 text-[19px] font-semibold leading-snug text-[#1d1d1f]" style={{ fontFamily: "var(--font-display)" }}>
+                {p(pillar.title)}
+              </h3>
+              <p className="mt-2 text-[15px] leading-relaxed text-[#474747]">{p(pillar.text)}</p>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ──────────────── 4. NOS CATÉGORIES ──────────────── */
+function Categories() {
+  const { p } = useP()
+  return (
+    <section className="bg-white py-20 lg:py-[90px]" aria-labelledby="cats-title">
+      <div className="mx-auto max-w-7xl px-6">
+        <Reveal>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0077b3]">{p(categoriesSection.eyebrow)}</p>
+          <h2 id="cats-title" className="mt-3 text-4xl font-semibold leading-none tracking-tight text-[#1d1d1f] lg:text-[40px]" style={{ fontFamily: "var(--font-display)" }}>
+            {p(categoriesSection.title)}
+          </h2>
+        </Reveal>
+        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+          {categoryContent.map((cat, i) => {
+            const image = categories.find((c) => c.slug === cat.slug)?.image || cat.image
             return (
-              <span
-                key={badgeLabel}
-                className={`text-[10px] font-bold px-2 py-1 rounded-[10px] font-display tracking-wider shadow-md backdrop-blur-sm
-                ${badgeLabel === "Nouveau"
-                  ? "bg-[var(--color-primary)]/90 text-white"
-                  : badgeLabel === "Promotion"
-                    ? "bg-red-500 text-white"
-                    : badgeLabel === "Best Seller"
-                      ? "bg-amber-400 text-amber-900"
-                      : "bg-[var(--color-accent)]/90 text-white"
-                }`}
-              >
-                {badgeLabel}
-              </span>
+              <Reveal key={cat.slug} delay={Math.min(i, 4) * 70} className="h-full">
+                <Link
+                  to={`/produits/${cat.slug}`}
+                  className="group flex h-full flex-col overflow-hidden rounded-[28px] bg-[#f5f5f7] transition-colors hover:bg-[#ececf0]"
+                >
+                  <div className="aspect-[4/5] overflow-hidden">
+                    <img
+                      loading="lazy"
+                      decoding="async"
+                      src={image}
+                      alt={p(cat.name)}
+                      width={800}
+                      height={1000}
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03] motion-reduce:transition-none"
+                    />
+                  </div>
+                  <div className="flex flex-1 flex-col p-6">
+                    <span className="text-xs font-semibold text-[#5a5a5e]">{cat.num}</span>
+                    <h3 className="mt-1 text-[19px] font-semibold leading-snug text-[#1d1d1f]" style={{ fontFamily: "var(--font-display)" }}>
+                      {p(cat.name)}
+                    </h3>
+                    <p className="mt-2 text-[15px] leading-snug text-[#474747]">{p(cat.highlight)}</p>
+                    <span className="mt-auto inline-flex min-h-11 items-center gap-1.5 pt-4 text-[15px] font-semibold text-[#0077b3]">
+                      {p(cat.cta)}
+                      <Icon name="arrow" className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1" strokeWidth={2} />
+                    </span>
+                  </div>
+                </Link>
+              </Reveal>
             )
           })}
         </div>
-
-        {/* Favori */}
-        <button
-          onClick={(e) => {
-            e.preventDefault()
-            e.stopPropagation()
-            setLiked((v) => !v)
-          }}
-          aria-label="Favori"
-          className="absolute top-1.5 right-1.5 w-11 h-11 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform"
-        >
-          <svg
-            className={`w-4 h-4 transition-colors ${liked ? "text-red-500 fill-red-500" : "text-[#5a5a5e]"}`}
-            fill={liked ? "currentColor" : "none"}
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-            />
-          </svg>
-        </button>
-
-        {product.connectivity && (
-          <div className="absolute bottom-3 right-3">
-            <div
-              className="flex items-center gap-1.5 bg-[var(--color-primary)]/85 backdrop-blur-sm text-white text-[10px] font-semibold px-2.5 py-1.5 rounded-full shadow-md"
-              title="SmartConnect"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-[#4ade80] animate-pulse-dot" />
-              SmartConnect
-            </div>
-          </div>
-        )}
-
-        {/* CTA flottant au survol */}
-        <div className="absolute inset-x-3 bottom-3 translate-y-14 group-hover:translate-y-0 transition-transform duration-300">
-          <div className="bg-[var(--color-accent)] text-white text-xs font-semibold text-center py-2.5 rounded-[10px] shadow-lg shadow-[var(--color-accent)]/40">
-            {t("common.view")}
-          </div>
-        </div>
       </div>
-
-      <div className="p-4 flex flex-col flex-1">
-        <p className="text-[10px] text-[#5a5a5e] font-mono tracking-widest uppercase mb-1">
-          {product.reference}
-        </p>
-        <h3 className="text-[17px] font-semibold text-[#1d1d1f] font-sans leading-snug mb-2 group-hover:text-[var(--color-primary)] transition-colors line-clamp-2">
-          {ml(product.name)}
-        </h3>
-        <div className="flex items-center gap-2 flex-wrap mb-3">
-          <EnergyBadge cls={product.energyClass} />
-          {ml(product.capacity) && (
-            <span className="text-xs text-[#474747] font-sans bg-[#f5f5f7] border border-[#d6d6d6] px-2 py-0.5 rounded-[10px]">
-              {ml(product.capacity)}
-            </span>
-          )}
-          {ml(product.noiseLevel) && (
-            <span className="text-xs text-[#474747] font-sans bg-[#f5f5f7] border border-[#d6d6d6] px-2 py-0.5 rounded-[10px]">
-              {ml(product.noiseLevel)}
-            </span>
-          )}
-        </div>
-        <div className="mt-auto flex items-center justify-end pt-3 border-t border-gray-50">
-          <span className="w-7 h-7 rounded-full bg-[var(--color-accent)]/10 text-[#0077b3] flex items-center justify-center group-hover:bg-[var(--color-accent)] group-hover:text-white transition-colors">
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
-          </span>
-        </div>
-      </div>
-    </Link>
+    </section>
   )
 }
 
-/* ── Flèche animée réutilisable ── */
-function ArrowIcon({ className = "w-4 h-4" }: { className?: string }) {
+/* ──────────────── 5. SERVICE APRÈS-VENTE ──────────────── */
+function AfterSales() {
+  const { p } = useP()
   return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-    </svg>
+    <section className="bg-[#f5f5f7] py-20 lg:py-[90px]" aria-labelledby="sav-title">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="grid gap-10 lg:grid-cols-12 lg:items-end">
+          <Reveal className="lg:col-span-7">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0077b3]">{p(sav.eyebrow)}</p>
+            <h2 id="sav-title" className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight text-[#1d1d1f] lg:text-[48px]" style={{ fontFamily: "var(--font-display)" }}>
+              {p(sav.headline)}
+            </h2>
+            <p className="mt-4 text-[17px] font-medium italic text-[#333336]">{p(sav.principle)}</p>
+          </Reveal>
+          <Reveal delay={120} className="lg:col-span-5">
+            <p className="text-[15px] leading-relaxed text-[#474747]">{p(sav.text)}</p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link to={sav.primary.href} className="inline-flex min-h-12 items-center rounded-full bg-[var(--color-accent)] px-6 text-[15px] font-semibold text-white transition-colors hover:bg-[#00628f] active:scale-[0.98]">
+                {p(sav.primary.label)}
+              </Link>
+              <Link to={sav.secondary.href} className="inline-flex min-h-12 items-center rounded-full border border-[#86868b] px-6 text-[15px] font-semibold text-[#1d1d1f] transition-colors hover:bg-white active:scale-[0.98]">
+                {p(sav.secondary.label)}
+              </Link>
+            </div>
+          </Reveal>
+        </div>
+        {/* Présentation à quatre cartes conservée */}
+        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {sav.cards.map((card, i) => (
+            <Reveal key={card.num} delay={i * 80} className="h-full">
+              <Link to={card.href} className="group flex h-full flex-col rounded-[28px] bg-white p-7 transition-colors hover:bg-[#fafafc]">
+                <div className="flex items-center justify-between">
+                  <span className="text-[#0077b3]">
+                    <Icon name={card.icon} className="h-7 w-7" />
+                  </span>
+                  <span className="text-xs font-semibold text-[#5a5a5e]">{card.num}</span>
+                </div>
+                <h3 className="mt-6 text-[19px] font-semibold leading-snug text-[#1d1d1f]" style={{ fontFamily: "var(--font-display)" }}>
+                  {p(card.title)}
+                </h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-[#474747]">{p(card.text)}</p>
+                <span className="mt-auto inline-flex min-h-11 items-center gap-1.5 pt-5 text-[15px] font-semibold text-[#0077b3]">
+                  {p(card.cta)}
+                  <Icon name="arrow" className="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1" strokeWidth={2} />
+                </span>
+              </Link>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ──────────────── 6. PROMOTIONAL & HIGHLIGHTS GRID ──────────────── */
+function Highlights() {
+  const { p } = useP()
+  return (
+    <section className="bg-white py-20 lg:py-[90px]" aria-label="Highlights">
+      <div className="mx-auto grid max-w-7xl gap-5 px-6 lg:grid-cols-2 lg:grid-rows-2">
+        {/* Grande carte : Offre exclusive */}
+        <Reveal className="lg:row-span-2">
+          <Link
+            to={promo.exclusive.href}
+            className="group relative isolate flex min-h-[420px] h-full flex-col justify-end overflow-hidden rounded-[28px] bg-[#1d1d1f] p-8 lg:min-h-[560px] lg:p-10"
+          >
+            <img
+              loading="lazy"
+              decoding="async"
+              src={promo.exclusive.image}
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 -z-10 h-full w-full object-cover opacity-70 transition-transform duration-700 group-hover:scale-[1.03] motion-reduce:transition-none"
+            />
+            <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+            <span className="text-xs font-semibold tracking-[0.18em] text-white/90">{p(promo.exclusive.label)}</span>
+            <h3 className="mt-3 max-w-md text-4xl font-semibold leading-[1.05] tracking-tight text-white lg:text-[40px]" style={{ fontFamily: "var(--font-display)" }}>
+              {p(promo.exclusive.title)}
+            </h3>
+            <p className="mt-3 max-w-md text-base text-white/85">{p(promo.exclusive.text)}</p>
+            <span className="mt-5 inline-flex min-h-12 w-fit items-center gap-2 rounded-full bg-white px-6 text-[15px] font-semibold text-[#1d1d1f] transition-colors group-hover:bg-[#f5f5f7]">
+              {p(promo.exclusive.cta)}
+              <Icon name="arrow" className="h-4 w-4 rtl:-scale-x-100" strokeWidth={2} />
+            </span>
+          </Link>
+        </Reveal>
+
+        {/* Deux cartes plus petites, empilées verticalement */}
+        {[promo.fresh, promo.best].map((card, i) => (
+          <Reveal key={i} delay={(i + 1) * 100}>
+            <Link to={card.href} className="group flex h-full min-h-[260px] flex-col justify-between rounded-[28px] bg-[#f5f5f7] p-8 transition-colors hover:bg-[#ececf0]">
+              <span className="inline-flex w-fit text-xs font-semibold tracking-[0.18em] text-[#b64400]">{p(card.label)}</span>
+              <div>
+                <h3 className="mt-6 text-[28px] font-semibold leading-tight tracking-tight text-[#1d1d1f]" style={{ fontFamily: "var(--font-display)" }}>
+                  {p(card.title)}
+                </h3>
+                <p className="mt-2 text-[15px] text-[#474747]">{p(card.text)}</p>
+                <span className="mt-4 inline-flex min-h-11 items-center gap-1.5 text-[15px] font-semibold text-[#0077b3]">
+                  {p(card.cta)}
+                  <Icon name="arrow" className="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1" strokeWidth={2} />
+                </span>
+              </div>
+            </Link>
+          </Reveal>
+        ))}
+      </div>
+    </section>
   )
 }
 
 export default function HomePage() {
-  const { t } = useTranslation()
-  const [managedHome, setManagedHome] = useState<{ title?: string; description?: string }>({})
-  const [currentSlide, setCurrentSlide] = useState(0)
-  const [isPlaying, setIsPlaying] = useState(true)
-  const [progress, setProgress] = useState(0)
-  const [heroSlides, setHeroSlides] = useState<HeroSlide[]>(() => {
-    try {
-      const raw = localStorage.getItem("aurex-data-heroSlides")
-      if (raw) return normalizeHeroSlides(JSON.parse(raw))
-    } catch {
-      // ignore
-    }
-    return normalizeHeroSlides(defaultHeroSlides)
-  })
-  const [stats, setStats] = useState<StatItem[]>(() => {
-    try {
-      const raw = localStorage.getItem("aurex-data-stats")
-      if (raw) return normalizeStats(JSON.parse(raw))
-    } catch {
-      // ignore
-    }
-    return defaultStats
-  })
-  const [marquee, setMarquee] = useState<MarqueeItem[]>(() => {
-    try {
-      const raw = localStorage.getItem("aurex-data-marquee")
-      if (raw) return normalizeMarquee(JSON.parse(raw))
-    } catch {
-      // ignore
-    }
-    return defaultMarquee
-  })
-  const [campaign, setCampaign] = useState<CampaignData>(() => {
-    try {
-      const raw = localStorage.getItem("aurex-data-campaign")
-      if (raw) return normalizeCampaign(JSON.parse(raw))
-    } catch {
-      // ignore
-    }
-    return defaultCampaign
-  })
-  const [sec, setSec] = useState<HomeSections>(() => {
-    try {
-      const raw = localStorage.getItem("aurex-data-homeSections")
-      if (raw) return normalizeHomeSections(JSON.parse(raw))
-    } catch {
-      // ignore
-    }
-    return defaultHomeSections
-  })
-
-  useEffect(() => {
-    const storedPages = localStorage.getItem("aurex-admin-pages")
-    if (storedPages) {
-      try {
-        const parsed = JSON.parse(storedPages) as { home?: { title?: string; description?: string } }
-        setManagedHome(parsed.home ?? {})
-      } catch {
-        setManagedHome({})
-      }
-    }
-    // heroSlides & stats depuis Supabase (aurex_collections) — fallback local déjà appliqué
-    void loadRemoteCollection<HeroSlide>("heroSlides").then((remote) => {
-      if (remote && Array.isArray(remote) && remote.length > 0) {
-        const normalized = normalizeHeroSlides(remote)
-        setHeroSlides(normalized)
-        localStorage.setItem("aurex-data-heroSlides", JSON.stringify(normalized))
-      }
-    }).catch(() => {})
-    void loadRemoteCollection<StatItem>("stats").then((remote) => {
-      if (remote && Array.isArray(remote) && remote.length > 0) {
-        const normalized = normalizeStats(remote)
-        setStats(normalized)
-        localStorage.setItem("aurex-data-stats", JSON.stringify(normalized))
-      }
-    }).catch(() => {})
-    void loadRemoteCollection<MarqueeItem>("marquee").then((remote) => {
-      if (remote && Array.isArray(remote) && remote.length > 0) {
-        const normalized = normalizeMarquee(remote)
-        setMarquee(normalized)
-        localStorage.setItem("aurex-data-marquee", JSON.stringify(normalized))
-      }
-    }).catch(() => {})
-    void loadRemoteCollection<CampaignData>("campaign").then((remote) => {
-      if (remote && Array.isArray(remote) && remote.length > 0) {
-        const normalized = normalizeCampaign(remote)
-        setCampaign(normalized)
-        localStorage.setItem("aurex-data-campaign", JSON.stringify([normalized]))
-      }
-    }).catch(() => {})
-    void loadRemoteCollection<HomeSections>("homeSections").then((remote) => {
-      if (remote && Array.isArray(remote) && remote.length > 0) {
-        const normalized = normalizeHomeSections(remote)
-        setSec(normalized)
-        localStorage.setItem("aurex-data-homeSections", JSON.stringify([normalized]))
-      }
-    }).catch(() => {})
-  }, [])
-
-  useEffect(() => {
-    if (!isPlaying) {
-      setProgress(0)
-      return
-    }
-    const start = Date.now()
-    const interval = setInterval(() => {
-      const elapsed = Date.now() - start
-      setProgress(Math.min(elapsed / 4000, 1))
-    }, 50)
-    const t2 = setInterval(() => {
-      setCurrentSlide((s) => (s + 1) % heroSlides.length)
-      setProgress(0)
-    }, 8000)
-    return () => {
-      clearInterval(interval)
-      clearInterval(t2)
-    }
-  }, [isPlaying, heroSlides.length])
-
-  const slide = (heroSlides[currentSlide] ?? defaultHeroSlides[0]) as HeroSlide & typeof defaultHeroSlides[0]
-
+  const { p } = useP()
   return (
-    <div className="bg-[#f5f5f7]">
-      {/* ═══════════ HERO ═══════════ */}
-      <section
-        className="relative min-h-[680px] h-[min(100svh,900px)] flex items-end overflow-hidden"
-        onMouseEnter={() => setIsPlaying(false)}
-        onMouseLeave={() => setIsPlaying(true)}
-      >
-        <div className="absolute inset-0">
-          {heroSlides.map((s, i) => (
-            <img
-              key={(s as HeroSlide).id ?? i}
-              src={s.image}
-              srcSet={`${(s.image ?? "").replace("w=1600", "w=2400").replace("auto=format", "auto=format&q=90&fm=webp")} 1x, ${(s.image ?? "").replace("w=1600", "w=3200").replace("auto=format", "auto=format&q=90&fm=webp")} 2x`}
-              sizes="100vw"
-              alt=""
-              aria-hidden="true"
-              fetchPriority={i === 0 ? "high" : "auto"}
-              decoding="async"
-              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-                i === currentSlide ? "opacity-100 animate-ken-burns" : "opacity-0"
-              }`}
-            />
-          ))}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#1d1d1f]/90 via-[var(--color-primary)]/55 to-[var(--color-primary)]/10" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#1d1d1f]/80 via-transparent to-transparent" />
-          {/* Grille décorative */}
-          <div
-            className="absolute inset-0 opacity-[0.06]"
-            style={{
-              backgroundImage:
-                "linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px)",
-              backgroundSize: "64px 64px",
-            }}
-          />
-        </div>
-
-        <div className="relative z-10 max-w-7xl mx-auto px-6 pb-24 pt-40 w-full">
-          <div className="max-w-4xl">
-            <div key={currentSlide + "-tag"} className="animate-fade-in">
-              <span
-                className="inline-flex items-center gap-2.5 text-xs font-semibold tracking-[-0.12px] uppercase text-white mb-6"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] animate-pulse-dot" />
-                {tx((slide as HeroSlide).tag, slide.tagKey ? t(slide.tagKey) : "")}
-              </span>
-            </div>
-
-            <h1
-              key={currentSlide + "-title"}
-              className="text-5xl sm:text-7xl lg:text-[80px] font-semibold text-white leading-[1.05] tracking-tight lg:tracking-[-1.2px] mb-6"
-              style={{ fontFamily: "var(--font-display)", whiteSpace: "pre-line" }}
-            >
-              {tx((slide as HeroSlide).title, slide.titleKey ? t(slide.titleKey) : "")}
-            </h1>
-
-            <p
-              key={currentSlide + "-sub"}
-              className="text-base sm:text-lg text-white/70 leading-relaxed mb-8 delay-200 animate-slide-up"
-              style={{ fontFamily: "var(--font-sans)", whiteSpace: "pre-line" }}
-            >
-              {tx((slide as HeroSlide).subtitle, slide.subKey ? t(slide.subKey) : "")}
-            </p>
-
-            <div
-              key={currentSlide + "-cta"}
-              className="flex items-center gap-3 flex-wrap delay-400 animate-slide-up"
-            >
-              <Link
-                to={(slide as HeroSlide).ctaHref ?? slide.ctaHref ?? "/produits"}
-                className="group/btn inline-flex items-center gap-2 bg-[var(--color-accent)] hover:bg-[#00628f] text-white font-semibold px-7 py-4 rounded-full transition-colors text-sm"
-                style={{ fontFamily: "var(--font-sans)" }}
-              >
-                {tx((slide as HeroSlide).cta, slide.ctaKey ? t(slide.ctaKey) : "")}
-                <ArrowIcon className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
-              </Link>
-              <Link
-                to={(slide as HeroSlide).ctaSecHref ?? slide.ctaSecHref ?? "/smart-home"}
-                className="inline-flex items-center gap-2 text-white/90 hover:text-white border border-white/30 hover:border-white/70 font-medium px-7 py-4 rounded-full transition-colors text-sm backdrop-blur-md hover:bg-white/10"
-                style={{ fontFamily: "var(--font-sans)" }}
-              >
-                {tx((slide as HeroSlide).ctaSec, slide.ctaSecKey ? t(slide.ctaSecKey) : "")}
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Indicateurs avec barre de progression */}
-        <div className="absolute bottom-8 right-8 z-10 flex items-center gap-0">
-          {heroSlides.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => {
-                setCurrentSlide(i)
-                setIsPlaying(false)
-              }}
-              className="group flex min-h-11 min-w-6 items-center justify-center px-2"
-              aria-label={`Slide ${i + 1}`}
-            >
-              <span
-                className={`block rounded-full transition-all duration-300 ${
-                  i === currentSlide ? "w-10 h-1.5 bg-white/30" : "w-1.5 h-1.5 bg-white/40 group-hover:bg-white/70"
-                }`}
-              >
-                {i === currentSlide && (
-                  <span
-                    className="block h-full rounded-full bg-white origin-left"
-                    style={{ width: `${progress * 100}%` }}
-                  />
-                )}
-              </span>
-            </button>
-          ))}
-        </div>
-
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 animate-fade-in">
-          <span
-            className="text-[10px] font-medium text-white/50 tracking-widest uppercase"
-            style={{ fontFamily: "var(--font-display)" }}
-          >
-            {t("home.scrollLabel")}
-          </span>
-          <div className="w-px h-8 bg-gradient-to-b from-white/50 to-transparent" />
-        </div>
+    <>
+      <Hero />
+      <LineUp />
+      <WhyAurex />
+      <Categories />
+      <AfterSales />
+      <Highlights />
+      <section className="bg-[#f5f5f7] py-20 lg:py-[90px]" aria-label={p(smartTech.label)}>
+        <SmartTechSection />
       </section>
-
-      {/* ═══════════ STATS BAR ═══════════ */}
-      <section className="bg-white border-b border-[#E8EDF4] relative">
-          <div className="absolute top-0 left-0 right-0 h-px bg-[#d6d6d6]" />
-        <div className="max-w-7xl mx-auto px-6 py-9 grid grid-cols-2 md:grid-cols-4 gap-6 md:divide-x md:divide-[#E8EDF4]">
-          {stats.map((stat, i) => (
-            <div key={`${ml(stat.label)}-${i}`} className="md:pl-8 first:pl-0 group">
-              <p
-                className="text-3xl lg:text-4xl font-bold text-[var(--color-primary)] font-display transition-colors group-hover:text-[#0077b3]"
-              >
-                <CountUp target={stat.value} suffix={ml(stat.suffix)} />
-              </p>
-              <p className="text-xs text-[#64748B] mt-1.5 font-sans flex items-center gap-2">
-                <span className="w-3 h-px bg-[var(--color-accent)] transition-all group-hover:w-6" />
-                {ml(stat.label)}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ═══════════ MARQUEE PARTENAIRES / PROMESSES ═══════════ */}
-      <section className="py-5 bg-[var(--color-primary)] overflow-hidden border-y border-[var(--color-accent)]/20">
-        <div className="animate-marquee flex gap-12 whitespace-nowrap w-max">
-          {[...Array(2)].map((_, dup) => (
-            <div key={dup} className="flex gap-12 items-center">
-              {marquee.map((txt, i) => (
-                <span
-                  key={`${ml(txt)}-${i}-${dup}`}
-                  className="flex items-center gap-3 text-[11px] font-bold tracking-[0.2em] uppercase text-white/60"
-                >
-                  <span className="w-1 h-1 rounded-full bg-[var(--color-accent)]" />
-                  {ml(txt)}
-                </span>
-              ))}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ═══════════ CAMPAIGN ═══════════ */}
-      <section className="py-20 max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Grande carte climatisation */}
-          <div className="relative rounded-[28px] overflow-hidden bg-[#1d1d1f] p-10 flex flex-col justify-between min-h-72 group">
-            <div className="relative">
-              <span className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] uppercase text-blue-200 bg-white/10 backdrop-blur-sm border border-white/15 rounded-full px-3 py-1.5"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse-dot" />
-                {tx(campaign.badge, t("home.campaign.exclusiveOffer"))}
-              </span>
-              <h2
-                className="text-4xl font-bold text-white mt-4 leading-tight"
-                style={{ fontFamily: "var(--font-display)", whiteSpace: "pre-line" }}
-              >
-                {tx(campaign.title, t("home.campaign.acTitle"))}
-              </h2>
-              <p className="text-sm text-blue-100/80 mt-3 max-w-md" style={{ fontFamily: "var(--font-sans)" }}>
-                {tx(campaign.description, t("home.campaign.acDesc"))}
-              </p>
-            </div>
-            <Link
-              to={campaign.href || "/produits/climatisation"}
-              className="relative self-start inline-flex items-center gap-2 mt-8 bg-white text-[#1d1d1f] font-semibold px-6 py-3.5 rounded-full hover:bg-[#f5f5f7] hover:gap-3.5 transition-all text-sm"
-              style={{ fontFamily: "var(--font-sans)" }}
-            >
-              {tx(campaign.cta, t("home.campaign.actNow"))}
-              <ArrowIcon />
-            </Link>
-          </div>
-
-          <div className="flex flex-col gap-6">
-            {/* Carte sombre */}
-            <div className="flex-1 relative rounded-[28px] overflow-hidden bg-black flex items-center p-7 gap-6 min-h-32 group border border-white/5 hover:border-[var(--color-accent)]/40 transition-colors">
-              <div className="relative flex-shrink-0">
-                <img loading="lazy" decoding="async"
-                  src={campaign.darkImage || "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?w=200&h=200&fit=crop&auto=format"}
-                  alt={tx(campaign.darkTitle, t("home.ex9000Washing"))}
-                  className="w-24 h-24 object-cover rounded-[28px] transition-transform duration-500 group-hover:scale-105 group-hover:rotate-1"
-                />
-                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-[var(--color-accent)] border-2 border-black" />
-              </div>
-              <div>
-                <span className="text-[10px] font-bold tracking-widest uppercase text-[#0077b3]" style={{ fontFamily: "var(--font-display)" }}>
-                  {tx(campaign.darkTag, t("home.newWashing"))}
-                </span>
-                <h3 className="text-xl font-bold text-white mt-1" style={{ fontFamily: "var(--font-display)" }}>
-                  {tx(campaign.darkTitle, t("home.ex9000Washing"))}
-                </h3>
-                <p className="text-xs text-[#a1a1a6] mt-1 font-sans">{tx(campaign.darkSpecs, t("home.ex9000Specs"))}</p>
-                <Link to={campaign.darkHref || "/produits/lavage/ex9000-wm"} className="inline-flex min-h-11 items-center gap-1.5 text-xs text-[#4db3e6] hover:text-white mt-3 font-sans transition-colors group/l">
-                  {t("home.discoverMore")}
-                  <ArrowIcon className="w-3 h-3 transition-transform group-hover/l:translate-x-1" />
-                </Link>
-              </div>
-            </div>
-
-            {/* Carte claire */}
-            <div className="flex-1 relative rounded-[28px] overflow-hidden bg-white flex items-center p-7 gap-6 min-h-32 group border border-[#d6d6d6] hover:border-[var(--color-accent)]/40 transition-colors">
-              <div className="relative flex-shrink-0">
-                <img loading="lazy" decoding="async"
-                  src={campaign.lightImage || "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=200&h=200&fit=crop&auto=format"}
-                  alt={tx(campaign.lightTitle, t("home.ex7000Fridge"))}
-                  className="w-24 h-24 object-cover rounded-[28px] transition-transform duration-500 group-hover:scale-105 group-hover:-rotate-1"
-                />
-                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-amber-400 border-2 border-[#F1F5FB]" />
-              </div>
-              <div>
-                <span className="text-[10px] font-bold tracking-widest uppercase text-[var(--color-primary)]" style={{ fontFamily: "var(--font-display)" }}>
-                  {tx(campaign.lightTag, t("home.bestSeller"))}
-                </span>
-                <h3 className="text-xl font-bold text-[#0D1117] mt-1" style={{ fontFamily: "var(--font-display)" }}>
-                  {tx(campaign.lightTitle, t("home.ex7000Fridge"))}
-                </h3>
-                <p className="text-xs text-[#474747] mt-1 font-sans">{tx(campaign.lightSpecs, t("home.ex7000Specs"))}</p>
-                <Link to={campaign.lightHref || "/produits/refrigerateurs/ex7000-fridge"} className="inline-flex min-h-11 items-center gap-1.5 text-xs text-[#0077b3] hover:text-[var(--color-primary)] mt-3 font-sans transition-colors group/l">
-                  {t("home.discoverMore")}
-                  <ArrowIcon className="w-3 h-3 transition-transform group-hover/l:translate-x-1" />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════ CATEGORIES ═══════════ */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <Reveal>
-            <div className="flex items-end justify-between mb-12">
-              <div>
-                <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0077b3]" style={{ fontFamily: "var(--font-display)" }}>
-                  {tx(sec.categoriesEyebrow, t("home.categories.subtitle"))}
-                </span>
-                <h2 className="text-4xl font-bold text-[var(--color-primary)] mt-2" style={{ fontFamily: "var(--font-display)" }}>
-                  {tx(sec.categoriesTitle, t("home.categories.title"))}
-                </h2>
-              </div>
-              <Link
-                to="/produits"
-                className="text-sm text-[#0077b3] hover:text-[var(--color-primary)] font-medium transition-colors hidden md:flex items-center gap-1.5 group font-sans"
-              >
-                {t("common.seeAll")}
-                <ArrowIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </div>
-          </Reveal>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {categories.map((cat, ci) => (
-              <Reveal key={cat.slug} delay={Math.min(ci, 5) * 70} className="h-full">
-              <Link
-                to={`/produits/${cat.slug}`}
-                className="group relative rounded-[28px] overflow-hidden bg-white aspect-[3/4] shadow-sm hover:shadow-xl hover:shadow-[var(--color-primary)]/15 hover:-translate-y-1.5 transition-all duration-300 h-full block"
-              >
-                <img loading="lazy" decoding="async"
-                  src={cat.image}
-                  alt={ml(cat.label)}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-primary)]/90 via-[var(--color-primary)]/25 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <h3 className="text-white font-bold text-[17px] leading-tight" style={{ fontFamily: "var(--font-display)" }}>
-                    {ml(cat.label)}
-                  </h3>
-                  <p className="text-blue-200 text-[10px] mt-0.5" style={{ fontFamily: "var(--font-sans)" }}>
-                    {cat.count} {t("common.products")}
-                  </p>
-                </div>
-                {/* Flèche flottante */}
-                <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-md">
-                  <svg className="w-3.5 h-3.5 text-[var(--color-primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 17L7 7M7 7v8M7 7h8" />
-                  </svg>
-                </div>
-              </Link>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════ PRODUCT LINE-UP ═══════════ */}
-      <section className="bg-[#F5F8FD] py-20">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="max-w-4xl">
-            <Reveal>
-            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#0077b3]">
-              {tx(sec.lineupEyebrow, t("products.lineup.eyebrow"))}
-            </p>
-            <h2
-              className="mt-2 text-3xl font-bold leading-tight text-[var(--color-primary)] sm:text-4xl"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              {tx(sec.lineupTitle, t("products.lineup.title"))}
-            </h2>
-            </Reveal>
-            <p className="mt-4 text-sm leading-relaxed text-[#333336]">
-              {tx(sec.lineupIntro, t("products.lineup.intro"))}
-            </p>
-          </div>
-          <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {(["washing", "smallAppliances", "waterHeating", "homeCare", "waterFountains", "cooking"] as const).map(
-              (key) => {
-                const ov: Record<string, { title?: string; desc?: string }> = {
-                  washing: { title: sec.lineupWashingTitle, desc: sec.lineupWashingDesc },
-                  smallAppliances: { title: sec.lineupSmallTitle, desc: sec.lineupSmallDesc },
-                  waterHeating: { title: sec.lineupWaterTitle, desc: sec.lineupWaterDesc },
-                  homeCare: { title: sec.lineupHomeCareTitle, desc: sec.lineupHomeCareDesc },
-                  waterFountains: { title: sec.lineupFountainsTitle, desc: sec.lineupFountainsDesc },
-                  cooking: { title: sec.lineupCookingTitle, desc: sec.lineupCookingDesc },
-                }
-                return (
-                  <div key={key} className="rounded-[28px] border border-[#d6d6d6] bg-white p-5 shadow-sm">
-                    <h3 className="text-base font-bold text-[var(--color-primary)]">
-                      {tx(ov[key].title, t(`products.lineup.categories.${key}.title`))}
-                    </h3>
-                    <p className="mt-2 text-xs leading-relaxed text-[#474747]">
-                      {tx(ov[key].desc, t(`products.lineup.categories.${key}.description`))}
-                    </p>
-                  </div>
-                )
-              },
-            )}
-          </div>
-          <p className="mt-8 border-t border-[#DCE6F8] pt-5 text-sm font-medium leading-relaxed text-[#333336]">
-            {tx(sec.lineupOutro, t("products.lineup.outro"))}
-          </p>
-        </div>
-      </section>
-
-      {/* ═══════════ FEATURED PRODUCTS ═══════════ */}
-      <section className="py-20 max-w-7xl mx-auto px-6">
-        <div className="flex items-end justify-between mb-12">
-          <div>
-            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0077b3]" style={{ fontFamily: "var(--font-display)" }}>
-              {tx(sec.featuredSubtitle, t("home.featured.subtitle"))}
-            </span>
-            <h2 className="text-4xl font-bold text-[var(--color-primary)] mt-2" style={{ fontFamily: "var(--font-display)" }}>
-              {tx(sec.featuredTitle, t("home.featured.title"))}
-            </h2>
-          </div>
-          <Link
-            to="/produits"
-            className="text-sm text-[#0077b3] hover:text-[var(--color-primary)] font-medium transition-colors hidden md:flex items-center gap-1.5 group font-sans"
-          >
-            {t("home.featured.allCatalog")}
-            <ArrowIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-          </Link>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-          {products.slice(0, 4).map((p, i) => (
-            <Reveal key={p.id} delay={Math.min(i, 3) * 80} className="h-full">
-              <ProductCard product={p} index={i} />
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      {/* ═══════════ SMART HOME ═══════════ */}
-      <section className="py-24 bg-[var(--color-primary)] relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-[var(--color-accent)] blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-[var(--color-accent)] blur-2xl" />
-        </div>
-        <div
-          className="absolute inset-0 opacity-[0.05]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px)",
-            backgroundSize: "64px 64px",
-          }}
-        />
-        <div className="relative max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <Reveal variant="left">
-          <div>
-            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0077b3]" style={{ fontFamily: "var(--font-display)" }}>
-              {sec.smartEyebrow || "AUREX SmartConnect"}
-            </span>
-            <h2
-              className="text-5xl font-bold text-white mt-3 leading-tight"
-              style={{ fontFamily: "var(--font-display)", whiteSpace: "pre-line" }}
-            >
-              {tx(sec.smartTitle, t("home.smartHomeSection.title"))}
-            </h2>
-            <p className="text-blue-100/80 mt-5 leading-relaxed text-base" style={{ fontFamily: "var(--font-sans)" }}>
-              {tx(sec.smartDesc, t("home.smartHomeSection.desc"))}
-            </p>
-            <div className="mt-8 grid grid-cols-2 gap-4">
-              {[
-                { icon: "📱", title: sec.smartFeat1Title, desc: sec.smartFeat1Desc, titleKey: "home.smartHomeSection.features.mobileApp", descKey: "home.smartHomeSection.features.iosAndroid" },
-                { icon: "🎙️", title: sec.smartFeat2Title, desc: sec.smartFeat2Desc, titleKey: "home.smartHomeSection.features.voiceControl", descKey: "home.smartHomeSection.features.alexaGoogle" },
-                { icon: "⚡", title: sec.smartFeat3Title, desc: sec.smartFeat3Desc, titleKey: "home.smartHomeSection.features.automations", descKey: "home.smartHomeSection.features.customScenarios" },
-                { icon: "📊", title: sec.smartFeat4Title, desc: sec.smartFeat4Desc, titleKey: "home.smartHomeSection.features.energyTracking", descKey: "home.smartHomeSection.features.realtimeConsumption" },
-              ].map((feat) => (
-                <div
-                  key={feat.titleKey}
-                  className="flex items-start gap-3 bg-white/5 rounded-[10px] p-4 border border-white/10 hover:bg-white/10 hover:border-[var(--color-accent)]/50 hover:-translate-y-0.5 transition-all duration-300"
-                >
-                  <span className="text-xl">{feat.icon}</span>
-                  <div>
-                    <p className="text-sm font-semibold text-white" style={{ fontFamily: "var(--font-sans)" }}>
-                      {tx(feat.title, t(feat.titleKey))}
-                    </p>
-                    <p className="text-xs text-blue-200 mt-0.5" style={{ fontFamily: "var(--font-sans)" }}>
-                      {tx(feat.desc, t(feat.descKey))}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <Link
-              to="/smart-home"
-              className="group/btn inline-flex items-center gap-2 mt-8 bg-[var(--color-accent)] hover:bg-[#00628f] text-white font-semibold px-7 py-4 rounded-full transition-colors text-sm"
-              style={{ fontFamily: "var(--font-sans)" }}
-            >
-              {tx(sec.smartCta, t("home.smartHomeSection.cta"))}
-              <ArrowIcon className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
-            </Link>
-          </div>
-          </Reveal>
-
-          <div className="relative">
-            <img loading="lazy" decoding="async"
-              src={sec.smartImage || "https://images.unsplash.com/photo-1558002038-1055907df827?w=600&h=700&fit=crop&auto=format"}
-              alt="AUREX SmartConnect"
-              className="relative rounded-[28px] w-full object-cover animate-float"
-            />
-            <div className="absolute -bottom-5 -left-5 bg-white rounded-[28px] p-4 shadow-2xl flex items-center gap-3 animate-float" style={{ animationDelay: "1.5s" }}>
-              <div className="w-10 h-10 rounded-[10px] bg-green-50 flex items-center justify-center">
-                <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-[#1d1d1f] font-sans">{tx(sec.smartBadgeTitle, t("home.smartHomeSection.ex9000Name"))}</p>
-                <p className="text-xs text-green-600 font-sans">{tx(sec.smartBadgeSubtitle, t("home.smartHomeSection.cycleComplete"))}</p>
-              </div>
-            </div>
-            <div className="absolute -top-4 -right-4 bg-[var(--color-accent)] text-white rounded-[28px] px-4 py-3 shadow-2xl animate-float" style={{ animationDelay: "3s" }}>
-              <p className="text-[10px] font-bold tracking-widest uppercase text-blue-200">{tx(sec.smartEnergyLabel, t("home.smartHomeSection.energyLabel"))}</p>
-              <p className="text-lg font-bold font-display">{ml(sec.smartEnergyValue) || "-32%"}</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════ TECHNOLOGIES ═══════════ */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-end justify-between mb-12">
-            <Reveal>
-            <div>
-              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0077b3]" style={{ fontFamily: "var(--font-display)" }}>
-                {tx(sec.techSubtitle, t("home.technologies.subtitle"))}
-              </span>
-              <h2 className="text-4xl font-bold text-[var(--color-primary)] mt-2" style={{ fontFamily: "var(--font-display)" }}>
-                {tx(sec.techTitle, t("home.technologies.title"))}
-              </h2>
-            </div>
-            </Reveal>
-            <Link
-              to="/technologies"
-              className="text-sm text-[#0077b3] hover:text-[var(--color-primary)] font-medium transition-colors hidden md:flex items-center gap-1.5 group font-sans"
-            >
-              {t("home.technologies.allTechs")}
-              <ArrowIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {technologies.slice(0, 3).map((tech, ti) => (
-              <Reveal key={tech.id} delay={Math.min(ti, 2) * 80} className="h-full">
-              <Link
-                to="/technologies"
-                className="group relative rounded-[28px] overflow-hidden bg-black aspect-video shadow-md hover:shadow-2xl hover:shadow-[var(--color-primary)]/20 hover:-translate-y-1 transition-all duration-300 h-full block"
-              >
-                <img loading="lazy" decoding="async"
-                  src={tech.image}
-                  alt={ml(tech.name)}
-                  className="w-full h-full object-cover opacity-50 group-hover:opacity-40 group-hover:scale-105 transition-all duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-primary)] via-transparent to-transparent" />
-                <div className="absolute top-4 left-4">
-                  <span className="text-[10px] font-bold tracking-widest uppercase text-blue-300 bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20" style={{ fontFamily: "var(--font-display)" }}>
-                    {ml(tech.category)}
-                  </span>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 p-5 flex items-end justify-between gap-4">
-                  <div>
-                    <h3 className="text-xl font-bold text-white" style={{ fontFamily: "var(--font-display)" }}>
-                      {ml(tech.name)}
-                    </h3>
-                    <p className="text-sm text-blue-100 mt-1 font-sans">{ml(tech.benefit)}</p>
-                  </div>
-                  <div className="w-9 h-9 rounded-full bg-[var(--color-accent)] text-white flex items-center justify-center opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 flex-shrink-0 shadow-lg">
-                    <ArrowIcon className="w-4 h-4" />
-                  </div>
-                </div>
-              </Link>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════ NEWS ═══════════ */}
-      <section className="py-20 bg-[#f5f5f7]">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-end justify-between mb-12">
-            <Reveal>
-            <div>
-              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0077b3]" style={{ fontFamily: "var(--font-display)" }}>
-                {tx(sec.newsSubtitle, t("home.news.subtitle"))}
-              </span>
-              <h2 className="text-4xl font-bold text-[var(--color-primary)] mt-2" style={{ fontFamily: "var(--font-display)" }}>
-                {tx(sec.newsTitle, t("home.news.title"))}
-              </h2>
-            </div>
-            </Reveal>
-            <Link
-              to="/actualites"
-              className="text-sm text-[#0077b3] hover:text-[var(--color-primary)] font-medium transition-colors hidden md:flex items-center gap-1.5 group font-sans"
-            >
-              {t("home.news.allNews")}
-              <ArrowIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {newsItems.map((news, ni) => (
-              <Reveal key={news.id} delay={Math.min(ni, 2) * 80} className="h-full">
-              <article
-                className="group bg-white rounded-[28px] overflow-hidden border border-[#d6d6d6] hover:shadow-xl hover:shadow-[var(--color-primary)]/10 hover:-translate-y-1 hover:border-[#d6d6d6] transition-all duration-300 h-full"
-              >
-                <div className="relative overflow-hidden aspect-video">
-                  <img loading="lazy" decoding="async"
-                    src={news.image}
-                    alt={ml(news.title)}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
-                  <div className="absolute top-3 left-3">
-                    <span className="text-[10px] font-bold tracking-widest uppercase text-white bg-[var(--color-primary)]/85 backdrop-blur-sm px-3 py-1.5 rounded-full" style={{ fontFamily: "var(--font-display)" }}>
-                      {ml(news.category)}
-                    </span>
-                  </div>
-                </div>
-                <div className="p-5">
-                  <time className="text-xs text-[#5a5a5e] font-sans">{ml(news.date)}</time>
-                  <h3 className="text-[17px] font-semibold text-[#1d1d1f] mt-2 leading-snug group-hover:text-[var(--color-primary)] transition-colors font-sans line-clamp-2">
-                    {ml(news.title)}
-                  </h3>
-                  <p className="text-xs text-[#474747] mt-2 leading-relaxed font-sans line-clamp-2">
-                    {ml(news.excerpt)}
-                  </p>
-                  <span className="inline-flex items-center gap-1.5 mt-4 text-xs font-medium text-[#0077b3] group-hover:gap-3 transition-all font-sans">
-                    {t("common.seeMore")}
-                    <ArrowIcon className="w-3 h-3" />
-                  </span>
-                </div>
-              </article>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════ SUPPORT CTA ═══════════ */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="rounded-[28px] bg-white border border-[#d6d6d6] p-10 lg:p-16 relative overflow-hidden">
-              <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <Reveal variant="left">
-                <div>
-                <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0077b3]" style={{ fontFamily: "var(--font-display)" }}>
-                  {tx(sec.supportSubtitle, t("home.support.subtitle"))}
-                </span>
-                <h2
-                  className="text-4xl font-bold text-[var(--color-primary)] mt-3"
-                  style={{ fontFamily: "var(--font-display)", whiteSpace: "pre-line" }}
-                >
-                  {tx(sec.supportTitle, t("home.support.title"))}
-                </h2>
-                <p className="text-[#333336] mt-4 leading-relaxed font-sans">{tx(sec.supportDesc, t("home.support.desc"))}</p>
-                <div className="flex flex-wrap gap-3 mt-8">
-                  <Link
-                    to="/support"
-                    className="group inline-flex items-center gap-2 bg-[var(--color-accent)] text-white font-semibold px-6 py-3.5 rounded-full hover:bg-[#00628f] transition-colors text-sm font-sans"
-                  >
-                    {tx(sec.supportCta1, t("home.support.accessSupport"))}
-                    <ArrowIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                  </Link>
-                  <Link
-                    to="/support#notices"
-                    className="inline-flex items-center gap-2 text-[#333336] bg-[#e2e2e5] font-medium px-6 py-3.5 rounded-full hover:bg-[#d6d6d6] transition-colors text-sm font-sans"
-                  >
-                    {tx(sec.supportCta2, t("home.support.downloadNotice"))}
-                  </Link>
-                </div>
-              </div>
-              </Reveal>
-
-              <div className="grid grid-cols-2 gap-4">
-                {[
-                  { icon: "📋", title: sec.supportFeatNoticesTitle, desc: sec.supportFeatNoticesDesc, titleKey: "home.support.features.notices.title", descKey: "home.support.features.notices.desc", href: "/support#notices" },
-                  { icon: "🔧", title: sec.supportFeatAssistanceTitle, desc: sec.supportFeatAssistanceDesc, titleKey: "home.support.features.assistance.title", descKey: "home.support.features.assistance.desc", href: "/support" },
-                  { icon: "⚙️", title: sec.supportFeatPartsTitle, desc: sec.supportFeatPartsDesc, titleKey: "home.support.features.parts.title", descKey: "home.support.features.parts.desc", href: "/support#pieces" },
-                  { icon: "❓", title: sec.supportFeatFaqTitle, desc: sec.supportFeatFaqDesc, titleKey: "home.support.features.faq.title", descKey: "home.support.features.faq.desc", href: "/support#faq" },
-                ].map((item, si) => (
-                  <Reveal key={item.titleKey} delay={Math.min(si, 3) * 70} className="h-full">
-                  <Link
-                    to={item.href}
-                    className="group bg-white rounded-[28px] p-5 border border-[#d6d6d6] hover:border-[var(--color-accent)]/50 hover:shadow-lg hover:shadow-[var(--color-accent)]/10 hover:-translate-y-1 transition-all duration-300 h-full block"
-                  >
-                    <span className="inline-flex w-11 h-11 items-center justify-center rounded-[10px] bg-[#f5f5f7] text-xl group-hover:bg-[var(--color-accent)] group-hover:scale-110 transition-all duration-300">
-                      {item.icon}
-                    </span>
-                    <h4 className="text-sm font-semibold text-[#1d1d1f] mt-3 group-hover:text-[var(--color-primary)] transition-colors font-sans">
-                      {tx(item.title, t(item.titleKey))}
-                    </h4>
-                    <p className="text-xs text-[#474747] mt-1 font-sans">{tx(item.desc, t(item.descKey))}</p>
-                  </Link>
-                  </Reveal>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
+      {/* La newsletter est rendue dans le pied de page (Footer). */}
+    </>
   )
 }

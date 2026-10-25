@@ -1,434 +1,520 @@
-import { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
-import { useTranslation } from "react-i18next"
-import { products, productUrl } from "../data"
-import { loadRemoteCollection } from "../lib/contentStore"
+import { useEffect, useMemo, useRef, useState } from "react"
+import { Link, useLocation } from "react-router-dom"
+import { categories, products, productUrl } from "../data"
 import { ml } from "../lib/ml"
-import { tx } from "../lib/langText"
+import { useP } from "../content/lang"
+import { support, wilayas } from "../content/support"
+import { useSiteSettings } from "../context/SiteSettingsContext"
+import { submitSupportRequest, type SupportRequest } from "../lib/forms"
 import Reveal from "../components/Reveal"
+import Icon from "../components/Icon"
 
-const compatibleProducts = products.filter((p) => p.connectivity)
+const eyebrow = "text-xs font-semibold uppercase tracking-[0.18em] text-[#0077b3]"
+const h2 = "text-4xl font-semibold leading-[1.05] tracking-tight text-[#1d1d1f] lg:text-[40px]"
+const btnPrimary =
+  "group inline-flex min-h-12 items-center gap-2 rounded-full bg-[var(--color-accent)] px-7 text-[15px] font-semibold text-white transition-colors hover:bg-[#00628f] active:scale-[0.98] disabled:opacity-60"
+const field =
+  "min-h-12 w-full rounded-[14px] border border-[#86868b] bg-white px-4 text-[15px] text-[#1d1d1f] outline-none transition-colors placeholder:text-[#707070] focus:border-[var(--color-accent)]"
 
-export type SupportPageFeature = { title?: string; desc?: string }
-export type SupportPageData = {
-  supHeroEyebrow?: string
-  supHeroTitle?: string
-  supHeroDesc?: string
-  supHeroCta1?: string
-  supHeroCta2?: string
-  supHeroImage?: string
-  supBadgeTitle?: string
-  supBadgeSubtitle?: string
-  supChartLabel?: string
-  supChartValue?: string
-  supStep1Title?: string
-  supStep1Desc?: string
-  supStep2Title?: string
-  supStep2Desc?: string
-  supStep3Title?: string
-  supStep3Desc?: string
-  supFeatSubtitle?: string
-  supFeatTitle?: string
-  supFeatDesc?: string
-  supFeatures?: SupportPageFeature[]
-  supCompatEyebrow?: string
-  supCompatTitle?: string
-  supTestiQuote?: string
-  supTestiAuthor?: string
-  supTestiCity?: string
-  supAppSubtitle?: string
-  supAppTitle?: string
-  supAppDesc?: string
-  supAppSecure?: string
-  is_active?: boolean
-}
-const defaultSupportPage: SupportPageData = {}
-function normalizeSupportPage(raw: unknown): SupportPageData {
-  if (!Array.isArray(raw) || raw.length === 0) return defaultSupportPage
-  const first = (raw as SupportPageData[]).find((c) => c && typeof c === "object" && c.is_active !== false)
-  return first ?? defaultSupportPage
-}
+const norm = (v: string) => v.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").trim()
 
-function ArrowIcon({ className = "w-4 h-4" }: { className?: string }) {
+/* ───────── Mon appareil AUREX : recherche par nom ou référence ───────── */
+function MyAppliance() {
+  const { p } = useP()
+  const c = support.myAppliance
+  const [query, setQuery] = useState("")
+  const [submitted, setSubmitted] = useState("")
+
+  const results = useMemo(() => {
+    const q = norm(submitted)
+    if (!q) return []
+    return products
+      .filter((x) => norm(ml(x.name)).includes(q) || norm(String(x.reference ?? "")).includes(q))
+      .slice(0, 6)
+  }, [submitted])
+
   return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-    </svg>
+    <section id="mon-appareil" className="scroll-mt-24 bg-[#f5f5f7] py-20 lg:py-[90px]" aria-labelledby="myapp-title">
+      <div className="mx-auto max-w-4xl px-6 text-center">
+        <Reveal>
+          <p className={eyebrow}>{p(c.title)}</p>
+          <h2 id="myapp-title" className={`mt-3 ${h2}`} style={{ fontFamily: "var(--font-display)" }}>
+            {p(c.headline)}
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-[17px] text-[#474747]">{p(c.intro)}</p>
+          <p className="mx-auto mt-2 max-w-2xl text-[15px] text-[#5a5a5e]">{p(c.text)}</p>
+          <form
+            role="search"
+            className="mx-auto mt-8 flex max-w-2xl flex-col gap-3 sm:flex-row"
+            onSubmit={(e) => {
+              e.preventDefault()
+              setSubmitted(query)
+            }}
+          >
+            <label htmlFor="myapp-q" className="sr-only">
+              {p(c.placeholder)}
+            </label>
+            <input
+              id="myapp-q"
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={p(c.placeholder)}
+              className={`${field} rounded-full px-6`}
+            />
+            <button type="submit" className={btnPrimary}>
+              <Icon name="search" className="h-4 w-4" strokeWidth={2} />
+              {p(c.cta)}
+            </button>
+          </form>
+        </Reveal>
+
+        <div className="mt-8 text-start" aria-live="polite">
+          {submitted && results.length === 0 && (
+            <p className="rounded-[20px] bg-white p-6 text-center text-[15px] text-[#474747]">{p(c.noResult)}</p>
+          )}
+          {results.length > 0 && (
+            <ul className="grid gap-4 sm:grid-cols-2">
+              {results.map((x) => (
+                <li key={x.id}>
+                  <Link
+                    to={productUrl(x)}
+                    className="flex items-center gap-4 rounded-[20px] bg-white p-4 transition-colors hover:bg-[#fafafc]"
+                  >
+                    <img loading="lazy" decoding="async" src={x.image} alt="" width={80} height={80} className="h-20 w-20 shrink-0 rounded-[14px] object-cover" />
+                    <span className="min-w-0">
+                      <span className="block truncate text-[15px] font-semibold text-[#1d1d1f]">{ml(x.name)}</span>
+                      <span className="block font-mono text-xs text-[#5a5a5e]">{x.reference}</span>
+                      <span className="mt-1 inline-flex items-center gap-1 text-sm font-semibold text-[#0077b3]">
+                        {p(c.openDocs)}
+                        <Icon name="arrow" className="h-3.5 w-3.5 rtl:-scale-x-100" strokeWidth={2} />
+                      </span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+    </section>
   )
 }
 
-export default function SmartHomePage() {
-  const { t } = useTranslation()
-  const [sup, setSup] = useState<SupportPageData>(() => {
-    try {
-      const raw = localStorage.getItem("aurex-data-supportPage")
-      if (raw) return normalizeSupportPage(JSON.parse(raw))
-    } catch {
-      // ignore
-    }
-    return defaultSupportPage
-  })
-
-  useEffect(() => {
-    void loadRemoteCollection<SupportPageData>("supportPage").then((remote) => {
-      if (remote && Array.isArray(remote) && remote.length > 0) {
-        const normalized = normalizeSupportPage(remote)
-        setSup(normalized)
-        localStorage.setItem("aurex-data-supportPage", JSON.stringify([normalized]))
-      }
-    }).catch(() => {})
-  }, [])
-
-  const tFeatures = t("smartHome.features.items", {
-    returnObjects: true,
-  }) as Array<{ title: string; desc: string }>
-  const features = sup.supFeatures && sup.supFeatures.length > 0
-    ? sup.supFeatures.map((f, i) => ({
-        title: tx(f.title, tFeatures[i]?.title || ""),
-        desc: tx(f.desc, tFeatures[i]?.desc || ""),
-      }))
-    : tFeatures
-
-  const featureIcons = ["📱", "🎙️", "⚡", "📊", "🔔", "🛡️"]
+/* ───────── Trouver ma notice : par catégorie ou référence ───────── */
+function Manuals() {
+  const { p } = useP()
+  const m = support.manuals
+  const [cat, setCat] = useState("")
+  const [q, setQ] = useState("")
+  const list = useMemo(() => {
+    const nq = norm(q)
+    return products
+      .filter((x) => (!cat || x.category === cat) && (!nq || norm(ml(x.name)).includes(nq) || norm(String(x.reference ?? "")).includes(nq)))
+      .slice(0, 8)
+  }, [cat, q])
 
   return (
-    <div className="min-h-screen bg-[#f5f5f7] pt-24">
-      {/* ═══════════ HERO ═══════════ */}
-      <section className="relative bg-[#1d1d1f] overflow-hidden py-24 lg:py-32">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-[#0077b3] blur-3xl -translate-y-1/2 translate-x-1/3" />
-          <div className="absolute bottom-0 left-0 w-96 h-96 rounded-full bg-[#0077b3] blur-2xl translate-y-1/2 -translate-x-1/4" />
-        </div>
-        {/* Grille décorative */}
-        <div
-          className="absolute inset-0 opacity-[0.05]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px)",
-            backgroundSize: "64px 64px",
-          }}
-        />
-        <div className="relative max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <div className="inline-flex items-center gap-2.5 bg-[#0077b3]/20 border border-[#0077b3]/30 rounded-full px-4 py-2 mb-8 shadow-lg backdrop-blur-sm">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#0077b3] animate-pulse-dot" />
-              <span
-                className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#4d8dff]"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                {sup.supHeroEyebrow || "AUREX SmartConnect"}
-              </span>
-            </div>
-            <h1
-              className="text-5xl lg:text-[80px] font-semibold text-white leading-[1.05] tracking-tight lg:tracking-[-1.2px]"
-              style={{ fontFamily: "var(--font-display)", whiteSpace: "pre-line" }}
-            >
-              {tx(sup.supHeroTitle, t("smartHome.hero.title"))}
-            </h1>
-            <p
-              className="text-blue-100/80 text-base leading-relaxed mt-6 max-w-lg"
-              style={{ fontFamily: "var(--font-sans)" }}
-            >
-              {tx(sup.supHeroDesc, t("smartHome.hero.desc"))}
-            </p>
-            <div className="flex flex-wrap gap-3 mt-8">
-              <a
-                href="#app"
-                className="group inline-flex items-center gap-2 bg-[#0077b3] hover:bg-[#00628f] text-white font-semibold px-7 py-4 rounded-full transition-colors text-sm font-sans"
-              >
-                {tx(sup.supHeroCta1, t("smartHome.hero.downloadApp"))}
-                <ArrowIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </a>
-              <Link
-                to="/produits"
-                className="inline-flex items-center gap-2 text-white/80 border border-white/30 font-medium px-7 py-4 rounded-full hover:bg-white/10 hover:border-white/60 transition-colors text-sm font-sans backdrop-blur-sm"
-              >
-                {tx(sup.supHeroCta2, t("smartHome.hero.compatibleProducts"))}
-              </Link>
-            </div>
-          </div>
-
-          <div className="relative">
-            <div className="absolute -inset-3 rounded-[28px] bg-gradient-to-br from-[#0077b3]/40 to-transparent blur-xl" />
-            <img fetchPriority="high" decoding="async"
-              src={sup.supHeroImage || "https://images.unsplash.com/photo-1558002038-1055907df827?w=700&h=800&fit=crop&auto=format"}
-              alt="Support AUREX"
-              className="relative w-full rounded-[28px] shadow-2xl object-cover animate-float"
-            />
-            {/* Carte machine terminée */}
-            <div className="absolute -left-6 top-1/4 bg-white rounded-[28px] p-4 shadow-2xl flex items-center gap-3 animate-float" style={{ animationDelay: "1.2s" }}>
-              <div className="w-10 h-10 bg-green-50 rounded-[10px] flex items-center justify-center">
-                <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-[#1d1d1f] font-sans">{tx(sup.supBadgeTitle, t("smartHome.hero.washerDone"))}</p>
-                <p className="text-xs text-green-600 font-sans">{tx(sup.supBadgeSubtitle, t("smartHome.hero.cycle60"))}</p>
-              </div>
-            </div>
-            {/* Carte consommation */}
-            <div className="absolute -right-4 bottom-1/4 bg-white rounded-[28px] p-4 shadow-2xl animate-float" style={{ animationDelay: "2.4s" }}>
-              <p className="text-xs text-[#474747] font-sans mb-2">{tx(sup.supChartLabel, t("smartHome.hero.todayConsumption"))}</p>
-              <div className="flex items-end gap-1">
-                {[30, 55, 40, 70, 45, 85, 60].map((h, i) => (
-                  <div
-                    key={i}
-                    className="w-3 rounded-t transition-all duration-300 hover:opacity-80"
-                    style={{
-                      height: `${h * 0.4}px`,
-                      background: i === 5 ? "#0077b3" : "#E2E8F0",
-                    }}
-                  />
-                ))}
-              </div>
-              <p className="text-xs font-bold text-[#1d1d1f] mt-2 font-display">{tx(sup.supChartValue, t("smartHome.hero.kwh"))}</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════ 3 ÉTAPES ═══════════ */}
-      <section className="py-16 bg-white border-b border-[#E8EDF4]">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            { step: "01", icon: "📲", title: tx(sup.supStep1Title, t("smartHome.app.subtitle")) && t("smartHome.steps.scan", { defaultValue: "Scannez le QR code" }), desc: tx(sup.supStep1Desc, t("smartHome.steps.scanDesc", { defaultValue: "Sur votre appareil AUREX, scannez pour connecter en 30 secondes" })) },
-            { step: "02", icon: "🔗", title: tx(sup.supStep2Title, t("smartHome.steps.connect", { defaultValue: "Connectez votre Wi-Fi" })), desc: tx(sup.supStep2Desc, t("smartHome.steps.connectDesc", { defaultValue: "Vos appareils rejoignent votre foyer numérique automatiquement" })) },
-            { step: "03", icon: "🎛️", title: tx(sup.supStep3Title, t("smartHome.steps.control", { defaultValue: "Pilotez tout" })), desc: tx(sup.supStep3Desc, t("smartHome.steps.controlDesc", { defaultValue: "Programmes, automatisations et suivi énergie depuis l'app" })) },
-          ].map((s) => (
-            <div key={s.step} className="flex items-start gap-5 group">
-              <div className="relative flex-shrink-0">
-                <div className="w-14 h-14 rounded-[28px] bg-[#f5f5f7] flex items-center justify-center text-2xl group-hover:bg-[#0077b3] group-hover:scale-110 transition-all duration-300 shadow-sm">
-                  {s.icon}
-                </div>
-                <span className="absolute -top-2 -right-2 text-[10px] font-bold text-[#0077b3] bg-white border border-[#d6d6d6] rounded-full px-1.5 py-0.5 shadow-sm">
-                  {s.step}
-                </span>
-              </div>
-              <div>
-                <h3 className="text-sm font-bold text-[#1d1d1f] font-display">{s.title}</h3>
-                <p className="text-xs text-[#474747] mt-1 leading-relaxed font-sans">{s.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ═══════════ FEATURES ═══════════ */}
-      <section className="py-24 max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <span
-            className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0077b3]"
-            style={{ fontFamily: "var(--font-display)" }}
-          >
-            {tx(sup.supFeatSubtitle, t("smartHome.features.subtitle"))}
-          </span>
-          <h2
-            className="text-4xl font-bold text-[#1d1d1f] mt-3"
-            style={{ fontFamily: "var(--font-display)" }}
-          >
-            {tx(sup.supFeatTitle, t("smartHome.features.title"))}
+    <section id="notices" className="scroll-mt-24 bg-white py-20 lg:py-[90px]" aria-labelledby="manuals-title">
+      <div className="mx-auto max-w-7xl px-6">
+        <Reveal>
+          <h2 id="manuals-title" className={h2} style={{ fontFamily: "var(--font-display)" }}>
+            {p(m.title)}
           </h2>
-          <p className="text-[#474747] mt-4 max-w-xl mx-auto font-sans text-sm leading-relaxed">
-            {tx(sup.supFeatDesc, t("smartHome.features.desc"))}
-          </p>
+          <p className="mt-3 max-w-2xl text-[17px] text-[#474747]">{p(m.text)}</p>
+        </Reveal>
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <label className="sr-only" htmlFor="man-cat">
+            {p(m.allCategories)}
+          </label>
+          <select id="man-cat" value={cat} onChange={(e) => setCat(e.target.value)} className={`${field} sm:max-w-xs`}>
+            <option value="">{p(m.allCategories)}</option>
+            {categories.map((c) => (
+              <option key={c.slug} value={c.slug}>
+                {ml(c.label)}
+              </option>
+            ))}
+          </select>
+          <label className="sr-only" htmlFor="man-q">
+            {p(support.myAppliance.placeholder)}
+          </label>
+          <input id="man-q" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={p(support.myAppliance.placeholder)} className={field} />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map((feat, idx) => (
-            <Reveal key={idx} delay={Math.min(idx, 5) * 60} className="h-full">
-            <div
-              className="group bg-white rounded-[28px] p-7 border border-[#d6d6d6] hover:shadow-xl hover:shadow-[#0077b3]/10 hover:border-[#0077b3]/40 hover:-translate-y-1.5 transition-all duration-300 relative overflow-hidden h-full"
-            >
-              <div className="absolute top-0 right-0 w-20 h-20 rounded-full bg-[#0077b3]/5 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="relative">
-                <span className="inline-flex w-12 h-12 items-center justify-center rounded-[10px] bg-[#f5f5f7] text-2xl group-hover:bg-[#0077b3] group-hover:scale-110 transition-all duration-300 shadow-sm">
-                  {featureIcons[idx]}
+        <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {list.map((x) => (
+            <li key={x.id}>
+              <Link to={productUrl(x)} className="block rounded-[20px] bg-[#f5f5f7] p-5 transition-colors hover:bg-[#ececf0]">
+                <span className="block text-[15px] font-semibold text-[#1d1d1f]">{ml(x.name)}</span>
+                <span className="mt-1 block font-mono text-xs text-[#5a5a5e]">{x.reference}</span>
+                <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-[#0077b3]">
+                  {p(m.open)}
+                  <Icon name="arrow" className="h-3.5 w-3.5 rtl:-scale-x-100" strokeWidth={2} />
                 </span>
-                <h3
-                  className="text-base font-bold text-[#1d1d1f] mt-4 mb-2 group-hover:text-[#0077b3] transition-colors"
-                  style={{ fontFamily: "var(--font-display)" }}
-                >
-                  {feat.title}
-                </h3>
-                <p className="text-sm text-[#474747] leading-relaxed font-sans">{feat.desc}</p>
-              </div>
-            </div>
-            </Reveal>
+              </Link>
+            </li>
           ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+/* ───────── Request Support ───────── */
+function RequestForm({ presetType }: { presetType: string }) {
+  const { p, lang } = useP()
+  const f = support.form
+  const [type, setType] = useState(presetType || "maintenance")
+  const [state, setState] = useState<"idle" | "sending" | "invalid" | "error" | "done">("idle")
+  const [result, setResult] = useState<{ reference?: string; mode?: string }>({})
+  const fileRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (presetType) setType(presetType)
+  }, [presetType])
+
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const data = new FormData(event.currentTarget)
+    const get = (k: string) => String(data.get(k) ?? "").trim()
+    if (!get("full_name") || !get("phone") || !get("message")) {
+      setState("invalid")
+      return
+    }
+    setState("sending")
+    const req: SupportRequest = {
+      full_name: get("full_name"),
+      phone: get("phone"),
+      wilaya: get("wilaya"),
+      commune: get("commune"),
+      device_class: get("device_class"),
+      device_reference: get("device_reference"),
+      request_type: type as SupportRequest["request_type"],
+      message: get("message"),
+      lang,
+    }
+    const file = fileRef.current?.files?.[0] ?? null
+    const res = await submitSupportRequest(req, file)
+    if (res.ok) {
+      setResult({ reference: res.reference, mode: res.mode })
+      setState("done")
+    } else setState("error")
+  }
+
+  return (
+    <section id="demande" className="scroll-mt-24 bg-[#f5f5f7] py-20 lg:py-[90px]" aria-labelledby="form-title">
+      <div className="mx-auto max-w-3xl px-6">
+        <Reveal>
+          <h2 id="form-title" className={h2} style={{ fontFamily: "var(--font-display)" }}>
+            {p(f.title)}
+          </h2>
+          <p className="mt-3 text-[17px] text-[#474747]">{p(f.text)}</p>
+        </Reveal>
+
+        {state === "done" ? (
+          <div role="status" className="mt-8 rounded-[28px] bg-white p-8">
+            <p className="text-2xl font-semibold text-[#1d1d1f]" style={{ fontFamily: "var(--font-display)" }}>
+              {p(f.successTitle)}
+            </p>
+            <p className="mt-4 text-sm font-semibold text-[#5a5a5e]">{p(f.referenceLabel)}</p>
+            <p className="font-mono text-2xl font-semibold text-[#0077b3]">{result.reference}</p>
+            <p className="mt-4 text-[15px] leading-relaxed text-[#474747]">{p(f.nextStep)}</p>
+            {result.mode === "local" && <p className="mt-3 text-xs text-[#5a5a5e]">{p(f.localNote)}</p>}
+          </div>
+        ) : (
+          <form onSubmit={onSubmit} noValidate className="mt-8 grid gap-5 rounded-[28px] bg-white p-6 sm:grid-cols-2 sm:p-8">
+            <label className="block sm:col-span-2">
+              <span className="mb-1.5 block text-sm font-semibold text-[#333336]">{p(f.fields.name)} *</span>
+              <input name="full_name" required autoComplete="name" className={field} />
+            </label>
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-semibold text-[#333336]">{p(f.fields.phone)} *</span>
+              <input name="phone" type="tel" required autoComplete="tel" inputMode="tel" className={field} />
+            </label>
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-semibold text-[#333336]">{p(f.fields.type)} *</span>
+              <select value={type} onChange={(e) => setType(e.target.value)} className={field}>
+                {f.types.map((t) => (
+                  <option key={t.value} value={t.value}>
+                    {p(t.label)}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-semibold text-[#333336]">{p(f.fields.wilaya)}</span>
+              <select name="wilaya" defaultValue="" className={field}>
+                <option value="">{p(f.select)}</option>
+                {wilayas.map((w, i) => (
+                  <option key={w} value={w}>
+                    {String(i + 1).padStart(2, "0")} — {w}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-semibold text-[#333336]">{p(f.fields.commune)}</span>
+              <input name="commune" className={field} />
+            </label>
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-semibold text-[#333336]">{p(f.fields.deviceClass)}</span>
+              <select name="device_class" defaultValue="" className={field}>
+                <option value="">{p(f.select)}</option>
+                {categories.map((c) => (
+                  <option key={c.slug} value={ml(c.label)}>
+                    {ml(c.label)}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-semibold text-[#333336]">{p(f.fields.reference)}</span>
+              <input name="device_reference" className={field} />
+            </label>
+            <label className="block sm:col-span-2">
+              <span className="mb-1.5 block text-sm font-semibold text-[#333336]">{p(f.fields.message)} *</span>
+              <textarea name="message" required rows={5} className={`${field} py-3`} />
+            </label>
+            <label className="block sm:col-span-2">
+              <span className="mb-1.5 block text-sm font-semibold text-[#333336]">{p(f.fields.file)}</span>
+              <input ref={fileRef} type="file" accept="image/*,video/*" className="block w-full text-sm text-[#474747] file:me-4 file:rounded-full file:border-0 file:bg-[#f5f5f7] file:px-5 file:py-3 file:text-sm file:font-semibold file:text-[#1d1d1f]" />
+            </label>
+            {(state === "invalid" || state === "error") && (
+              <p role="alert" className="text-sm text-[#b64400] sm:col-span-2">
+                {state === "invalid" ? p(f.required) : p(f.error)}
+              </p>
+            )}
+            <div className="sm:col-span-2">
+              <button type="submit" disabled={state === "sending"} className={btnPrimary}>
+                {state === "sending" ? p(f.sending) : p(f.submit)}
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
+    </section>
+  )
+}
+
+/* ───────── Contact : uniquement les moyens réellement disponibles ───────── */
+function ContactChannels() {
+  const { p } = useP()
+  const { settings } = useSiteSettings()
+  const c = support.contact
+  const real = (v?: string | null) => (v && !/x{2}/i.test(v) ? v : "")
+  const rows = [
+    { label: c.phone, value: real(settings.contactPhone), href: real(settings.contactPhone) ? `tel:${real(settings.contactPhone).replace(/\s/g, "")}` : "" },
+    { label: c.email, value: real(settings.contactEmail), href: real(settings.contactEmail) ? `mailto:${real(settings.contactEmail)}` : "" },
+    { label: c.address, value: real(settings.contactAddress), href: "" },
+  ].filter((r) => r.value)
+
+  return (
+    <section id="contact" className="scroll-mt-24 bg-white py-20 lg:py-[90px]" aria-labelledby="contact-title">
+      <div className="mx-auto max-w-7xl px-6">
+        <h2 id="contact-title" className={h2} style={{ fontFamily: "var(--font-display)" }}>
+          {p(c.title)}
+        </h2>
+        <p className="mt-3 text-[17px] text-[#474747]">{p(c.text)}</p>
+        {rows.length > 0 ? (
+          <dl className="mt-8 grid gap-4 sm:grid-cols-3">
+            {rows.map((r) => (
+              <div key={r.value} className="rounded-[20px] bg-[#f5f5f7] p-6">
+                <dt className="text-xs font-semibold uppercase tracking-[0.12em] text-[#5a5a5e]">{p(r.label)}</dt>
+                <dd className="mt-2 text-[17px] font-semibold text-[#1d1d1f]">
+                  {r.href ? (
+                    <a href={r.href} className="hover:text-[#0077b3]">
+                      {r.value}
+                    </a>
+                  ) : (
+                    r.value
+                  )}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        ) : (
+          <p className="mt-6 rounded-[20px] bg-[#f5f5f7] p-6 text-[15px] text-[#474747]">{p(c.none)}</p>
+        )}
+      </div>
+    </section>
+  )
+}
+
+function Faq() {
+  const { p } = useP()
+  const [open, setOpen] = useState<number | null>(0)
+  return (
+    <section id="faq" className="scroll-mt-24 bg-[#f5f5f7] py-20 lg:py-[90px]" aria-labelledby="faq-title">
+      <div className="mx-auto max-w-3xl px-6">
+        <h2 id="faq-title" className={h2} style={{ fontFamily: "var(--font-display)" }}>
+          {p(support.faq.title)}
+        </h2>
+        <div className="mt-8 divide-y divide-[#d6d6d6] rounded-[28px] bg-white px-6">
+          {support.faq.items.map((item, i) => (
+            <div key={i}>
+              <h3>
+                <button
+                  type="button"
+                  aria-expanded={open === i}
+                  onClick={() => setOpen(open === i ? null : i)}
+                  className="flex min-h-14 w-full items-center justify-between gap-4 py-4 text-start text-[17px] font-semibold text-[#1d1d1f]"
+                >
+                  {p(item.q)}
+                  <Icon name={open === i ? "close" : "sparkle"} className="h-4 w-4 shrink-0 text-[#0077b3]" strokeWidth={2} />
+                </button>
+              </h3>
+              {open === i && <p className="pb-5 text-[15px] leading-relaxed text-[#474747]">{p(item.a)}</p>}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+export default function SupportPage() {
+  const { p } = useP()
+  const { hash } = useLocation()
+  const [presetType, setPresetType] = useState("")
+
+  // Ancres internes (#notices, #faq, #pieces, #contact…) : défilement après rendu.
+  useEffect(() => {
+    if (!hash) return
+    const id = hash.slice(1)
+    const target = id === "pieces" || id === "sav" ? "demande" : id === "centres" ? "centres" : id
+    const timer = window.setTimeout(() => document.getElementById(target)?.scrollIntoView({ behavior: "smooth", block: "start" }), 80)
+    if (id === "pieces") setPresetType("spare-parts")
+    return () => window.clearTimeout(timer)
+  }, [hash])
+
+  return (
+    <div>
+      {/* Hero */}
+      <section className="relative isolate overflow-hidden bg-[#1d1d1f] pb-20 pt-36 lg:pb-28 lg:pt-44">
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(60%_80%_at_85%_10%,rgba(0,119,179,0.45),transparent_70%)]" />
+        <div className="mx-auto max-w-7xl px-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#4db3e6]">{p(support.hero.eyebrow)}</p>
+          <h1 className="mt-4 text-5xl font-semibold leading-[1.05] tracking-tight text-white lg:text-[80px] lg:tracking-[-1.2px]" style={{ fontFamily: "var(--font-display)" }}>
+            {p(support.hero.title)}
+          </h1>
+          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/85">{p(support.hero.text)}</p>
+          <div className="mt-9 flex flex-wrap gap-3">
+            <a href="#demande" className={btnPrimary}>
+              {p(support.hero.cta1)}
+              <Icon name="arrow" className="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1" strokeWidth={2} />
+            </a>
+            <a href="#garantie" className="inline-flex min-h-12 items-center rounded-full border border-white/60 px-7 text-[15px] font-semibold text-white transition-colors hover:bg-white/10 active:scale-[0.98]">
+              {p(support.hero.cta2)}
+            </a>
+          </div>
         </div>
       </section>
 
-      {/* ═══════════ PRODUITS COMPATIBLES ═══════════ */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-end justify-between mb-12">
-            <div>
-              <span
-                className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0077b3]"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                {sup.supCompatEyebrow || "SmartConnect"}
-              </span>
-              <h2
-                className="text-4xl font-bold text-[#1d1d1f] mt-2"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                {tx(sup.supCompatTitle, t("smartHome.compatible.title"))}
-              </h2>
-            </div>
-            <Link
-              to="/produits"
-              className="group text-sm text-[#0077b3] font-medium font-sans hidden md:flex items-center gap-1.5 hover:text-[#1d1d1f] transition-colors"
-            >
-              {t("smartHome.compatible.seeAll")}
-              <ArrowIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {compatibleProducts.map((p) => (
-              <Link
-                key={p.id}
-                to={productUrl(p)}
-                className="group flex gap-4 bg-white border border-[#d6d6d6] rounded-[28px] p-4 hover:shadow-xl hover:shadow-[#1d1d1f]/10 hover:border-[#0077b3]/40 hover:-translate-y-1 transition-all duration-300"
-              >
-                <div className="relative w-20 h-20 bg-[#f5f5f7] rounded-[10px] overflow-hidden flex-shrink-0">
-                  <img loading="lazy" decoding="async"
-                    src={p.image}
-                    alt={ml(p.name)}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <span className="absolute bottom-0.5 right-0.5 w-3 h-3 rounded-full bg-green-400 border-2 border-white" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-[10px] text-[#5a5a5e] font-mono tracking-widest uppercase">
-                    {p.reference}
-                  </p>
-                  <h3 className="text-sm font-semibold text-[#1d1d1f] mt-1 group-hover:text-[#1d1d1f] transition-colors font-sans line-clamp-2">
-                    {ml(p.name)}
+      {/* Warranty & Peace of Mind */}
+      <section id="garantie" className="scroll-mt-24 bg-white py-20 lg:py-[90px]" aria-labelledby="warranty-title">
+        <div className="mx-auto max-w-7xl px-6">
+          <Reveal>
+            <h2 id="warranty-title" className={h2} style={{ fontFamily: "var(--font-display)" }}>
+              {p(support.warranty.title)}
+            </h2>
+          </Reveal>
+          <div className="mt-10 grid gap-5 md:grid-cols-3">
+            {support.warranty.items.map((item, i) => (
+              <Reveal key={item.icon} delay={i * 90} className="h-full">
+                <div className="h-full rounded-[28px] bg-[#f5f5f7] p-8">
+                  <span className="text-[#0077b3]">
+                    <Icon name={item.icon} className="h-9 w-9" />
+                  </span>
+                  <h3 className="mt-6 text-[21px] font-semibold leading-snug text-[#1d1d1f]" style={{ fontFamily: "var(--font-display)" }}>
+                    {p(item.title)}
                   </h3>
-                  <div className="flex items-center gap-1.5 mt-2 bg-[#0077b3]/10 rounded-full px-2.5 py-1 w-fit">
-                    <svg
-                      className="w-3 h-3 text-[#0077b3]"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"
-                      />
-                    </svg>
-                    <span className="text-[10px] text-[#0077b3] font-semibold font-sans">
-                      {t("common.smartConnect")}
-                    </span>
-                  </div>
+                  <p className="mt-3 text-[15px] leading-relaxed text-[#474747]">{p(item.text)}</p>
                 </div>
-              </Link>
+              </Reveal>
+            ))}
+          </div>
+          <Reveal delay={150}>
+            <div className="mt-8 rounded-[28px] border border-[#d6d6d6] p-8">
+              <h3 className="text-[19px] font-semibold text-[#1d1d1f]" style={{ fontFamily: "var(--font-display)" }}>
+                {p(support.warranty.detailsTitle)}
+              </h3>
+              <p className="mt-2 max-w-3xl text-[15px] leading-relaxed text-[#474747]">{p(support.warranty.detailsText)}</p>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* How can we help you? */}
+      <section id="sav" className="scroll-mt-24 bg-[#f5f5f7] py-20 lg:py-[90px]" aria-labelledby="help-title">
+        <div className="mx-auto max-w-7xl px-6">
+          <Reveal>
+            <p className={eyebrow}>{p(support.help.eyebrow)}</p>
+            <h2 id="help-title" className={`mt-3 ${h2}`} style={{ fontFamily: "var(--font-display)" }}>
+              {p(support.help.title)}
+            </h2>
+            <p className="mt-3 text-[17px] text-[#474747]">{p(support.help.text)}</p>
+          </Reveal>
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {support.help.cards.map((card, i) => (
+              <Reveal key={card.num} delay={Math.min(i, 5) * 70} className="h-full">
+                <a
+                  href={card.href}
+                  onClick={() => card.requestType && setPresetType(card.requestType)}
+                  className="group flex h-full flex-col rounded-[28px] bg-white p-7 transition-colors hover:bg-[#fafafc]"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-[#0077b3]">
+                      <Icon name={card.icon} className="h-7 w-7" />
+                    </span>
+                    <span className="text-xs font-semibold text-[#5a5a5e]">{card.num}</span>
+                  </div>
+                  <h3 className="mt-6 text-[19px] font-semibold leading-snug text-[#1d1d1f]" style={{ fontFamily: "var(--font-display)" }}>
+                    {p(card.title)}
+                  </h3>
+                  <p className="mt-2 text-[15px] leading-relaxed text-[#474747]">{p(card.text)}</p>
+                  <span className="mt-auto inline-flex min-h-11 items-center gap-1.5 pt-5 text-[15px] font-semibold text-[#0077b3]">
+                    {p(card.cta)}
+                    <Icon name="arrow" className="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1" strokeWidth={2} />
+                  </span>
+                </a>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ═══════════ TÉMOIGNAGE ═══════════ */}
-      <section className="py-20 max-w-4xl mx-auto px-6">
-        <div className="relative bg-[#1d1d1f] rounded-[28px] p-10 lg:p-14 text-center overflow-hidden">
-          <div className="absolute top-0 left-0 text-8xl text-white/10 font-display select-none leading-none px-6">"</div>
-          <div className="relative">
-            <div className="flex justify-center gap-1 mb-5">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <svg key={i} className="w-5 h-5 text-amber-400 fill-amber-400" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.921-.755 1.688-1.539 1.118l-3.975-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118L2.075 10.1c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                </svg>
-              ))}
-            </div>
-            <blockquote
-              className="text-xl lg:text-2xl font-semibold text-white leading-relaxed font-sans"
-            >
-              {tx(sup.supTestiQuote, t("smartHome.testimonial.quote", {
-                defaultValue: "J'ai réduit ma facture d'énergie de 25% et je lance la lessive depuis le bureau. SmartConnect a vraiment changé mon quotidien.",
-              }))}
-            </blockquote>
-            <div className="mt-6 flex items-center justify-center gap-3">
-              <div className="w-11 h-11 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-lg font-bold text-white font-display">
-                A
-              </div>
-              <div className="text-left">
-                <p className="text-sm font-semibold text-white font-sans">
-                  {tx(sup.supTestiAuthor, t("smartHome.testimonial.author", { defaultValue: "Amine B." }))}
-                </p>
-                <p className="text-xs text-blue-200 font-sans">
-                  {tx(sup.supTestiCity, t("smartHome.testimonial.city", { defaultValue: "Alger — Client AUREX depuis 2024" }))}
-                </p>
-              </div>
-            </div>
+      <Manuals />
+      <MyAppliance />
+      <RequestForm presetType={presetType} />
+      <ContactChannels />
+      <Faq />
+
+      <section id="centres" className="scroll-mt-24 bg-white py-16">
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="text-[28px] font-semibold tracking-tight text-[#1d1d1f]" style={{ fontFamily: "var(--font-display)" }}>
+              {p(support.centres.title)}
+            </h2>
+            <p className="mt-2 text-[17px] text-[#474747]">{p(support.centres.text)}</p>
           </div>
+          <Link to="/distributeurs" className={btnPrimary}>
+            {p(support.centres.cta)}
+          </Link>
         </div>
       </section>
 
-      {/* ═══════════ APP CTA ═══════════ */}
-      <section id="app" className="py-24 bg-[#1d1d1f] relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full bg-[#0077b3] blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-64 h-64 rounded-full bg-[#0077b3] blur-2xl" />
-        </div>
-        <div
-          className="absolute inset-0 opacity-[0.05]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px)",
-            backgroundSize: "64px 64px",
-          }}
-        />
-        <div className="relative max-w-3xl mx-auto px-6 text-center">
-          <span
-            className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#4d8dff]"
-            style={{ fontFamily: "var(--font-display)" }}
-          >
-            {tx(sup.supAppSubtitle, t("smartHome.app.subtitle"))}
-          </span>
-          <h2
-            className="text-4xl font-bold text-white mt-3"
-            style={{ fontFamily: "var(--font-display)" }}
-          >
-            {tx(sup.supAppTitle, t("smartHome.app.title"))}
-          </h2>
-          <p className="text-blue-100/80 mt-4 text-sm leading-relaxed font-sans max-w-xl mx-auto">
-            {tx(sup.supAppDesc, t("smartHome.app.desc"))}
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 mt-10">
-            <a
-              href="#"
-              className="group flex items-center gap-3 bg-white text-[#1d1d1f] px-6 py-3 rounded-[28px] hover:bg-[#f5f5f7] hover:-translate-y-1 transition-all duration-300 shadow-xl"
-            >
-              <svg className="w-7 h-7" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.08ZM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25Z" />
-              </svg>
-              <div className="text-left">
-                <p className="text-[9px] text-[#474747] font-sans leading-none">Télécharger sur</p>
-                <p className="text-sm font-bold font-sans leading-tight">App Store</p>
-              </div>
+      {/* Section finale */}
+      <section className="bg-[#fafafc] py-24 text-center lg:py-[110px]" aria-labelledby="support-final">
+        <div className="mx-auto max-w-4xl px-6">
+          <Reveal>
+            <h2 id="support-final" className="text-5xl font-semibold leading-[1.05] tracking-tight text-[#1d1d1f] lg:text-[64px] lg:tracking-[-0.96px]" style={{ fontFamily: "var(--font-display)" }}>
+              {p(support.final.title)}
+            </h2>
+            <p className="mx-auto mt-6 max-w-2xl text-[17px] leading-relaxed text-[#474747]">{p(support.final.text)}</p>
+            <a href="#contact" className={`${btnPrimary} mt-9`}>
+              {p(support.final.cta)}
+              <Icon name="arrow" className="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1" strokeWidth={2} />
             </a>
-            <a
-              href="#"
-              className="group flex items-center gap-3 bg-white text-[#1d1d1f] px-6 py-3 rounded-[28px] hover:bg-[#f5f5f7] hover:-translate-y-1 transition-all duration-300 shadow-xl"
-            >
-              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M3.6 1.8 13.7 12 3.6 22.2c-.4-.2-.6-.6-.6-1.1V2.9c0-.5.2-.9.6-1.1Zm12.5 8.7 2.8-2.8L5.8 1.9l10.3 8.6Zm0 3-10.3 8.6 13.1-6.2-2.8-2.4Zm4.2-3.2c.8.4.8 1.7 0 2.1l-2.6 1.2-3-2.7 3-2.7 2.6 2.1Z" />
-              </svg>
-              <div className="text-left">
-                <p className="text-[9px] text-[#474747] font-sans leading-none">Disponible sur</p>
-                <p className="text-sm font-bold font-sans leading-tight">Google Play</p>
-              </div>
-            </a>
-          </div>
-          <p className="text-xs text-blue-200/60 mt-6 font-sans flex items-center justify-center gap-2">
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-            </svg>
-            {tx(sup.supAppSecure, t("smartHome.app.secure", { defaultValue: "Compatible iOS 14+ et Android 10+ — Connexion chiffrée" }))}
-          </p>
+          </Reveal>
         </div>
       </section>
     </div>

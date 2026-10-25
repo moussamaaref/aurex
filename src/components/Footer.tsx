@@ -1,9 +1,13 @@
 import { Link } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { useSiteSettings } from "../context/SiteSettingsContext"
+import { useP } from "../content/lang"
+import { footerContent } from "../content/footer"
+import NewsletterBlock from "./NewsletterBlock"
 
 export default function Footer() {
   const { t } = useTranslation()
+  const { p } = useP()
   const { settings } = useSiteSettings()
 
   const handleLogoError = (event: React.SyntheticEvent<HTMLImageElement>) => {
@@ -11,45 +15,15 @@ export default function Footer() {
     event.currentTarget.nextElementSibling?.removeAttribute("hidden")
   }
 
-  const footerLinks = {
-    [t("footer.links.Produits")]: [
-      { label: t("footer.links.lavage"), href: "/produits/lavage" },
-      {
-        label: t("footer.links.laveVaisselle"),
-        href: "/produits/lave-vaisselle",
-      },
-      {
-        label: t("footer.links.refrigerateurs"),
-        href: "/produits/refrigerateurs",
-      },
-      { label: t("footer.links.cuisson"), href: "/produits/cuisson" },
-      {
-        label: t("footer.links.traitementAir"),
-        href: "/produits/traitement-air",
-      },
-      {
-        label: t("footer.links.climatisation"),
-        href: "/produits/climatisation",
-      },
-    ],
-    [t("footer.links.Explorer")]: [
-      { label: t("header.smartHome"), href: "/smart-home" },
-      { label: t("footer.links.technologies"), href: "/technologies" },
-      { label: t("footer.links.comparateur"), href: "/comparateur" },
-      { label: t("footer.links.actualites"), href: "/actualites" },
-      { label: t("footer.links.aPropos"), href: "/a-propos" },
-    ],
-    [t("footer.links.Support")]: [
-      { label: t("footer.links.assistance"), href: "/support" },
-      { label: t("footer.links.noticesManuels"), href: "/support#notices" },
-      { label: t("footer.links.faq"), href: "/support#faq" },
-      { label: t("footer.links.piecesDetachees"), href: "/support#pieces" },
-      { label: t("footer.links.contactLink"), href: "/support#contact" },
-      { label: t("footer.links.centresService"), href: "/support#centres" },
-    ],
-  }
+  const footerLinks = [
+    { group: p(footerContent.groups.products), links: footerContent.productLinks.map((l) => ({ label: p(l.label), href: l.href })) },
+    { group: p(footerContent.groups.explore), links: footerContent.exploreLinks.map((l) => ({ label: p(l.label), href: l.href })) },
+    { group: p(footerContent.groups.support), links: footerContent.supportLinks.map((l) => ({ label: p(l.label), href: l.href })) },
+  ]
 
   return (
+    <>
+    <NewsletterBlock />
     <footer className="bg-[#f5f5f7] text-[#1d1d1f] border-t border-[#d6d6d6]">
       {/* Main footer */}
       <div className="max-w-7xl mx-auto px-6 pt-16 pb-12">
@@ -92,30 +66,6 @@ export default function Footer() {
               />
             </p>
 
-            {/* Newsletter */}
-            <div className="mt-6">
-              <p
-                className="text-xs font-semibold text-[#5a5a5e] uppercase tracking-widest mb-3"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                {t("footer.stayInformed")}
-              </p>
-              <div className="flex gap-2">
-                <input
-                  type="email"
-                  placeholder={t("footer.emailPlaceholder")}
-                  className="flex-1 bg-white border border-[#d6d6d6] rounded-[10px] px-3 py-2.5 text-sm text-[#1d1d1f] placeholder-gray-500 focus:outline-none focus:border-[var(--color-accent)] transition-colors"
-                  style={{ fontFamily: "var(--font-sans)" }}
-                />
-                <button
-                  className="bg-[var(--color-accent)] hover:bg-[#00628f] transition-colors text-white px-4 py-3 rounded-full text-sm font-medium whitespace-nowrap"
-                  style={{ fontFamily: "var(--font-sans)" }}
-                >
-                  {t("footer.subscribe")}
-                </button>
-              </div>
-            </div>
-
             {/* Social — connecté à site_settings.social_links */}
             <div className="mt-6 flex items-center gap-3">
               {(() => {
@@ -152,7 +102,7 @@ export default function Footer() {
           </div>
 
           {/* Links */}
-          {Object.entries(footerLinks).map(([group, links]) => (
+          {footerLinks.map(({ group, links }) => (
             <div key={group}>
               <h4
                 className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#5a5a5e] mb-4"
@@ -242,7 +192,7 @@ export default function Footer() {
               label: t("footer.contact.address"),
               value: settings.contactAddress || t("footer.contact.city"),
             },
-          ].map((info) => (
+          ].filter((info) => !/x{2}/i.test(String(info.value))).map((info) => (
             <div key={info.label} className="flex items-start gap-3">
               <div className="w-7 h-7 rounded-[10px] bg-white border border-[#d6d6d6] flex items-center justify-center text-[#0077b3] flex-shrink-0 mt-0.5">
                 {info.icon}
@@ -295,5 +245,6 @@ export default function Footer() {
         </div>
       </div>
     </footer>
+    </>
   )
 }

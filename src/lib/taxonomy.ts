@@ -84,21 +84,26 @@ const L = (fr: string): Localized => ({ fr, ar: "", en: "" })
 /* ---------------- Données de référence (fallback si CMS vide) ---------------- */
 
 export const defaultFamilles: Famille[] = [
-  { slug: "lave-linge", categorySlug: "lavage", name: L("Lave-linge") },
-  { slug: "lave-vaisselle", categorySlug: "lave-vaisselle", name: L("Lave-vaisselle") },
-  { slug: "petrins", categorySlug: "petit-electromenager", name: L("Pétrins") },
-  { slug: "cafetieres", categorySlug: "petit-electromenager", name: L("Cafetières") },
-  { slug: "cumulus", categorySlug: "chauffe-eau", name: L("Cumulus") },
-  { slug: "chauffe-bain", categorySlug: "chauffe-eau", name: L("Chauffe-bain") },
-  { slug: "aspirateurs", categorySlug: "entretien-maison", name: L("Aspirateurs") },
-  { slug: "purificateurs-air", categorySlug: "entretien-maison", name: L("Purificateurs d'air") },
-  { slug: "fontaines-eau", categorySlug: "fontaines", name: L("Fontaines à eau") },
-  { slug: "fours", categorySlug: "cuisson", name: L("Fours") },
-  { slug: "hottes", categorySlug: "cuisson", name: L("Hottes aspirantes") },
-  { slug: "micro-ondes", categorySlug: "cuisson", name: L("Micro-ondes") },
-  { slug: "cuisinieres", categorySlug: "cuisson", name: L("Cuisinières") },
-  { slug: "refrigerateurs", categorySlug: "autres", name: L("Réfrigérateurs") },
-  { slug: "climatiseurs", categorySlug: "autres", name: L("Climatiseurs") },
+  { slug: "fours", categorySlug: "cuisine-encastrable", name: L("Fours encastrables") },
+  { slug: "plaques-cuisson", categorySlug: "cuisine-encastrable", name: L("Plaques de cuisson") },
+  { slug: "hottes", categorySlug: "cuisine-encastrable", name: L("Hottes aspirantes") },
+  { slug: "cuisinieres", categorySlug: "cuisine-encastrable", name: L("Cuisinières") },
+  { slug: "micro-ondes", categorySlug: "cuisine-encastrable", name: L("Micro-ondes") },
+  { slug: "fours-pose-libre", categorySlug: "cuisine-encastrable", name: L("Fours en pose libre") },
+  { slug: "lave-linge", categorySlug: "soin-linge-entretien", name: L("Lave-linge") },
+  { slug: "lave-vaisselle", categorySlug: "soin-linge-entretien", name: L("Lave-vaisselle") },
+  { slug: "defroisseurs-vapeur", categorySlug: "soin-linge-entretien", name: L("Défroisseurs vapeur") },
+  { slug: "aspirateurs", categorySlug: "soin-linge-entretien", name: L("Aspirateurs") },
+  { slug: "climatiseurs", categorySlug: "soin-linge-entretien", name: L("Climatiseurs") },
+  { slug: "purificateurs-air", categorySlug: "soin-linge-entretien", name: L("Purificateurs d'air") },
+  { slug: "fontaines-eau", categorySlug: "eau-confort", name: L("Distributeurs d'eau et fontaines") },
+  { slug: "cumulus", categorySlug: "eau-confort", name: L("Chauffe-eau (cumulus)") },
+  { slug: "chauffe-bain", categorySlug: "eau-confort", name: L("Chauffe-eau (chauffe-bain)") },
+  { slug: "petrins", categorySlug: "petit-electro-coffee", name: L("Robots pâtissiers / pétrins") },
+  { slug: "centrifugeuses", categorySlug: "petit-electro-coffee", name: L("Centrifugeuses") },
+  { slug: "cafetieres", categorySlug: "petit-electro-coffee", name: L("Machines à café") },
+  { slug: "refrigerateurs", categorySlug: "refrigeration-conservation", name: L("Réfrigérateurs") },
+  { slug: "congelateurs", categorySlug: "refrigeration-conservation", name: L("Congélateurs") },
 ]
 
 export const defaultSousFamilles: SousFamille[] = [
@@ -107,6 +112,13 @@ export const defaultSousFamilles: SousFamille[] = [
   { slug: "lave-vaisselle-encastrable", familleSlug: "lave-vaisselle", name: L("Encastrable") },
   { slug: "lave-vaisselle-pose-libre", familleSlug: "lave-vaisselle", name: L("Pose libre") },
   { slug: "petrins-planetaire", familleSlug: "petrins", name: L("Planétaire") },
+  { slug: "centrifugeuses-standard", familleSlug: "centrifugeuses", name: L("Centrifugeuse") },
+  { slug: "cafetieres-capsules", familleSlug: "cafetieres", name: L("Capsules") },
+  { slug: "defroisseurs-vertical", familleSlug: "defroisseurs-vapeur", name: L("Vertical") },
+  { slug: "congelateurs-coffre", familleSlug: "congelateurs", name: L("Coffre") },
+  { slug: "plaques-gaz", familleSlug: "plaques-cuisson", name: L("Gaz") },
+  { slug: "plaques-electriques", familleSlug: "plaques-cuisson", name: L("Électriques") },
+  { slug: "plaques-mixtes", familleSlug: "plaques-cuisson", name: L("Mixtes") },
   { slug: "cafetieres-filtre", familleSlug: "cafetieres", name: L("Filtre") },
   { slug: "cafetieres-expresso", familleSlug: "cafetieres", name: L("Expresso") },
   { slug: "cumulus-electrique", familleSlug: "cumulus", name: L("Électrique") },
@@ -149,6 +161,8 @@ export const defaultGammes: Gamme[] = [
   { slug: "estrela", sousFamilleSlug: "lave-vaisselle-encastrable", name: L("Estrela") },
   { slug: "estrela-s", sousFamilleSlug: "lave-vaisselle-encastrable", name: L("Estrela S") },
   { slug: "gustiva", sousFamilleSlug: "petrins-planetaire", name: L("Gustiva") },
+  { slug: "ephoria", sousFamilleSlug: "centrifugeuses-standard", name: L("Ephoria") },
+  { slug: "la-mattina", sousFamilleSlug: "cafetieres-capsules", name: L("La mattina") },
   { slug: "florenza", sousFamilleSlug: "cafetieres-expresso", name: L("Florenza") },
   { slug: "t-vox", sousFamilleSlug: "aspirateurs-sans-sac", name: L("T-Vox") },
   { slug: "eronex", sousFamilleSlug: "aspirateurs-sans-fil", name: L("Eronex") },
@@ -392,4 +406,37 @@ export function validateProductTaxonomy(p: Record<string, unknown>): string[] {
   if (!str(p.name)) errors.push("Nom obligatoire")
   if (!str(p.reference)) errors.push("Référence obligatoire")
   return errors
+}
+
+/* ---------------- Catégories officielles (website brief 2026) ----------------
+   5 catégories. Les anciens slugs (CMS / URLs historiques) sont ramenés
+   vers ces catégories par CATEGORY_ALIASES. */
+
+export const CATEGORY_SLUGS = {
+  cuisine: "cuisine-encastrable",
+  linge: "soin-linge-entretien",
+  eau: "eau-confort",
+  petit: "petit-electro-coffee",
+  froid: "refrigeration-conservation",
+} as const
+
+export const CATEGORY_ALIASES: Record<string, string> = {
+  cuisson: CATEGORY_SLUGS.cuisine,
+  encastrable: CATEGORY_SLUGS.cuisine,
+  lavage: CATEGORY_SLUGS.linge,
+  "lave-vaisselle": CATEGORY_SLUGS.linge,
+  "entretien-maison": CATEGORY_SLUGS.linge,
+  climatisation: CATEGORY_SLUGS.linge,
+  "traitement-air": CATEGORY_SLUGS.linge,
+  "chauffe-eau": CATEGORY_SLUGS.eau,
+  fontaines: CATEGORY_SLUGS.eau,
+  "petit-electromenager": CATEGORY_SLUGS.petit,
+  refrigerateurs: CATEGORY_SLUGS.froid,
+  autres: CATEGORY_SLUGS.froid,
+}
+
+/** Slug canonique d'une catégorie (ancien ou nouveau slug → slug du brief). */
+export function canonicalCategory(slug: unknown): string {
+  const s = String(slug ?? "").toLowerCase().trim()
+  return CATEGORY_ALIASES[s] ?? s
 }

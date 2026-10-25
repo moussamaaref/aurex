@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom"
 import { useEffect, lazy, Suspense } from "react"
 import { useTranslation } from "react-i18next"
 import Header from "./components/Header"
@@ -6,14 +6,14 @@ import Footer from "./components/Footer"
 import { CompareProvider } from "./context/CompareContext"
 import { SiteSettingsProvider } from "./context/SiteSettingsContext"
 import CompareToast from "./components/CompareToast"
+import { seoFor } from "./content/seo"
 import { loadNormalizedCollections, loadPublicPages, loadRemoteCollection } from "./lib/contentStore"
 
 const HomePage = lazy(() => import("./pages/HomePage"))
 const ProductsPage = lazy(() => import("./pages/ProductsPage"))
 const ProductDetailPage = lazy(() => import("./pages/ProductDetailPage"))
 const ComparePage = lazy(() => import("./pages/ComparePage"))
-const SmartHomePage = lazy(() => import("./pages/SmartHomePage"))
-const TechnologiesPage = lazy(() => import("./pages/TechnologiesPage"))
+const SmartTechPage = lazy(() => import("./pages/SmartTechPage"))
 const SupportPage = lazy(() => import("./pages/SupportPage"))
 const AboutPage = lazy(() => import("./pages/AboutPage"))
 const DistributorsPage = lazy(() => import("./pages/DistributorsPage"))
@@ -113,6 +113,7 @@ const CATALOG_SYNC_KEYS = [
   "couleurs",
   "technologies",
   "news",
+  "stories",
   "faq",
   "distributors",
 ] as const
@@ -125,13 +126,13 @@ function RemoteContentSync() {
     // v4 : redesign Apple — réinitialise aussi les couleurs de thème stockées
     // (présentation uniquement ; contenus, logo et contacts conservés).
     try {
-      if (localStorage.getItem("aurex-cache-version") !== "4") {
+      if (localStorage.getItem("aurex-cache-version") !== "5") {
         Object.keys(localStorage)
           .filter((k) => k.startsWith("aurex-data-"))
           .forEach((k) => localStorage.removeItem(k))
         localStorage.removeItem("aurex-admin-theme")
         localStorage.removeItem("aurex-site-settings")
-        localStorage.setItem("aurex-cache-version", "4")
+        localStorage.setItem("aurex-cache-version", "5")
       }
     } catch {
       // stockage indisponible : on continue sans cache
@@ -177,7 +178,15 @@ function RemoteContentSync() {
 
 function PageSeoSync() {
   const { pathname } = useLocation()
+  const { i18n } = useTranslation()
   useEffect(() => {
+    // Valeurs SEO par défaut (website brief) ; le CMS les remplace s'il définit la page.
+    const lang = i18n.language === "ar" || i18n.language === "en" ? i18n.language : "fr"
+    const def = seoFor(pathname, lang)
+    if (def) {
+      document.title = def.title
+      document.querySelector('meta[name="description"]')?.setAttribute("content", def.description)
+    }
     const applyFromCache = () => {
       try {
         const cached = localStorage.getItem("aurex-data-pages")
@@ -213,7 +222,7 @@ function PageSeoSync() {
       .catch(() => {
         // keep cache
       })
-  }, [pathname])
+  }, [pathname, i18n.language])
   return null
 }
 
@@ -236,8 +245,10 @@ export default function App() {
                   <Route path="/produits/:category/:famille/:sousFamille/:gamme/:slug" element={<ProductDetailPage />} />
                   <Route path="/produits/:category/:id" element={<ProductDetailPage />} />
                   <Route path="/comparateur" element={<ComparePage />} />
-                  <Route path="/smart-home" element={<SmartHomePage />} />
-                  <Route path="/technologies" element={<TechnologiesPage />} />
+                  <Route path="/smart-tech" element={<SmartTechPage />} />
+                  {/* Le concept « Smart Home » est retiré : redirections vers Smart Tech */}
+                  <Route path="/smart-home" element={<Navigate to="/smart-tech" replace />} />
+                  <Route path="/technologies" element={<Navigate to="/smart-tech" replace />} />
                   <Route path="/support" element={<SupportPage />} />
                   <Route path="/a-propos" element={<AboutPage />} />
                   <Route path="/distributeurs" element={<DistributorsPage />} />

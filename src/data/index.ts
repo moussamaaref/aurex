@@ -4,6 +4,7 @@ import {
   defaultFamilles,
   defaultGammes,
   defaultSousFamilles,
+  canonicalCategory,
   productPath,
   productSlugOf,
   resolveCapacites,
@@ -17,7 +18,9 @@ import {
   type Gamme,
   type SousFamille,
 } from "../lib/taxonomy"
-import { ml } from "../lib/ml"
+import { ml, type Localized } from "../lib/ml"
+import { categoryContent } from "../content/categories"
+import { buildDefaultStories, type Story } from "../content/stories"
 
 export interface Product {
   id: string
@@ -38,6 +41,9 @@ export interface Product {
   capacity?: string
   energyClass: string
   connectivity: boolean
+  /** Détail de connectivité (CMS) ; à défaut, `connectivity` s'applique aux deux. */
+  wifi?: boolean
+  bluetooth?: boolean
   technologies: string[]
   noiseLevel?: string
   dimensions?: { w: number; h: number; d: number }
@@ -49,12 +55,13 @@ export interface Product {
 
 export interface Category {
   slug: string
-  label: string
-  description: string
+  label: Localized
+  description: Localized
   image: string
   count: number
   subcategories?: string[]
   color?: string
+  sort_order?: number
 }
 
 export interface Technology {
@@ -68,80 +75,15 @@ export interface Technology {
   compatibleCategories: string[]
 }
 
-const defaultCategories: Category[] = [
-  {
-    slug: "lavage",
-    label: "Lavage",
-    description: "Machines à laver Spinova, Lavexa, Lavexa+ et Spinova+.",
-    image:
-      "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?w=600&h=700&fit=crop&auto=format",
-    count: 2,
-    subcategories: ["Spinova", "Lavexa", "Lavexa+", "Spinova+"],
-  },
-  {
-    slug: "lave-vaisselle",
-    label: "Lave-vaisselle",
-    description: "Les solutions Estrela et Estrela S pour la vaisselle.",
-    image:
-      "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=600&h=700&fit=crop&auto=format",
-    count: 1,
-    subcategories: ["Estrela", "Estrela S"],
-  },
-  {
-    slug: "petit-electromenager",
-    label: "Petit électroménager",
-    description: "Pétrins et cafetières Gustiva et Florenza.",
-    image:
-      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&h=700&fit=crop&auto=format",
-    count: 0,
-    subcategories: ["Pétrins", "Cafetières mono", "Cafetières multi", "Cafetières à capsules"],
-  },
-  {
-    slug: "chauffe-eau",
-    label: "Chauffe-eau",
-    description: "Cumulus et chauffe-bain en 30, 50 et 85 litres.",
-    image:
-      "https://images.unsplash.com/photo-1586208958839-06c17cacdf08?w=600&h=700&fit=crop&auto=format",
-    count: 0,
-    subcategories: ["Cumulus", "Chauffe-bain", "30 L", "50 L", "85 L"],
-  },
-  {
-    slug: "entretien-maison",
-    label: "Entretien de la maison",
-    description: "Aspirateurs T-Vox, Eronex, Dustor et Liva.",
-    image:
-      "https://images.unsplash.com/photo-1558002038-1055907df827?w=600&h=700&fit=crop&auto=format",
-    count: 1,
-    subcategories: ["Professionnels", "Eau et poussière", "Avec sac", "Sans sac", "Sans fil"],
-  },
-  {
-    slug: "fontaines",
-    label: "Fontaines",
-    description: "Des fontaines adaptées aux usages domestiques.",
-    image:
-      "https://images.unsplash.com/photo-1545259741-2ea3ebf61fa3?w=600&h=700&fit=crop&auto=format",
-    count: 0,
-    subcategories: ["Fontaines à eau", "Fontaines domestiques"],
-  },
-  {
-    slug: "cuisson",
-    label: "Cuisson",
-    description: "Fours, hottes, micro-ondes et cuisinières.",
-    image:
-      "https://images.unsplash.com/photo-1586208958839-06c17cacdf08?w=600&h=700&fit=crop&auto=format",
-    count: 1,
-    subcategories: ["Fours encastrables", "Hottes aspirantes", "Fours à poser", "Micro-ondes", "Cuisinières"],
-  },
-  {
-    slug: "autres",
-    label: "Autres appareils",
-    description: "Découvrez les appareils complémentaires AUREX.",
-    image:
-      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&h=700&fit=crop&auto=format",
-    count: 2,
-    subcategories: ["Réfrigérateurs", "Climatisation"],
-  },
-]
+const defaultCategories: Category[] = categoryContent.map((c, i) => ({
+  slug: c.slug,
+  label: c.name,
+  description: c.highlight,
+  image: c.image,
+  count: 0,
+  subcategories: c.range.fr,
+  sort_order: i,
+}))
 
 const defaultProducts: Product[] = [
   {
@@ -1412,12 +1354,18 @@ const defaultTechnologies: Technology[] = [
 const defaultNewsItems = [
   {
     id: "launch-ex9000",
-    title:
-      "AUREX lance la série EX9000 Smart — l'électroménager connecté nouvelle génération",
-    excerpt:
-      "La nouvelle gamme EX9000 intègre des fonctionnalités IA inédites pour anticiper vos besoins et optimiser votre consommation d'énergie.",
-    date: "15 août 2026",
-    category: "Lancement produit",
+    title: {
+      fr: "AUREX lance la série EX9000 Smart Connect : l'alliance de la performance et du silence",
+      en: "AUREX launches the EX9000 Smart Connect series: performance meets silence",
+      ar: "AUREX تطلق سلسلة EX9000 Smart Connect: أداء يلتقي بالهدوء",
+    },
+    excerpt: {
+      fr: "Découvrez notre nouvelle génération d'appareils intelligents conçus pour simplifier votre quotidien familial tout en garantissant une efficacité énergétique optimale.",
+      en: "Discover our new generation of smart appliances designed to simplify your family's daily life while ensuring optimal energy efficiency.",
+      ar: "اكتشفوا جيلنا الجديد من الأجهزة الذكية المصمّمة لتبسيط الحياة اليومية لعائلتكم مع ضمان كفاءة طاقوية مثلى.",
+    },
+    date: "2026-08-15",
+    category: { fr: "Nouveautés 2026", en: "What's New 2026", ar: "جديد 2026" },
     image:
       "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=800&h=500&fit=crop&auto=format",
     slug: "lancement-ex9000",
@@ -1483,13 +1431,17 @@ function loadManagedCollection<T>(key: string, fallback: T): T {
   }
 }
 
+/** Les 5 catégories du brief sont la référence : le CMS ne peut qu'enrichir
+ *  (image / couleur) une catégorie dont le slug (ou l'ancien slug) correspond. */
 function normalizeCategories(value: unknown): Category[] {
   if (!Array.isArray(value)) return defaultCategories
-  return value.filter((item): item is Category => Boolean(item && typeof item === "object")).map((item) => ({
-    ...item,
-    slug: String(item.slug ?? "").toLowerCase().trim(),
-    subcategories: Array.isArray(item.subcategories) ? item.subcategories : [],
-  }))
+  const remote = value.filter((item): item is Category => Boolean(item && typeof item === "object"))
+  return defaultCategories.map((def) => {
+    const match = remote.find((r) => canonicalCategory(r.slug) === def.slug)
+    return match
+      ? { ...def, image: match.image || def.image, color: match.color ?? def.color }
+      : def
+  })
 }
 
 function normalizeProducts(value: unknown): Product[] {
@@ -1498,7 +1450,7 @@ function normalizeProducts(value: unknown): Product[] {
     const raw = item as unknown as Record<string, unknown>
     // Le CMS enregistre `category_slug` (format Supabase) : le mapper vers `category`
     // en minuscules pour que le filtrage par slug d'URL fonctionne toujours.
-    const slug = String(raw.category ?? raw.category_slug ?? "").toLowerCase().trim()
+    const slug = canonicalCategory(raw.category ?? raw.category_slug)
     const asStrArray = (v: unknown): string[] | undefined =>
       Array.isArray(v) ? v.map((x) => String(x)).filter(Boolean) : undefined
     const strOrUndef = (v: unknown): string | undefined =>
@@ -1563,7 +1515,7 @@ function normalizeTaxonomy<T extends { slug: string }>(value: unknown, fallback:
       const raw = { ...(item as unknown as Record<string, unknown>) }
       raw.slug = String(raw.slug ?? "").toLowerCase().trim()
       // Clés parentes toujours définies ("" si absentes) pour des comparaisons sûres.
-      raw.categorySlug = String(pick(raw, "categorySlug", "category_slug", "category_id") ?? "").toLowerCase().trim()
+      raw.categorySlug = canonicalCategory(pick(raw, "categorySlug", "category_slug", "category_id"))
       raw.familleSlug = String(pick(raw, "familleSlug", "famille_id") ?? "").toLowerCase().trim()
       raw.sousFamilleSlug = String(pick(raw, "sousFamilleSlug", "sous_famille", "sous_famille_id") ?? "").toLowerCase().trim()
       return raw as unknown as T
@@ -1582,6 +1534,16 @@ export const couleurs: Couleur[] = normalizeTaxonomy(loadManagedCollection("coul
 export const technologies: Technology[] = normalizeTechnologies(loadManagedCollection("technologies", defaultTechnologies))
 export const newsItems = normalizeNews(loadManagedCollection("news", defaultNewsItems), defaultNewsItems)
 export const faqItems = normalizeArray(loadManagedCollection("faq", defaultFaqItems), defaultFaqItems)
+
+/** Stories produit (Nouveautés). Source : collection CMS « stories » ; à défaut, stories dérivées des produits réels. */
+export const defaultStories: Story[] = buildDefaultStories(products, (v) => ml(v as Localized))
+export const stories: Story[] = (() => {
+  const stored = loadManagedCollection<unknown>("stories", null)
+  const list = Array.isArray(stored)
+    ? (stored as unknown[]).filter((item): item is Story => Boolean(item && typeof item === "object"))
+    : []
+  return list.length > 0 ? list : defaultStories
+})()
 
 /* ---------------- Helpers taxonomiques liés aux collections chargées ---------------- */
 
