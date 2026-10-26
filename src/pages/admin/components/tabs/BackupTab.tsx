@@ -41,9 +41,9 @@ export function BackupTab({
         />
       </div>
 
-      <div className="mt-8 rounded-2xl border border-[#E4DFD2] bg-[#FBFAF6] p-5">
-        <h3 className="text-sm font-semibold text-[#12233F]">Peupler les tables normalisées</h3>
-        <p className="mt-1 text-xs text-[#8A8474]">
+      <div className="mt-8 rounded-2xl border border-[#d6d6d6] bg-[#fafafc] p-5">
+        <h3 className="text-sm font-semibold text-[#1d1d1f]">Peupler les tables normalisées</h3>
+        <p className="mt-1 text-xs text-[#5a5a5e]">
           Utilise seedNormalizedTables pour insérer les catégories, produits, technologies,
           actualités et paramètres par défaut (idempotent).
         </p>
@@ -51,15 +51,15 @@ export function BackupTab({
           type="button"
           onClick={onSeed}
           disabled={!canEdit || seedBusy}
-          className="mt-3 rounded-xl bg-[#1F8A5F] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#1B7952] disabled:cursor-not-allowed disabled:opacity-45"
+          className="mt-3 rounded-xl bg-[#03873a] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#03873a] disabled:cursor-not-allowed disabled:opacity-45"
         >
           {seedBusy ? "Seed en cours..." : "Lancer le seed"}
         </button>
         {seedResults && (
-          <div className="mt-4 overflow-auto rounded-xl border border-[#E4DFD2] bg-white p-3">
+          <div className="mt-4 overflow-auto rounded-xl border border-[#d6d6d6] bg-white p-3">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="text-[#9A9585]">
+                <tr className="text-[#707070]">
                   <th className="py-1.5">Table</th>
                   <th className="py-1.5">Insérés</th>
                   <th className="py-1.5">Erreur</th>
@@ -67,8 +67,8 @@ export function BackupTab({
               </thead>
               <tbody>
                 {seedResults.map((r) => (
-                  <tr key={r.table} className="border-t border-[#E4DFD2]">
-                    <td className="py-1.5 font-semibold text-[#12233F]">{r.table}</td>
+                  <tr key={r.table} className="border-t border-[#d6d6d6]">
+                    <td className="py-1.5 font-semibold text-[#1d1d1f]">{r.table}</td>
                     <td className="py-1.5">{r.inserted}</td>
                     <td className="py-1.5 text-[#C1443D]">{r.error ?? "—"}</td>
                   </tr>
@@ -79,7 +79,7 @@ export function BackupTab({
         )}
       </div>
 
-      <p className="mt-5 rounded-xl bg-[#FBF3E3] p-4 text-xs leading-relaxed text-[#8A672E]">
+      <p className="mt-5 rounded-xl bg-[#fdf1e8] p-4 text-xs leading-relaxed text-[#8A672E]">
         Après un import, un seed ou une modification de collection, rechargez les pages publiques
         pour charger les nouvelles données.
       </p>

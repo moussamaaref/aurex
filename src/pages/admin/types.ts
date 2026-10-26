@@ -27,6 +27,7 @@ export type AdminTab =
   | "collections"
   | "users"
   | "pages"
+  | "requests"
   | "site"
   | "theme"
   | "backup"

@@ -131,7 +131,7 @@ export function CollectionsTab({
             type="button"
             onClick={onAdd}
             disabled={!canEdit}
-            className="rounded-lg bg-[#1F8A5F] px-3 py-2 text-xs font-semibold text-white transition hover:bg-[#1B7952] disabled:cursor-not-allowed disabled:opacity-45"
+            className="rounded-lg bg-[#03873a] px-3 py-2 text-xs font-semibold text-white transition hover:bg-[#03873a] disabled:cursor-not-allowed disabled:opacity-45"
           >
             Ajouter
           </button>
@@ -139,7 +139,7 @@ export function CollectionsTab({
             value={selectedItemIndex}
             onChange={(event) => onSelectItemIndex(Number(event.target.value))}
             disabled={editorItems.length === 0}
-            className="rounded-lg border border-[#E4DFD2] bg-white px-2 py-2 text-xs font-medium text-[#12233F] disabled:opacity-50"
+            className="rounded-lg border border-[#d6d6d6] bg-white px-2 py-2 text-xs font-medium text-[#1d1d1f] disabled:opacity-50"
           >
             {editorItems.length === 0 ? (
               <option value={0}>Aucun élément</option>
@@ -163,21 +163,21 @@ export function CollectionsTab({
             type="button"
             onClick={onSave}
             disabled={!canEdit}
-            className="rounded-lg bg-[#2F5FE8] px-3 py-2 text-xs font-semibold text-white transition hover:bg-[#2650C6] disabled:cursor-not-allowed disabled:opacity-45"
+            className="rounded-lg bg-[#0077b3] px-3 py-2 text-xs font-semibold text-white transition hover:bg-[#2650C6] disabled:cursor-not-allowed disabled:opacity-45"
           >
             Enregistrer
           </button>
         </div>
       </div>
       {!canEdit && (
-        <p className="mt-3 text-xs font-semibold text-[#B8863D]">
+        <p className="mt-3 text-xs font-semibold text-[#b64400]">
           Lecture seule — viewer ne peut pas enregistrer.
         </p>
       )}
       <div className="mt-5 space-y-4">
         {collectionGroups.map((group) => (
           <div key={group.id}>
-            <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#9A9585]">
+            <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#707070]">
               {group.label}
             </p>
             <div className="flex flex-wrap gap-2">
@@ -188,8 +188,8 @@ export function CollectionsTab({
                   onClick={() => onSelectCollection(key)}
                   className={`rounded-lg px-3 py-2 text-xs font-semibold transition ${
                     activeCollection === key
-                      ? "bg-[#0A2342] text-white"
-                      : "bg-[#F7F4EC] text-[#4A4438] hover:bg-[#EFEAD8]"
+                      ? "bg-[#1d1d1f] text-white"
+                      : "bg-[#f5f5f7] text-[#333336] hover:bg-[#EFEAD8]"
                   }`}
                 >
                   {collectionLabels[key]} ({(collections[key] ?? []).length})
@@ -199,9 +199,9 @@ export function CollectionsTab({
           </div>
         ))}
       </div>
-      <div className="mt-5 rounded-2xl border border-[#E4DFD2] bg-[#FBFAF6] p-4">
+      <div className="mt-5 rounded-2xl border border-[#d6d6d6] bg-[#fafafc] p-4">
         <div className="mb-4 flex items-center justify-between gap-3">
-          <p className="text-xs text-[#8A8474]">
+          <p className="text-xs text-[#5a5a5e]">
             Chaque enregistrement est une ligne Supabase — les champs image/images ouvrent un
             uploader vers le bucket aurex-media.
           </p>
@@ -216,7 +216,7 @@ export function CollectionsTab({
               onChange={(e) => onEditorChange(e.target.value)}
               rows={18}
               disabled={!canEdit}
-              className="w-full rounded-xl border border-[#E4DFD2] bg-white p-4 font-mono text-xs disabled:opacity-50"
+              className="w-full rounded-xl border border-[#d6d6d6] bg-white p-4 font-mono text-xs disabled:opacity-50"
             />
           ) : activeCollection === "marquee" ? (
             <TrilingualInput
@@ -235,7 +235,7 @@ export function CollectionsTab({
             />
           )
         ) : (
-          <p className="rounded-xl border border-dashed border-[#D9D2BF] p-6 text-center text-sm text-[#8A8474]">
+          <p className="rounded-xl border border-dashed border-[#d6d6d6] p-6 text-center text-sm text-[#5a5a5e]">
             Aucun enregistrement. Cliquez sur Ajouter pour créer la première ligne.
           </p>
         )}

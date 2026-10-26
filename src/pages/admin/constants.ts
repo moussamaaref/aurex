@@ -387,6 +387,7 @@ export const icons: Record<AdminTab, string> = {
   collections: "▦",
   users: "◉",
   pages: "▭",
+  requests: "✉",
   site: "⬢",
   theme: "⬣",
   backup: "⧉",
@@ -394,7 +395,7 @@ export const icons: Record<AdminTab, string> = {
 }
 
 // Overview stat accents cycle through the brand's restrained palette.
-export const statAccents = ["#2F5FE8", "#B08D4F", "#0A2342", "#1F8A5F", "#B08D4F", "#2F5FE8"]
+export const statAccents = ["#0077b3", "#0077b3", "#1d1d1f", "#03873a", "#0077b3", "#0077b3"]
 
 export function pretty(value: unknown) {
   return JSON.stringify(value, null, 2)

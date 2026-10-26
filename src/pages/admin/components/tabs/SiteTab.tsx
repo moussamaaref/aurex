@@ -22,12 +22,12 @@ export function SiteTab({
         description="Logo, favicon, couleurs, contacts et réseaux sociaux. Stocké dans site_settings."
       />
       {!siteSettings ? (
-        <p className="mt-6 text-sm text-[#8A8474]">Chargement...</p>
+        <p className="mt-6 text-sm text-[#5a5a5e]">Chargement...</p>
       ) : (
         <>
           <div className="mt-6 grid gap-6 sm:grid-cols-2">
             <div>
-              <p className="text-sm font-semibold text-[#12233F]">Logo (upload vers aurex-media)</p>
+              <p className="text-sm font-semibold text-[#1d1d1f]">Logo (upload vers aurex-media)</p>
               <div className="mt-2">
                 <SingleImageField
                   value={siteSettings.logoUrl ?? ""}
@@ -37,7 +37,7 @@ export function SiteTab({
               </div>
             </div>
             <div>
-              <p className="text-sm font-semibold text-[#12233F]">Favicon</p>
+              <p className="text-sm font-semibold text-[#1d1d1f]">Favicon</p>
               <div className="mt-2">
                 <SingleImageField
                   value={siteSettings.faviconUrl ?? ""}
@@ -46,7 +46,7 @@ export function SiteTab({
                 />
               </div>
             </div>
-            <label className="text-sm font-semibold text-[#12233F]">
+            <label className="text-sm font-semibold text-[#1d1d1f]">
               Texte logo
               <input
                 value={siteSettings.logoText}
@@ -55,7 +55,7 @@ export function SiteTab({
                 className={`mt-2 ${inputBase}`}
               />
             </label>
-            <label className="text-sm font-semibold text-[#12233F]">
+            <label className="text-sm font-semibold text-[#1d1d1f]">
               Couleur texte logo
               <div className="mt-2 flex gap-2">
                 <input
@@ -63,7 +63,7 @@ export function SiteTab({
                   value={siteSettings.logoTextColor}
                   onChange={(e) => onSiteChange({ ...siteSettings, logoTextColor: e.target.value })}
                   disabled={isViewer}
-                  className="h-11 w-14 rounded-lg border border-[#E4DFD2] p-1 disabled:opacity-50"
+                  className="h-11 w-14 rounded-lg border border-[#d6d6d6] p-1 disabled:opacity-50"
                 />
                 <input
                   value={siteSettings.logoTextColor}
@@ -73,7 +73,7 @@ export function SiteTab({
                 />
               </div>
             </label>
-            <label className="text-sm font-semibold text-[#12233F]">
+            <label className="text-sm font-semibold text-[#1d1d1f]">
               Fond icône logo
               <div className="mt-2 flex gap-2">
                 <input
@@ -81,7 +81,7 @@ export function SiteTab({
                   value={siteSettings.logoIconBg.startsWith("var(") ? "#008ED0" : siteSettings.logoIconBg}
                   onChange={(e) => onSiteChange({ ...siteSettings, logoIconBg: e.target.value })}
                   disabled={isViewer}
-                  className="h-11 w-14 rounded-lg border border-[#E4DFD2] p-1 disabled:opacity-50"
+                  className="h-11 w-14 rounded-lg border border-[#d6d6d6] p-1 disabled:opacity-50"
                 />
                 <input
                   value={siteSettings.logoIconBg}
@@ -92,7 +92,7 @@ export function SiteTab({
                 />
               </div>
             </label>
-            <label className="text-sm font-semibold text-[#12233F]">
+            <label className="text-sm font-semibold text-[#1d1d1f]">
               Accent icône logo
               <div className="mt-2 flex gap-2">
                 <input
@@ -100,7 +100,7 @@ export function SiteTab({
                   value={siteSettings.logoAccent.startsWith("var(") ? "#0077B6" : siteSettings.logoAccent}
                   onChange={(e) => onSiteChange({ ...siteSettings, logoAccent: e.target.value })}
                   disabled={isViewer}
-                  className="h-11 w-14 rounded-lg border border-[#E4DFD2] p-1 disabled:opacity-50"
+                  className="h-11 w-14 rounded-lg border border-[#d6d6d6] p-1 disabled:opacity-50"
                 />
                 <input
                   value={siteSettings.logoAccent}
@@ -111,8 +111,8 @@ export function SiteTab({
                 />
               </div>
             </label>
-            <div className="flex flex-col gap-2 rounded-xl border border-[#E4DFD2] bg-[#FBFAF6] p-4">
-              <label className="flex items-center gap-2 text-sm font-semibold text-[#12233F]">
+            <div className="flex flex-col gap-2 rounded-xl border border-[#d6d6d6] bg-[#fafafc] p-4">
+              <label className="flex items-center gap-2 text-sm font-semibold text-[#1d1d1f]">
                 <input
                   type="checkbox"
                   checked={siteSettings.showLogoIcon}
@@ -121,7 +121,7 @@ export function SiteTab({
                 />
                 Afficher icône logo (carré 4 cases)
               </label>
-              <label className="flex items-center gap-2 text-sm font-semibold text-[#12233F]">
+              <label className="flex items-center gap-2 text-sm font-semibold text-[#1d1d1f]">
                 <input
                   type="checkbox"
                   checked={siteSettings.showLogoImage}
@@ -130,7 +130,7 @@ export function SiteTab({
                 />
                 Afficher image logo
               </label>
-              <label className="flex items-center gap-2 text-sm font-semibold text-[#12233F]">
+              <label className="flex items-center gap-2 text-sm font-semibold text-[#1d1d1f]">
                 <input
                   type="checkbox"
                   checked={siteSettings.showLogoText}
@@ -140,7 +140,7 @@ export function SiteTab({
                 Afficher texte logo
               </label>
             </div>
-            <label className="text-sm font-semibold text-[#12233F]">
+            <label className="text-sm font-semibold text-[#1d1d1f]">
               Couleur primaire
               <div className="mt-2 flex gap-2">
                 <input
@@ -148,7 +148,7 @@ export function SiteTab({
                   value={siteSettings.primaryColor}
                   onChange={(e) => onSiteChange({ ...siteSettings, primaryColor: e.target.value })}
                   disabled={isViewer}
-                  className="h-11 w-14 rounded-lg border border-[#E4DFD2] p-1 disabled:opacity-50"
+                  className="h-11 w-14 rounded-lg border border-[#d6d6d6] p-1 disabled:opacity-50"
                 />
                 <input
                   value={siteSettings.primaryColor}
@@ -158,7 +158,7 @@ export function SiteTab({
                 />
               </div>
             </label>
-            <label className="text-sm font-semibold text-[#12233F]">
+            <label className="text-sm font-semibold text-[#1d1d1f]">
               Couleur accent
               <div className="mt-2 flex gap-2">
                 <input
@@ -166,7 +166,7 @@ export function SiteTab({
                   value={siteSettings.accentColor}
                   onChange={(e) => onSiteChange({ ...siteSettings, accentColor: e.target.value })}
                   disabled={isViewer}
-                  className="h-11 w-14 rounded-lg border border-[#E4DFD2] p-1 disabled:opacity-50"
+                  className="h-11 w-14 rounded-lg border border-[#d6d6d6] p-1 disabled:opacity-50"
                 />
                 <input
                   value={siteSettings.accentColor}
@@ -176,7 +176,7 @@ export function SiteTab({
                 />
               </div>
             </label>
-            <label className="text-sm font-semibold text-[#12233F]">
+            <label className="text-sm font-semibold text-[#1d1d1f]">
               Couleur surface
               <div className="mt-2 flex gap-2">
                 <input
@@ -184,7 +184,7 @@ export function SiteTab({
                   value={siteSettings.surfaceColor}
                   onChange={(e) => onSiteChange({ ...siteSettings, surfaceColor: e.target.value })}
                   disabled={isViewer}
-                  className="h-11 w-14 rounded-lg border border-[#E4DFD2] p-1 disabled:opacity-50"
+                  className="h-11 w-14 rounded-lg border border-[#d6d6d6] p-1 disabled:opacity-50"
                 />
                 <input
                   value={siteSettings.surfaceColor}
@@ -194,7 +194,7 @@ export function SiteTab({
                 />
               </div>
             </label>
-            <label className="flex items-center gap-3 rounded-xl border border-[#E4DFD2] bg-[#FBFAF6] px-4 py-3 text-sm font-semibold text-[#12233F]">
+            <label className="flex items-center gap-3 rounded-xl border border-[#d6d6d6] bg-[#fafafc] px-4 py-3 text-sm font-semibold text-[#1d1d1f]">
               <input
                 type="checkbox"
                 checked={siteSettings.maintenanceMode}
@@ -203,7 +203,7 @@ export function SiteTab({
               />
               Mode maintenance
             </label>
-            <label className="text-sm font-semibold text-[#12233F]">
+            <label className="text-sm font-semibold text-[#1d1d1f]">
               Email contact
               <input
                 value={siteSettings.contactEmail ?? ""}
@@ -212,7 +212,7 @@ export function SiteTab({
                 className={`mt-2 ${inputBase}`}
               />
             </label>
-            <label className="text-sm font-semibold text-[#12233F]">
+            <label className="text-sm font-semibold text-[#1d1d1f]">
               Téléphone contact
               <input
                 value={siteSettings.contactPhone ?? ""}
@@ -221,7 +221,7 @@ export function SiteTab({
                 className={`mt-2 ${inputBase}`}
               />
             </label>
-            <label className="text-sm font-semibold text-[#12233F] sm:col-span-2">
+            <label className="text-sm font-semibold text-[#1d1d1f] sm:col-span-2">
               Adresse
               <input
                 value={siteSettings.contactAddress ?? ""}
@@ -232,11 +232,11 @@ export function SiteTab({
             </label>
           </div>
 
-          <div className="mt-6 rounded-2xl border border-[#E4DFD2] bg-[#FBFAF6] p-4">
-            <h3 className="text-sm font-semibold text-[#12233F]">Réseaux sociaux</h3>
+          <div className="mt-6 rounded-2xl border border-[#d6d6d6] bg-[#fafafc] p-4">
+            <h3 className="text-sm font-semibold text-[#1d1d1f]">Réseaux sociaux</h3>
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               {["facebook", "instagram", "linkedin", "youtube", "twitter", "tiktok"].map((k) => (
-                <label key={k} className="text-xs font-semibold capitalize text-[#4A4438]">
+                <label key={k} className="text-xs font-semibold capitalize text-[#333336]">
                   {k}
                   <input
                     value={siteSettings.socialLinks[k] ?? ""}

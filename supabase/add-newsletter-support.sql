@@ -44,3 +44,7 @@ insert into storage.buckets (id, name, public) values ('support-uploads', 'suppo
   on conflict (id) do nothing;
 drop policy if exists "support uploads insert" on storage.objects;
 create policy "support uploads insert" on storage.objects for insert to anon, authenticated with check (bucket_id = 'support-uploads');
+
+-- Le back-office (utilisateurs authentifiés) peut faire évoluer le statut d'une demande.
+drop policy if exists "support update auth" on public.support_requests;
+create policy "support update auth" on public.support_requests for update to authenticated using (true) with check (true);
