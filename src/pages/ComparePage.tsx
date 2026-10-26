@@ -14,6 +14,7 @@ import {
   type Product,
 } from "../data"
 import { ml } from "../lib/ml"
+import { shouldIgnoreUrlSelection } from "../lib/pageLoad"
 import { useCompare } from "../context/CompareContext"
 import Reveal from "../components/Reveal"
 
@@ -78,7 +79,8 @@ export default function ComparePage() {
 
   useEffect(() => {
     const urlIds = searchParams.get("ids")
-    if (urlIds) {
+    // Après un rechargement, on ne réinjecte pas l'ancienne sélection de l'URL (comparateur vidé).
+    if (urlIds && !shouldIgnoreUrlSelection()) {
       const parsed = urlIds
         .split(",")
         .map((s) => s.trim())
@@ -746,11 +748,11 @@ export default function ComparePage() {
           </div>
         )}
 
-        <p className="text-xs text-[#474747] mb-3 md:hidden font-sans">
+        <p className="text-xs text-[#474747] mb-3 lg:hidden font-sans">
           {t("comparator.mobileHint")}
         </p>
 
-        <div className="md:hidden space-y-3">
+        <div className="lg:hidden space-y-3">
           <div className="sticky top-[104px] z-20 -mx-4 bg-[#f5f5f7]/95 px-4 py-2 backdrop-blur-sm sm:-mx-6 sm:px-6">
             <div className="overflow-x-auto overscroll-x-contain pb-1">
               <div className="flex gap-3">
@@ -875,14 +877,14 @@ export default function ComparePage() {
         </div>
 
         <Reveal>
-        <div className="hidden md:block bg-white rounded-[28px] border border-[#d6d6d6] overflow-hidden shadow-sm">
-          {/* Zone défilante : les images produit (en-tête) restent épinglées pendant le défilement des caractéristiques. */}
-          <div className="max-h-[calc(100vh-7rem)] overflow-auto overscroll-contain">
-            <table className="w-full min-w-[860px] text-sm font-sans border-collapse">
+        <div className="hidden lg:block bg-white rounded-[28px] border border-[#d6d6d6] overflow-clip shadow-sm">
+          {/* Les images produit (en-tête) restent épinglées sous l'en-tête du site pendant le défilement normal de la page. */}
+          <div>
+            <table className="w-full table-fixed text-sm font-sans border-collapse">
               <thead>
                 <tr>
                   <th
-                    className="sticky start-0 top-0 z-30 bg-white w-44 min-w-44 p-5 text-start align-top border-b border-[#d6d6d6]"
+                    className="sticky top-[72px] z-30 bg-white w-40 p-4 text-start align-top border-b border-[#d6d6d6]"
                     scope="col"
                   >
                     <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#5a5a5e] font-display">
@@ -893,10 +895,10 @@ export default function ComparePage() {
                     <th
                       key={p.id}
                       scope="col"
-                      className="sticky top-0 z-20 min-w-[210px] w-[210px] p-4 text-start align-top border-b border-[#d6d6d6] bg-white"
+                      className="sticky top-[72px] z-20 p-3 text-start align-top border-b border-[#d6d6d6] bg-white"
                     >
-                      <div className="flex flex-col gap-3">
-                        <div className="relative w-full aspect-square rounded-[10px] overflow-hidden bg-[#f5f5f7] border border-[#d6d6d6]">
+                      <div className="flex flex-col gap-2">
+                        <div className="relative w-full h-28 rounded-[10px] overflow-hidden bg-[#f5f5f7] border border-[#d6d6d6]">
                           <Link
                             to={productUrl(p)}
                             aria-label={ml(p.name)}
@@ -904,7 +906,7 @@ export default function ComparePage() {
                             <img loading="lazy" decoding="async"
                               src={p.image}
                               alt={ml(p.name)}
-                              className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                              className="w-full h-full object-cover hover:scale-105 motion-reduce:transition-none transition-transform duration-500"
                             />
                           </Link>
                           <div className="absolute top-2 left-2 flex flex-col gap-1">
@@ -918,7 +920,7 @@ export default function ComparePage() {
                             ))}
                           </div>
                         </div>
-                        <p className="text-[10px] text-[#5a5a5e] font-mono tracking-widest uppercase -mt-1">
+                        <p className="sr-only">
                           {p.reference}
                         </p>
                         <Link
@@ -935,7 +937,7 @@ export default function ComparePage() {
                               name: ml(p.name),
                             })}
                             title={t("comparator.replaceTitle")}
-                            className="inline-flex items-center gap-1.5 text-xs font-medium text-[#0077b3] hover:text-[#1d1d1f] border border-[#d6d6d6] bg-[#f5f5f7] rounded-[10px] px-2.5 py-1.5 hover:bg-[#E4ECFB] transition-colors font-sans"
+                            className="inline-flex items-center gap-1.5 text-xs font-medium text-[#0077b3] hover:text-[#1d1d1f] border border-[#d6d6d6] bg-[#f5f5f7] rounded-[10px] p-2 hover:bg-[#E4ECFB] transition-colors font-sans"
                           >
                             <svg
                               className="w-3.5 h-3.5"
@@ -951,12 +953,12 @@ export default function ComparePage() {
                                 d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                               />
                             </svg>
-                            {t("comparator.replace")}
+                            <span className="sr-only">{t("comparator.replace")}</span>
                           </button>
                           <button
                             type="button"
                             onClick={() => remove(p.id)}
-                            className="inline-flex items-center gap-1.5 text-xs font-medium text-[#474747] hover:text-red-600 border border-[#d6d6d6] rounded-[10px] px-2.5 py-1.5 hover:border-red-200 transition-colors font-sans"
+                            className="inline-flex items-center gap-1.5 text-xs font-medium text-[#474747] hover:text-red-600 border border-[#d6d6d6] rounded-[10px] p-2 hover:border-red-200 transition-colors font-sans"
                           >
                             <svg
                               className="w-3.5 h-3.5"
@@ -972,7 +974,7 @@ export default function ComparePage() {
                                 d="M6 18L18 6M6 6l12 12"
                               />
                             </svg>
-                            {t("comparator.remove")}
+                            <span className="sr-only">{t("comparator.remove")}</span>
                           </button>
                         </div>
                       </div>
@@ -981,7 +983,7 @@ export default function ComparePage() {
                   {selected.length === 1 && (
                     <th
                       scope="col"
-                      className="min-w-[190px] p-5 align-top border-b border-[#d6d6d6] bg-white"
+                      className="sticky top-[72px] z-20 p-3 align-top border-b border-[#d6d6d6] bg-white"
                     >
                       <div className="border-2 border-dashed border-[#d6d6d6] rounded-[10px] h-full min-h-[300px] flex flex-col items-center justify-center gap-3 p-4 text-center">
                         <ScaleIcon className="w-6 h-6 text-gray-300" />
@@ -1010,7 +1012,7 @@ export default function ComparePage() {
                     >
                       <th
                         scope="row"
-                        className={`sticky start-0 z-10 w-44 min-w-44 p-5 text-start align-top text-xs font-display uppercase tracking-wide border-b border-gray-50 ${
+                        className={`w-40 p-4 text-start align-top text-xs font-display uppercase tracking-wide border-b border-gray-50 ${
                           isDiff
                             ? "bg-amber-50 text-amber-800 border-s-4 border-s-amber-400"
                             : "bg-white text-[#474747]"

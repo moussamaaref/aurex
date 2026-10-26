@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { products } from "../data"
 import { ml } from "../lib/ml"
+import { IS_PAGE_RELOAD } from "../lib/pageLoad"
 
 export const MAX_COMPARE = 4
 
@@ -47,6 +48,15 @@ const CompareContext = createContext<CompareContextValue | null>(null)
 let toastSeq = 0
 
 function loadInitial(): string[] {
+  // Rechargement de la page : le comparateur repart vide.
+  if (IS_PAGE_RELOAD) {
+    try {
+      localStorage.removeItem(STORAGE_KEY)
+    } catch {
+      /* ignore */
+    }
+    return []
+  }
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (raw) {
