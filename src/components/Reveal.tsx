@@ -27,6 +27,7 @@ export default function Reveal({
 }) {
   const ref = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false)
+  const [settled, setSettled] = useState(false)
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
@@ -51,14 +52,22 @@ export default function Reveal({
     return () => observer.disconnect()
   }, [threshold])
 
+  // Animation terminée : plus de will-change (ni de transition) sur le conteneur.
+  useEffect(() => {
+    if (!visible) return
+    const timer = window.setTimeout(() => setSettled(true), 700 + delay + 60)
+    return () => window.clearTimeout(timer)
+  }, [visible, delay])
+
   return (
     <div
       ref={ref}
-      className={`transition-all duration-700 ease-out will-change-transform ${className}`}
+      className={`${settled ? "" : "transition-[opacity,transform] duration-700 ease-out"} ${className}`}
       style={{
         opacity: visible ? 1 : 0,
         transform: visible ? "none" : HIDDEN_TRANSFORM[variant],
-        transitionDelay: `${delay}ms`,
+        transitionDelay: settled ? undefined : `${delay}ms`,
+        willChange: settled ? "auto" : "transform, opacity",
       }}
     >
       {children}

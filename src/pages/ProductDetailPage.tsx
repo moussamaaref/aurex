@@ -189,7 +189,7 @@ export default function ProductDetailPage() {
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
           {/* ══ Galerie ══ */}
-          <Reveal variant="left">
+          {/* Pas de Reveal ici : un parent transformé casserait le plein écran (position: fixed). */}
           <div className="space-y-4">
             <div
               className={`overflow-hidden bg-white shadow-sm ${
@@ -279,7 +279,6 @@ export default function ProductDetailPage() {
               </div>
             )}
           </div>
-          </Reveal>
 
           {/* ══ Fiche ══ */}
           <Reveal variant="right" delay={120}>
