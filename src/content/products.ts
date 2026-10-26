@@ -2,6 +2,12 @@ import type { L3 } from "./lang"
 
 /** Menu et filtres Produits (website brief 2026). « Smart Home » est retiré. */
 export const productsUi = {
+  smartEmptyTitle: { fr: "Les appareils connectés arrivent bientôt", en: "Connected appliances are coming soon", ar: "الأجهزة المتصلة قادمة قريبًا" } as L3,
+  smartEmptyText: {
+    fr: "Aucun produit Bluetooth ou Wi-Fi n'est encore référencé. Découvrez en attendant toute la gamme AUREX.",
+    en: "No Bluetooth or Wi-Fi product is listed yet. In the meantime, discover the whole AUREX range.",
+    ar: "لا يوجد بعد أي منتج بلوتوث أو Wi-Fi. في الأثناء، اكتشفوا كامل تشكيلة AUREX.",
+  } as L3,
   smartTitle: { fr: "Produits Bluetooth & Wi-Fi", en: "Bluetooth & Wi-Fi products", ar: "منتجات Bluetooth وWi-Fi" } as L3,
   filters: {
     famille: { fr: "Famille", en: "Family", ar: "العائلة" } as L3,

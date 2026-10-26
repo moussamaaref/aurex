@@ -478,6 +478,8 @@ function ProductsPageInner() {
           </Link>
           {categories.map((cat) => {
             const isActive = category === cat.slug
+            // Seules les catégories qui ont des produits réellement disponibles sont proposées.
+            if (!isActive && !products.some((x) => x.category === cat.slug)) return null
             const color = categoryColor(cat.slug, cat.color)
             return (
               <Link
@@ -706,8 +708,8 @@ function ProductsPageInner() {
                     </svg>
                   </div>
                 </div>
-                <p className="text-xl font-bold text-[var(--color-primary)] font-display">{t("products.noResults")}</p>
-                <p className="mt-2 max-w-sm text-sm text-[#474747] font-sans leading-relaxed">{t("products.noResultsDesc")}</p>
+                <p className="text-xl font-bold text-[var(--color-primary)] font-display">{searchParams.get("connectivite") === "smart" ? p(productsUi.smartEmptyTitle) : t("products.noResults")}</p>
+                <p className="mt-2 max-w-sm text-sm text-[#474747] font-sans leading-relaxed">{searchParams.get("connectivite") === "smart" ? p(productsUi.smartEmptyText) : t("products.noResultsDesc")}</p>
                 <button
                   onClick={resetFilters}
                   className="mt-8 rounded-full bg-[var(--color-accent)] px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#00628f]"
