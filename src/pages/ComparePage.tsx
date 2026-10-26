@@ -898,7 +898,7 @@ export default function ComparePage() {
                       className="sticky top-[72px] z-20 p-3 text-start align-top border-b border-[#d6d6d6] bg-white"
                     >
                       <div className="flex flex-col gap-2">
-                        <div className="relative w-full h-28 rounded-[10px] overflow-hidden bg-[#f5f5f7] border border-[#d6d6d6]">
+                        <div className="relative w-full h-44 rounded-[10px] overflow-hidden bg-[#f5f5f7] border border-[#d6d6d6]">
                           <Link
                             to={productUrl(p)}
                             aria-label={ml(p.name)}
