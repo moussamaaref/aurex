@@ -32,14 +32,6 @@ export const seoByRoute: Record<string, { title: L3; description: L3 }> = {
       ar: "تفهم AUREX الاحتياجات اليومية للبيوت الجزائرية: تصميم عصري ووظائف عملية وقيمة متوازنة. علامة تابعة لـ DAYCONN بدعم من مجموعة Media Arcodym.",
     },
   },
-  "smart-tech": {
-    title: { fr: `Smart Tech — ${brand}`, en: `Smart Tech — ${brand}`, ar: `Smart Tech — ${brand}` },
-    description: {
-      fr: "Smart Tech AUREX : appareils connectés en Wi-Fi et Bluetooth, contrôle à distance des fonctions disponibles, suivi de l'état et notifications.",
-      en: "AUREX Smart Tech: Wi-Fi and Bluetooth connected appliances, remote control of available functions, status tracking and notifications.",
-      ar: "Smart Tech من AUREX: أجهزة متصلة عبر Wi-Fi وBluetooth، تحكم عن بعد في الوظائف المتاحة، ومتابعة الحالة والإشعارات.",
-    },
-  },
   actualites: {
     title: { fr: `Nouveautés & À la une — ${brand}`, en: `What's New & Featured — ${brand}`, ar: `الجديد والأبرز — ${brand}` },
     description: {

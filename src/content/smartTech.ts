@@ -14,7 +14,7 @@ export const smartTech = {
     ar: "وظائف ذكية تسهّل روتينكم اليومي. ابقوا على اتصال بأجهزتكم، وتحكّموا عن بُعد في الوظائف المدعومة وتابعوا حالتها، لمرونة أكبر وراحة بال أكثر في المنزل.",
   } as L3,
   cta: { fr: "Explorer Smart Tech", en: "Explore Smart Tech", ar: "استكشفوا Smart Tech" } as L3,
-  ctaHref: "/produits?connectivite=wifi",
+  ctaHref: "/produits?connectivite=smart",
   appCta: { fr: "Télécharger l'application AUREX", en: "Download the AUREX app", ar: "حمّلوا تطبيق AUREX" } as L3,
   cards: [
     {

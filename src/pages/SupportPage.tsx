@@ -391,9 +391,10 @@ export default function SupportPage() {
       {/* Hero */}
       <section className="relative isolate overflow-hidden bg-[#1d1d1f] pb-20 pt-36 lg:pb-28 lg:pt-44">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(60%_80%_at_85%_10%,rgba(0,119,179,0.45),transparent_70%)]" />
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 lg:grid-cols-[1.15fr_0.85fr]">
+         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#4db3e6]">{p(support.hero.eyebrow)}</p>
-          <h1 className="mt-4 text-5xl font-semibold leading-[1.05] tracking-tight text-white lg:text-[80px] lg:tracking-[-1.2px]" style={{ fontFamily: "var(--font-display)" }}>
+          <h1 className="mt-4 text-3xl font-semibold sm:text-4xl leading-[1.05] tracking-tight text-white lg:text-[52px] lg:tracking-[-0.8px]" style={{ fontFamily: "var(--font-display)" }}>
             {p(support.hero.title)}
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/85">{p(support.hero.text)}</p>
@@ -405,6 +406,30 @@ export default function SupportPage() {
             <a href="#garantie" className="inline-flex min-h-12 items-center rounded-full border border-white/60 px-7 text-[15px] font-semibold text-white transition-colors hover:bg-white/10 active:scale-[0.98]">
               {p(support.hero.cta2)}
             </a>
+          </div>
+         </div>
+
+          {/* Visuel : mosaïque des services de support (icônes) */}
+          <div className="relative" aria-hidden="true">
+            <div className="mx-auto grid max-w-md grid-cols-3 gap-3">
+              <div className="col-span-3 flex items-center gap-4 rounded-[28px] bg-white p-6 text-[#1d1d1f]">
+                <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#0077b3] text-white">
+                  <Icon name="headset" className="h-8 w-8" strokeWidth={1.7} />
+                </span>
+                <span>
+                  <span className="block text-lg font-semibold" style={{ fontFamily: "var(--font-display)" }}>
+                    {p(support.hero.eyebrow)}
+                  </span>
+                  <span className="mt-0.5 block text-sm text-[#5a5a5e]">{p(support.hero.title)}</span>
+                </span>
+              </div>
+              {support.help.cards.slice(0, 6).map((card) => (
+                <div key={card.num} className="flex aspect-square flex-col items-center justify-center gap-2 rounded-[24px] border border-white/15 bg-white/10 p-3 text-center text-white backdrop-blur-sm">
+                  <Icon name={card.icon} className="h-7 w-7" strokeWidth={1.6} />
+                  <span className="text-[11px] font-semibold leading-tight text-white/90">{p(card.title)}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -506,7 +531,7 @@ export default function SupportPage() {
       <section className="bg-[#fafafc] py-24 text-center lg:py-[110px]" aria-labelledby="support-final">
         <div className="mx-auto max-w-4xl px-6">
           <Reveal>
-            <h2 id="support-final" className="text-5xl font-semibold leading-[1.05] tracking-tight text-[#1d1d1f] lg:text-[64px] lg:tracking-[-0.96px]" style={{ fontFamily: "var(--font-display)" }}>
+            <h2 id="support-final" className="text-5xl font-semibold leading-[1.05] tracking-tight text-[#1d1d1f] lg:text-[44px] lg:tracking-[-0.6px]" style={{ fontFamily: "var(--font-display)" }}>
               {p(support.final.title)}
             </h2>
             <p className="mx-auto mt-6 max-w-2xl text-[17px] leading-relaxed text-[#474747]">{p(support.final.text)}</p>

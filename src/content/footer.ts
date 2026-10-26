@@ -11,7 +11,6 @@ export const footerContent = {
   productLinks: categoryContent.map((c) => ({ label: c.name, href: `/produits/${c.slug}` })),
   exploreLinks: [
     { label: { fr: "À propos", en: "About", ar: "من نحن" } as L3, href: "/a-propos" },
-    { label: { fr: "Technologie : Smart Tech", en: "Technology: Smart Tech", ar: "التكنولوجيا: Smart Tech" } as L3, href: "/smart-tech" },
     { label: { fr: "Actualités : Nouveautés", en: "News: What's New", ar: "الأخبار: الجديد" } as L3, href: "/actualites" },
     { label: { fr: "Comparateur", en: "Compare", ar: "المقارنة" } as L3, href: "/comparateur" },
   ],

@@ -7,9 +7,9 @@ import Icon from "../components/Icon"
 const eyebrow = "text-xs font-semibold uppercase tracking-[0.18em]"
 const h2 = "font-semibold leading-[1.05] tracking-tight text-[#1d1d1f]"
 const btnPrimary =
-  "group inline-flex min-h-12 items-center gap-2 rounded-full bg-[var(--color-accent)] px-7 text-[15px] font-semibold text-white transition-colors hover:bg-[#00628f] active:scale-[0.98]"
+  "group inline-flex min-h-11 items-center gap-2 rounded-full bg-[var(--color-accent)] px-6 text-sm font-semibold text-white transition-colors hover:bg-[#00628f] active:scale-[0.98]"
 const btnGhost =
-  "inline-flex min-h-12 items-center rounded-full border border-[#86868b] px-7 text-[15px] font-semibold text-[#1d1d1f] transition-colors hover:bg-white active:scale-[0.98]"
+  "inline-flex min-h-11 items-center rounded-full border border-[#86868b] px-6 text-sm font-semibold text-[#1d1d1f] transition-colors hover:bg-white active:scale-[0.98]"
 
 export default function AboutPage() {
   const { p } = useP()
@@ -17,7 +17,7 @@ export default function AboutPage() {
   return (
     <div>
       {/* 01 — Héros : À propos d'AUREX */}
-      <section className="relative isolate flex min-h-[600px] items-end overflow-hidden bg-[#1d1d1f] pt-28 lg:min-h-[680px]">
+      <section className="relative isolate flex min-h-[460px] items-end overflow-hidden bg-[#1d1d1f] pt-28 lg:min-h-[520px]">
         <img
           fetchPriority="high"
           decoding="async"
@@ -26,21 +26,21 @@ export default function AboutPage() {
           className="absolute inset-0 -z-10 h-full w-full object-cover"
         />
         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black/75 via-black/45 to-transparent rtl:bg-gradient-to-l" />
-        <div className="mx-auto w-full max-w-7xl px-6 pb-20">
+        <div className="mx-auto w-full max-w-7xl px-6 pb-14">
           <p className={`${eyebrow} text-white/90`}>{p(about.hero.eyebrow)}</p>
           <h1
-            className="mt-4 max-w-4xl text-5xl font-semibold leading-[1.05] tracking-tight text-white lg:text-[80px] lg:tracking-[-1.2px]"
+            className="mt-4 max-w-4xl text-3xl font-semibold sm:text-4xl leading-[1.05] tracking-tight text-white lg:text-[52px] lg:tracking-[-0.8px]"
             style={{ fontFamily: "var(--font-display)" }}
           >
             {p(about.hero.title)}
           </h1>
-          <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/85 sm:text-lg">{p(about.hero.subtitle)}</p>
+          <p className="mt-6 max-w-2xl text-sm leading-relaxed text-white/85 sm:text-base">{p(about.hero.subtitle)}</p>
           <div className="mt-9 flex flex-wrap gap-3">
             <a href="#mission" className={btnPrimary}>
               {p(about.hero.cta1)}
               <Icon name="arrow" className="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1" strokeWidth={2} />
             </a>
-            <a href="#qui-est-aurex" className="inline-flex min-h-12 items-center rounded-full border border-white/60 px-7 text-[15px] font-semibold text-white transition-colors hover:bg-white/10 active:scale-[0.98]">
+            <a href="#qui-est-aurex" className="inline-flex min-h-11 items-center rounded-full border border-white/60 px-6 text-sm font-semibold text-white transition-colors hover:bg-white/10 active:scale-[0.98]">
               {p(about.hero.cta2)}
             </a>
           </div>
@@ -51,7 +51,7 @@ export default function AboutPage() {
       <section id="qui-est-aurex" className="scroll-mt-24 bg-white py-20 lg:py-[90px]" aria-labelledby="who-title">
         <div className="mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-12">
           <Reveal className="lg:col-span-4">
-            <h2 id="who-title" className={`${h2} text-4xl lg:text-[48px]`} style={{ fontFamily: "var(--font-display)" }}>
+            <h2 id="who-title" className={`${h2} text-4xl lg:text-[40px]`} style={{ fontFamily: "var(--font-display)" }}>
               {p(about.who.title)}
             </h2>
           </Reveal>
@@ -75,7 +75,7 @@ export default function AboutPage() {
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 lg:grid-cols-2">
           <Reveal>
             <p className={`${eyebrow} text-[#0077b3]`}>{p(about.mission.eyebrow)}</p>
-            <h2 id="mission-title" className={`mt-4 text-4xl lg:text-[48px] ${h2}`} style={{ fontFamily: "var(--font-display)" }}>
+            <h2 id="mission-title" className={`mt-4 text-4xl lg:text-[40px] ${h2}`} style={{ fontFamily: "var(--font-display)" }}>
               {p(about.mission.title)}
             </h2>
             <p className="mt-6 text-[17px] leading-relaxed text-[#474747]">{p(about.mission.text)}</p>
@@ -143,7 +143,7 @@ export default function AboutPage() {
         <div className="mx-auto max-w-7xl px-6">
           <Reveal>
             <p className={`${eyebrow} text-[#4db3e6]`}>{p(about.here.eyebrow)}</p>
-            <h2 id="here-title" className="mt-4 max-w-3xl text-5xl font-semibold leading-[1.02] tracking-tight text-white lg:text-[80px] lg:tracking-[-1.2px]" style={{ fontFamily: "var(--font-display)" }}>
+            <h2 id="here-title" className="mt-4 max-w-3xl text-4xl font-semibold leading-[1.05] tracking-tight text-white lg:text-[52px] lg:tracking-[-0.8px]" style={{ fontFamily: "var(--font-display)" }}>
               {p(about.here.title)}
             </h2>
             <p className="mt-6 max-w-2xl text-[17px] leading-relaxed text-white/80">{p(about.here.text)}</p>
@@ -152,7 +152,7 @@ export default function AboutPage() {
                 {p(about.here.cta1)}
                 <Icon name="arrow" className="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1" strokeWidth={2} />
               </Link>
-              <Link to="/support#sav" className="inline-flex min-h-12 items-center rounded-full border border-white/60 px-7 text-[15px] font-semibold text-white transition-colors hover:bg-white/10 active:scale-[0.98]">
+              <Link to="/support#sav" className="inline-flex min-h-11 items-center rounded-full border border-white/60 px-6 text-sm font-semibold text-white transition-colors hover:bg-white/10 active:scale-[0.98]">
                 {p(about.here.cta2)}
               </Link>
             </div>
@@ -165,7 +165,7 @@ export default function AboutPage() {
         <div className="mx-auto max-w-5xl px-6">
           <Reveal>
             <p className={`${eyebrow} text-[#0077b3]`}>{p(about.final.eyebrow)}</p>
-            <h2 id="final-title" className="mt-5 text-5xl font-semibold leading-[1.02] tracking-tight text-[#1d1d1f] sm:text-7xl lg:text-[96px] lg:tracking-[-1.8px]" style={{ fontFamily: "var(--font-display)" }}>
+            <h2 id="final-title" className="mt-5 text-4xl font-semibold leading-[1.05] tracking-tight text-[#1d1d1f] sm:text-6xl lg:text-[64px] lg:tracking-[-1px]" style={{ fontFamily: "var(--font-display)" }}>
               {p(about.final.lead)}
               <br />
               <span className="font-bold text-[#0077b3]">{about.final.brand}</span>
