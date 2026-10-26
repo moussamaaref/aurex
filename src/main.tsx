@@ -1,5 +1,6 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
+import "./content/overrides"
 import App from "./App"
 import "./i18n"
 import "./index.css"

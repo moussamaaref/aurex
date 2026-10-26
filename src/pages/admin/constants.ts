@@ -45,6 +45,9 @@ export const collectionGroups: CollectionGroup[] = [
 export const fieldLabels: Record<string, string> = {
   id: "Identifiant",
   product_id: "Produit lié (id du produit)",
+  lineup: "Afficher dans le Product Line-Up 2026 (accueil, 4 maximum)",
+  wifi: "Compatible Wi-Fi",
+  bluetooth: "Compatible Bluetooth",
   cover: "Image de couverture",
   scenes: "Scènes (3 à 5 : premier regard, conception, quotidien, performance, découvrir le modèle)",
   kind: "Type de scène (first-look, design, everyday, performance, explore)",
@@ -388,6 +391,7 @@ export const icons: Record<AdminTab, string> = {
   users: "◉",
   pages: "▭",
   requests: "✉",
+  content: "✎",
   site: "⬢",
   theme: "⬣",
   backup: "⧉",

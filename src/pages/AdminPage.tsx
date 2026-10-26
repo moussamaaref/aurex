@@ -42,6 +42,8 @@ import { CollectionsTab } from "./admin/components/tabs/CollectionsTab"
 import { UsersTab } from "./admin/components/tabs/UsersTab"
 import { PagesTab } from "./admin/components/tabs/PagesTab"
 import { RequestsTab } from "./admin/components/tabs/RequestsTab"
+import { ContentTab } from "./admin/components/tabs/ContentTab"
+import { applyOverrides, readStoredOverrides, storeOverrides, type Overrides } from "../content/registry"
 import { SiteTab } from "./admin/components/tabs/SiteTab"
 import { ThemeTab } from "./admin/components/tabs/ThemeTab"
 import { BackupTab } from "./admin/components/tabs/BackupTab"
@@ -57,6 +59,8 @@ export default function AdminPage() {
   const [theme, setTheme] = useState<ThemeState>(defaultTheme)
   const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null)
   const [siteSaving, setSiteSaving] = useState(false)
+  const [contentOverrides, setContentOverrides] = useState<Overrides>(() => readStoredOverrides())
+  const [contentSaving, setContentSaving] = useState(false)
   const [notice, setNotice] = useState<{ text: string; kind: "info" | "success" | "error" }>({
     text: "",
     kind: "info",
@@ -173,6 +177,16 @@ export default function AdminPage() {
             current,
           ),
         )
+        try {
+          const remoteContent = await loadRemoteCollection<{ overrides?: Overrides }>("siteContent")
+          const ov = remoteContent?.[0]?.overrides
+          if (mounted && ov && typeof ov === "object") {
+            setContentOverrides(ov)
+            storeOverrides(ov)
+          }
+        } catch {
+          // table / clé indisponible : on garde le cache local
+        }
         if (isAdmin) {
           const loadedProfiles = await loadProfiles()
           if (!mounted) return
@@ -287,6 +301,29 @@ export default function AdminPage() {
       notify(`${collectionLabels[activeCollection]} enregistrées dans Supabase.`)
     } catch (error) {
       notify(error instanceof Error ? error.message : "Impossible d'enregistrer dans Supabase.")
+    }
+  }
+
+  const saveContent = async () => {
+    if (!canEdit) {
+      notify("Lecture seule : rôle viewer ne peut pas modifier le contenu.")
+      return
+    }
+    setContentSaving(true)
+    try {
+      storeOverrides(contentOverrides)
+      applyOverrides(contentOverrides)
+      await saveRemoteCollection("siteContent", [{ id: "site-content", overrides: contentOverrides }])
+      await createAuditLog("update", "siteContent", null, { count: Object.keys(contentOverrides).length })
+      notify("Contenu du site enregistré dans Supabase. Rechargez le site pour voir les changements.")
+    } catch (error) {
+      notify(
+        error instanceof Error
+          ? `Impossible d'enregistrer le contenu : ${error.message}. Avez-vous exécuté supabase/add-site-content.sql ?`
+          : "Impossible d'enregistrer le contenu.",
+      )
+    } finally {
+      setContentSaving(false)
     }
   }
 
@@ -564,6 +601,7 @@ export default function AdminPage() {
     ["overview", "Vue d'ensemble"],
     ["collections", "Données de l'application"],
     ...(isAdmin ? [["users", "Utilisateurs"] as [AdminTab, string]] : []),
+    ["content", "Contenu du site"],
     ["requests", "Demandes & abonnés"],
     ["pages", "Pages et SEO"],
     ["site", "Site & Marque"],
@@ -771,6 +809,16 @@ export default function AdminPage() {
                   seedBusy={seedBusy}
                   seedResults={seedResults}
                   canEdit={canEdit}
+                />
+              )}
+
+              {activeTab === "content" && (
+                <ContentTab
+                  overrides={contentOverrides}
+                  onChange={setContentOverrides}
+                  onSave={() => void saveContent()}
+                  saving={contentSaving}
+                  isViewer={isViewer}
                 />
               )}
 

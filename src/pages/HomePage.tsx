@@ -13,12 +13,15 @@ import Icon from "../components/Icon"
 
 /** Quatre « Hero Products » représentant la diversité de la gamme : un par catégorie, les plus mis en avant d'abord. */
 function pickHeroProducts(list: Product[]): Product[] {
+  // Sélection éditoriale : les produits cochés « Line-Up » dans /admin passent en premier.
+  const chosen = list.filter((p) => p.lineup === true).slice(0, 4)
+  if (chosen.length === 4) return chosen
   const score = (p: Product) =>
     (p.badges?.includes("Best Seller") ? 2 : 0) + (p.badges?.includes("Nouveau") || p.isNew ? 1 : 0)
-  const picked: Product[] = []
+  const picked: Product[] = [...chosen]
   for (const cat of categoryContent) {
     const best = list
-      .filter((p) => p.category === cat.slug)
+      .filter((p) => p.category === cat.slug && !picked.includes(p))
       .sort((a, b) => score(b) - score(a))[0]
     if (best) picked.push(best)
     if (picked.length === 4) return picked

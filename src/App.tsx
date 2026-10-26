@@ -134,6 +134,7 @@ const CATALOG_SYNC_KEYS = [
   "technologies",
   "news",
   "stories",
+  "siteContent",
   "faq",
   "distributors",
 ] as const
