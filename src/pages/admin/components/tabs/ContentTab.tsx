@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react"
+import { useMemo, useRef, useState } from "react"
+import { uploadToAurexMedia } from "../../services/media"
 import {
   GROUPS,
   fieldLabel,
@@ -17,6 +18,61 @@ type L3Value = Partial<Record<Lang3, string | string[]>>
 
 const toText = (v: string | string[] | undefined) => (Array.isArray(v) ? v.join("\n") : (v ?? ""))
 const sameText = (a: string | string[] | undefined, b: string | string[] | undefined) => toText(a) === toText(b)
+
+/** Champ image : aperçu, URL modifiable et téléversement vers le stockage Supabase (bucket aurex-media). */
+function ImageField({
+  value,
+  onChange,
+  disabled,
+}: {
+  value: string
+  onChange: (url: string) => void
+  disabled: boolean
+}) {
+  const inputRef = useRef<HTMLInputElement>(null)
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState("")
+
+  const onFile = async (file: File | undefined) => {
+    if (!file) return
+    setBusy(true)
+    setError("")
+    try {
+      onChange(await uploadToAurexMedia(file))
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Téléversement impossible.")
+    } finally {
+      setBusy(false)
+      if (inputRef.current) inputRef.current.value = ""
+    }
+  }
+
+  return (
+    <div className="flex flex-wrap items-start gap-3">
+      <div className="h-20 w-28 shrink-0 overflow-hidden rounded-xl border border-[#d6d6d6] bg-[#f5f5f7]">
+        {value ? <img src={value} alt="" className="h-full w-full object-cover" /> : null}
+      </div>
+      <div className="min-w-0 flex-1 space-y-2">
+        <input value={value} onChange={(e) => onChange(e.target.value)} disabled={disabled} className={inputBase} placeholder="https://… ou /image.jpg" />
+        <div className="flex flex-wrap items-center gap-2">
+          <input
+            ref={inputRef}
+            type="file"
+            accept="image/*"
+            className="sr-only"
+            onChange={(e) => void onFile(e.target.files?.[0])}
+            disabled={disabled || busy}
+          />
+          <button type="button" onClick={() => inputRef.current?.click()} disabled={disabled || busy} className={btnSecondary}>
+            {busy ? "Téléversement…" : "Téléverser une image"}
+          </button>
+          <span className="text-xs text-[#5a5a5e]">JPG, PNG, WebP — 8 Mo max. Pensez à enregistrer ensuite.</span>
+        </div>
+        {error && <p role="alert" className="text-xs font-medium text-[#C1443D]">{error}</p>}
+      </div>
+    </div>
+  )
+}
 
 /** Éditeur de TOUS les contenus éditoriaux du site (textes FR/EN/AR, images, liens). */
 export function ContentTab({
@@ -170,7 +226,13 @@ export function ContentTab({
                               </button>
                             )}
                           </div>
-                          {leaf.kind === "string" ? (
+                          {leaf.kind === "string" && (leaf.key === "image" || leaf.key === "cover") ? (
+                            <ImageField
+                              value={typeof ov === "string" ? ov : (leaf.defaults as string)}
+                              onChange={(url) => setString(leaf, url)}
+                              disabled={isViewer}
+                            />
+                          ) : leaf.kind === "string" ? (
                             <input
                               value={typeof ov === "string" ? ov : (leaf.defaults as string)}
                               onChange={(e) => setString(leaf, e.target.value)}
