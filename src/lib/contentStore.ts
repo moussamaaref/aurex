@@ -1,4 +1,5 @@
 import { supabase } from "./supabase"
+import { categoryContent } from "../content/categories"
 
 type RemoteRow = Record<string, unknown>
 
@@ -315,16 +316,14 @@ export async function seedNormalizedTables(): Promise<SeedResult[]> {
   if (!supabase) throw new Error("Supabase n'est pas configuré.")
   const results: SeedResult[] = []
 
-  const fallbackCats = [
-    { slug: "lavage", label: "Lavage", description: "Machines à laver Spinova, Lavexa, Lavexa+ et Spinova+.", image: "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?w=600&h=700&fit=crop&auto=format", subcategories: ["Spinova", "Lavexa", "Lavexa+", "Spinova+"] },
-    { slug: "lave-vaisselle", label: "Lave-vaisselle", description: "Les solutions Estrela et Estrela S pour la vaisselle.", image: "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=600&h=700&fit=crop&auto=format", subcategories: ["Estrela", "Estrela S"] },
-    { slug: "petit-electromenager", label: "Petit électroménager", description: "Pétrins et cafetières Gustiva et Florenza.", image: "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&h=700&fit=crop&auto=format", subcategories: ["Pétrins", "Cafetières mono", "Cafetières multi"] },
-    { slug: "chauffe-eau", label: "Chauffe-eau", description: "Cumulus et chauffe-bain en 30, 50 et 85 litres.", image: "https://images.unsplash.com/photo-1586208958839-06c17cacdf08?w=600&h=700&fit=crop&auto=format", subcategories: ["Cumulus", "Chauffe-bain"] },
-    { slug: "entretien-maison", label: "Entretien de la maison", description: "Aspirateurs T-Vox, Eronex, Dustor et Liva.", image: "https://images.unsplash.com/photo-1558002038-1055907df827?w=600&h=700&fit=crop&auto=format", subcategories: ["Professionnels", "Avec sac", "Sans sac"] },
-    { slug: "fontaines", label: "Fontaines", description: "Des fontaines adaptées aux usages domestiques.", image: "https://images.unsplash.com/photo-1545259741-2ea3ebf61fa3?w=600&h=700&fit=crop&auto=format", subcategories: ["Fontaines à eau"] },
-    { slug: "cuisson", label: "Cuisson", description: "Fours, hottes, micro-ondes et cuisinières.", image: "https://images.unsplash.com/photo-1586208958839-06c17cacdf08?w=600&h=700&fit=crop&auto=format", subcategories: ["Fours encastrables", "Hottes aspirantes", "Micro-ondes"] },
-    { slug: "autres", label: "Autres appareils", description: "Découvrez les appareils complémentaires AUREX.", image: "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&h=700&fit=crop&auto=format", subcategories: ["Réfrigérateurs", "Climatisation"] },
-  ]
+  // Les 5 catégories officielles (website brief 2026).
+  const fallbackCats = categoryContent.map((c) => ({
+    slug: c.slug,
+    label: c.name.fr,
+    description: c.highlight.fr,
+    image: c.image,
+    subcategories: c.range.fr,
+  }))
   const cats = fallbackCats as Array<Record<string, unknown>>
 
   const catRows = cats.map((c, i) => ({
@@ -341,8 +340,8 @@ export async function seedNormalizedTables(): Promise<SeedResult[]> {
   results.push({ table: "categories", inserted: catErr ? 0 : catRows.length, error: catErr?.message })
 
   const prodFallback: Array<Record<string, unknown>> = [
-    { id: "ex9000-wm", name: "Lave-linge EX9000 Smart", reference: "EX-WM-9000-60-SB", category: "lavage", subcategory: "Spinova+", image: fallbackCats[0].image, images: [fallbackCats[0].image], badges: ["Nouveau"], capacity: "9 kg", energyClass: "A+++", energy_class: "A+++", connectivity: true, technologies: ["EcoWash"], noiseLevel: "45 dB", noise_level: "45 dB", dimensions: { w: 60, h: 85, d: 60 }, description: "Lave-linge EX9000 Smart", features: ["15 programmes"], color: "Blanc", isNew: true, is_new: true },
-    { id: "ex8000-oven", name: "Four multifonction EX8000", reference: "EX-OV-8000-70-PYR", category: "cuisson", subcategory: "Fours encastrables", image: fallbackCats[6].image, images: [fallbackCats[6].image], badges: ["Best Seller"], capacity: "70 L", energyClass: "A+", energy_class: "A+", connectivity: false, technologies: ["PyroCook"], dimensions: { w: 60, h: 60, d: 55 }, description: "Four EX8000", features: ["12 modes"], color: "Inox/Noir" },
+    { id: "ex9000-wm", name: "Lave-linge EX9000 Smart", reference: "EX-WM-9000-60-SB", category: "soin-linge-entretien", subcategory: "Spinova+", image: fallbackCats[0].image, images: [fallbackCats[0].image], badges: ["Nouveau"], capacity: "9 kg", energyClass: "A+++", energy_class: "A+++", connectivity: true, technologies: ["EcoWash"], noiseLevel: "45 dB", noise_level: "45 dB", dimensions: { w: 60, h: 85, d: 60 }, description: "Lave-linge EX9000 Smart", features: ["15 programmes"], color: "Blanc", isNew: true, is_new: true },
+    { id: "ex8000-oven", name: "Four multifonction EX8000", reference: "EX-OV-8000-70-PYR", category: "cuisine-encastrable", subcategory: "Fours encastrables", image: fallbackCats[0].image, images: [fallbackCats[0].image], badges: ["Best Seller"], capacity: "70 L", energyClass: "A+", energy_class: "A+", connectivity: false, technologies: ["PyroCook"], dimensions: { w: 60, h: 60, d: 55 }, description: "Four EX8000", features: ["12 modes"], color: "Inox/Noir" },
   ]
   const prods = prodFallback as Array<Record<string, unknown>>
   const prodRows = prods.map((p) => ({
@@ -371,8 +370,8 @@ export async function seedNormalizedTables(): Promise<SeedResult[]> {
   results.push({ table: "products", inserted: prodErr ? 0 : prodRows.length, error: prodErr?.message })
 
   const techFallback = [
-    { id: "smart-connect", name: "SmartConnect", icon: "⟳", image: fallbackCats[0].image, benefit: "Contrôle smartphone", description: "SmartConnect", category: "Connectivité", compatibleCategories: ["lavage"], compatible_categories: ["lavage"] },
-    { id: "eco-wash", name: "EcoWash", icon: "◈", image: fallbackCats[0].image, benefit: "40% économies", description: "EcoWash", category: "Éco-efficacité", compatibleCategories: ["lavage"], compatible_categories: ["lavage"] },
+    { id: "smart-connect", name: "SmartConnect", icon: "⟳", image: fallbackCats[0].image, benefit: "Contrôle smartphone", description: "SmartConnect", category: "Connectivité", compatibleCategories: ["soin-linge-entretien"], compatible_categories: ["soin-linge-entretien"] },
+    { id: "eco-wash", name: "EcoWash", icon: "◈", image: fallbackCats[0].image, benefit: "40% économies", description: "EcoWash", category: "Éco-efficacité", compatibleCategories: ["soin-linge-entretien"], compatible_categories: ["soin-linge-entretien"] },
   ]
   const techs = techFallback as Array<Record<string, unknown>>
   const techRows = techs.map((t) => ({

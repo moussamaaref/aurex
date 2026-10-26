@@ -16,10 +16,10 @@ export function PagesTab({
     <section className={`p-6 ${cardBase}`}>
       <SectionHeading
         title="Pages, contenu et SEO"
-        description="Gérez les textes de la page d'accueil, contact et SEO global."
+        description="Titres et descriptions SEO (prioritaires sur les valeurs par défaut du site) et coordonnées de contact. Les textes éditoriaux des pages sont gérés dans le contenu du site (website brief 2026)."
       />
       <div className="mt-6 grid gap-5 sm:grid-cols-2">
-        <label className="text-sm font-semibold text-[#12233F]">
+        <label className="text-sm font-semibold text-[#1d1d1f]">
           Titre accueil
           <input
             value={pages.home.title}
@@ -28,7 +28,7 @@ export function PagesTab({
             className={`mt-2 ${inputBase}`}
           />
         </label>
-        <label className="text-sm font-semibold text-[#12233F]">
+        <label className="text-sm font-semibold text-[#1d1d1f]">
           Email contact
           <input
             value={pages.contact.email}
@@ -39,7 +39,7 @@ export function PagesTab({
             className={`mt-2 ${inputBase}`}
           />
         </label>
-        <label className="text-sm font-semibold text-[#12233F] sm:col-span-2">
+        <label className="text-sm font-semibold text-[#1d1d1f] sm:col-span-2">
           Description accueil
           <textarea
             value={pages.home.description}
@@ -51,7 +51,7 @@ export function PagesTab({
             className={`mt-2 ${inputBase}`}
           />
         </label>
-        <label className="text-sm font-semibold text-[#12233F]">
+        <label className="text-sm font-semibold text-[#1d1d1f]">
           Téléphone
           <input
             value={pages.contact.phone}
@@ -62,7 +62,7 @@ export function PagesTab({
             className={`mt-2 ${inputBase}`}
           />
         </label>
-        <label className="text-sm font-semibold text-[#12233F]">
+        <label className="text-sm font-semibold text-[#1d1d1f]">
           Adresse
           <input
             value={pages.contact.address}
@@ -73,7 +73,7 @@ export function PagesTab({
             className={`mt-2 ${inputBase}`}
           />
         </label>
-        <label className="text-sm font-semibold text-[#12233F]">
+        <label className="text-sm font-semibold text-[#1d1d1f]">
           Titre SEO
           <input
             value={pages.seo.title}
@@ -82,7 +82,7 @@ export function PagesTab({
             className={`mt-2 ${inputBase}`}
           />
         </label>
-        <label className="text-sm font-semibold text-[#12233F]">
+        <label className="text-sm font-semibold text-[#1d1d1f]">
           Mots-clés SEO
           <input
             value={pages.seo.keywords}
@@ -93,7 +93,7 @@ export function PagesTab({
             className={`mt-2 ${inputBase}`}
           />
         </label>
-        <label className="text-sm font-semibold text-[#12233F] sm:col-span-2">
+        <label className="text-sm font-semibold text-[#1d1d1f] sm:col-span-2">
           Description SEO
           <textarea
             value={pages.seo.description}
