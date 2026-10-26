@@ -13,11 +13,6 @@ const SiteSettingsContext = createContext<SiteSettingsContextValue>({
   refresh: async () => {},
 })
 
-const LEGACY_ACCENTS = new Set(["#0071e3", "#0066cc", "#0063bf", "#008ed0"])
-/** Anciennes couleurs d'accent mémorisées dans le CMS → couleur de marque AUREX actuelle. */
-export const brandAccent = (c: string | null | undefined) =>
-  !c || LEGACY_ACCENTS.has(c.trim().toLowerCase()) ? "#0077b3" : c
-
 export function useSiteSettings() {
   return useContext(SiteSettingsContext)
 }
@@ -36,7 +31,7 @@ export function SiteSettingsProvider({ children }: { children: ReactNode }) {
 
   const applyTheme = (s: SiteSettings) => {
     document.documentElement.style.setProperty("--color-primary", s.primaryColor)
-    document.documentElement.style.setProperty("--color-accent", brandAccent(s.accentColor))
+    document.documentElement.style.setProperty("--color-accent", s.accentColor)
     document.documentElement.style.setProperty("--color-surface", s.surfaceColor)
     if (s.faviconUrl) {
       let link = document.querySelector<HTMLLinkElement>('link[rel="icon"]')
