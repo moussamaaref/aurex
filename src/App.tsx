@@ -71,6 +71,26 @@ function NotFound() {
   )
 }
 
+/** Défile vers #ancre après navigation (React Router ne le fait pas pour les liens internes). */
+function HashScroll() {
+  const { pathname, hash } = useLocation()
+  useEffect(() => {
+    if (!hash || pathname.startsWith("/support")) return
+    const id = decodeURIComponent(hash.slice(1))
+    let tries = 0
+    const timer = window.setInterval(() => {
+      const el = document.getElementById(id)
+      if (el || ++tries > 20) {
+        window.clearInterval(timer)
+        const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+        el?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" })
+      }
+    }, 60)
+    return () => window.clearInterval(timer)
+  }, [pathname, hash])
+  return null
+}
+
 function RtlHandler({ children }: { children: React.ReactNode }) {
   const { i18n } = useTranslation()
   useEffect(() => {
@@ -231,6 +251,7 @@ export default function App() {
     <BrowserRouter>
       <RtlHandler>
         <ScrollToTop />
+        <HashScroll />
         <RemoteContentSync />
         <PageSeoSync />
         <SiteSettingsProvider>

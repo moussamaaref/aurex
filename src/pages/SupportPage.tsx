@@ -381,7 +381,7 @@ export default function SupportPage() {
     if (!hash) return
     const id = hash.slice(1)
     const target = id === "pieces" || id === "sav" ? "demande" : id === "centres" ? "centres" : id
-    const timer = window.setTimeout(() => document.getElementById(target)?.scrollIntoView({ behavior: "smooth", block: "start" }), 80)
+    const timer = window.setTimeout(() => document.getElementById(target)?.scrollIntoView({ behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" }), 80)
     if (id === "pieces") setPresetType("spare-parts")
     return () => window.clearTimeout(timer)
   }, [hash])

@@ -127,6 +127,7 @@ const paths: Record<string, React.ReactNode> = {
   sparkle: <path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z" />,
   star: <path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z" />,
   play: <path d="m6 4 14 8-14 8z" />,
+  pause: <path d="M8 5v14M16 5v14" />,
 }
 
 export default function Icon({

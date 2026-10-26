@@ -178,6 +178,7 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 .animate-fade-in    { animation: fadeIn 0.7s ease-out forwards; }
 .animate-slide-up   { animation: slideUp 0.48s ease-out forwards; }
 .animate-fade-in-down { animation: fadeInDown 0.22s ease-out forwards; }
+.animate-text-in { animation: fadeIn 0.35s ease-out both; }
 
 .delay-200 { animation-delay: 200ms; }
 .delay-400 { animation-delay: 400ms; }
@@ -225,4 +226,19 @@ button:focus-visible, a:focus-visible, input:focus-visible {
   .overflow-x-auto {
     overflow: visible !important;
   }
+}
+
+/* Mouvement réduit : neutralise toute animation / transition / défilement fluide (WCAG 2.3.3). */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Impression : le contenu révélé au défilement doit rester visible. */
+@media print {
+  [style*="opacity: 0"] { opacity: 1 !important; transform: none !important; }
 }
