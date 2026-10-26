@@ -10,8 +10,7 @@ import Icon from "./Icon"
  *  Aucun élément d'interface inventé : seuls le nom, la référence et l'état de connexion sont affichés. */
 export default function SmartTechSection() {
   const { p } = useP()
-  const connected = products.find((x) => x.connectivity)
-  const device = connected ?? products[0]
+  const device = products.find((x) => x.connectivity) ?? products[0]
 
   return (
     <div className="mx-auto max-w-7xl px-6">
@@ -50,7 +49,6 @@ export default function SmartTechSection() {
               />
             )}
             {/* Téléphone à côté de l'appareil : état réel uniquement */}
-            {connected && (
             <div
               className="absolute bottom-6 end-4 w-40 rounded-[28px] border border-[#d6d6d6] bg-white p-2 sm:bottom-10 sm:end-8 sm:w-44"
               role="img"
@@ -67,7 +65,6 @@ export default function SmartTechSection() {
                 </p>
               </div>
             </div>
-            )}
           </Link>
         </Reveal>
       </div>

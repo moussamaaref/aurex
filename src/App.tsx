@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next"
 import Header from "./components/Header"
 import Footer from "./components/Footer"
 import { CompareProvider } from "./context/CompareContext"
-import { SiteSettingsProvider, brandAccent } from "./context/SiteSettingsContext"
+import { SiteSettingsProvider } from "./context/SiteSettingsContext"
 import CompareToast from "./components/CompareToast"
 import { seoFor } from "./content/seo"
 import { loadNormalizedCollections, loadPublicPages, loadRemoteCollection } from "./lib/contentStore"
@@ -101,7 +101,7 @@ function RtlHandler({ children }: { children: React.ReactNode }) {
       if (theme) {
         const values = JSON.parse(theme) as { primary?: string; accent?: string; surface?: string }
         if (values.primary) document.documentElement.style.setProperty("--color-primary", values.primary)
-        if (values.accent) document.documentElement.style.setProperty("--color-accent", brandAccent(values.accent))
+        if (values.accent) document.documentElement.style.setProperty("--color-accent", values.accent)
         if (values.surface) document.documentElement.style.setProperty("--color-surface", values.surface)
       }
 
@@ -215,9 +215,9 @@ function PageSeoSync() {
         const slug = pathname === "/" ? "home" : pathname.split("/").filter(Boolean)[0] ?? "home"
         const page = pages.find((p) => p.slug === slug)
         if (!page) return
-        // Seuls les champs SEO du CMS priment ; le titre éditorial hérité (ancien hero) n'écrase plus le titre de la page.
         if (page.seoTitle) document.title = page.seoTitle
-        const desc = page.seoDescription
+        else if (page.title) document.title = page.title
+        const desc = page.seoDescription ?? page.description
         if (desc) document.querySelector('meta[name="description"]')?.setAttribute("content", desc)
         if (page.seoKeywords) {
           let kw = document.querySelector('meta[name="keywords"]')

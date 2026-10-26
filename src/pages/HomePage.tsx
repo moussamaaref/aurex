@@ -39,7 +39,6 @@ const SLIDE_MS = 7500
 function Hero() {
   const { p } = useP()
   const [index, setIndex] = useState(0)
-  const [prevIndex, setPrevIndex] = useState(-1)
   const [paused, setPaused] = useState(false)
   const [userPaused, setUserPaused] = useState(false)
   const [reduced, setReduced] = useState(
@@ -67,12 +66,7 @@ function Hero() {
   }, [])
 
   const playing = !paused && !userPaused && !reduced
-  const goTo = (target: number) => {
-    if (target === index) return
-    setPrevIndex(index)
-    setIndex(target)
-  }
-  const next = () => goTo((index + 1) % heroSlides.length)
+  const next = () => setIndex((i) => (i + 1) % heroSlides.length)
   const slide = heroSlides[index]
   // Titres longs : taille réduite pour que titre + boutons restent dans le premier écran.
   const long = p(slide.title).length > 44
@@ -98,12 +92,8 @@ function Hero() {
           decoding="async"
           fetchPriority={i === 0 ? "high" : "auto"}
           loading={i === 0 ? "eager" : "lazy"}
-          className={`absolute inset-0 h-full w-full object-cover transition-[opacity,transform] duration-[1200ms] ease-out motion-reduce:transition-none ${
-            i === index
-              ? "z-[-9] scale-100 opacity-100"
-              : i === prevIndex
-                ? "-z-10 scale-100 opacity-100 [transition-duration:0ms]"
-                : "-z-10 scale-[1.05] opacity-0 [transition-duration:0ms]"
+          className={`absolute inset-0 -z-10 h-full w-full object-cover transition-[opacity,transform] duration-[1200ms] ease-out motion-reduce:transition-none ${
+            i === index ? "scale-100 opacity-100" : "scale-[1.05] opacity-0"
           }`}
         />
       ))}
@@ -179,7 +169,7 @@ function Hero() {
                 role="tab"
                 aria-selected={i === index}
                 aria-label={`${i + 1} / ${heroSlides.length}`}
-                onClick={() => goTo(i)}
+                onClick={() => setIndex(i)}
                 className="group flex min-h-11 min-w-6 items-center justify-center px-1"
               >
                 <span
