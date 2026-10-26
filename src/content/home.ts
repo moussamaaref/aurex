@@ -65,11 +65,11 @@ export const heroSlides: HeroSlideContent[] = [
     },
     primary: {
       label: { fr: "Explorer les appareils Smart Tech", en: "Explore Smart Tech devices", ar: "استكشفوا أجهزة Smart Tech" },
-      href: "/smart-tech",
+      href: "/produits?connectivite=smart",
     },
     secondary: {
-      label: { fr: "Télécharger l'application AUREX", en: "Download the AUREX app", ar: "حمّلوا تطبيق AUREX" },
-      href: "/smart-tech#application",
+      label: { fr: "Voir tous les produits", en: "See all products", ar: "عرض كل المنتجات" },
+      href: "/produits",
     },
   },
   {

@@ -2,6 +2,7 @@ import type { L3 } from "./lang"
 
 /** Menu et filtres Produits (website brief 2026). « Smart Home » est retiré. */
 export const productsUi = {
+  smartTitle: { fr: "Produits Bluetooth & Wi-Fi", en: "Bluetooth & Wi-Fi products", ar: "منتجات Bluetooth وWi-Fi" } as L3,
   filters: {
     famille: { fr: "Famille", en: "Family", ar: "العائلة" } as L3,
     allFamilles: { fr: "Toutes les familles", en: "All families", ar: "كل العائلات" } as L3,

@@ -8,7 +8,7 @@ import Icon from "./Icon"
 
 /** Smart Tech : un vrai appareil de la gamme compatible connectivité + téléphone intégré naturellement.
  *  Aucun élément d'interface inventé : seuls le nom, la référence et l'état de connexion sont affichés. */
-export default function SmartTechSection({ showApp = false }: { showApp?: boolean }) {
+export default function SmartTechSection() {
   const { p } = useP()
   const device = products.find((x) => x.connectivity) ?? products[0]
 
@@ -17,7 +17,7 @@ export default function SmartTechSection({ showApp = false }: { showApp?: boolea
       <div className="grid items-center gap-12 lg:grid-cols-2">
         <Reveal>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0077b3]">{p(smartTech.label)}</p>
-          <h2 className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight text-[#1d1d1f] lg:text-[48px]" style={{ fontFamily: "var(--font-display)" }}>
+          <h2 className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight text-[#1d1d1f] lg:text-[40px]" style={{ fontFamily: "var(--font-display)" }}>
             {p(smartTech.headline)}
           </h2>
           <p className="mt-6 max-w-xl text-[17px] leading-relaxed text-[#474747]">{p(smartTech.text)}</p>
@@ -26,7 +26,7 @@ export default function SmartTechSection({ showApp = false }: { showApp?: boolea
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
-              to={showApp ? smartTech.ctaHref : "/smart-tech"}
+              to={smartTech.ctaHref}
               className="group inline-flex min-h-12 items-center gap-2 rounded-full bg-[var(--color-accent)] px-7 text-[15px] font-semibold text-white transition-colors hover:bg-[#00628f] active:scale-[0.98]"
             >
               {p(smartTech.cta)}
@@ -36,7 +36,7 @@ export default function SmartTechSection({ showApp = false }: { showApp?: boolea
         </Reveal>
 
         <Reveal variant="scale" delay={120}>
-          <div className="relative rounded-[28px] bg-white p-6 sm:p-10">
+          <Link to={smartTech.ctaHref} aria-label={p(smartTech.cta)} className="relative block rounded-[28px] bg-white p-6 sm:p-10">
             {device && (
               <img
                 loading="lazy"
@@ -65,14 +65,14 @@ export default function SmartTechSection({ showApp = false }: { showApp?: boolea
                 </p>
               </div>
             </div>
-          </div>
+          </Link>
         </Reveal>
       </div>
 
       <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {smartTech.cards.map((card, i) => (
           <Reveal key={card.icon} delay={i * 80} className="h-full">
-            <div className="h-full rounded-[28px] bg-white p-7">
+            <Link to={smartTech.ctaHref} className="block h-full rounded-[28px] bg-white p-7 transition-colors hover:bg-[#fafafc]">
               <span className="text-[#0077b3]">
                 <Icon name={card.icon} className="h-8 w-8" />
               </span>
@@ -81,7 +81,7 @@ export default function SmartTechSection({ showApp = false }: { showApp?: boolea
               </h3>
               <p className="mt-1 text-sm font-semibold text-[#0077b3]">{p(card.subtitle)}</p>
               <p className="mt-3 text-[15px] leading-relaxed text-[#474747]">{p(card.text)}</p>
-            </div>
+            </Link>
           </Reveal>
         ))}
       </div>

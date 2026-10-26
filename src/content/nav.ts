@@ -5,7 +5,6 @@ import type { L3 } from "./lang"
 export const navItems = [
   { key: "about", href: "/a-propos", hasMega: false },
   { key: "products", href: "/produits", hasMega: true },
-  { key: "smartTech", href: "/smart-tech", hasMega: false },
   { key: "news", href: "/actualites", hasMega: false },
   { key: "support", href: "/support", hasMega: false },
 ] as const
@@ -15,7 +14,6 @@ export type NavKey = (typeof navItems)[number]["key"]
 export const navLabels: Record<NavKey, L3> = {
   about: { fr: "À propos", en: "About", ar: "من نحن" },
   products: { fr: "Produits", en: "Products", ar: "المنتجات" },
-  smartTech: { fr: "Smart Tech", en: "Smart Tech", ar: "Smart Tech" },
   news: { fr: "Nouveautés", en: "What's New", ar: "جديدنا" },
   support: { fr: "Support", en: "Support", ar: "الدعم" },
 }
@@ -29,15 +27,6 @@ export const navDetails: Record<Exclude<NavKey, "products">, { title: L3; descri
       ar: "اكتشفوا علامة AUREX ورؤيتها والتزاماتها وفهمها للبيت الجزائري.",
     },
     action: { fr: "Découvrir AUREX", en: "Discover AUREX", ar: "اكتشفوا AUREX" },
-  },
-  smartTech: {
-    title: { fr: "Smart Tech — contrôle d'un seul geste.", en: "Smart Tech — One Touch Control.", ar: "Smart Tech — تحكّم بلمسة واحدة." },
-    description: {
-      fr: "Des appareils connectés en Wi-Fi et Bluetooth, pilotables depuis votre smartphone selon leurs fonctions disponibles.",
-      en: "Wi-Fi and Bluetooth connected appliances you can manage from your smartphone, depending on their available functions.",
-      ar: "أجهزة متصلة عبر Wi-Fi وBluetooth يمكن التحكم بها من هاتفكم بحسب الوظائف المتاحة.",
-    },
-    action: { fr: "Explorer Smart Tech", en: "Explore Smart Tech", ar: "استكشفوا Smart Tech" },
   },
   news: {
     title: { fr: "Chaque détail a une raison d'être.", en: "Every Detail Has a Purpose.", ar: "لكل تفصيل غاية." },

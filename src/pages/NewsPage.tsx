@@ -113,7 +113,7 @@ export default function NewsPage() {
       <section className="bg-white">
         <div className="mx-auto max-w-7xl px-6 py-16 lg:py-24">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0077b3]">{p(news.hero.eyebrow)}</p>
-          <h1 className="mt-4 max-w-4xl text-5xl font-semibold leading-[1.05] tracking-tight text-[#1d1d1f] lg:text-[80px] lg:tracking-[-1.2px]" style={{ fontFamily: "var(--font-display)" }}>
+          <h1 className="mt-4 max-w-4xl text-3xl font-semibold sm:text-4xl leading-[1.05] tracking-tight text-[#1d1d1f] lg:text-[52px] lg:tracking-[-0.8px]" style={{ fontFamily: "var(--font-display)" }}>
             {p(news.hero.title)}
           </h1>
           <p className="mt-6 max-w-2xl text-[19px] leading-relaxed text-[#333336]">{p(news.hero.text)}</p>

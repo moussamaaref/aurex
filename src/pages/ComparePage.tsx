@@ -876,12 +876,13 @@ export default function ComparePage() {
 
         <Reveal>
         <div className="hidden md:block bg-white rounded-[28px] border border-[#d6d6d6] overflow-hidden shadow-sm">
-          <div className="overflow-x-auto overscroll-x-contain">
+          {/* Zone défilante : les images produit (en-tête) restent épinglées pendant le défilement des caractéristiques. */}
+          <div className="max-h-[calc(100vh-7rem)] overflow-auto overscroll-contain">
             <table className="w-full min-w-[860px] text-sm font-sans border-collapse">
               <thead>
                 <tr>
                   <th
-                    className="sticky start-0 z-20 bg-white w-44 min-w-44 p-5 text-start align-top border-b border-[#d6d6d6]"
+                    className="sticky start-0 top-0 z-30 bg-white w-44 min-w-44 p-5 text-start align-top border-b border-[#d6d6d6]"
                     scope="col"
                   >
                     <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#5a5a5e] font-display">
@@ -892,7 +893,7 @@ export default function ComparePage() {
                     <th
                       key={p.id}
                       scope="col"
-                      className="min-w-[210px] w-[210px] p-5 text-start align-top border-b border-[#d6d6d6] bg-white"
+                      className="sticky top-0 z-20 min-w-[210px] w-[210px] p-4 text-start align-top border-b border-[#d6d6d6] bg-white"
                     >
                       <div className="flex flex-col gap-3">
                         <div className="relative w-full aspect-square rounded-[10px] overflow-hidden bg-[#f5f5f7] border border-[#d6d6d6]">

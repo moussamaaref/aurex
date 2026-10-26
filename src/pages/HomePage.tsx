@@ -119,14 +119,14 @@ function Hero() {
           <h1
             className={`animate-hero-in font-semibold leading-[1.05] tracking-tight text-white ${
               long
-                ? "text-[34px] sm:text-5xl lg:text-[56px] lg:tracking-[-0.9px]"
-                : "text-[44px] sm:text-6xl lg:text-[80px] lg:tracking-[-1.2px]"
+                ? "text-[28px] sm:text-4xl lg:text-[44px] lg:tracking-[-0.6px]"
+                : "text-[34px] sm:text-5xl lg:text-[60px] lg:tracking-[-0.9px]"
             }`}
             style={{ fontFamily: "var(--font-display)", ...stagger(1) }}
           >
             {p(slide.title)}
           </h1>
-          <p className="animate-hero-in mt-6 max-w-xl text-base leading-relaxed text-white sm:text-lg" style={stagger(2)}>
+          <p className="animate-hero-in mt-6 max-w-xl text-base leading-relaxed text-white" style={stagger(2)}>
             {p(slide.subtitle)}
           </p>
           <div className="animate-hero-in mt-9 flex flex-wrap items-center gap-3" style={stagger(3)}>
@@ -246,7 +246,7 @@ function WhyAurex() {
           <div className="lg:col-span-5">
             <Reveal>
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0077b3]">{p(why.heading)}</p>
-              <h2 id="why-title" className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight text-[#1d1d1f] lg:text-[48px]" style={{ fontFamily: "var(--font-display)" }}>
+              <h2 id="why-title" className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight text-[#1d1d1f] lg:text-[40px]" style={{ fontFamily: "var(--font-display)" }}>
                 {p(why.headline)}
               </h2>
             </Reveal>
@@ -354,7 +354,7 @@ function AfterSales() {
         <div className="grid gap-10 lg:grid-cols-12 lg:items-end">
           <Reveal className="lg:col-span-7">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0077b3]">{p(sav.eyebrow)}</p>
-            <h2 id="sav-title" className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight text-[#1d1d1f] lg:text-[48px]" style={{ fontFamily: "var(--font-display)" }}>
+            <h2 id="sav-title" className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight text-[#1d1d1f] lg:text-[40px]" style={{ fontFamily: "var(--font-display)" }}>
               {p(sav.headline)}
             </h2>
             <p className="mt-4 text-[17px] font-medium italic text-[#333336]">{p(sav.principle)}</p>

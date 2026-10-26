@@ -13,7 +13,6 @@ const HomePage = lazy(() => import("./pages/HomePage"))
 const ProductsPage = lazy(() => import("./pages/ProductsPage"))
 const ProductDetailPage = lazy(() => import("./pages/ProductDetailPage"))
 const ComparePage = lazy(() => import("./pages/ComparePage"))
-const SmartTechPage = lazy(() => import("./pages/SmartTechPage"))
 const SupportPage = lazy(() => import("./pages/SupportPage"))
 const AboutPage = lazy(() => import("./pages/AboutPage"))
 const DistributorsPage = lazy(() => import("./pages/DistributorsPage"))
@@ -267,10 +266,10 @@ export default function App() {
                   <Route path="/produits/:category/:famille/:sousFamille/:gamme/:slug" element={<ProductDetailPage />} />
                   <Route path="/produits/:category/:id" element={<ProductDetailPage />} />
                   <Route path="/comparateur" element={<ComparePage />} />
-                  <Route path="/smart-tech" element={<SmartTechPage />} />
                   {/* Le concept « Smart Home » est retiré : redirections vers Smart Tech */}
-                  <Route path="/smart-home" element={<Navigate to="/smart-tech" replace />} />
-                  <Route path="/technologies" element={<Navigate to="/smart-tech" replace />} />
+                  <Route path="/smart-home" element={<Navigate to="/produits?connectivite=smart" replace />} />
+                  <Route path="/smart-tech" element={<Navigate to="/produits?connectivite=smart" replace />} />
+                  <Route path="/technologies" element={<Navigate to="/produits?connectivite=smart" replace />} />
                   <Route path="/support" element={<SupportPage />} />
                   <Route path="/a-propos" element={<AboutPage />} />
                   <Route path="/distributeurs" element={<DistributorsPage />} />

@@ -320,6 +320,7 @@ function ProductsPageInner() {
     setSelectedCapacite(q("capacite"))
     setSelectedCouleur(q("couleur"))
     const conn = q("connectivite")
+    setConnectedOnly(conn === "smart")
     setWifiOnly(conn === "wifi")
     setBluetoothOnly(conn === "bluetooth")
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -453,7 +454,7 @@ function ProductsPageInner() {
               AUREX
             </p>
             <h1 className="mt-2 text-5xl font-semibold lg:text-6xl font-display text-[#1d1d1f] tracking-tight">
-              {t("products.allProducts")}
+              {searchParams.get("connectivite") === "smart" ? p(productsUi.smartTitle) : t("products.allProducts")}
             </h1>
             <p className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#f5f5f7] px-4 py-1.5 text-xs font-semibold text-[#333336]">
               {filtered.length} {filtered.length === 1 ? t("products.results.one") : t("products.results.other")}
@@ -506,14 +507,14 @@ function ProductsPageInner() {
         <div className="flex gap-8">
           {/* ══ Sidebar filtres ══ */}
           <aside className="hidden w-60 flex-shrink-0 lg:block">
-            <div className="sticky top-24 rounded-[28px] border border-[#d6d6d6] bg-white shadow-sm overflow-hidden">
+            <div className="sticky top-24 flex max-h-[calc(100vh-7rem)] flex-col overflow-hidden rounded-[28px] border border-[#d6d6d6] bg-white shadow-sm">
               {/* En-tête sidebar */}
-              <div className="px-5 py-4 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)] text-white">
+              <div className="shrink-0 px-5 py-4 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)] text-white">
                 <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-200" style={{ fontFamily: "var(--font-display)" }}>
                   {t("products.filters.energyClass")}
                 </p>
               </div>
-              <div className="p-5 space-y-6">
+              <div className="min-h-0 flex-1 space-y-6 overflow-y-auto overscroll-contain p-5 [scrollbar-color:#b8b8bd_transparent] [scrollbar-width:thin]" tabIndex={0} aria-label={p(productsUi.filters.famille)}>
                 <div className="space-y-2.5">
                   {energyClasses.map((cls) => (
                     <label key={cls} className="group flex cursor-pointer items-center gap-2.5 rounded-[10px] p-2 transition-colors hover:bg-[#f5f5f7]">
@@ -922,7 +923,7 @@ function ProductsPageInner() {
       {filtersOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="absolute inset-0 bg-[var(--color-primary)]/40 backdrop-blur-sm" onClick={() => setFiltersOpen(false)} />
-          <div className="animate-slide-up absolute bottom-0 left-0 right-0 rounded-t-3xl bg-white p-6 shadow-2xl">
+          <div className="animate-slide-up absolute bottom-0 left-0 right-0 max-h-[88dvh] overflow-y-auto overscroll-contain rounded-t-3xl bg-white p-6 shadow-2xl">
             <div className="mx-auto mb-6 h-1.5 w-12 rounded-full bg-[#d6d6d6]" />
             <div className="mb-6 flex items-center justify-between">
               <h3 className="text-xl font-bold text-[var(--color-primary)] font-display">{t("products.mobileFilters")}</h3>

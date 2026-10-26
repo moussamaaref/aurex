@@ -1,6 +1,6 @@
 import { useP } from "../content/lang"
 import { specUi } from "../content/products"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Link, useParams, Navigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import {
@@ -50,6 +50,21 @@ export default function ProductDetailPage() {
     "features",
   )
   const [isImageFullscreen, setIsImageFullscreen] = useState(false)
+
+  // Plein écran : Échap pour fermer, défilement de la page verrouillé.
+  useEffect(() => {
+    if (!isImageFullscreen) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsImageFullscreen(false)
+    }
+    document.addEventListener("keydown", onKey)
+    const overflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    return () => {
+      document.removeEventListener("keydown", onKey)
+      document.body.style.overflow = overflow
+    }
+  }, [isImageFullscreen])
 
   if (!product) return <Navigate to="/produits" replace />
 
@@ -198,7 +213,10 @@ export default function ProductDetailPage() {
                 {images.map((img, index) => (
                   <div
                     key={`${img}-${index}`}
-                    className="flex min-w-full snap-center snap-always items-center justify-center"
+                    className={`flex min-w-full snap-center snap-always items-center justify-center ${
+                      isImageFullscreen ? "cursor-zoom-out bg-black/90" : "cursor-zoom-in"
+                    }`}
+                    onClick={() => setIsImageFullscreen((value) => !value)}
                   >
                     <img fetchPriority="high" decoding="async"
                       src={img}
@@ -206,7 +224,7 @@ export default function ProductDetailPage() {
                       draggable={false}
                       className={
                         isImageFullscreen
-                          ? "max-h-[80vh] max-w-[80vw] object-contain"
+                          ? "max-h-[92vh] max-w-[94vw] object-contain"
                           : "h-full w-full object-cover"
                       }
                     />
