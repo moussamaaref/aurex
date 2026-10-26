@@ -31,6 +31,8 @@ function pickHeroProducts(list: Product[]): Product[] {
 }
 
 /* ──────────────── 1. HERO — diaporama de 4 diapositives ──────────────── */
+const SLIDE_MS = 7500
+
 function Hero() {
   const { p } = useP()
   const [index, setIndex] = useState(0)
@@ -49,15 +51,23 @@ function Hero() {
     return () => mq.removeEventListener("change", onChange)
   }, [])
 
-  const playing = !paused && !userPaused && !reduced
-
+  // Les diapositives suivantes sont préchargées après le premier affichage : pas de trou noir au changement d'image.
   useEffect(() => {
-    if (!playing) return
-    const id = window.setInterval(() => setIndex((i) => (i + 1) % heroSlides.length), 7500)
-    return () => window.clearInterval(id)
-  }, [playing])
+    const timer = window.setTimeout(() => {
+      heroSlides.slice(1).forEach((s) => {
+        const img = new Image()
+        img.src = s.image
+      })
+    }, 1200)
+    return () => window.clearTimeout(timer)
+  }, [])
 
+  const playing = !paused && !userPaused && !reduced
+  const next = () => setIndex((i) => (i + 1) % heroSlides.length)
   const slide = heroSlides[index]
+  // Titres longs : taille réduite pour que titre + boutons restent dans le premier écran.
+  const long = p(slide.title).length > 44
+  const stagger = (n: number): React.CSSProperties => ({ animationDelay: `${n * 90}ms` })
 
   return (
     <section
@@ -69,6 +79,7 @@ function Hero() {
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
     >
+      {/* Images : fondu 1,2 s + léger recul de zoom (1.05 → 1) sur la diapositive entrante */}
       {heroSlides.map((s, i) => (
         <img
           key={s.id}
@@ -78,18 +89,22 @@ function Hero() {
           decoding="async"
           fetchPriority={i === 0 ? "high" : "auto"}
           loading={i === 0 ? "eager" : "lazy"}
-          className={`absolute inset-0 -z-10 h-full w-full object-cover transition-opacity duration-1000 ${
-            i === index ? "opacity-100" : "opacity-0"
+          className={`absolute inset-0 -z-10 h-full w-full object-cover transition-[opacity,transform] duration-[1200ms] ease-out motion-reduce:transition-none ${
+            i === index ? "scale-100 opacity-100" : "scale-[1.05] opacity-0"
           }`}
         />
       ))}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black/75 via-black/40 to-transparent rtl:bg-gradient-to-l" />
-      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+      {/* Voile : contraste du texte ≥ 4,5:1 sur la zone de lecture, photo préservée à droite */}
+      <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(0,0,0,0.82)_0%,rgba(0,0,0,0.6)_40%,rgba(0,0,0,0.12)_75%,rgba(0,0,0,0)_100%)] rtl:bg-[linear-gradient(270deg,rgba(0,0,0,0.82)_0%,rgba(0,0,0,0.6)_40%,rgba(0,0,0,0.12)_75%,rgba(0,0,0,0)_100%)]" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black/55 via-transparent to-black/20" />
 
-      <div className="mx-auto w-full max-w-7xl px-6 pb-24 pt-40">
-        <div key={slide.id} className="max-w-4xl animate-text-in" aria-live={playing ? "off" : "polite"}>
+      <div className="mx-auto w-full max-w-7xl px-6 pb-28 pt-32 sm:pb-32 sm:pt-40">
+        <div key={slide.id} className="max-w-4xl" aria-live={playing ? "off" : "polite"}>
           {(slide.badge || slide.tag) && (
-            <p className="mb-6 inline-flex flex-wrap items-center gap-x-3 text-xs font-semibold uppercase tracking-[0.14em] text-white/90">
+            <p
+              className="animate-hero-in mb-6 inline-flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-semibold uppercase tracking-[0.14em] text-white/90"
+              style={stagger(0)}
+            >
               {slide.badge && <span>{p(slide.badge)}</span>}
               {slide.tag && (
                 <span className="inline-flex items-center gap-2 before:h-1.5 before:w-1.5 before:rounded-full before:bg-[#4db3e6]">
@@ -99,13 +114,19 @@ function Hero() {
             </p>
           )}
           <h1
-            className="text-5xl font-semibold leading-[1.05] tracking-tight text-white sm:text-7xl lg:text-[80px] lg:tracking-[-1.2px]"
-            style={{ fontFamily: "var(--font-display)" }}
+            className={`animate-hero-in font-semibold leading-[1.05] tracking-tight text-white ${
+              long
+                ? "text-[34px] sm:text-5xl lg:text-[56px] lg:tracking-[-0.9px]"
+                : "text-[44px] sm:text-6xl lg:text-[80px] lg:tracking-[-1.2px]"
+            }`}
+            style={{ fontFamily: "var(--font-display)", ...stagger(1) }}
           >
             {p(slide.title)}
           </h1>
-          <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/85 sm:text-lg">{p(slide.subtitle)}</p>
-          <div className="mt-9 flex flex-wrap items-center gap-3">
+          <p className="animate-hero-in mt-6 max-w-xl text-base leading-relaxed text-white sm:text-lg" style={stagger(2)}>
+            {p(slide.subtitle)}
+          </p>
+          <div className="animate-hero-in mt-9 flex flex-wrap items-center gap-3" style={stagger(3)}>
             <Link
               to={slide.primary.href}
               className="group inline-flex min-h-12 items-center gap-2 rounded-full bg-[var(--color-accent)] px-7 text-[15px] font-semibold text-white transition-colors hover:bg-[#00628f] active:scale-[0.98]"
@@ -115,7 +136,7 @@ function Hero() {
             </Link>
             <Link
               to={slide.secondary.href}
-              className="inline-flex min-h-12 items-center rounded-full border border-white/60 px-7 text-[15px] font-semibold text-white transition-colors hover:bg-white/10 active:scale-[0.98]"
+              className="inline-flex min-h-12 items-center rounded-full border border-white/70 px-7 text-[15px] font-semibold text-white transition-colors hover:bg-white hover:text-[#1d1d1f] active:scale-[0.98]"
             >
               {p(slide.secondary.label)}
             </Link>
@@ -123,28 +144,55 @@ function Hero() {
         </div>
       </div>
 
-      <div className="absolute bottom-6 right-6 flex items-center rtl:left-6 rtl:right-auto" role="tablist">
-        <button
-          type="button"
-          onClick={() => setUserPaused((v) => !v)}
-          aria-pressed={userPaused}
-          aria-label={p(heroUi.pause[userPaused ? "play" : "pause"])}
-          className="me-1 flex h-11 w-11 items-center justify-center rounded-full text-white/90 transition-colors hover:bg-white/15"
-        >
-          <Icon name={userPaused || reduced ? "play" : "pause"} className="h-4 w-4" strokeWidth={2} />
-        </button>
-        {heroSlides.map((s, i) => (
-          <button
-            key={s.id}
-            role="tab"
-            aria-selected={i === index}
-            aria-label={`${i + 1} / ${heroSlides.length}`}
-            onClick={() => setIndex(i)}
-            className="group flex min-h-11 min-w-7 items-center justify-center px-1"
-          >
-            <span className={`block h-1.5 origin-center rounded-full bg-white transition-[transform,opacity] duration-300 ${i === index ? "w-10 opacity-100" : "w-1.5 opacity-50 group-hover:opacity-80"}`} />
-          </button>
-        ))}
+      {/* Commandes : pause, compteur, indicateurs dont la barre active se remplit au rythme du diaporama */}
+      <div className="absolute inset-x-0 bottom-8">
+        <div className="mx-auto flex max-w-7xl justify-end px-6">
+          <div role="tablist" className="flex items-center gap-1 rounded-full bg-black/40 px-2 backdrop-blur-md">
+            <button
+              type="button"
+              onClick={() => setUserPaused((v) => !v)}
+              aria-pressed={userPaused}
+              aria-label={p(heroUi.pause[userPaused ? "play" : "pause"])}
+              className="flex h-11 w-11 items-center justify-center rounded-full text-white transition-colors hover:bg-white/15"
+            >
+              <Icon name={userPaused || reduced ? "play" : "pause"} className="h-4 w-4" strokeWidth={2} />
+            </button>
+            <span className="px-1 text-xs font-semibold tabular-nums text-white/90" aria-hidden="true">
+              {String(index + 1).padStart(2, "0")} / {String(heroSlides.length).padStart(2, "0")}
+            </span>
+            {heroSlides.map((s, i) => (
+              <button
+                key={s.id}
+                role="tab"
+                aria-selected={i === index}
+                aria-label={`${i + 1} / ${heroSlides.length}`}
+                onClick={() => setIndex(i)}
+                className="group flex min-h-11 min-w-6 items-center justify-center px-1"
+              >
+                <span
+                  className={`relative block h-1.5 overflow-hidden rounded-full transition-[width,background-color] duration-300 ${
+                    i === index ? "w-12 bg-white/35" : "w-1.5 bg-white/55 group-hover:bg-white"
+                  }`}
+                >
+                  {i === index &&
+                    (reduced ? (
+                      <span className="absolute inset-0 bg-white" />
+                    ) : (
+                      <span
+                        key={`${index}-${userPaused}`}
+                        className="absolute inset-0 origin-left bg-white rtl:origin-right"
+                        style={{
+                          animation: `heroProgress ${SLIDE_MS}ms linear forwards`,
+                          animationPlayState: playing ? "running" : "paused",
+                        }}
+                        onAnimationEnd={next}
+                      />
+                    ))}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   )
