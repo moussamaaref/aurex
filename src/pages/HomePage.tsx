@@ -61,7 +61,7 @@ function Hero() {
 
   return (
     <section
-      className="relative isolate flex min-h-[640px] items-end overflow-hidden bg-[#1d1d1f] lg:min-h-[760px]"
+      className="relative isolate flex min-h-[100svh] items-end overflow-hidden bg-[#1d1d1f]"
       aria-roledescription="carousel"
       aria-label="AUREX"
       onMouseEnter={() => setPaused(true)}
