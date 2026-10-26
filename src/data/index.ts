@@ -51,6 +51,8 @@ export interface Product {
   features: string[]
   color?: string
   isNew?: boolean
+  /** Affiché dans le Product Line-Up 2026 de l'accueil (CMS). */
+  lineup?: boolean
 }
 
 export interface Category {
