@@ -4,7 +4,7 @@ import { categories, products, type Product } from "../data"
 import { ml } from "../lib/ml"
 import { useP } from "../content/lang"
 import { categoryContent } from "../content/categories"
-import { heroSlides, lineUp, why, categoriesSection, sav, promo } from "../content/home"
+import { heroSlides, heroUi, lineUp, why, categoriesSection, sav, promo } from "../content/home"
 import { smartTech } from "../content/smartTech"
 import Reveal from "../components/Reveal"
 import LineUpCard from "../components/LineUpCard"
@@ -35,13 +35,27 @@ function Hero() {
   const { p } = useP()
   const [index, setIndex] = useState(0)
   const [paused, setPaused] = useState(false)
-  const reduced = typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+  const [userPaused, setUserPaused] = useState(false)
+  const [reduced, setReduced] = useState(
+    () => typeof window !== "undefined" && !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches,
+  )
+
+  // La préférence peut changer en cours de session.
+  useEffect(() => {
+    const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)")
+    if (!mq) return
+    const onChange = () => setReduced(mq.matches)
+    mq.addEventListener("change", onChange)
+    return () => mq.removeEventListener("change", onChange)
+  }, [])
+
+  const playing = !paused && !userPaused && !reduced
 
   useEffect(() => {
-    if (paused || reduced) return
+    if (!playing) return
     const id = window.setInterval(() => setIndex((i) => (i + 1) % heroSlides.length), 7500)
     return () => window.clearInterval(id)
-  }, [paused, reduced])
+  }, [playing])
 
   const slide = heroSlides[index]
 
@@ -73,7 +87,7 @@ function Hero() {
       <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
       <div className="mx-auto w-full max-w-7xl px-6 pb-24 pt-40">
-        <div key={slide.id} className="max-w-4xl" aria-live="polite">
+        <div key={slide.id} className="max-w-4xl animate-text-in" aria-live={playing ? "off" : "polite"}>
           {(slide.badge || slide.tag) && (
             <p className="mb-6 inline-flex flex-wrap items-center gap-x-3 text-xs font-semibold uppercase tracking-[0.14em] text-white/90">
               {slide.badge && <span>{p(slide.badge)}</span>}
@@ -110,6 +124,15 @@ function Hero() {
       </div>
 
       <div className="absolute bottom-6 right-6 flex items-center rtl:left-6 rtl:right-auto" role="tablist">
+        <button
+          type="button"
+          onClick={() => setUserPaused((v) => !v)}
+          aria-pressed={userPaused}
+          aria-label={p(heroUi.pause[userPaused ? "play" : "pause"])}
+          className="me-1 flex h-11 w-11 items-center justify-center rounded-full text-white/90 transition-colors hover:bg-white/15"
+        >
+          <Icon name={userPaused || reduced ? "play" : "pause"} className="h-4 w-4" strokeWidth={2} />
+        </button>
         {heroSlides.map((s, i) => (
           <button
             key={s.id}
@@ -119,7 +142,7 @@ function Hero() {
             onClick={() => setIndex(i)}
             className="group flex min-h-11 min-w-7 items-center justify-center px-1"
           >
-            <span className={`block h-1.5 rounded-full transition-all duration-300 ${i === index ? "w-10 bg-white" : "w-1.5 bg-white/50 group-hover:bg-white/80"}`} />
+            <span className={`block h-1.5 origin-center rounded-full bg-white transition-[transform,opacity] duration-300 ${i === index ? "w-10 opacity-100" : "w-1.5 opacity-50 group-hover:opacity-80"}`} />
           </button>
         ))}
       </div>

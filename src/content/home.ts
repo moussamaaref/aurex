@@ -276,3 +276,10 @@ export const promo = {
     href: "/produits?badge=best-seller",
   },
 }
+
+export const heroUi = {
+  pause: {
+    pause: { fr: "Mettre le diaporama en pause", en: "Pause slideshow", ar: "إيقاف العرض مؤقتًا" } as L3,
+    play: { fr: "Relancer le diaporama", en: "Play slideshow", ar: "تشغيل العرض" } as L3,
+  },
+}

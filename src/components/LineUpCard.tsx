@@ -33,12 +33,14 @@ export default function LineUpCard({ product, cta }: { product: Product; cta: st
     const r = el.getBoundingClientRect()
     const x = (event.clientX - r.left) / r.width - 0.5
     const y = (event.clientY - r.top) / r.height - 0.5
+    el.style.transition = "box-shadow 300ms ease-out"
     el.style.transform = `perspective(900px) rotateX(${(-y * MAX_TILT).toFixed(2)}deg) rotateY(${(x * MAX_TILT).toFixed(2)}deg) translateY(-6px)`
     el.style.boxShadow = "0 22px 44px rgba(29,29,31,0.10)"
   }
   const onLeave = () => {
     const el = ref.current
     if (!el) return
+    el.style.transition = ""
     el.style.transform = ""
     el.style.boxShadow = ""
   }
@@ -51,7 +53,7 @@ export default function LineUpCard({ product, cta }: { product: Product; cta: st
       onPointerLeave={onLeave}
       onBlur={onLeave}
       aria-label={`${ml(product.name)} — ${cta}`}
-      className="group flex h-full flex-col overflow-hidden rounded-[28px] bg-white will-change-transform [transform-style:preserve-3d] transition-[transform,box-shadow] duration-300 ease-out motion-reduce:transition-none"
+      className="group flex h-full flex-col overflow-hidden rounded-[28px] bg-white transition-[transform,box-shadow] duration-300 ease-out motion-reduce:transition-none"
       style={{ border: "1px solid #e6e6e8" }}
       data-lang={lang}
     >
