@@ -473,24 +473,42 @@ export async function inviteProfile(email: string, fullName?: string): Promise<v
 
 export const MIN_PASSWORD_LENGTH = 10
 
+/** Nom de la fonction Edge : « admin-users » ; « quick-service » est le nom proposé par défaut par le tableau de bord Supabase
+ *  (accepté si la fonction a été déployée sans être renommée). Surchargeable avec VITE_ADMIN_USERS_FUNCTION. */
+const ADMIN_FUNCTION_NAMES = [
+  (import.meta.env.VITE_ADMIN_USERS_FUNCTION as string | undefined) || "admin-users",
+  "quick-service",
+]
+
 async function callAdminUsers<T>(body: Record<string, unknown>): Promise<T> {
   if (!supabase) throw new Error("Supabase n'est pas configuré.")
-  const { data, error } = await supabase.functions.invoke("admin-users", { body })
-  if (error) {
+  let lastMessage = ""
+  for (const name of ADMIN_FUNCTION_NAMES) {
+    const { data, error } = await supabase.functions.invoke(name, { body })
+    if (!error) {
+      if (data && typeof data === "object" && "error" in data) throw new Error(String((data as { error: unknown }).error))
+      return data as T
+    }
     // Le message utile est dans le corps de la réponse de la fonction.
     let message = error.message
+    let status = 0
     try {
       const ctx = (error as { context?: Response }).context
-      if (ctx) message = ((await ctx.json()) as { error?: string }).error ?? message
+      if (ctx) {
+        status = ctx.status
+        message = ((await ctx.json()) as { error?: string }).error ?? message
+      }
     } catch {
       /* corps illisible */
     }
-    if (/Failed to send a request|not found|404/i.test(message))
-      message = "La fonction admin-users n'est pas déployée. Exécutez : supabase functions deploy admin-users"
+    // Fonction absente sous ce nom : on essaie le suivant.
+    if (status === 404 || /Failed to send a request|Requested function was not found/i.test(message)) {
+      lastMessage = "La fonction « admin-users » n'est pas déployée (Supabase > Edge Functions). Collez-y le code de supabase/functions/admin-users/index.ts."
+      continue
+    }
     throw new Error(message)
   }
-  if (data && typeof data === "object" && "error" in data) throw new Error(String((data as { error: unknown }).error))
-  return data as T
+  throw new Error(lastMessage)
 }
 
 /** Crée un compte avec mot de passe (e-mail confirmé) et son profil. */
