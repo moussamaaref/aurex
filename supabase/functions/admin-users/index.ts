@@ -24,7 +24,7 @@ Deno.serve(async (req) => {
     const service = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
 
     // Le jeton de l'utilisateur connecté doit être passé explicitement à getUser() (pas de session côté serveur).
-    const token = (req.headers.get("Authorization") ?? "").replace(/^Bearers+/i, "").trim()
+    const token = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "").trim()
     if (!token) return json({ error: "Non authentifié : ouvrez cette fonction depuis /admin en étant connecté." }, 401)
     const caller = createClient(url, anon, { auth: { persistSession: false } })
     const { data: userData, error: userError } = await caller.auth.getUser(token)
