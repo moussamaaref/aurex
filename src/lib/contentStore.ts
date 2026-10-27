@@ -471,6 +471,52 @@ export async function inviteProfile(email: string, fullName?: string): Promise<v
   if (error) throw error
 }
 
+export const MIN_PASSWORD_LENGTH = 10
+
+async function callAdminUsers<T>(body: Record<string, unknown>): Promise<T> {
+  if (!supabase) throw new Error("Supabase n'est pas configuré.")
+  const { data, error } = await supabase.functions.invoke("admin-users", { body })
+  if (error) {
+    // Le message utile est dans le corps de la réponse de la fonction.
+    let message = error.message
+    try {
+      const ctx = (error as { context?: Response }).context
+      if (ctx) message = ((await ctx.json()) as { error?: string }).error ?? message
+    } catch {
+      /* corps illisible */
+    }
+    if (/Failed to send a request|not found|404/i.test(message))
+      message = "La fonction admin-users n'est pas déployée. Exécutez : supabase functions deploy admin-users"
+    throw new Error(message)
+  }
+  if (data && typeof data === "object" && "error" in data) throw new Error(String((data as { error: unknown }).error))
+  return data as T
+}
+
+/** Crée un compte avec mot de passe (e-mail confirmé) et son profil. */
+export async function adminCreateUser(input: {
+  email: string
+  password: string
+  full_name: string
+  role: "admin" | "editor" | "viewer"
+}): Promise<{ id: string; email: string }> {
+  return callAdminUsers({ action: "create", ...input })
+}
+
+export async function adminSetPassword(userId: string, password: string): Promise<void> {
+  await callAdminUsers({ action: "set_password", user_id: userId, password })
+}
+
+export async function adminDeleteUser(userId: string): Promise<void> {
+  await callAdminUsers({ action: "delete", user_id: userId })
+}
+
+/** e-mail et dernière connexion par identifiant (les profils n'ont pas d'e-mail). */
+export async function adminListUsers(): Promise<Array<{ id: string; email: string | null; last_sign_in_at: string | null }>> {
+  const res = await callAdminUsers<{ users: Array<{ id: string; email: string | null; last_sign_in_at: string | null }> }>({ action: "list" })
+  return res.users ?? []
+}
+
 export async function requestPasswordReset(email: string): Promise<void> {
   if (!supabase) throw new Error("Supabase n'est pas configuré.")
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
