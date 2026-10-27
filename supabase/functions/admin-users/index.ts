@@ -23,10 +23,13 @@ Deno.serve(async (req) => {
     const anon = Deno.env.get("SUPABASE_ANON_KEY")!
     const service = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
 
-    const caller = createClient(url, anon, { global: { headers: { Authorization: req.headers.get("Authorization") ?? "" } } })
-    const { data: userData } = await caller.auth.getUser()
+    // Le jeton de l'utilisateur connecté doit être passé explicitement à getUser() (pas de session côté serveur).
+    const token = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "").trim()
+    if (!token) return json({ error: "Non authentifié : ouvrez cette fonction depuis /admin en étant connecté." }, 401)
+    const caller = createClient(url, anon, { auth: { persistSession: false } })
+    const { data: userData, error: userError } = await caller.auth.getUser(token)
     const user = userData?.user
-    if (!user) return json({ error: "Non authentifié." }, 401)
+    if (userError || !user) return json({ error: "Session invalide ou expirée : reconnectez-vous sur /admin." }, 401)
 
     const admin = createClient(url, service, { auth: { persistSession: false } })
     const { data: me } = await admin.from("profiles").select("role").eq("id", user.id).maybeSingle()
