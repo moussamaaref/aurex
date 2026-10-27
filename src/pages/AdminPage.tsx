@@ -9,6 +9,11 @@ import {
   updateProfileRole,
   deleteProfile,
   inviteProfile,
+  adminCreateUser,
+  adminSetPassword,
+  adminDeleteUser,
+  adminListUsers,
+  MIN_PASSWORD_LENGTH,
   getCurrentProfile,
   requestPasswordReset,
   loadSiteSettings,
@@ -94,6 +99,9 @@ export default function AdminPage() {
   const [profileBusy, setProfileBusy] = useState(false)
   const [newProfileName, setNewProfileName] = useState("")
   const [newProfileEmail, setNewProfileEmail] = useState("")
+  const [newProfilePassword, setNewProfilePassword] = useState("")
+  const [newProfileRole, setNewProfileRole] = useState<"admin" | "editor" | "viewer">("editor")
+  const [userEmails, setUserEmails] = useState<Record<string, { email: string | null; last: string | null }>>({})
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([])
   const [auditLoading, setAuditLoading] = useState(false)
   const [seedBusy, setSeedBusy] = useState(false)
@@ -191,6 +199,7 @@ export default function AdminPage() {
           const loadedProfiles = await loadProfiles()
           if (!mounted) return
           setProfiles(loadedProfiles)
+          void loadUserEmails()
         }
         // site settings
         try {
@@ -363,11 +372,21 @@ export default function AdminPage() {
     }
   }
 
+  const loadUserEmails = async () => {
+    try {
+      const list = await adminListUsers()
+      setUserEmails(Object.fromEntries(list.map((u) => [u.id, { email: u.email, last: u.last_sign_in_at }])))
+    } catch {
+      // fonction non déployée : la liste reste sans e-mails
+    }
+  }
+
   const refreshProfiles = async () => {
     try {
       if (!supabase) throw new Error("Supabase n'est pas configuré.")
       const loadedProfiles = await loadProfiles()
       setProfiles(loadedProfiles)
+      void loadUserEmails()
       notify("Liste des utilisateurs actualisée.")
     } catch (error) {
       notify(error instanceof Error ? error.message : "Impossible de charger les profils.")
@@ -394,6 +413,44 @@ export default function AdminPage() {
     }
   }
 
+  const createUserWithPassword = async () => {
+    try {
+      if (!supabase) throw new Error("Supabase n'est pas configuré.")
+      if (!isAdmin) throw new Error("Seul un administrateur peut créer un utilisateur.")
+      const email = newProfileEmail.trim()
+      if (!email) throw new Error("L'email est requis.")
+      if (newProfilePassword.length < MIN_PASSWORD_LENGTH)
+        throw new Error(`Mot de passe trop court (${MIN_PASSWORD_LENGTH} caractères minimum).`)
+      setProfileBusy(true)
+      await adminCreateUser({ email, password: newProfilePassword, full_name: newProfileName.trim(), role: newProfileRole })
+      await createAuditLog("create_user", "profiles", email, { email, role: newProfileRole })
+      setNewProfileName("")
+      setNewProfileEmail("")
+      setNewProfilePassword("")
+      setProfiles(await loadProfiles())
+      void loadUserEmails()
+      notify(`Utilisateur créé : ${email}. Transmettez-lui son mot de passe de manière sécurisée.`)
+    } catch (error) {
+      notify(error instanceof Error ? error.message : "Impossible de créer l'utilisateur.")
+    } finally {
+      setProfileBusy(false)
+    }
+  }
+
+  const changePassword = async (profileId: string, password: string) => {
+    try {
+      if (!isAdmin) throw new Error("Seul un administrateur peut modifier un mot de passe.")
+      if (password.length < MIN_PASSWORD_LENGTH)
+        throw new Error(`Mot de passe trop court (${MIN_PASSWORD_LENGTH} caractères minimum).`)
+      await adminSetPassword(profileId, password)
+      await createAuditLog("set_password", "profiles", profileId, {})
+      notify("Mot de passe mis à jour.")
+    } catch (error) {
+      notify(error instanceof Error ? error.message : "Impossible de modifier le mot de passe.")
+      throw error
+    }
+  }
+
   const changeRole = async (profileId: string, role: "admin" | "editor" | "viewer") => {
     try {
       if (!supabase) throw new Error("Supabase n'est pas configuré.")
@@ -415,7 +472,13 @@ export default function AdminPage() {
       if (!isAdmin) throw new Error("Seul un administrateur peut supprimer un utilisateur.")
       if (profileId === sessionUser?.id)
         throw new Error("Vous ne pouvez pas supprimer votre propre compte.")
-      await deleteProfile(profileId)
+      try {
+        await adminDeleteUser(profileId)
+      } catch (error) {
+        // Fonction indisponible : à défaut, on retire au moins le profil (l'accès admin disparaît).
+        console.warn(error)
+        await deleteProfile(profileId)
+      }
       setProfiles((previous) => previous.filter((p) => p.id !== profileId))
       await createAuditLog("delete", "profiles", profileId, {})
       notify("Utilisateur supprimé.")
@@ -767,6 +830,14 @@ export default function AdminPage() {
                   onEmailChange={setNewProfileEmail}
                   onRefresh={() => void refreshProfiles()}
                   onCreate={() => void createUser()}
+                  newProfilePassword={newProfilePassword}
+                  onPasswordChange={setNewProfilePassword}
+                  newProfileRole={newProfileRole}
+                  onNewRoleChange={setNewProfileRole}
+                  onCreateWithPassword={() => void createUserWithPassword()}
+                  onSetPassword={changePassword}
+                  userEmails={userEmails}
+                  currentUserId={sessionUser?.id ?? null}
                   onChangeRole={(id, role) => void changeRole(id, role)}
                   onRemove={(id) => void removeUser(id)}
                 />
