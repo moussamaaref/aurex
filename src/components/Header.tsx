@@ -453,7 +453,7 @@ export default function Header() {
                         <Link
                           to="/produits"
                           onClick={closeSearch}
-                          className="block border-t border-[#d6d6d6] px-4 py-3 text-center text-xs font-semibold text-[#0077b3] transition-colors hover:bg-[#f5f5f7]"
+                          className="block border-t border-[#d6d6d6] px-4 py-3 text-center text-xs font-semibold text-[#006a9e] transition-colors hover:bg-[#f5f5f7]"
                           style={{ fontFamily: "var(--font-sans)" }}
                         >
                           {t("header.searchSeeAll")}
@@ -528,7 +528,7 @@ export default function Header() {
                   </div>
                   <Link
                     to="/produits"
-                    className="inline-flex items-center gap-1.5 mt-6 text-sm font-medium text-[#0077b3] hover:text-[var(--color-primary)] transition-colors"
+                    className="inline-flex items-center gap-1.5 mt-6 text-sm font-medium text-[#006a9e] hover:text-[var(--color-primary)] transition-colors"
                     style={{ fontFamily: "var(--font-sans)" }}
                   >
                     {p(megaLabels.seeAll)}
@@ -558,7 +558,7 @@ export default function Header() {
                   <div className="rounded-[28px] overflow-hidden bg-[#f5f5f7]">
                     <div className="p-5">
                       <span
-                        className="text-xs font-semibold text-[#0077b3]"
+                        className="text-xs font-semibold text-[#006a9e]"
                         style={{ fontFamily: "var(--font-display)" }}
                       >
                         2026
@@ -578,7 +578,7 @@ export default function Header() {
                       <Link
                         to={productsSide.lineup.href}
                         onClick={() => setHoveredNav(null)}
-                        className="inline-flex min-h-11 items-center gap-1.5 mt-3 text-sm font-semibold text-[#0077b3] hover:underline"
+                        className="inline-flex min-h-11 items-center gap-1.5 mt-3 text-sm font-semibold text-[#006a9e] hover:underline"
                         style={{ fontFamily: "var(--font-sans)" }}
                       >
                         {t("header.discover")}
@@ -603,7 +603,7 @@ export default function Header() {
                         <span className="flex items-center gap-2">
                           {link.href === "/comparateur" && (
                             <svg
-                              className="w-4 h-4 text-[#5a5a5e] group-hover:text-[#0077b3] transition-colors"
+                              className="w-4 h-4 text-[#5a5a5e] group-hover:text-[#006a9e] transition-colors"
                               fill="none"
                               viewBox="0 0 24 24"
                               stroke="currentColor"
@@ -636,7 +636,7 @@ export default function Header() {
                             )}
                         </span>
                         <svg
-                          className="w-4 h-4 text-[#5a5a5e] group-hover:text-[#0077b3] transition-colors"
+                          className="w-4 h-4 text-[#5a5a5e] group-hover:text-[#006a9e] transition-colors"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -667,7 +667,7 @@ export default function Header() {
               <div className="grid grid-cols-[1.2fr_2fr_1fr] items-center gap-8">
                 <div>
                   <p
-                    className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#0077b3] mb-2"
+                    className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#006a9e] mb-2"
                     style={{ fontFamily: "var(--font-display)" }}
                   >
                     {p(navLabels[hoveredNav as keyof typeof navLabels])}

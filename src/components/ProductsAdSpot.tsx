@@ -68,7 +68,7 @@ export default function ProductsAdSpot({ family }: { family?: string }) {
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
     >
-      <div className="relative mx-auto aspect-[4/3] max-h-[78vh] w-full max-w-[1600px] sm:aspect-[16/9] lg:aspect-[21/9]">
+      <div className="relative mx-auto aspect-[2/1] max-h-[78vh] w-full max-w-[1600px] sm:aspect-[16/9] lg:aspect-[21/9]">
         {slides.map(({ ad }, i) => (
           <img
             key={ad.image + i}

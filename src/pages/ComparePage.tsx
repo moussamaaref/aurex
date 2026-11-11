@@ -488,7 +488,7 @@ export default function ComparePage() {
           <button
             type="button"
             onClick={copyLink}
-            className="inline-flex items-center gap-2 text-sm font-medium text-[#333336] border border-[#d6d6d6] bg-[#f5f5f7] rounded-full px-4 py-2 hover:border-[#0077b3]/30 hover:text-[#0077b3] transition-colors duration-200 font-sans"
+            className="inline-flex items-center gap-2 text-sm font-medium text-[#333336] border border-[#d6d6d6] bg-[#f5f5f7] rounded-full px-4 py-2 hover:border-[#0077b3]/30 hover:text-[#006a9e] transition-colors duration-200 font-sans"
           >
             {copied ? (
               <>
@@ -532,7 +532,7 @@ export default function ComparePage() {
           <button
             type="button"
             onClick={() => window.print()}
-            className="inline-flex items-center gap-2 text-sm font-medium text-[#333336] border border-[#d6d6d6] bg-[#f5f5f7] rounded-full px-4 py-2 hover:border-[#0077b3]/30 hover:text-[#0077b3] transition-colors duration-200 font-sans"
+            className="inline-flex items-center gap-2 text-sm font-medium text-[#333336] border border-[#d6d6d6] bg-[#f5f5f7] rounded-full px-4 py-2 hover:border-[#0077b3]/30 hover:text-[#006a9e] transition-colors duration-200 font-sans"
           >
             <svg
               className="w-4 h-4"
@@ -559,7 +559,7 @@ export default function ComparePage() {
             className={`inline-flex items-center gap-2 text-sm font-medium rounded-full px-4 py-2 transition-colors duration-200 font-sans ${
               hideIdentical
                 ? "bg-[#1d1d1f] text-white border border-[#1d1d1f] shadow-lg shadow-[#1d1d1f]/20"
-                : "text-[#333336] border border-[#d6d6d6] bg-[#f5f5f7] hover:bg-[#f5f5f7] hover:border-[#0077b3]/30 hover:text-[#0077b3]"
+                : "text-[#333336] border border-[#d6d6d6] bg-[#f5f5f7] hover:bg-[#f5f5f7] hover:border-[#0077b3]/30 hover:text-[#006a9e]"
             }`}
           >
             <svg
@@ -679,7 +679,7 @@ export default function ComparePage() {
                       <button
                         type="button"
                         onClick={() => setReplacingId(p.id)}
-                        className="flex-1 rounded-[10px] bg-[#f5f5f7] px-1.5 py-2 text-[10px] font-semibold text-[#0077b3] sm:px-2 sm:text-[11px]"
+                        className="flex-1 rounded-[10px] bg-[#f5f5f7] px-1.5 py-2 text-[10px] font-semibold text-[#006a9e] sm:px-2 sm:text-[11px]"
                       >
                         {t("comparator.replace")}
                       </button>
@@ -701,7 +701,7 @@ export default function ComparePage() {
           {selected.length === 1 && (
             <Link
               to={`/produits/${selected[0].category}`}
-              className="flex items-center justify-center gap-2 bg-white border border-dashed border-gray-300 rounded-[10px] px-4 py-3 text-sm font-semibold text-[#0077b3]"
+              className="flex items-center justify-center gap-2 bg-white border border-dashed border-gray-300 rounded-[10px] px-4 py-3 text-sm font-semibold text-[#006a9e]"
             >
               <ScaleIcon className="w-4 h-4" />
               {t("comparator.addMoreCta")}
@@ -834,7 +834,7 @@ export default function ComparePage() {
                               name: ml(p.name),
                             })}
                             title={t("comparator.replaceTitle")}
-                            className="inline-flex items-center gap-1.5 text-xs font-medium text-[#0077b3] hover:text-[#1d1d1f] border border-[#d6d6d6] bg-[#f5f5f7] rounded-[10px] p-2 hover:bg-[#E4ECFB] transition-colors font-sans"
+                            className="inline-flex items-center gap-1.5 text-xs font-medium text-[#006a9e] hover:text-[#1d1d1f] border border-[#d6d6d6] bg-[#f5f5f7] rounded-[10px] p-2 hover:bg-[#E4ECFB] transition-colors font-sans"
                           >
                             <svg
                               className="w-3.5 h-3.5"
@@ -889,7 +889,7 @@ export default function ComparePage() {
                         </p>
                         <Link
                           to={`/produits/${selected[0].category}`}
-                          className="text-xs font-medium text-[#0077b3] hover:underline font-sans"
+                          className="text-xs font-medium text-[#006a9e] hover:underline font-sans"
                         >
                           {t("comparator.browse")}
                         </Link>
@@ -1049,7 +1049,7 @@ export default function ComparePage() {
         <div className="mt-10 no-print">
           <Link
             to="/produits"
-            className="inline-flex items-center gap-2 text-sm font-medium text-[#0077b3] hover:text-[#1d1d1f] transition-colors font-sans"
+            className="inline-flex items-center gap-2 text-sm font-medium text-[#006a9e] hover:text-[#1d1d1f] transition-colors font-sans"
           >
             <svg
               className="w-4 h-4"
@@ -1186,7 +1186,7 @@ export default function ComparePage() {
                   <Link
                     to="/produits"
                     onClick={() => setReplacingId(null)}
-                    className="inline-block mt-4 text-sm font-medium text-[#0077b3] hover:text-[#1d1d1f] font-sans"
+                    className="inline-block mt-4 text-sm font-medium text-[#006a9e] hover:text-[#1d1d1f] font-sans"
                   >
                     {t("comparator.replaceModal.browse")}
                   </Link>
@@ -1251,7 +1251,7 @@ function EmptyState({ t }: { t: TFunction }) {
       <div className="relative w-20 h-20 mx-auto mb-6">
         <div className="absolute inset-0 rounded-[28px] bg-[#0077b3]/10 blur-lg" />
         <div className="relative w-20 h-20 bg-[#f5f5f7] rounded-[28px] flex items-center justify-center border border-[#d6d6d6] shadow-sm">
-          <ScaleIcon className="w-10 h-10 text-[#0077b3]" />
+          <ScaleIcon className="w-10 h-10 text-[#006a9e]" />
         </div>
       </div>
       <h2
@@ -1320,7 +1320,7 @@ function SuggestionCard({ product, t }: { product: Product; t: TFunction }) {
             ? "bg-[#1d1d1f] text-white border-[#1d1d1f] shadow-lg shadow-[#1d1d1f]/20"
             : full
               ? "bg-[#f5f5f7] text-gray-300 border-[#d6d6d6] cursor-not-allowed"
-              : "bg-white text-[#0077b3] border-[#0077b3]/25 hover:bg-[#f5f5f7] hover:border-[#0077b3]/60"
+              : "bg-white text-[#006a9e] border-[#0077b3]/25 hover:bg-[#f5f5f7] hover:border-[#0077b3]/60"
         }`}
       >
         {added ? t("comparator.added") : t("comparator.compare")}

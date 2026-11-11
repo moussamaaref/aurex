@@ -57,7 +57,7 @@ export default function LineUpCard({ product, cta }: { product: Product; cta: st
         />
       </div>
       <div className="flex flex-1 flex-col p-6">
-        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#0077b3]">{categoryLabelOf(product.category)}</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#006a9e]">{categoryLabelOf(product.category)}</p>
         <h3 className="mt-2 text-[19px] font-semibold leading-snug text-[#1d1d1f]" style={{ fontFamily: "var(--font-display)" }}>
           {ml(product.name)}
         </h3>
@@ -71,7 +71,7 @@ export default function LineUpCard({ product, cta }: { product: Product; cta: st
             ))}
           </ul>
         )}
-        <span className="mt-auto inline-flex min-h-11 items-center gap-2 pt-5 text-[15px] font-semibold text-[#0077b3] transition-colors group-hover:text-[#00628f] group-focus-visible:underline group-active:opacity-80">
+        <span className="mt-auto inline-flex min-h-11 items-center gap-2 pt-5 text-[15px] font-semibold text-[#006a9e] transition-colors group-hover:text-[#00628f] group-focus-visible:underline group-active:opacity-80">
           {cta}
           <Icon name="arrow" className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1" strokeWidth={2} />
         </span>

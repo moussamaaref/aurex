@@ -327,10 +327,10 @@ function ProductsPageInner() {
         {currentCategory ? ml(currentCategory.label) : searchParams.get("connectivite") === "smart" ? p(productsUi.smartTitle) : t("products.allProducts")}
       </h1>
 
-      <main className={`mx-auto max-w-7xl px-4 py-8 sm:px-6 ${selectedProducts.length > 0 ? "pb-52 lg:pb-44" : ""}`}>
+      <main className={`mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-8 ${selectedProducts.length > 0 ? "pb-52 lg:pb-44" : ""}`}>
         {/* Fil d'Ariane */}
-        <nav className="mb-5 flex items-center gap-2 text-xs font-sans" aria-label="Breadcrumb">
-          <Link to="/" className="text-[#5a5a5e] transition-colors hover:text-[#1d1d1f]">{t("products.breadcrumb.home")}</Link>
+        <nav className="mb-2 flex items-center gap-2 text-xs font-sans sm:mb-4" aria-label="Breadcrumb">
+          <Link to="/" className="inline-flex min-h-11 items-center text-[#5a5a5e] transition-colors hover:text-[#1d1d1f]">{t("products.breadcrumb.home")}</Link>
           <span className="text-[#d6d6d6]">/</span>
           {currentCategory ? (
             <>
@@ -344,10 +344,10 @@ function ProductsPageInner() {
         </nav>
 
         {/* ══ Onglets familles (4) ══ */}
-        <div className="mb-8 flex flex-wrap gap-2">
+        <div className="-mx-4 mb-5 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:mb-8 sm:flex-wrap sm:overflow-visible sm:px-0">
           <Link
             to="/produits"
-            className={`rounded-full px-5 py-2.5 text-sm font-semibold transition-all font-sans ${
+            className={`inline-flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-full px-5 text-sm font-semibold transition-all font-sans ${
               !category ? "bg-[var(--color-accent)] text-white" : "bg-white text-[#474747] hover:bg-[#f5f5f7] hover:text-[var(--color-primary)]"
             }`}
           >
@@ -362,7 +362,7 @@ function ProductsPageInner() {
               <Link
                 key={cat.slug}
                 to={`/produits/${cat.slug}`}
-                className={`rounded-full px-5 py-2.5 text-sm font-semibold transition-all font-sans ${
+                className={`inline-flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-full px-5 text-sm font-semibold transition-all font-sans ${
                   isActive ? "text-white bg-[var(--color-accent)]" : "bg-white text-[#474747] hover:bg-[#f5f5f7] hover:text-[var(--color-primary)]"
                 }`}
               >
@@ -412,7 +412,7 @@ function ProductsPageInner() {
               <div className="flex flex-wrap items-center gap-3">
                 <button
                   onClick={() => setFiltersOpen(true)}
-                  className="flex items-center gap-2 rounded-full border border-[#d6d6d6] px-3.5 py-2 text-sm font-medium text-[#333336] transition-colors hover:bg-[#f5f5f7] lg:hidden font-sans"
+                  className="flex min-h-11 items-center gap-2 rounded-full border border-[#d6d6d6] px-3.5 py-2 text-sm font-medium text-[#333336] transition-colors hover:bg-[#f5f5f7] lg:hidden font-sans"
                 >
                   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -443,7 +443,7 @@ function ProductsPageInner() {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="cursor-pointer rounded-[10px] border border-[#d6d6d6] bg-[#f5f5f7] px-3 py-2 text-sm text-[#333336] outline-none transition hover:bg-white focus:border-[var(--color-accent)] focus:ring-4 focus:ring-blue-100 font-sans"
+                  className="min-h-11 max-w-[10rem] cursor-pointer rounded-[10px] border border-[#d6d6d6] bg-[#f5f5f7] px-3 py-2 text-sm sm:max-w-none text-[#333336] outline-none transition hover:bg-white focus:border-[var(--color-accent)] focus:ring-4 focus:ring-blue-100 font-sans"
                   aria-label={t("products.sortBy.relevance")}
                 >
                   {sortOptions.map((opt) => (
@@ -453,13 +453,13 @@ function ProductsPageInner() {
                   ))}
                 </select>
 
-                <div className="flex overflow-hidden rounded-full border border-[#d6d6d6]">
+                <div className="hidden overflow-hidden rounded-full border border-[#d6d6d6] sm:flex">
                   {(["grid", "list"] as const).map((mode) => (
                     <button
                       key={mode}
                       onClick={() => setViewMode(mode)}
                       aria-label={mode}
-                      className={`p-2.5 transition-colors ${
+                      className={`flex h-11 w-11 items-center justify-center transition-colors ${
                         viewMode === mode ? "bg-[var(--color-primary)] text-white" : "bg-[#f5f5f7] text-[#5a5a5e] hover:bg-white hover:text-[#333336]"
                       }`}
                     >
@@ -532,7 +532,7 @@ function ProductsPageInner() {
                           ))}
                         </ul>
                         <div className="mt-auto border-t border-[#d6d6d6] pt-3">
-                          <span className="mb-3 flex items-center gap-1 text-xs font-semibold text-[#0077b3] transition-all group-hover:gap-2">
+                          <span className="mb-3 flex items-center gap-1 text-xs font-semibold text-[#006a9e] transition-all group-hover:gap-2">
                             {ctaLabel}
                             <svg className="h-3.5 w-3.5 rtl:-scale-x-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12l-7.5 7.5M21 12H3" />
@@ -579,7 +579,7 @@ function ProductsPageInner() {
                         </ul>
                       </div>
                       <div className="flex flex-col items-end justify-between border-[#d6d6d6] sm:w-48 sm:border-l sm:pl-4">
-                        <span className="flex items-center gap-1 text-xs font-semibold text-[#0077b3] transition-all group-hover:gap-2">
+                        <span className="flex items-center gap-1 text-xs font-semibold text-[#006a9e] transition-all group-hover:gap-2">
                           {ctaLabel}
                           <svg className="h-3.5 w-3.5 rtl:-scale-x-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12l-7.5 7.5M21 12H3" />

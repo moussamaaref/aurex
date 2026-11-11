@@ -24,7 +24,7 @@ export const productsAdsUi = {
 
 export const productsAds: ProductAd[] = [
   {
-    image: "/Gustiva.jpeg",
+    image: "/Gustiva.webp",
     imageAlt: {
       fr: "Machine à café AUREX sur un plan de travail en marbre",
       en: "AUREX coffee machine on a marble worktop",
@@ -34,7 +34,7 @@ export const productsAds: ProductAd[] = [
     sousFamille: "machines-cafe",
   },
   {
-    image: "/Spinova3.jpeg",
+    image: "/Spinova3.webp",
     imageAlt: {
       fr: "Lave-linge AUREX à hublot",
       en: "AUREX front-loading washing machine",
@@ -44,7 +44,7 @@ export const productsAds: ProductAd[] = [
     sousFamille: "lave-linge",
   },
   {
-    image: "/Vacuum.jpeg",
+    image: "/Vacuum.webp",
     imageAlt: {
       fr: "Aspirateur AUREX dans un salon lumineux",
       en: "AUREX vacuum cleaner in a bright living room",

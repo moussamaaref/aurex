@@ -20,7 +20,7 @@ export function SectionHeading({ eyebrow, title, description }: { eyebrow?: stri
   return (
     <div>
       {eyebrow && (
-        <p className="mb-1.5 flex items-center gap-2 text-xs font-semibold text-[#0077b3]">
+        <p className="mb-1.5 flex items-center gap-2 text-xs font-semibold text-[#006a9e]">
           <span className="h-1.5 w-1.5 rounded-full bg-[#0077b3]" />
           {eyebrow}
         </p>

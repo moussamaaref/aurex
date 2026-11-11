@@ -9,7 +9,7 @@ import { submitSupportRequest, type SupportRequest } from "../lib/forms"
 import Reveal from "../components/Reveal"
 import Icon from "../components/Icon"
 
-const eyebrow = "text-xs font-semibold uppercase tracking-[0.18em] text-[#0077b3]"
+const eyebrow = "text-xs font-semibold uppercase tracking-[0.18em] text-[#006a9e]"
 const h2 = "text-4xl font-semibold leading-[1.05] tracking-tight text-[#1d1d1f] lg:text-[40px]"
 const btnPrimary =
   "group inline-flex min-h-12 items-center gap-2 rounded-full bg-[var(--color-accent)] px-7 text-[15px] font-semibold text-white transition-colors hover:bg-[#00628f] active:scale-[0.98] disabled:opacity-60"
@@ -85,7 +85,7 @@ function MyAppliance() {
                     <span className="min-w-0">
                       <span className="block truncate text-[15px] font-semibold text-[#1d1d1f]">{ml(x.name)}</span>
                       <span className="block font-mono text-xs text-[#5a5a5e]">{x.reference}</span>
-                      <span className="mt-1 inline-flex items-center gap-1 text-sm font-semibold text-[#0077b3]">
+                      <span className="mt-1 inline-flex items-center gap-1 text-sm font-semibold text-[#006a9e]">
                         {p(c.openDocs)}
                         <Icon name="arrow" className="h-3.5 w-3.5 rtl:-scale-x-100" strokeWidth={2} />
                       </span>
@@ -146,7 +146,7 @@ function Manuals() {
               <Link to={productUrl(x)} className="block rounded-[20px] bg-[#f5f5f7] p-5 transition-colors hover:bg-[#ececf0]">
                 <span className="block text-[15px] font-semibold text-[#1d1d1f]">{ml(x.name)}</span>
                 <span className="mt-1 block font-mono text-xs text-[#5a5a5e]">{x.reference}</span>
-                <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-[#0077b3]">
+                <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-[#006a9e]">
                   {p(m.open)}
                   <Icon name="arrow" className="h-3.5 w-3.5 rtl:-scale-x-100" strokeWidth={2} />
                 </span>
@@ -216,7 +216,7 @@ function RequestForm({ presetType }: { presetType: string }) {
               {p(f.successTitle)}
             </p>
             <p className="mt-4 text-sm font-semibold text-[#5a5a5e]">{p(f.referenceLabel)}</p>
-            <p className="font-mono text-2xl font-semibold text-[#0077b3]">{result.reference}</p>
+            <p className="font-mono text-2xl font-semibold text-[#006a9e]">{result.reference}</p>
             <p className="mt-4 text-[15px] leading-relaxed text-[#474747]">{p(f.nextStep)}</p>
             {result.mode === "local" && <p className="mt-3 text-xs text-[#5a5a5e]">{p(f.localNote)}</p>}
           </div>
@@ -321,7 +321,7 @@ function ContactChannels() {
                 <dt className="text-xs font-semibold uppercase tracking-[0.12em] text-[#5a5a5e]">{p(r.label)}</dt>
                 <dd className="mt-2 text-[17px] font-semibold text-[#1d1d1f]">
                   {r.href ? (
-                    <a href={r.href} className="hover:text-[#0077b3]">
+                    <a href={r.href} className="hover:text-[#006a9e]">
                       {r.value}
                     </a>
                   ) : (
@@ -359,7 +359,7 @@ function Faq() {
                   className="flex min-h-14 w-full items-center justify-between gap-4 py-4 text-start text-[17px] font-semibold text-[#1d1d1f]"
                 >
                   {p(item.q)}
-                  <Icon name={open === i ? "close" : "sparkle"} className="h-4 w-4 shrink-0 text-[#0077b3]" strokeWidth={2} />
+                  <Icon name={open === i ? "close" : "sparkle"} className="h-4 w-4 shrink-0 text-[#006a9e]" strokeWidth={2} />
                 </button>
               </h3>
               {open === i && <p className="pb-5 text-[15px] leading-relaxed text-[#474747]">{p(item.a)}</p>}
@@ -446,7 +446,7 @@ export default function SupportPage() {
             {support.warranty.items.map((item, i) => (
               <Reveal key={item.icon} delay={i * 90} className="h-full">
                 <div className="h-full rounded-[28px] bg-[#f5f5f7] p-8">
-                  <span className="text-[#0077b3]">
+                  <span className="text-[#006a9e]">
                     <Icon name={item.icon} className="h-9 w-9" />
                   </span>
                   <h3 className="mt-6 text-[21px] font-semibold leading-snug text-[#1d1d1f]" style={{ fontFamily: "var(--font-display)" }}>
@@ -487,7 +487,7 @@ export default function SupportPage() {
                   className="group flex h-full flex-col rounded-[28px] bg-white p-7 transition-colors hover:bg-[#fafafc]"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-[#0077b3]">
+                    <span className="text-[#006a9e]">
                       <Icon name={card.icon} className="h-7 w-7" />
                     </span>
                     <span className="text-xs font-semibold text-[#5a5a5e]">{card.num}</span>
@@ -496,7 +496,7 @@ export default function SupportPage() {
                     {p(card.title)}
                   </h3>
                   <p className="mt-2 text-[15px] leading-relaxed text-[#474747]">{p(card.text)}</p>
-                  <span className="mt-auto inline-flex min-h-11 items-center gap-1.5 pt-5 text-[15px] font-semibold text-[#0077b3]">
+                  <span className="mt-auto inline-flex min-h-11 items-center gap-1.5 pt-5 text-[15px] font-semibold text-[#006a9e]">
                     {p(card.cta)}
                     <Icon name="arrow" className="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1" strokeWidth={2} />
                   </span>

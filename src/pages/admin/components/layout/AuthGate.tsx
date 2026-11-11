@@ -150,7 +150,7 @@ export function AuthGate({
           type="button"
           onClick={onResetPassword}
           disabled={authBusy}
-          className="mt-4 w-full text-center text-xs font-semibold text-[#0077b3] hover:underline disabled:opacity-50"
+          className="mt-4 w-full text-center text-xs font-semibold text-[#006a9e] hover:underline disabled:opacity-50"
         >
           Mot de passe oublié ? Recevoir un lien de réinitialisation
         </button>

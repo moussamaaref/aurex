@@ -112,7 +112,7 @@ export default function NewsPage() {
       {/* Héros — AUREX DISCOVERIES */}
       <section className="bg-white">
         <div className="mx-auto max-w-7xl px-6 py-16 lg:py-24">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0077b3]">{p(news.hero.eyebrow)}</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#006a9e]">{p(news.hero.eyebrow)}</p>
           <h1 className="mt-4 max-w-4xl text-3xl font-semibold sm:text-4xl leading-[1.05] tracking-tight text-[#1d1d1f] lg:text-[52px] lg:tracking-[-0.8px]" style={{ fontFamily: "var(--font-display)" }}>
             {p(news.hero.title)}
           </h1>
@@ -152,7 +152,7 @@ export default function NewsPage() {
                 onClick={() => setCategory(item)}
                 aria-pressed={category === item}
                 className={`min-h-11 rounded-full px-5 text-sm font-semibold transition-colors ${
-                  category === item ? "bg-[#1d1d1f] text-white" : "border border-[#d6d6d6] bg-white text-[#474747] hover:border-[#0077b3] hover:text-[#0077b3]"
+                  category === item ? "bg-[#1d1d1f] text-white" : "border border-[#d6d6d6] bg-white text-[#474747] hover:border-[#0077b3] hover:text-[#006a9e]"
                 }`}
               >
                 {item === "all" ? p(news.all) : item}
@@ -187,7 +187,7 @@ export default function NewsPage() {
                   {ml(featured.title as Localized)}
                 </h3>
                 <p className="mt-5 text-[17px] leading-relaxed text-[#474747]">{ml(featured.excerpt as Localized)}</p>
-                <span className="mt-8 inline-flex min-h-11 items-center gap-2 text-[15px] font-semibold text-[#0077b3] transition-all group-hover:gap-3">
+                <span className="mt-8 inline-flex min-h-11 items-center gap-2 text-[15px] font-semibold text-[#006a9e] transition-all group-hover:gap-3">
                   {p(news.featuredCta)}
                   <Icon name="arrow" className="h-4 w-4 rtl:-scale-x-100" strokeWidth={2} />
                 </span>
@@ -221,7 +221,7 @@ export default function NewsPage() {
                       {ml(item.title as Localized)}
                     </h3>
                     <p className="mt-3 line-clamp-3 flex-1 text-[15px] leading-relaxed text-[#474747]">{ml(item.excerpt as Localized)}</p>
-                    <span className="mt-4 inline-flex min-h-11 items-center gap-1.5 text-[15px] font-semibold text-[#0077b3]">
+                    <span className="mt-4 inline-flex min-h-11 items-center gap-1.5 text-[15px] font-semibold text-[#006a9e]">
                       {p(news.cardCta)}
                       <Icon name="arrow" className="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1" strokeWidth={2} />
                     </span>

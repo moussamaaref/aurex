@@ -194,7 +194,7 @@ export default function Footer() {
             },
           ].filter((info) => !/x{2}/i.test(String(info.value))).map((info) => (
             <div key={info.label} className="flex items-start gap-3">
-              <div className="w-7 h-7 rounded-[10px] bg-white border border-[#d6d6d6] flex items-center justify-center text-[#0077b3] flex-shrink-0 mt-0.5">
+              <div className="w-7 h-7 rounded-[10px] bg-white border border-[#d6d6d6] flex items-center justify-center text-[#006a9e] flex-shrink-0 mt-0.5">
                 {info.icon}
               </div>
               <div>
@@ -235,7 +235,7 @@ export default function Footer() {
               <a
                 key={label}
                 href="#"
-                className="text-xs text-[#5a5a5e] hover:text-[#1d1d1f] transition-colors"
+                className="inline-flex min-h-11 items-center text-xs text-[#5a5a5e] hover:text-[#1d1d1f] transition-colors"
                 style={{ fontFamily: "var(--font-sans)" }}
               >
                 {label}

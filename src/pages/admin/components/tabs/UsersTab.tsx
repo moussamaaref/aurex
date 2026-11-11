@@ -194,7 +194,7 @@ export function UsersTab({
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-semibold text-[#1d1d1f]">
                         {profile.full_name || info?.email || profile.id.slice(0, 8)}
-                        {isSelf && <span className="ms-2 rounded-full bg-[#f0f7fb] px-2 py-0.5 text-[11px] font-semibold text-[#0077b3]">vous</span>}
+                        {isSelf && <span className="ms-2 rounded-full bg-[#f0f7fb] px-2 py-0.5 text-[11px] font-semibold text-[#006a9e]">vous</span>}
                       </p>
                       {info?.email && <p className="truncate text-xs text-[#474747]">{info.email}</p>}
                       <p className="truncate text-[11px] text-[#707070]">
@@ -204,7 +204,7 @@ export function UsersTab({
                     <div className="flex items-center gap-2">
                       <span
                         className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
-                          profile.role === "admin" ? "bg-[#FBEAEA] text-[#C1443D]" : profile.role === "viewer" ? "bg-[#e6e6e8] text-[#474747]" : "bg-[#f0f7fb] text-[#0077b3]"
+                          profile.role === "admin" ? "bg-[#FBEAEA] text-[#C1443D]" : profile.role === "viewer" ? "bg-[#e6e6e8] text-[#474747]" : "bg-[#f0f7fb] text-[#006a9e]"
                         }`}
                       >
                         {profile.role}

@@ -46,7 +46,7 @@ function ProductVideo({ url, poster, title }: { url: string; poster: string; tit
 }
 
 // Temporaire : masque le bouton « Où acheter » (comme dans le header)
-const hideWhereToBuy = true
+const hideWhereToBuy = false
 
 export default function ProductDetailPage() {
   const { t } = useTranslation()
@@ -132,7 +132,7 @@ export default function ProductDetailPage() {
           : "bg-[var(--color-accent)] text-white"
 
   return (
-    <div className="min-h-screen bg-[#f5f5f7] pt-24">
+    <div className="min-h-screen bg-[#f5f5f7] pb-24 pt-24 lg:pb-0">
       {/* ══ Breadcrumb ══ */}
       <div className="border-b border-[#d6d6d6] bg-white">
         <div className="mx-auto max-w-7xl px-4 py-3.5 sm:px-6">
@@ -267,7 +267,7 @@ export default function ProductDetailPage() {
               {energyClassOf(product) && <EnergyBadge cls={energyClassOf(product)} />}
               {/* Wi-Fi / Bluetooth : uniquement si le produit les possède réellement */}
               {facts.connectivity.map((c) => (
-                <span key={c} className="flex items-center gap-1.5 rounded-full border border-[#d6d6d6] bg-[#f5f5f7] px-2.5 py-1 text-xs font-semibold text-[#0077b3]">
+                <span key={c} className="flex items-center gap-1.5 rounded-full border border-[#d6d6d6] bg-[#f5f5f7] px-2.5 py-1 text-xs font-semibold text-[#006a9e]">
                   {c}
                 </span>
               ))}
@@ -332,7 +332,7 @@ export default function ProductDetailPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
-                    {t("common.whereToBuy")}
+                    {p(docUi.findDistributor)}
                   </Link>
                 )}
                 <CompareButton
@@ -342,13 +342,13 @@ export default function ProductDetailPage() {
                 />
               </div>
               <Link
-                to="/support"
-                className="mt-4 inline-flex items-center gap-2 rounded-[10px] px-2 py-1 text-xs font-medium text-[#474747] transition-colors hover:text-[var(--color-primary)]"
+                to="/support#demande"
+                className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-[10px] px-2 py-1 text-xs font-medium text-[#474747] transition-colors hover:text-[var(--color-primary)]"
               >
                 <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                {t("productDetail.downloadNotice")}
+                {p(docUi.question)}
               </Link>
             </div>
           </div>
@@ -370,7 +370,7 @@ export default function ProductDetailPage() {
                 onClick={() => setActiveTab(tab.key)}
                 className={`-mb-px whitespace-nowrap border-b-2 px-6 py-4 text-sm font-semibold transition-colors ${
                   activeTab === tab.key
-                    ? "border-[var(--color-accent)] text-[#0077b3]"
+                    ? "border-[var(--color-accent)] text-[#006a9e]"
                     : "border-transparent text-[#5a5a5e] hover:text-[#333336]"
                 }`}
               >
@@ -393,7 +393,7 @@ export default function ProductDetailPage() {
                     className="flex items-start gap-3 rounded-[10px] border border-[#d6d6d6] bg-[#f5f5f7]/60 p-4 transition-colors hover:border-[#d6d6d6] hover:bg-[#f5f5f7]/40"
                   >
                     <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-accent)]/10">
-                      <svg className="h-3 w-3 text-[#0077b3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <svg className="h-3 w-3 text-[#006a9e]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
@@ -460,7 +460,7 @@ export default function ProductDetailPage() {
                         className="flex items-center justify-between gap-3 rounded-[10px] border border-[#d6d6d6] bg-white p-4 transition-colors hover:bg-[#fafafc]"
                       >
                         <span className="text-sm font-semibold text-[#1d1d1f]">{doc.label ? ml(doc.label) : p(docUi.types[doc.type])}</span>
-                        <span className="flex items-center gap-1.5 text-sm font-semibold text-[#0077b3]">
+                        <span className="flex items-center gap-1.5 text-sm font-semibold text-[#006a9e]">
                           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                           </svg>
@@ -480,7 +480,7 @@ export default function ProductDetailPage() {
           <div className="mt-14">
             <div className="mb-7 flex items-end justify-between">
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#0077b3] font-display">
+                <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#006a9e] font-display">
               {facts.range || facts.subFamily || categoryLabel}
                 </p>
                 <h2 className="mt-1.5 text-2xl font-bold text-[var(--color-primary)] font-display">
@@ -490,7 +490,7 @@ export default function ProductDetailPage() {
               {category && (
                 <Link
                   to={`/produits/${category.slug}`}
-                  className="hidden items-center gap-1.5 text-sm font-semibold text-[#0077b3] transition-all hover:gap-2.5 sm:flex"
+                  className="hidden items-center gap-1.5 text-sm font-semibold text-[#006a9e] transition-all hover:gap-2.5 sm:flex"
                 >
                   {t("common.viewAll")}
                   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -525,6 +525,16 @@ export default function ProductDetailPage() {
             </div>
           </div>
         )}
+      </div>
+
+      {/* Barre d'action fixe : le chemin d'achat reste visible pendant la lecture de la fiche (mobile / tablette) */}
+      <div className="no-print fixed inset-x-0 bottom-0 z-40 border-t border-[#d6d6d6] bg-white/95 p-3 backdrop-blur lg:hidden">
+        <Link
+          to="/distributeurs"
+          className="flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[var(--color-accent)] text-sm font-semibold text-white transition-colors hover:bg-[#00628f] active:scale-[0.98]"
+        >
+          {p(docUi.findDistributor)}
+        </Link>
       </div>
     </div>
   )
