@@ -52,6 +52,8 @@ export const specUi = {
 
 /** Médias et documentation de la fiche produit. */
 export const docUi = {
+  findDistributor: { fr: "Trouver un distributeur", en: "Find a distributor", ar: "ابحثوا عن موزّع" } as L3,
+  question: { fr: "Une question sur ce produit ?", en: "A question about this product?", ar: "سؤال عن هذا المنتج؟" } as L3,
   media: { fr: "Vidéo & 360°", en: "Video & 360°", ar: "فيديو و360°" } as L3,
   view360: { fr: "Vue 360°", en: "360° view", ar: "عرض 360°" } as L3,
   soon: {

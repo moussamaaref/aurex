@@ -24,7 +24,7 @@ export default function NewsletterBlock() {
     <section className="bg-white border-t border-[#d6d6d6]" aria-labelledby="newsletter-title">
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 lg:grid-cols-2 lg:items-center lg:py-20">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0077b3]" style={{ fontFamily: "var(--font-display)" }}>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#006a9e]" style={{ fontFamily: "var(--font-display)" }}>
             {p(c.eyebrow)}
           </p>
           <h2

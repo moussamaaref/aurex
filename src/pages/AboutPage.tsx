@@ -74,7 +74,7 @@ export default function AboutPage() {
       <section id="mission" className="scroll-mt-24 bg-[#f5f5f7] py-20 lg:py-[90px]" aria-labelledby="mission-title">
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 lg:grid-cols-2">
           <Reveal>
-            <p className={`${eyebrow} text-[#0077b3]`}>{p(about.mission.eyebrow)}</p>
+            <p className={`${eyebrow} text-[#006a9e]`}>{p(about.mission.eyebrow)}</p>
             <h2 id="mission-title" className={`mt-4 text-4xl lg:text-[40px] ${h2}`} style={{ fontFamily: "var(--font-display)" }}>
               {p(about.mission.title)}
             </h2>
@@ -107,7 +107,7 @@ export default function AboutPage() {
       <section className="bg-white py-20 lg:py-[90px]" aria-labelledby="values-title">
         <div className="mx-auto max-w-7xl px-6">
           <Reveal>
-            <p className={`${eyebrow} text-[#0077b3]`}>{p(about.values.eyebrow)}</p>
+            <p className={`${eyebrow} text-[#006a9e]`}>{p(about.values.eyebrow)}</p>
             <h2 id="values-title" className={`mt-3 text-4xl lg:text-[40px] ${h2}`} style={{ fontFamily: "var(--font-display)" }}>
               {p(about.values.title)}
             </h2>
@@ -121,7 +121,7 @@ export default function AboutPage() {
               >
                 <div className="h-full rounded-[28px] bg-[#f5f5f7] p-8">
                   <div className="flex items-center justify-between">
-                    <span className="text-[#0077b3]">
+                    <span className="text-[#006a9e]">
                       <Icon name={item.icon} className="h-8 w-8" />
                     </span>
                     <span className="text-xs font-semibold text-[#5a5a5e]">{item.num}</span>
@@ -164,11 +164,11 @@ export default function AboutPage() {
       <section className="bg-[#fafafc] py-24 text-center lg:py-[120px]" aria-labelledby="final-title">
         <div className="mx-auto max-w-5xl px-6">
           <Reveal>
-            <p className={`${eyebrow} text-[#0077b3]`}>{p(about.final.eyebrow)}</p>
+            <p className={`${eyebrow} text-[#006a9e]`}>{p(about.final.eyebrow)}</p>
             <h2 id="final-title" className="mt-5 text-4xl font-semibold leading-[1.05] tracking-tight text-[#1d1d1f] sm:text-6xl lg:text-[64px] lg:tracking-[-1px]" style={{ fontFamily: "var(--font-display)" }}>
               {p(about.final.lead)}
               <br />
-              <span className="font-bold text-[#0077b3]">{about.final.brand}</span>
+              <span className="font-bold text-[#006a9e]">{about.final.brand}</span>
               {p(about.final.tail)}
             </h2>
             <p className="mx-auto mt-6 max-w-2xl text-[17px] leading-relaxed text-[#474747]">{p(about.final.text)}</p>

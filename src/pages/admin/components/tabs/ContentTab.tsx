@@ -155,7 +155,7 @@ export function ContentTab({
           description="Tous les textes (français, anglais, arabe), images et liens des pages : accueil, À propos, Support, Smart Tech, Nouveautés, catégories, navigation, pied de page, newsletter, filtres, SEO. Un champ modifié remplace celui du code ; « Rétablir » revient à l'original."
         />
         <div className="flex items-center gap-2">
-          <span className="rounded-full bg-[#f0f7fb] px-3 py-1 text-xs font-semibold text-[#0077b3]">
+          <span className="rounded-full bg-[#f0f7fb] px-3 py-1 text-xs font-semibold text-[#006a9e]">
             {totalEdited} modification{totalEdited > 1 ? "s" : ""}
           </span>
           <button type="button" onClick={onSave} disabled={isViewer || saving} className={btnPrimary}>
@@ -208,7 +208,7 @@ export function ContentTab({
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-sm font-semibold text-[#1d1d1f]">
                     <span>{title}</span>
                     <span className="text-xs font-medium text-[#5a5a5e]">
-                      {edited > 0 && <span className="me-2 rounded-full bg-[#f0f7fb] px-2 py-0.5 text-[#0077b3]">{edited} modifié{edited > 1 ? "s" : ""}</span>}
+                      {edited > 0 && <span className="me-2 rounded-full bg-[#f0f7fb] px-2 py-0.5 text-[#006a9e]">{edited} modifié{edited > 1 ? "s" : ""}</span>}
                       {items.length} champ{items.length > 1 ? "s" : ""}
                     </span>
                   </summary>

@@ -399,7 +399,7 @@ export function collectionTemplate(key: CollectionKey): Record<string, unknown> 
         ctaSec: "Smart Home",
         ctaHref: "/produits",
         ctaSecHref: "/smart-home",
-        image: "/Spinova3.jpeg",
+        image: "/Spinova3.webp",
         is_active: true,
       }
     case "stats":
@@ -494,9 +494,9 @@ export function defaultCollections(): Record<CollectionKey, unknown[]> {
     faq: faqItems,
     distributors: [],
     heroSlides: [
-      { id: "hero-0", tag: "Nouveauté 2026", title: "Une propreté\nnouvelle génération.", subtitle: "La nouvelle gamme AUREX — technologies de pointe\npour chaque foyer algérien.", cta: "Découvrir la gamme", ctaSec: "Smart Home", ctaHref: "/produits", ctaSecHref: "/smart-home", image: "/Spinova3.jpeg", is_active: true },
-      { id: "hero-1", tag: "AUREX SmartConnect", title: "Le plaisir\nd'un café parfait.", subtitle: "Pilotez tous vos appareils depuis votre smartphone,\noù que vous soyez.", cta: "Smart Home", ctaSec: "Voir les produits", ctaHref: "/smart-home", ctaSecHref: "/produits", image: "/Gustiva.jpeg", is_active: true },
-      { id: "hero-2", tag: "Réfrigération", title: "Fraîcheur\nsupérieure.", subtitle: "Technologie FreshCool brevetée — vos aliments\nresten frais jusqu'à 3× plus longtemps.", cta: "Voir les réfrigérateurs", ctaSec: "Technologies", ctaHref: "/produits/refrigerateurs", ctaSecHref: "/technologies", image: "/Vacuum.jpeg", is_active: true },
+      { id: "hero-0", tag: "Nouveauté 2026", title: "Une propreté\nnouvelle génération.", subtitle: "La nouvelle gamme AUREX — technologies de pointe\npour chaque foyer algérien.", cta: "Découvrir la gamme", ctaSec: "Smart Home", ctaHref: "/produits", ctaSecHref: "/smart-home", image: "/Spinova3.webp", is_active: true },
+      { id: "hero-1", tag: "AUREX SmartConnect", title: "Le plaisir\nd'un café parfait.", subtitle: "Pilotez tous vos appareils depuis votre smartphone,\noù que vous soyez.", cta: "Smart Home", ctaSec: "Voir les produits", ctaHref: "/smart-home", ctaSecHref: "/produits", image: "/Gustiva.webp", is_active: true },
+      { id: "hero-2", tag: "Réfrigération", title: "Fraîcheur\nsupérieure.", subtitle: "Technologie FreshCool brevetée — vos aliments\nresten frais jusqu'à 3× plus longtemps.", cta: "Voir les réfrigérateurs", ctaSec: "Technologies", ctaHref: "/produits/refrigerateurs", ctaSecHref: "/technologies", image: "/Vacuum.webp", is_active: true },
     ],
     stats: [
       { value: 120, suffix: "+", label: "Produits", is_active: true },

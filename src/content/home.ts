@@ -35,7 +35,7 @@ export const heroSlides: HeroSlideContent[] = [
   },
   {
     id: "reliability",
-    image: "/Spinova3.jpeg",
+    image: "/Spinova3.webp",
     tag: { fr: "Moteurs haute puissance", en: "High power engines", ar: "محرّكات عالية القدرة" },
     title: {
       fr: "Des appareils qui apportent une tranquillité durable à votre foyer.",
@@ -55,7 +55,7 @@ export const heroSlides: HeroSlideContent[] = [
   },
   {
     id: "smart",
-    image: "/Gustiva.jpeg",
+    image: "/Gustiva.webp",
     tag: { fr: "Connecté en Wi-Fi & Bluetooth", en: "Wi-Fi & Bluetooth Connected", ar: "متصل عبر Wi-Fi وBluetooth" },
     title: { fr: "Smart Tech — contrôle d'un seul geste.", en: "Smart Tech — One Touch Control.", ar: "Smart Tech — تحكّم بلمسة واحدة." },
     subtitle: {
@@ -74,7 +74,7 @@ export const heroSlides: HeroSlideContent[] = [
   },
   {
     id: "pro",
-    image: "/Vacuum.jpeg",
+    image: "/Vacuum.webp",
     badge: { fr: "Standards approuvés pour les organisations", en: "Approved standards for organizations", ar: "معايير معتمدة للمؤسسات" },
     title: {
       fr: "Des solutions fiables pour les environnements exigeants.",
@@ -118,7 +118,7 @@ export const why = {
     ar: "في كل بيت جزائري، تصنع الاحتياجات والتفاصيل إيقاع الحياة اليومية. وانطلاقًا من فهمها لهذه التفاصيل وخبرتها المتراكمة في مجال الأجهزة المنزلية، تقدّم AUREX رؤيتها الخاصة: أجهزة تجمع بين مظهر عصري ووظائف عملية وقيمة يستحقها كل اختيار. فالجهاز المناسب ليس مجرد إضافة إلى البيت، بل جزء من حياة تُعاش كل يوم.",
   } as L3,
   cta: { fr: "Découvrir l'approche AUREX", en: "Discover the AUREX Approach", ar: "اكتشفوا نهج AUREX" } as L3,
-  image: "/Gustiva.jpeg",
+  image: "/Gustiva.webp",
   imageAlt: {
     fr: "Cuisine contemporaine équipée d'appareils AUREX",
     en: "Contemporary kitchen equipped with AUREX appliances",
@@ -251,7 +251,7 @@ export const promo = {
     } as L3,
     cta: { fr: "Découvrir l'offre", en: "Explore the Offer", ar: "اكتشفوا العرض" } as L3,
     href: "/produits?badge=promotion",
-    image: "/Spinova3.jpeg",
+    image: "/Spinova3.webp",
   },
   fresh: {
     label: { fr: "NOUVEAU", en: "NEW", ar: "جديد" } as L3,

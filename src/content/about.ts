@@ -16,7 +16,7 @@ export const about = {
     } as L3,
     cta1: { fr: "Découvrir notre approche", en: "Discover our approach", ar: "اكتشفوا نهجنا" } as L3,
     cta2: { fr: "Notre histoire", en: "Our story", ar: "قصتنا" } as L3,
-    image: "/Gustiva.jpeg",
+    image: "/Gustiva.webp",
     imageAlt: {
       fr: "Intérieur algérien contemporain équipé d'appareils AUREX",
       en: "Contemporary Algerian home equipped with AUREX appliances",
@@ -67,7 +67,7 @@ export const about = {
     } as L3,
     cta1: { fr: "Découvrir la gamme 2026", en: "Discover our 2026 range", ar: "اكتشفوا تشكيلة 2026" } as L3,
     cta2: { fr: "SAV & contact", en: "SAV & contact", ar: "خدمة ما بعد البيع والتواصل" } as L3,
-    image: "/Vacuum.jpeg",
+    image: "/Vacuum.webp",
     imageAlt: {
       fr: "Intérieur chaleureux inspiré du foyer algérien contemporain",
       en: "Warm interior inspired by the contemporary Algerian home",

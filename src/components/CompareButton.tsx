@@ -94,7 +94,7 @@ export default function CompareButton({
               ? t("comparator.inCompare")
               : t("comparator.addToCompare")
         }
-        className={`inline-flex items-center justify-center gap-1.5 text-xs font-medium rounded-full px-3 py-2 border transition-colors font-sans ${
+        className={`inline-flex min-h-11 items-center justify-center gap-1.5 text-xs font-medium rounded-full px-3 py-2 border transition-colors font-sans ${
           className ?? ""
         } ${
           added

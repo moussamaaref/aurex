@@ -34,7 +34,7 @@ const TYPES: Record<string, string> = {
 }
 
 const statusStyle = (s: string) =>
-  s === "done" ? "bg-[#E6F4EC] text-[#03873a]" : s === "in-progress" ? "bg-[#f0f7fb] text-[#0077b3]" : "bg-[#fdf1e8] text-[#b64400]"
+  s === "done" ? "bg-[#E6F4EC] text-[#03873a]" : s === "in-progress" ? "bg-[#f0f7fb] text-[#006a9e]" : "bg-[#fdf1e8] text-[#b64400]"
 
 function downloadCsv(name: string, rows: Array<Record<string, unknown>>) {
   if (rows.length === 0) return
@@ -145,7 +145,7 @@ export function RequestsTab({ isViewer }: { isViewer: boolean }) {
 
         <div className="mt-5 flex flex-wrap items-center gap-2 text-xs">
           <span className="rounded-full bg-[#fdf1e8] px-3 py-1 font-semibold text-[#b64400]">Nouvelles : {count("new")}</span>
-          <span className="rounded-full bg-[#f0f7fb] px-3 py-1 font-semibold text-[#0077b3]">En cours : {count("in-progress")}</span>
+          <span className="rounded-full bg-[#f0f7fb] px-3 py-1 font-semibold text-[#006a9e]">En cours : {count("in-progress")}</span>
           <span className="rounded-full bg-[#E6F4EC] px-3 py-1 font-semibold text-[#03873a]">Traitées : {count("done")}</span>
           <select value={filter} onChange={(e) => setFilter(e.target.value)} className={`${inputBase} !w-auto`}>
             <option value="">Tous les statuts</option>
@@ -191,7 +191,7 @@ export function RequestsTab({ isViewer }: { isViewer: boolean }) {
               {openId === x.id && (
                 <div className="space-y-3 border-t border-[#e6e6e8] bg-[#fafafc] px-4 py-4 text-sm text-[#333336]">
                   <dl className="grid gap-2 sm:grid-cols-2">
-                    <div><dt className="text-xs text-[#5a5a5e]">Téléphone</dt><dd><a className="font-semibold text-[#0077b3]" href={`tel:${x.phone}`}>{x.phone}</a></dd></div>
+                    <div><dt className="text-xs text-[#5a5a5e]">Téléphone</dt><dd><a className="font-semibold text-[#006a9e]" href={`tel:${x.phone}`}>{x.phone}</a></dd></div>
                     <div><dt className="text-xs text-[#5a5a5e]">Localisation</dt><dd>{[x.wilaya, x.commune].filter(Boolean).join(" — ") || "—"}</dd></div>
                     <div><dt className="text-xs text-[#5a5a5e]">Appareil</dt><dd>{[x.device_class, x.device_reference].filter(Boolean).join(" · ") || "—"}</dd></div>
                     <div><dt className="text-xs text-[#5a5a5e]">Pièce jointe</dt><dd>{x.attachment_name ?? "—"}{x.attachment_url ? ` (stockée : ${x.attachment_url})` : ""}</dd></div>

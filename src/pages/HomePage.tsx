@@ -87,6 +87,8 @@ function Hero() {
         <img
           key={s.id}
           src={s.image}
+          width={1920}
+          height={1072}
           alt=""
           aria-hidden="true"
           decoding="async"
@@ -216,7 +218,7 @@ function LineUp() {
               </h2>
               <p className="mt-3 text-[17px] text-[#474747]">{p(lineUp.subtitle)}</p>
             </div>
-            <Link to="/produits" className="inline-flex min-h-11 items-center gap-1.5 text-[15px] font-semibold text-[#0077b3] hover:underline">
+            <Link to="/produits" className="inline-flex min-h-11 items-center gap-1.5 text-[15px] font-semibold text-[#006a9e] hover:underline">
               {p(lineUp.seeAll)}
               <Icon name="arrow" className="h-4 w-4 rtl:-scale-x-100" strokeWidth={2} />
             </Link>
@@ -245,14 +247,14 @@ function WhyAurex() {
         <div className="grid items-center gap-12 lg:grid-cols-12">
           <div className="lg:col-span-5">
             <Reveal>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0077b3]">{p(why.heading)}</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#006a9e]">{p(why.heading)}</p>
               <h2 id="why-title" className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight text-[#1d1d1f] lg:text-[40px]" style={{ fontFamily: "var(--font-display)" }}>
                 {p(why.headline)}
               </h2>
             </Reveal>
             <Reveal delay={150}>
               <p className="mt-6 text-[17px] leading-relaxed text-[#474747]">{p(why.intro)}</p>
-              <Link to="/a-propos" className="mt-6 inline-flex min-h-11 items-center gap-1.5 text-[15px] font-semibold text-[#0077b3] hover:underline">
+              <Link to="/a-propos" className="mt-6 inline-flex min-h-11 items-center gap-1.5 text-[15px] font-semibold text-[#006a9e] hover:underline">
                 {p(why.cta)}
                 <Icon name="arrow" className="h-4 w-4 rtl:-scale-x-100" strokeWidth={2} />
               </Link>
@@ -277,7 +279,7 @@ function WhyAurex() {
         <div className="mt-16 grid gap-x-10 gap-y-10 border-t border-[#d6d6d6] pt-10 sm:grid-cols-2 lg:grid-cols-4">
           {why.pillars.map((pillar, i) => (
             <Reveal key={pillar.icon} delay={i * 90}>
-              <div className="text-[#0077b3]">
+              <div className="text-[#006a9e]">
                 <Icon name={pillar.icon} className="h-7 w-7" />
               </div>
               <h3 className="mt-4 text-[19px] font-semibold leading-snug text-[#1d1d1f]" style={{ fontFamily: "var(--font-display)" }}>
@@ -299,7 +301,7 @@ function Categories() {
     <section className="bg-white py-20 lg:py-[90px]" aria-labelledby="cats-title">
       <div className="mx-auto max-w-7xl px-6">
         <Reveal>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0077b3]">{p(categoriesSection.eyebrow)}</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#006a9e]">{p(categoriesSection.eyebrow)}</p>
           <h2 id="cats-title" className="mt-3 text-4xl font-semibold leading-none tracking-tight text-[#1d1d1f] lg:text-[40px]" style={{ fontFamily: "var(--font-display)" }}>
             {p(categoriesSection.title)}
           </h2>
@@ -330,7 +332,7 @@ function Categories() {
                       {p(cat.name)}
                     </h3>
                     <p className="mt-2 text-[15px] leading-snug text-[#474747]">{p(cat.highlight)}</p>
-                    <span className="mt-auto inline-flex min-h-11 items-center gap-1.5 pt-4 text-[15px] font-semibold text-[#0077b3]">
+                    <span className="mt-auto inline-flex min-h-11 items-center gap-1.5 pt-4 text-[15px] font-semibold text-[#006a9e]">
                       {p(cat.cta)}
                       <Icon name="arrow" className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1" strokeWidth={2} />
                     </span>
@@ -353,7 +355,7 @@ function AfterSales() {
       <div className="mx-auto max-w-7xl px-6">
         <div className="grid gap-10 lg:grid-cols-12 lg:items-end">
           <Reveal className="lg:col-span-7">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0077b3]">{p(sav.eyebrow)}</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#006a9e]">{p(sav.eyebrow)}</p>
             <h2 id="sav-title" className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight text-[#1d1d1f] lg:text-[40px]" style={{ fontFamily: "var(--font-display)" }}>
               {p(sav.headline)}
             </h2>
@@ -377,7 +379,7 @@ function AfterSales() {
             <Reveal key={card.num} delay={i * 80} className="h-full">
               <Link to={card.href} className="group flex h-full flex-col rounded-[28px] bg-white p-7 transition-colors hover:bg-[#fafafc]">
                 <div className="flex items-center justify-between">
-                  <span className="text-[#0077b3]">
+                  <span className="text-[#006a9e]">
                     <Icon name={card.icon} className="h-7 w-7" />
                   </span>
                   <span className="text-xs font-semibold text-[#5a5a5e]">{card.num}</span>
@@ -386,7 +388,7 @@ function AfterSales() {
                   {p(card.title)}
                 </h3>
                 <p className="mt-2 text-[15px] leading-relaxed text-[#474747]">{p(card.text)}</p>
-                <span className="mt-auto inline-flex min-h-11 items-center gap-1.5 pt-5 text-[15px] font-semibold text-[#0077b3]">
+                <span className="mt-auto inline-flex min-h-11 items-center gap-1.5 pt-5 text-[15px] font-semibold text-[#006a9e]">
                   {p(card.cta)}
                   <Icon name="arrow" className="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1" strokeWidth={2} />
                 </span>
@@ -415,6 +417,8 @@ function Highlights() {
               loading="lazy"
               decoding="async"
               src={promo.exclusive.image}
+              width={1920}
+              height={1072}
               alt=""
               aria-hidden="true"
               className="absolute inset-0 -z-10 h-full w-full object-cover opacity-70 transition-transform duration-700 group-hover:scale-[1.03] motion-reduce:transition-none"
@@ -442,7 +446,7 @@ function Highlights() {
                   {p(card.title)}
                 </h3>
                 <p className="mt-2 text-[15px] text-[#474747]">{p(card.text)}</p>
-                <span className="mt-4 inline-flex min-h-11 items-center gap-1.5 text-[15px] font-semibold text-[#0077b3]">
+                <span className="mt-4 inline-flex min-h-11 items-center gap-1.5 text-[15px] font-semibold text-[#006a9e]">
                   {p(card.cta)}
                   <Icon name="arrow" className="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1" strokeWidth={2} />
                 </span>

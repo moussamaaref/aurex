@@ -88,7 +88,7 @@ export function TrilingualInput({
               disabled={disabled}
               onClick={() => onChange({ ...loc, fr: s })}
               title={`Utiliser « ${s} »`}
-              className="rounded-lg border border-[#d6d6d6] bg-white px-2 py-1 text-[11px] font-semibold text-[#333336] transition hover:border-[#0077b3] hover:text-[#0077b3] disabled:opacity-50"
+              className="rounded-lg border border-[#d6d6d6] bg-white px-2 py-1 text-[11px] font-semibold text-[#333336] transition hover:border-[#0077b3] hover:text-[#006a9e] disabled:opacity-50"
             >
               {s}
             </button>
@@ -235,7 +235,7 @@ export function ImagesGalleryField({
           type="button"
           disabled={disabled || busy}
           onClick={() => inputRef.current?.click()}
-          className="rounded-xl border border-dashed border-[#0077b3]/50 bg-[#0077b3]/5 px-3.5 py-2 text-xs font-semibold text-[#0077b3] transition hover:bg-[#0077b3]/10 disabled:opacity-50"
+          className="rounded-xl border border-dashed border-[#0077b3]/50 bg-[#0077b3]/5 px-3.5 py-2 text-xs font-semibold text-[#006a9e] transition hover:bg-[#0077b3]/10 disabled:opacity-50"
         >
           {busy ? "Upload..." : "+ Ajouter des images"}
         </button>
@@ -399,7 +399,7 @@ function MultiChips({
             type="button"
             disabled={disabled}
             onClick={() => toggle(slug)}
-            className="rounded-lg border border-[#d6d6d6] bg-[#f5f5f7] px-2 py-1 text-[11px] font-semibold text-[#333336] transition hover:border-[#0077b3] hover:text-[#0077b3] disabled:opacity-50"
+            className="rounded-lg border border-[#d6d6d6] bg-[#f5f5f7] px-2 py-1 text-[11px] font-semibold text-[#333336] transition hover:border-[#0077b3] hover:text-[#006a9e] disabled:opacity-50"
           >
             {optionLabels[slug] ?? slug}
           </button>
@@ -672,7 +672,7 @@ export function StructuredEditor({ value, onChange, fieldKey, disabled, options,
               disabled={disabled}
               onClick={() => onChange(s)}
               title={`Utiliser « ${s} »`}
-              className="rounded-lg border border-[#d6d6d6] bg-white px-2 py-1 text-[11px] font-semibold text-[#333336] transition hover:border-[#0077b3] hover:text-[#0077b3] disabled:opacity-50"
+              className="rounded-lg border border-[#d6d6d6] bg-white px-2 py-1 text-[11px] font-semibold text-[#333336] transition hover:border-[#0077b3] hover:text-[#006a9e] disabled:opacity-50"
             >
               {s}
             </button>
@@ -750,7 +750,7 @@ export function StructuredEditor({ value, onChange, fieldKey, disabled, options,
             <button
               type="button"
               onClick={() => onChange([...value, { fr: "", ar: "", en: "" }])}
-              className="rounded-xl border border-dashed border-[#0077b3]/50 px-3.5 py-2 text-xs font-semibold text-[#0077b3] hover:bg-[#0077b3]/5"
+              className="rounded-xl border border-dashed border-[#0077b3]/50 px-3.5 py-2 text-xs font-semibold text-[#006a9e] hover:bg-[#0077b3]/5"
             >
               Ajouter une valeur
             </button>
@@ -811,7 +811,7 @@ export function StructuredEditor({ value, onChange, fieldKey, disabled, options,
           <button
             type="button"
             onClick={() => onChange([...value, ""])}
-            className="rounded-xl border border-dashed border-[#0077b3]/50 px-3.5 py-2 text-xs font-semibold text-[#0077b3] hover:bg-[#0077b3]/5"
+            className="rounded-xl border border-dashed border-[#0077b3]/50 px-3.5 py-2 text-xs font-semibold text-[#006a9e] hover:bg-[#0077b3]/5"
           >
             Ajouter une valeur
           </button>

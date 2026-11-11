@@ -16,7 +16,7 @@ export default function SmartTechSection() {
     <div className="mx-auto max-w-7xl px-6">
       <div className="grid items-center gap-12 lg:grid-cols-2">
         <Reveal>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0077b3]">{p(smartTech.label)}</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#006a9e]">{p(smartTech.label)}</p>
           <h2 className="mt-4 text-4xl font-semibold leading-[1.05] tracking-tight text-[#1d1d1f] lg:text-[40px]" style={{ fontFamily: "var(--font-display)" }}>
             {p(smartTech.headline)}
           </h2>
@@ -73,13 +73,13 @@ export default function SmartTechSection() {
         {smartTech.cards.map((card, i) => (
           <Reveal key={card.icon} delay={i * 80} className="h-full">
             <Link to={smartTech.ctaHref} className="block h-full rounded-[28px] bg-white p-7 transition-colors hover:bg-[#fafafc]">
-              <span className="text-[#0077b3]">
+              <span className="text-[#006a9e]">
                 <Icon name={card.icon} className="h-8 w-8" />
               </span>
               <h3 className="mt-5 text-[19px] font-semibold leading-snug text-[#1d1d1f]" style={{ fontFamily: "var(--font-display)" }}>
                 {p(card.title)}
               </h3>
-              <p className="mt-1 text-sm font-semibold text-[#0077b3]">{p(card.subtitle)}</p>
+              <p className="mt-1 text-sm font-semibold text-[#006a9e]">{p(card.subtitle)}</p>
               <p className="mt-3 text-[15px] leading-relaxed text-[#474747]">{p(card.text)}</p>
             </Link>
           </Reveal>

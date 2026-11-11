@@ -705,7 +705,7 @@ export default function AdminPage() {
       <div className="mx-auto max-w-7xl">
         <header className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
-            <p className="flex items-center gap-2 text-xs font-semibold text-[#0077b3]">
+            <p className="flex items-center gap-2 text-xs font-semibold text-[#006a9e]">
               <span className="h-1.5 w-1.5 rounded-full bg-[#0077b3]" />
               AUREX — Console
             </p>
@@ -765,7 +765,7 @@ export default function AdminPage() {
             <aside className="h-fit rounded-2xl bg-[#1d1d1f] p-2 shadow-[0_1px_2px_rgba(10,35,66,0.2),0_20px_40px_-24px_rgba(10,35,66,0.65)] lg:sticky lg:top-6">
               <div className="mb-2 px-3 pb-3 pt-2">
                 <p className="text-base font-semibold tracking-tight text-white">AUREX</p>
-                <p className="text-[11px] font-medium text-[#0077b3]">Console d'administration</p>
+                <p className="text-[11px] font-medium text-[#006a9e]">Console d'administration</p>
               </div>
               {tabs.map(([id, label]) => {
                 const isActive = activeTab === id
@@ -780,7 +780,7 @@ export default function AdminPage() {
                         : "border-transparent text-white/60 hover:border-white/20 hover:bg-white/5 hover:text-white/90"
                     }`}
                   >
-                    <span className={`text-xs ${isActive ? "text-[#0077b3]" : "text-white/40"}`}>
+                    <span className={`text-xs ${isActive ? "text-[#006a9e]" : "text-white/40"}`}>
                       {icons[id] ?? "•"}
                     </span>{" "}
                     {label}
