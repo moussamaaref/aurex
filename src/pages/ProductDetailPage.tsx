@@ -1,7 +1,7 @@
 import { useP } from "../content/lang"
 import { specUi, docUi } from "../content/products"
 import { catalogInfoOf } from "../lib/catalog"
-import { productFacts } from "../lib/catalogView"
+import { energyClassOf, productFacts } from "../lib/catalogView"
 import { useEffect, useRef, useState } from "react"
 import { Link, useParams, Navigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
@@ -74,6 +74,10 @@ export default function ProductDetailPage() {
       document.body.style.overflow = overflow
     }
   }, [isImageFullscreen])
+
+  useEffect(() => {
+    if (product) document.title = `${ml(product.name)} — AUREX`
+  }, [product])
 
   if (!product) return <Navigate to="/produits" replace />
 
@@ -260,7 +264,7 @@ export default function ProductDetailPage() {
             <div className="mb-4 flex flex-wrap items-center gap-2">
               {facts.family && <span className="rounded-full border border-[#d6d6d6] bg-[#f5f5f7] px-2.5 py-1 text-xs font-semibold text-[#333336]">{facts.family}</span>}
               {facts.subFamily && <span className="rounded-full border border-[#d6d6d6] bg-[#f5f5f7] px-2.5 py-1 text-xs font-semibold text-[#333336]">{facts.subFamily}</span>}
-              {product.energyClass && <EnergyBadge cls={product.energyClass} />}
+              {energyClassOf(product) && <EnergyBadge cls={energyClassOf(product)} />}
               {/* Wi-Fi / Bluetooth : uniquement si le produit les possède réellement */}
               {facts.connectivity.map((c) => (
                 <span key={c} className="flex items-center gap-1.5 rounded-full border border-[#d6d6d6] bg-[#f5f5f7] px-2.5 py-1 text-xs font-semibold text-[#0077b3]">
@@ -411,7 +415,7 @@ export default function ProductDetailPage() {
                       ...(product.specs ?? []).map((row) => ({ label: ml(row.label), value: ml(row.value) })),
                       facts.capacities.length > 0 && { label: p(specUi.capacity), value: facts.capacities.join(", ") },
                       facts.classifications.length > 0 && { label: p(specUi.classification), value: facts.classifications.join(", ") },
-                      product.energyClass && { label: p(specUi.energyClass), value: product.energyClass },
+                      energyClassOf(product) && { label: p(specUi.energyClass), value: energyClassOf(product) },
                       product.dimensions && { label: p(specUi.dimensions), value: `${product.dimensions.w} × ${product.dimensions.h} × ${product.dimensions.d} cm` },
                       facts.colors.length > 0 && { label: p(specUi.color), value: facts.colors.join(", ") },
                       facts.connectivity.length > 0 && { label: p(specUi.connectivity), value: facts.connectivity.join(" · ") },

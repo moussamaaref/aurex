@@ -38,3 +38,8 @@ export function keySpecsOf(p: Product, lang: Lang, max = 6): string[] {
   const list = [...own, ...f.capacities, ...f.classifications.slice(0, 3), f.range, ...f.colors, ...f.connectivity].filter(Boolean)
   return [...new Set(list)].slice(0, max)
 }
+
+/** Classe énergétique à afficher : uniquement si elle est confirmée (energy_class_verified), jamais une valeur d'import par défaut. */
+export function energyClassOf(p: Product): string {
+  return p.energy_class_verified === true && p.energyClass ? p.energyClass : ""
+}
