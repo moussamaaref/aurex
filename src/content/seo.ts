@@ -11,16 +11,16 @@ export const seoByRoute: Record<string, { title: L3; description: L3 }> = {
       ar: `${brand} — أجهزة منزلية صُنعت لتدوم وصُمّمت لتُعجب | الجزائر`,
     },
     description: {
-      fr: "AUREX : électroménager au design moderne et à la valeur équilibrée pour les foyers algériens. Cuisine & encastrable, soin du linge, eau & confort, petit électro & coffee, réfrigération. Garantie écrite de 24 mois.",
-      en: "AUREX: home appliances with modern design and balanced value for Algerian homes. Kitchen & built-in, laundry care, water & comfort, small appliances & coffee, refrigeration. 24-month written warranty.",
-      ar: "AUREX: أجهزة منزلية بتصميم عصري وقيمة متوازنة للبيوت الجزائرية. المطبخ والأجهزة المدمجة، العناية بالغسيل، الماء والراحة، الأجهزة الصغيرة والقهوة، التبريد. ضمان مكتوب 24 شهرًا.",
+      fr: "AUREX : électroménager au design moderne et à la valeur équilibrée pour les foyers algériens. Cuisine & encastrable, lavage & entretien, eau & confort, petit électroménager. Garantie écrite de 24 mois.",
+      en: "AUREX: home appliances with modern design and balanced value for Algerian homes. Kitchen & built-in, laundry & home care, water & comfort, small appliances. 24-month written warranty.",
+      ar: "AUREX: أجهزة منزلية بتصميم عصري وقيمة متوازنة للبيوت الجزائرية. المطبخ والأجهزة المدمجة، العناية بالغسيل والصيانة، الماء والراحة، الأجهزة الصغيرة. ضمان مكتوب 24 شهرًا.",
     },
   },
   produits: {
     title: { fr: `Product Line-Up 2026 — Produits ${brand}`, en: `Product Line-Up 2026 — ${brand} products`, ar: `تشكيلة منتجات 2026 — منتجات ${brand}` },
     description: {
-      fr: "Explorez la sélection de produits AUREX : fours encastrables, lave-linge, réfrigérateurs, chauffe-eau, machines à café et plus. Filtrez par famille, gamme, capacité et connectivité.",
-      en: "Explore the AUREX product selection: built-in ovens, washing machines, refrigerators, water heaters, coffee machines and more. Filter by family, range, capacity and connectivity.",
+      fr: "Explorez la sélection de produits AUREX : cuisinières, hottes, lave-linge, aspirateurs, chauffe-eau, robots pétrins, machines à café et plus. Filtrez par famille, gamme, capacité et connectivité.",
+      en: "Explore the AUREX product selection: cookers, hoods, washing machines, vacuum cleaners, water heaters, stand mixers, coffee machines and more. Filter by family, range, capacity and connectivity.",
       ar: "استكشفوا تشكيلة منتجات AUREX: أفران مدمجة وغسالات وثلاجات وسخانات مياه وآلات قهوة وغيرها. صفّوا بحسب العائلة والتشكيلة والسعة والاتصال.",
     },
   },

@@ -264,6 +264,7 @@ export default function App() {
                   <Route path="/produits/:category" element={<ProductsPage />} />
                   {/* Fiche produit : URL hiérarchique (canonique) + URL legacy (conservée) */}
                   <Route path="/produits/:category/:famille/:sousFamille/:gamme/:slug" element={<ProductDetailPage />} />
+                  <Route path="/produits/:category/:sousFamille/:slug" element={<ProductDetailPage />} />
                   <Route path="/produits/:category/:id" element={<ProductDetailPage />} />
                   <Route path="/comparateur" element={<ComparePage />} />
                   {/* Le concept « Smart Home » est retiré : redirections vers Smart Tech */}

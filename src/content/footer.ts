@@ -7,7 +7,7 @@ export const footerContent = {
     explore: { fr: "Explorer", en: "Explore", ar: "استكشف" } as L3,
     support: { fr: "Support", en: "Support", ar: "الدعم" } as L3,
   },
-  /** Colonne PRODUITS : les 5 catégories officielles. */
+  /** Colonne PRODUITS : les 4 familles officielles. */
   productLinks: categoryContent.map((c) => ({ label: c.name, href: `/produits/${c.slug}` })),
   exploreLinks: [
     { label: { fr: "À propos", en: "About", ar: "من نحن" } as L3, href: "/a-propos" },

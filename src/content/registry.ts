@@ -7,7 +7,8 @@ import { storyUi, sceneTitles } from "./stories"
 import { navLabels, navDetails, productsSide, megaLabels } from "./nav"
 import { footerContent, newsletterContent } from "./footer"
 import { categoryContent } from "./categories"
-import { productsUi, specUi } from "./products"
+import { productsUi, specUi, docUi } from "./products"
+import { productsAds, productsAdsUi } from "./productsAds"
 import { seoByRoute } from "./seo"
 
 /* =====================================================================
@@ -56,7 +57,7 @@ export const GROUPS: GroupDef[] = [
   {
     id: "categories",
     label: "Catégories",
-    roots: { categoryContent: { label: "Les 5 catégories", value: categoryContent } },
+    roots: { categoryContent: { label: "Les 4 familles", value: categoryContent } },
   },
   {
     id: "nav",
@@ -82,13 +83,16 @@ export const GROUPS: GroupDef[] = [
     roots: {
       productsUi: { label: "Filtres produits", value: productsUi },
       specUi: { label: "Fiche produit", value: specUi },
+      docUi: { label: "Fiche produit — médias et documents", value: docUi },
+      productsAds: { label: "Page Produits — espace publicitaire (hero)", value: productsAds },
+      productsAdsUi: { label: "Page Produits — espace publicitaire (libellés)", value: productsAdsUi },
     },
   },
   { id: "seo", label: "SEO par page", roots: { seoByRoute: { label: "Titres & descriptions", value: seoByRoute } } },
 ]
 
 /** Clés texte non traduisibles mais éditables (images, liens). */
-const STRING_KEYS = new Set(["image", "cover", "href", "ctaHref"])
+const STRING_KEYS = new Set(["image", "cover", "href", "ctaHref", "productId", "sousFamille"])
 
 export type LeafKind = "l3" | "l3list" | "string"
 
@@ -225,6 +229,8 @@ const KEY_LABELS: Record<string, string> = {
   headline: "Accroche",
   eyebrow: "Surtitre",
   image: "Image (URL)",
+  productId: "Produit ciblé par le CTA (id exact du produit)",
+  sousFamille: "À défaut : sous-famille ciblée (id officiel, ex. machines-cafe)",
   cover: "Image de couverture (URL)",
   href: "Lien",
   ctaHref: "Lien du bouton",
