@@ -35,7 +35,7 @@ export const collectionGroups: CollectionGroup[] = [
   {
     id: "catalogue",
     label: "Catalogue",
-    keys: ["products", "categories", "familles", "sousFamilles", "gammes", "capacites", "couleurs", "technologies", "news", "stories", "faq", "distributors"],
+    keys: ["products", "technologies", "news", "stories", "faq", "distributors"],
   },
   // Les anciennes pages éditoriales (Hero, Smart Home, Technologies, À propos, Support…) sont désormais
   // pilotées par le contenu du website brief 2026 (src/content) : retirées de la liste d'édition.
@@ -45,13 +45,18 @@ export const collectionGroups: CollectionGroup[] = [
 export const fieldLabels: Record<string, string> = {
   id: "Identifiant",
   product_id: "Produit lié (id du produit)",
+  short_description: "Description courte",
+  specs: "Caractéristiques techniques de la famille (selon la fiche officielle : puissance, capacité, vitesses… — ne rien supposer)",
+  classifications: "Classification / Caractéristiques (ids officiels : pose-libre, gaz, electrique, mixte, 4-foyers, front, sans-sac, espresso, casquette, mono, multi…)",
+  video: "Vidéo (URL .mp4 ou lien YouTube / Vimeo)",
+  view360: "Vue 360° (URL d'un viewer embarquable)",
+  documents: "Documents téléchargeables (type : user-manual | technical-sheet | warranty | troubleshooting ; url)",
   lineup: "Afficher dans le Product Line-Up 2026 (accueil, 4 maximum)",
   wifi: "Compatible Wi-Fi",
   bluetooth: "Compatible Bluetooth",
   cover: "Image de couverture",
   scenes: "Scènes (3 à 5 : premier regard, conception, quotidien, performance, découvrir le modèle)",
   kind: "Type de scène (first-look, design, everyday, performance, explore)",
-  video: "Vidéo (URL, facultatif)",
   text: "Texte de la scène",
   cta_label: "Libellé du CTA (dernière scène)",
   cta_href: "Lien du CTA (fiche produit)",

@@ -6,15 +6,12 @@ import {
   categories,
   products,
   productUrl,
-  productFamille,
-  productSousFamille,
-  productGamme,
-  productCapacites,
-  productCouleurs,
   type Product,
 } from "../data"
 import { ml } from "../lib/ml"
 import { shouldIgnoreUrlSelection } from "../lib/pageLoad"
+import { productFacts } from "../lib/catalogView"
+import { useP } from "../content/lang"
 import { useCompare } from "../context/CompareContext"
 import Reveal from "../components/Reveal"
 
@@ -68,8 +65,23 @@ const EMPTY = "—"
 
 const ENERGY_RANK = ["A+++", "A++", "A+", "A", "B", "C", "D", "E", "F", "G"]
 
+function ChipList({ values }: { values: string[] }) {
+  return values.length > 0 ? (
+    <div className="flex flex-wrap gap-1">
+      {values.map((v) => (
+        <span key={v} className="rounded-full border border-[#d6d6d6] bg-[#f5f5f7] px-2 py-0.5 font-sans text-xs font-medium text-[#1d1d1f]">
+          {v}
+        </span>
+      ))}
+    </div>
+  ) : (
+    EMPTY
+  )
+}
+
 export default function ComparePage() {
   const { t } = useTranslation()
+  const { lang } = useP()
   const { ids, remove, clear, replace, max, notify } = useCompare()
   const [searchParams, setSearchParams] = useSearchParams()
   const [copied, setCopied] = useState(false)
@@ -122,106 +134,40 @@ export default function ComparePage() {
         ),
       },
       {
-        key: "category",
-        label: t("comparator.rows.category"),
-        raw: (p) => catLabel(p),
-        render: (p) => (
-          <span className="text-sm font-medium text-[#333336]">
-            {catLabel(p)}
-          </span>
-        ),
-      },
-      {
         key: "famille",
         label: t("comparator.rows.famille"),
-        raw: (p) => {
-          const f = productFamille(p)
-          return f ? ml(f.name) : ""
-        },
-        render: (p) => {
-          const f = productFamille(p)
-          return (
-            <span className="text-sm font-medium text-[#333336]">
-              {f ? ml(f.name) : EMPTY}
-            </span>
-          )
-        },
+        raw: (p) => productFacts(p, lang).family,
+        render: (p) => <span className="text-sm font-medium text-[#333336]">{productFacts(p, lang).family || EMPTY}</span>,
       },
       {
         key: "sousFamille",
         label: t("comparator.rows.sousFamille"),
-        raw: (p) => {
-          const s = productSousFamille(p)
-          return s ? ml(s.name) : ""
-        },
-        render: (p) => {
-          const s = productSousFamille(p)
-          return (
-            <span className="text-sm font-medium text-[#333336]">
-              {s ? ml(s.name) : EMPTY}
-            </span>
-          )
-        },
+        raw: (p) => productFacts(p, lang).subFamily,
+        render: (p) => <span className="text-sm font-medium text-[#333336]">{productFacts(p, lang).subFamily || EMPTY}</span>,
       },
       {
         key: "gamme",
         label: t("comparator.rows.gamme"),
-        raw: (p) => {
-          const g = productGamme(p)
-          return g ? ml(g.name) : ""
-        },
-        render: (p) => {
-          const g = productGamme(p)
-          return (
-            <span className="text-sm font-medium text-[#333336]">
-              {g ? ml(g.name) : EMPTY}
-            </span>
-          )
-        },
+        raw: (p) => productFacts(p, lang).range,
+        render: (p) => <span className="text-sm font-medium text-[#333336]">{productFacts(p, lang).range || EMPTY}</span>,
       },
       {
         key: "capacites",
         label: t("comparator.rows.capacites"),
-        raw: (p) => productCapacites(p).map((v) => ml(v.label)).join(" / "),
-        render: (p) => {
-          const vals = productCapacites(p)
-          return vals.length > 0 ? (
-            <div className="flex flex-wrap gap-1">
-              {vals.map((v) => (
-                <span
-                  key={v.id}
-                  className="text-xs font-medium text-[#1d1d1f] bg-[#f5f5f7] border border-[#d6d6d6] rounded-full px-2 py-0.5 font-sans"
-                >
-                  {ml(v.label)}
-                </span>
-              ))}
-            </div>
-          ) : (
-            EMPTY
-          )
-        },
+        raw: (p) => productFacts(p, lang).capacities.join(" / "),
+        render: (p) => <ChipList values={productFacts(p, lang).capacities} />,
       },
       {
         key: "couleurs",
         label: t("comparator.rows.couleurs"),
-        raw: (p) => productCouleurs(p).map((v) => ml(v.label)).join(" / "),
-        render: (p) => {
-          const vals = productCouleurs(p)
-          return vals.length > 0 ? (
-            <div className="flex flex-wrap gap-1">
-              {vals.map((v) => (
-                <span
-                  key={v.id}
-                  className="text-xs font-medium text-[#1d1d1f] bg-[#f5f5f7] border border-[#d6d6d6] rounded-full px-2 py-0.5 font-sans"
-                >
-                  {ml(v.label)}
-                </span>
-              ))}
-            </div>
-          ) : (
-            EMPTY
-          )
-        },
+        raw: (p) => productFacts(p, lang).colors.join(" / "),
+        render: (p) => <ChipList values={productFacts(p, lang).colors} />,
+      },
+      {
+        key: "classification",
+        label: lang === "ar" ? "التصنيف" : lang === "en" ? "Classification" : "Classification",
+        raw: (p) => productFacts(p, lang).classifications.join(" / "),
+        render: (p) => <ChipList values={productFacts(p, lang).classifications} />,
       },
       {
         key: "availability",
@@ -271,45 +217,8 @@ export default function ComparePage() {
       {
         key: "connectivity",
         label: t("comparator.rows.connectivity"),
-        raw: (p) => (p.connectivity ? "1" : "0"),
-        render: (p) =>
-          p.connectivity ? (
-            <span className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-800">
-              <svg
-                className="w-4 h-4 text-[#0077b3]"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"
-                />
-              </svg>
-              {t("comparator.rows.connected")}
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1.5 text-sm text-[#474747]">
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
-                />
-              </svg>
-              {t("comparator.rows.disconnected")}
-            </span>
-          ),
+        raw: (p) => productFacts(p, lang).connectivity.join(" / "),
+        render: (p) => <ChipList values={productFacts(p, lang).connectivity} />,
       },
       {
         key: "noiseLevel",

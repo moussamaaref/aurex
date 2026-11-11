@@ -340,7 +340,7 @@ export async function seedNormalizedTables(): Promise<SeedResult[]> {
   results.push({ table: "categories", inserted: catErr ? 0 : catRows.length, error: catErr?.message })
 
   const prodFallback: Array<Record<string, unknown>> = [
-    { id: "ex9000-wm", name: "Lave-linge EX9000 Smart", reference: "EX-WM-9000-60-SB", category: "soin-linge-entretien", subcategory: "Spinova+", image: fallbackCats[0].image, images: [fallbackCats[0].image], badges: ["Nouveau"], capacity: "9 kg", energyClass: "A+++", energy_class: "A+++", connectivity: true, technologies: ["EcoWash"], noiseLevel: "45 dB", noise_level: "45 dB", dimensions: { w: 60, h: 85, d: 60 }, description: "Lave-linge EX9000 Smart", features: ["15 programmes"], color: "Blanc", isNew: true, is_new: true },
+    { id: "ex9000-wm", name: "Lave-linge EX9000 Smart", reference: "EX-WM-9000-60-SB", category: "lavage-entretien", subcategory: "Spinova+", image: fallbackCats[0].image, images: [fallbackCats[0].image], badges: ["Nouveau"], capacity: "9 kg", energyClass: "A+++", energy_class: "A+++", connectivity: true, technologies: ["EcoWash"], noiseLevel: "45 dB", noise_level: "45 dB", dimensions: { w: 60, h: 85, d: 60 }, description: "Lave-linge EX9000 Smart", features: ["15 programmes"], color: "Blanc", isNew: true, is_new: true },
     { id: "ex8000-oven", name: "Four multifonction EX8000", reference: "EX-OV-8000-70-PYR", category: "cuisine-encastrable", subcategory: "Fours encastrables", image: fallbackCats[0].image, images: [fallbackCats[0].image], badges: ["Best Seller"], capacity: "70 L", energyClass: "A+", energy_class: "A+", connectivity: false, technologies: ["PyroCook"], dimensions: { w: 60, h: 60, d: 55 }, description: "Four EX8000", features: ["12 modes"], color: "Inox/Noir" },
   ]
   const prods = prodFallback as Array<Record<string, unknown>>
@@ -370,8 +370,8 @@ export async function seedNormalizedTables(): Promise<SeedResult[]> {
   results.push({ table: "products", inserted: prodErr ? 0 : prodRows.length, error: prodErr?.message })
 
   const techFallback = [
-    { id: "smart-connect", name: "SmartConnect", icon: "⟳", image: fallbackCats[0].image, benefit: "Contrôle smartphone", description: "SmartConnect", category: "Connectivité", compatibleCategories: ["soin-linge-entretien"], compatible_categories: ["soin-linge-entretien"] },
-    { id: "eco-wash", name: "EcoWash", icon: "◈", image: fallbackCats[0].image, benefit: "40% économies", description: "EcoWash", category: "Éco-efficacité", compatibleCategories: ["soin-linge-entretien"], compatible_categories: ["soin-linge-entretien"] },
+    { id: "smart-connect", name: "SmartConnect", icon: "⟳", image: fallbackCats[0].image, benefit: "Contrôle smartphone", description: "SmartConnect", category: "Connectivité", compatibleCategories: ["lavage-entretien"], compatible_categories: ["lavage-entretien"] },
+    { id: "eco-wash", name: "EcoWash", icon: "◈", image: fallbackCats[0].image, benefit: "40% économies", description: "EcoWash", category: "Éco-efficacité", compatibleCategories: ["lavage-entretien"], compatible_categories: ["lavage-entretien"] },
   ]
   const techs = techFallback as Array<Record<string, unknown>>
   const techRows = techs.map((t) => ({
@@ -473,24 +473,42 @@ export async function inviteProfile(email: string, fullName?: string): Promise<v
 
 export const MIN_PASSWORD_LENGTH = 10
 
+/** Nom de la fonction Edge : « admin-users » ; « quick-service » est le nom proposé par défaut par le tableau de bord Supabase
+ *  (accepté si la fonction a été déployée sans être renommée). Surchargeable avec VITE_ADMIN_USERS_FUNCTION. */
+const ADMIN_FUNCTION_NAMES = [
+  (import.meta.env.VITE_ADMIN_USERS_FUNCTION as string | undefined) || "admin-users",
+  "quick-service",
+]
+
 async function callAdminUsers<T>(body: Record<string, unknown>): Promise<T> {
   if (!supabase) throw new Error("Supabase n'est pas configuré.")
-  const { data, error } = await supabase.functions.invoke("admin-users", { body })
-  if (error) {
+  let lastMessage = ""
+  for (const name of ADMIN_FUNCTION_NAMES) {
+    const { data, error } = await supabase.functions.invoke(name, { body })
+    if (!error) {
+      if (data && typeof data === "object" && "error" in data) throw new Error(String((data as { error: unknown }).error))
+      return data as T
+    }
     // Le message utile est dans le corps de la réponse de la fonction.
     let message = error.message
+    let status = 0
     try {
       const ctx = (error as { context?: Response }).context
-      if (ctx) message = ((await ctx.json()) as { error?: string }).error ?? message
+      if (ctx) {
+        status = ctx.status
+        message = ((await ctx.json()) as { error?: string }).error ?? message
+      }
     } catch {
       /* corps illisible */
     }
-    if (/Failed to send a request|not found|404/i.test(message))
-      message = "La fonction admin-users n'est pas déployée. Exécutez : supabase functions deploy admin-users"
+    // Fonction absente sous ce nom : on essaie le suivant.
+    if (status === 404 || /Failed to send a request|Requested function was not found/i.test(message)) {
+      lastMessage = "La fonction « admin-users » n'est pas déployée (Supabase > Edge Functions). Collez-y le code de supabase/functions/admin-users/index.ts."
+      continue
+    }
     throw new Error(message)
   }
-  if (data && typeof data === "object" && "error" in data) throw new Error(String((data as { error: unknown }).error))
-  return data as T
+  throw new Error(lastMessage)
 }
 
 /** Crée un compte avec mot de passe (e-mail confirmé) et son profil. */

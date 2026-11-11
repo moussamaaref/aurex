@@ -1,30 +1,18 @@
 import { useRef } from "react"
 import { Link } from "react-router-dom"
-import { categoryLabelOf, productCapacites, productUrl, type Product } from "../data"
+import { categoryLabelOf, productUrl, type Product } from "../data"
+import { keySpecsOf } from "../lib/catalogView"
 import { ml } from "../lib/ml"
 import { useP } from "../content/lang"
 import Icon from "./Icon"
 
 const MAX_TILT = 6 // degrés : inclinaison volontairement discrète
 
-/** Caractéristiques vérifiées (2 à 3) tirées de la fiche produit, sans prix. */
-function keySpecs(product: Product): string[] {
-  const specs: string[] = []
-  const caps = productCapacites(product)
-  if (caps[0]) specs.push(ml(caps[0].label))
-  else if (product.capacity) specs.push(ml(product.capacity))
-  if (product.energyClass) specs.push(`Classe ${product.energyClass}`)
-  if (product.noiseLevel) specs.push(product.noiseLevel)
-  if (product.connectivity) specs.push("Wi-Fi · Bluetooth")
-  if (specs.length < 2 && product.color) specs.push(ml(product.color))
-  return specs.slice(0, 3)
-}
-
 /** Carte produit du Product Line-Up 2026 : tilt 3D réactif au curseur sur toute la carte. */
 export default function LineUpCard({ product, cta }: { product: Product; cta: string }) {
   const { lang } = useP()
   const ref = useRef<HTMLAnchorElement>(null)
-  const specs = keySpecs(product)
+  const specs = keySpecsOf(product, lang, 4)
 
   const onMove = (event: React.PointerEvent<HTMLAnchorElement>) => {
     const el = ref.current

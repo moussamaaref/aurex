@@ -20,6 +20,7 @@ import {
 } from "../lib/taxonomy"
 import { ml, type Localized } from "../lib/ml"
 import { categoryContent } from "../content/categories"
+import { catalogInfoOf, isCatalogProduct } from "../lib/catalog"
 import { buildDefaultStories, type Story } from "../content/stories"
 
 export interface Product {
@@ -53,6 +54,18 @@ export interface Product {
   isNew?: boolean
   /** Affiché dans le Product Line-Up 2026 de l'accueil (CMS). */
   lineup?: boolean
+  /** Options de classification officielles supplémentaires (identifiants de src/lib/catalog.ts). */
+  classifications?: string[]
+  /** Description courte (carte et en-tête de fiche) ; `description` reste la présentation détaillée. */
+  short_description?: Localized
+  /** Caractéristiques techniques propres à la famille, issues des fiches officielles (jamais supposées). */
+  specs?: Array<{ label: Localized; value: Localized }>
+  /** Vidéo de présentation technique (URL du fichier ou lien YouTube/Vimeo). */
+  video?: string
+  /** Vue 360° (URL d'une page ou d'un viewer embarquable). */
+  view360?: string
+  /** Documentation téléchargeable. */
+  documents?: Array<{ type: "user-manual" | "technical-sheet" | "warranty" | "troubleshooting"; url: string; label?: Localized }>
 }
 
 export interface Category {
@@ -1527,7 +1540,11 @@ function normalizeTaxonomy<T extends { slug: string }>(value: unknown, fallback:
 }
 
 export const categories: Category[] = normalizeCategories(loadManagedCollection("categories", defaultCategories))
+/** Catalogue affiché : seuls les produits rattachés à une sous-famille officielle (hors réfrigérateurs, congélateurs,
+ *  climatiseurs, fours encastrables, chauffe-bains) ; la catégorie est celle de la famille officielle. */
 export const products: Product[] = normalizeProducts(loadManagedCollection("products", defaultProducts))
+  .filter((p) => isCatalogProduct(p))
+  .map((p) => ({ ...p, category: catalogInfoOf(p).family ?? p.category }))
 export const familles: Famille[] = normalizeTaxonomy(loadManagedCollection("familles", defaultFamilles), defaultFamilles)
 export const sousFamilles: SousFamille[] = normalizeTaxonomy(loadManagedCollection("sousFamilles", defaultSousFamilles), defaultSousFamilles)
 export const gammes: Gamme[] = normalizeTaxonomy(loadManagedCollection("gammes", defaultGammes), defaultGammes)
@@ -1580,34 +1597,12 @@ export function categoryLabelOf(categorySlug: string): string {
   return found ? ml(found.label) : String(categorySlug ?? "")
 }
 
-/** URL canonique d'un produit : hiérarchique si complète, sinon legacy. */
+/** URL canonique d'un produit : /produits/<famille>/<sous-famille>/<slug> (classification officielle). */
 export function productUrl(p: Product): string {
-  const catSlug = String(p.category ?? "").toLowerCase()
-  const fam = productFamille(p)
-  const sfam = productSousFamille(p)
-  const gamme = productGamme(p)
-  // Cohérence hiérarchique : la famille doit appartenir à la catégorie du produit.
-  const coherentFam =
-    fam && String(fam.categorySlug ?? "").toLowerCase() === catSlug ? fam : undefined
-  const coherentSfam =
-    sfam &&
-    coherentFam &&
-    String(sfam.familleSlug ?? "").toLowerCase() === String(coherentFam.slug ?? "").toLowerCase()
-      ? sfam
-      : undefined
-  const coherentGamme =
-    gamme &&
-    coherentSfam &&
-    String(gamme.sousFamilleSlug ?? "").toLowerCase() ===
-      String(coherentSfam.slug ?? "").toLowerCase()
-      ? gamme
-      : undefined
-  return productPath(p, {
-    categorySlug: p.category,
-    famille: coherentFam?.slug,
-    sousFamille: coherentSfam?.slug,
-    gamme: coherentGamme?.slug,
-  })
+  const info = catalogInfoOf(p)
+  const slug = productSlugOf(p)
+  if (info.family && info.sousFamille) return `/produits/${info.family}/${info.sousFamille}/${slug}`
+  return `/produits/${String(p.category ?? "").toLowerCase() || "produits"}/${p.id ?? slug}`
 }
 
 /** Retrouve un produit par id, slug explicite ou slug dérivé du nom. */

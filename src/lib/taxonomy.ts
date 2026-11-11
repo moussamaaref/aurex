@@ -1,4 +1,5 @@
 import { ml, type Localized } from "./ml"
+import { catalogInfoOf } from "./catalog"
 
 /* =====================================================================
    Hiérarchie produit officielle AUREX :
@@ -83,178 +84,26 @@ const L = (fr: string): Localized => ({ fr, ar: "", en: "" })
 
 /* ---------------- Données de référence (fallback si CMS vide) ---------------- */
 
-export const defaultFamilles: Famille[] = [
-  { slug: "fours", categorySlug: "cuisine-encastrable", name: L("Fours encastrables") },
-  { slug: "plaques-cuisson", categorySlug: "cuisine-encastrable", name: L("Plaques de cuisson") },
-  { slug: "hottes", categorySlug: "cuisine-encastrable", name: L("Hottes aspirantes") },
-  { slug: "cuisinieres", categorySlug: "cuisine-encastrable", name: L("Cuisinières") },
-  { slug: "micro-ondes", categorySlug: "cuisine-encastrable", name: L("Micro-ondes") },
-  { slug: "fours-pose-libre", categorySlug: "cuisine-encastrable", name: L("Fours en pose libre") },
-  { slug: "lave-linge", categorySlug: "soin-linge-entretien", name: L("Lave-linge") },
-  { slug: "lave-vaisselle", categorySlug: "soin-linge-entretien", name: L("Lave-vaisselle") },
-  { slug: "defroisseurs-vapeur", categorySlug: "soin-linge-entretien", name: L("Défroisseurs vapeur") },
-  { slug: "aspirateurs", categorySlug: "soin-linge-entretien", name: L("Aspirateurs") },
-  { slug: "climatiseurs", categorySlug: "soin-linge-entretien", name: L("Climatiseurs") },
-  { slug: "purificateurs-air", categorySlug: "soin-linge-entretien", name: L("Purificateurs d'air") },
-  { slug: "fontaines-eau", categorySlug: "eau-confort", name: L("Distributeurs d'eau et fontaines") },
-  { slug: "cumulus", categorySlug: "eau-confort", name: L("Chauffe-eau (cumulus)") },
-  { slug: "chauffe-bain", categorySlug: "eau-confort", name: L("Chauffe-eau (chauffe-bain)") },
-  { slug: "petrins", categorySlug: "petit-electro-coffee", name: L("Robots pâtissiers / pétrins") },
-  { slug: "centrifugeuses", categorySlug: "petit-electro-coffee", name: L("Centrifugeuses") },
-  { slug: "cafetieres", categorySlug: "petit-electro-coffee", name: L("Machines à café") },
-  { slug: "refrigerateurs", categorySlug: "refrigeration-conservation", name: L("Réfrigérateurs") },
-  { slug: "congelateurs", categorySlug: "refrigeration-conservation", name: L("Congélateurs") },
-]
+/** Ancienne liste supprimée (classification officielle : src/lib/catalog.ts). */
+export const defaultFamilles: Famille[] = []
 
-export const defaultSousFamilles: SousFamille[] = [
-  { slug: "lave-linge-frontal", familleSlug: "lave-linge", name: L("Lave-linge frontal") },
-  { slug: "lave-linge-top", familleSlug: "lave-linge", name: L("Lave-linge top") },
-  { slug: "lave-vaisselle-encastrable", familleSlug: "lave-vaisselle", name: L("Encastrable") },
-  { slug: "lave-vaisselle-pose-libre", familleSlug: "lave-vaisselle", name: L("Pose libre") },
-  { slug: "petrins-planetaire", familleSlug: "petrins", name: L("Planétaire") },
-  { slug: "centrifugeuses-standard", familleSlug: "centrifugeuses", name: L("Centrifugeuse") },
-  { slug: "cafetieres-capsules", familleSlug: "cafetieres", name: L("Capsules") },
-  { slug: "defroisseurs-vertical", familleSlug: "defroisseurs-vapeur", name: L("Vertical") },
-  { slug: "congelateurs-coffre", familleSlug: "congelateurs", name: L("Coffre") },
-  { slug: "plaques-gaz", familleSlug: "plaques-cuisson", name: L("Gaz") },
-  { slug: "plaques-electriques", familleSlug: "plaques-cuisson", name: L("Électriques") },
-  { slug: "plaques-mixtes", familleSlug: "plaques-cuisson", name: L("Mixtes") },
-  { slug: "cafetieres-filtre", familleSlug: "cafetieres", name: L("Filtre") },
-  { slug: "cafetieres-expresso", familleSlug: "cafetieres", name: L("Expresso") },
-  { slug: "cumulus-electrique", familleSlug: "cumulus", name: L("Électrique") },
-  { slug: "chauffe-bain-gaz", familleSlug: "chauffe-bain", name: L("Gaz") },
-  { slug: "aspirateurs-sac", familleSlug: "aspirateurs", name: L("Avec sac") },
-  { slug: "aspirateurs-sans-sac", familleSlug: "aspirateurs", name: L("Sans sac") },
-  { slug: "aspirateurs-sans-fil", familleSlug: "aspirateurs", name: L("Sans fil") },
-  { slug: "purificateurs-hepa", familleSlug: "purificateurs-air", name: L("HEPA") },
-  { slug: "fontaines-domestiques", familleSlug: "fontaines-eau", name: L("Domestiques") },
-  { slug: "fours-encastrables", familleSlug: "fours", name: L("Encastrables") },
-  { slug: "fours-pose", familleSlug: "fours", name: L("À poser") },
-  { slug: "hottes-decoratives", familleSlug: "hottes", name: L("Décoratives") },
-  { slug: "micro-ondes-pose", familleSlug: "micro-ondes", name: L("À poser") },
-  { slug: "cuisinieres-gaz", familleSlug: "cuisinieres", name: L("Gaz") },
-  { slug: "cuisinieres-electriques", familleSlug: "cuisinieres", name: L("Électriques") },
-  { slug: "cuisinieres-mixtes", familleSlug: "cuisinieres", name: L("Mixtes") },
-  { slug: "refrigerateurs-combines", familleSlug: "refrigerateurs", name: L("Combinés") },
-  { slug: "refrigerateurs-americains", familleSlug: "refrigerateurs", name: L("Américains") },
-  { slug: "climatiseurs-split", familleSlug: "climatiseurs", name: L("Split") },
-  { slug: "climatiseurs-mobiles", familleSlug: "climatiseurs", name: L("Mobiles") },
-  { slug: "cuisinieres-4-feux", familleSlug: "cuisinieres", name: L("4 Feux") },
-  { slug: "hottes-casquette", familleSlug: "hottes", name: L("Casquette") },
-  { slug: "hottes-pyramid", familleSlug: "hottes", name: L("Pyramide") },
-  { slug: "micro-ondes-libre", familleSlug: "micro-ondes", name: L("Pose libre") },
-  { slug: "cafetieres-multi", familleSlug: "cafetieres", name: L("Multi") },
-  { slug: "petrins-mono", familleSlug: "petrins", name: L("Mono") },
-  { slug: "petrins-multi", familleSlug: "petrins", name: L("Multi") },
-  { slug: "aspirateurs-professionnels", familleSlug: "aspirateurs", name: L("Professionnels") },
-  { slug: "aspirateurs-poussiere", familleSlug: "aspirateurs", name: L("Poussière") },
-  { slug: "aspirateurs-bali", familleSlug: "aspirateurs", name: L("Bali") },
-  { slug: "fontaines-mecanique", familleSlug: "fontaines-eau", name: L("Mécanique") },
-  { slug: "fontaines-digital", familleSlug: "fontaines-eau", name: L("Digitale") },
-]
+/** Ancienne liste supprimée (classification officielle : src/lib/catalog.ts). */
+export const defaultSousFamilles: SousFamille[] = []
 
-export const defaultGammes: Gamme[] = [
-  { slug: "spinova", sousFamilleSlug: "lave-linge-frontal", name: L("Spinova") },
-  { slug: "spinova-plus", sousFamilleSlug: "lave-linge-frontal", name: L("Spinova+") },
-  { slug: "lavexa", sousFamilleSlug: "lave-linge-frontal", name: L("Lavexa") },
-  { slug: "lavexa-plus", sousFamilleSlug: "lave-linge-frontal", name: L("Lavexa+") },
-  { slug: "estrela", sousFamilleSlug: "lave-vaisselle-encastrable", name: L("Estrela") },
-  { slug: "estrela-s", sousFamilleSlug: "lave-vaisselle-encastrable", name: L("Estrela S") },
-  { slug: "gustiva", sousFamilleSlug: "petrins-planetaire", name: L("Gustiva") },
-  { slug: "ephoria", sousFamilleSlug: "centrifugeuses-standard", name: L("Ephoria") },
-  { slug: "la-mattina", sousFamilleSlug: "cafetieres-capsules", name: L("La mattina") },
-  { slug: "florenza", sousFamilleSlug: "cafetieres-expresso", name: L("Florenza") },
-  { slug: "t-vox", sousFamilleSlug: "aspirateurs-sans-sac", name: L("T-Vox") },
-  { slug: "eronex", sousFamilleSlug: "aspirateurs-sans-fil", name: L("Eronex") },
-  { slug: "dustor", sousFamilleSlug: "aspirateurs-sac", name: L("Dustor") },
-  { slug: "liva", sousFamilleSlug: "aspirateurs-sans-sac", name: L("Liva") },
-  { slug: "excellence", sousFamilleSlug: "fours-encastrables", name: L("Excellence") },
-  { slug: "freshcool", sousFamilleSlug: "refrigerateurs-combines", name: L("FreshCool") },
-  { slug: "inverter-plus", sousFamilleSlug: "climatiseurs-split", name: L("Inverter+") },
-  { slug: "pure-air", sousFamilleSlug: "purificateurs-hepa", name: L("Pure Air") },
-  { slug: "big", sousFamilleSlug: "fours-pose", name: L("Big") },
-  { slug: "gaz-gaz", sousFamilleSlug: "fours-encastrables", name: L("Gaz-Gaz") },
-  { slug: "elec-gaz-four", sousFamilleSlug: "fours-encastrables", name: L("Elec-Gaz") },
-  { slug: "elec-elec", sousFamilleSlug: "fours-encastrables", name: L("Elec-Elec") },
-  { slug: "elec-gaz-cuisiniere", sousFamilleSlug: "cuisinieres-4-feux", name: L("Elec-Gaz") },
-  { slug: "inox-casquette", sousFamilleSlug: "hottes-casquette", name: L("Inox") },
-  { slug: "glass", sousFamilleSlug: "hottes-decoratives", name: L("Glass") },
-  { slug: "inox-pyramid", sousFamilleSlug: "hottes-pyramid", name: L("Inox") },
-  { slug: "digitale-micro-ondes", sousFamilleSlug: "micro-ondes-libre", name: L("Digitale") },
-  { slug: "mecanique-micro-ondes", sousFamilleSlug: "micro-ondes-libre", name: L("Mécanique") },
-  { slug: "tactile-lave-linge", sousFamilleSlug: "lave-linge-frontal", name: L("Tactile") },
-  { slug: "rotative-lave-linge", sousFamilleSlug: "lave-linge-frontal", name: L("Rotative") },
-  { slug: "digitale-lave-vaisselle", sousFamilleSlug: "lave-vaisselle-pose-libre", name: L("Digitale") },
-  { slug: "poudre-caps", sousFamilleSlug: "cafetieres-multi", name: L("Poudre + capsules") },
-  { slug: "rotative-petrins", sousFamilleSlug: "petrins-mono", name: L("Rotative") },
-  { slug: "digitale-petrins", sousFamilleSlug: "petrins-mono", name: L("Digitale") },
-  { slug: "rotative-petrins-multi", sousFamilleSlug: "petrins-multi", name: L("Rotative") },
-  { slug: "elec", sousFamilleSlug: "cumulus-electrique", name: L("Elec") },
-  { slug: "gaz", sousFamilleSlug: "chauffe-bain-gaz", name: L("Gaz") },
-  { slug: "sans-sac", sousFamilleSlug: "aspirateurs-poussiere", name: L("Sans sac") },
-  { slug: "avec-sac", sousFamilleSlug: "aspirateurs-poussiere", name: L("Avec sac") },
-  { slug: "sans-fil", sousFamilleSlug: "aspirateurs-bali", name: L("Sans fil") },
-  { slug: "mecanique", sousFamilleSlug: "fontaines-mecanique", name: L("Mécanique") },
-  { slug: "digitale", sousFamilleSlug: "fontaines-digital", name: L("Digitale") },
-]
+/** Ancienne liste supprimée (classification officielle : src/lib/catalog.ts). */
+export const defaultGammes: Gamme[] = []
 
-export const defaultCapacites: Capacite[] = [
-  { slug: "7-kg", name: L("7 KG"), value: "7", unit: "KG" },
-  { slug: "8-kg", name: L("8 KG"), value: "8", unit: "KG" },
-  { slug: "9-kg", name: L("9 KG"), value: "9", unit: "KG" },
-  { slug: "10-5-kg", name: L("10.5 KG"), value: "10.5", unit: "KG" },
-  { slug: "12-kg", name: L("12 KG"), value: "12", unit: "KG" },
-  { slug: "30-l", name: L("30 L"), value: "30", unit: "L" },
-  { slug: "50-l", name: L("50 L"), value: "50", unit: "L" },
-  { slug: "85-l", name: L("85 L"), value: "85", unit: "L" },
-  { slug: "70-l", name: L("70 L"), value: "70", unit: "L" },
-  { slug: "350-l", name: L("350 L"), value: "350", unit: "L" },
-  { slug: "14-couverts", name: L("14 couverts"), value: "14", unit: "couverts" },
-  { slug: "24000-btu", name: L("24 000 BTU"), value: "24000", unit: "BTU" },
-  { slug: "65-m2", name: L("65 m²"), value: "65", unit: "m²" },
-  { slug: "65-l", name: L("65 L"), value: "65", unit: "L" },
-  { slug: "60-l", name: L("60 L"), value: "60", unit: "L" },
-  { slug: "25-l", name: L("25 L"), value: "25", unit: "L" },
-  { slug: "20-l", name: L("20 L"), value: "20", unit: "L" },
-  { slug: "8-l", name: L("8 L"), value: "8", unit: "L" },
-  { slug: "15-couverts", name: L("15 couverts"), value: "15", unit: "couverts" },
-  { slug: "80-l", name: L("80 L"), value: "80", unit: "L" },
-  { slug: "100-l", name: L("100 L"), value: "100", unit: "L" },
-  { slug: "1400-w", name: L("1400 W"), value: "1400", unit: "W" },
-  { slug: "2000-w", name: L("2000 W"), value: "2000", unit: "W" },
-  { slug: "1200-w", name: L("1200 W"), value: "1200", unit: "W" },
-  { slug: "120-w", name: L("120 W"), value: "120", unit: "W" },
-  { slug: "500-w", name: L("500 W"), value: "500", unit: "W" },
-  { slug: "60-cm", name: L("60 cm"), value: "60", unit: "cm" },
-]
+/** Ancienne liste supprimée (classification officielle : src/lib/catalog.ts). */
+export const defaultCapacites: Capacite[] = []
 
-export const defaultCouleurs: Couleur[] = [
-  { slug: "blanc", name: L("Blanc"), hex_code: "#FFFFFF" },
-  { slug: "noir", name: L("Noir"), hex_code: "#111111" },
-  { slug: "silver", name: L("Silver"), hex_code: "#C0C0C0" },
-  { slug: "inox", name: L("Inox"), hex_code: "#B8BCC0" },
-  { slug: "inox-noir", name: L("Inox/Noir"), hex_code: "#3A3F44" },
-  { slug: "gris", name: L("Gris"), hex_code: "#6B7280" },
-  { slug: "gris-fonce", name: L("Gris foncé"), hex_code: "#4B5563" },
-  { slug: "noir-jaune", name: L("Noir et jaune"), hex_code: null },
-  { slug: "noir-rouge", name: L("Noir et rouge"), hex_code: null },
-  { slug: "blanc-noir", name: L("Blanc et noir"), hex_code: null },
-  { slug: "blanc-gris", name: L("Blanc et gris"), hex_code: null },
-]
+/** Ancienne liste supprimée (classification officielle : src/lib/catalog.ts). */
+export const defaultCouleurs: Couleur[] = []
 
 /** Correspondance taxonomique des produits historiques (avant saisie back-office). */
 export const PRODUCT_TAXONOMY_FALLBACK: Record<
   string,
   { famille: string; sousFamille: string; gamme: string; capacites: string[]; couleurs: string[] }
-> = {
-  "ex9000-wm": { famille: "lave-linge", sousFamille: "lave-linge-frontal", gamme: "spinova-plus", capacites: ["9-kg"], couleurs: ["blanc"] },
-  "ex5000-wm": { famille: "lave-linge", sousFamille: "lave-linge-frontal", gamme: "lavexa", capacites: ["7-kg"], couleurs: ["blanc"] },
-  "ex8000-oven": { famille: "fours", sousFamille: "fours-encastrables", gamme: "excellence", capacites: ["70-l"], couleurs: ["inox-noir"] },
-  "ex5500-dw": { famille: "lave-vaisselle", sousFamille: "lave-vaisselle-encastrable", gamme: "estrela", capacites: ["14-couverts"], couleurs: ["inox"] },
-  "ex6000-ac": { famille: "climatiseurs", sousFamille: "climatiseurs-split", gamme: "inverter-plus", capacites: ["24000-btu"], couleurs: ["blanc"] },
-  "ex7000-fridge": { famille: "refrigerateurs", sousFamille: "refrigerateurs-combines", gamme: "freshcool", capacites: ["350-l"], couleurs: ["inox"] },
-  "ex4000-purifier": { famille: "purificateurs-air", sousFamille: "purificateurs-hepa", gamme: "pure-air", capacites: ["65-m2"], couleurs: ["blanc"] },
-}
+> = {}
 
 /* ---------------- Résolution (champs explicites → fallback → legacy) ---------------- */
 
@@ -396,28 +245,33 @@ export function productPath(
 }
 
 /** Validation produit (back-office) : retourne la liste des erreurs FR.
- *  Gamme non bloquante (données réelles parfois sans gamme) : le front masque le niveau absent. */
+ *  Sous-famille officielle obligatoire dans le champ « sousFamille » (ex. machines-cafe) ; les produits hors
+ *  périmètre (réfrigérateurs, climatiseurs, fours encastrables, chauffe-bains) restent acceptés mais jamais affichés. */
 export function validateProductTaxonomy(p: Record<string, unknown>): string[] {
   const errors: string[] = []
   const str = (v: unknown) => String(v ?? "").trim()
-  if (!str(p.category ?? p.category_slug)) errors.push("Catégorie obligatoire")
-  if (!str(p.famille)) errors.push("Famille obligatoire")
-  if (!str(p.sousFamille ?? p.sous_famille)) errors.push("Sous-famille obligatoire")
   if (!str(p.name)) errors.push("Nom obligatoire")
   if (!str(p.reference)) errors.push("Référence obligatoire")
+  const info = catalogInfoOf({
+    id: str(p.id),
+    name: p.name,
+    famille: str(p.famille ?? p.famille_id),
+    sousFamille: str(p.sousFamille ?? p.sous_famille ?? p.sous_famille_id),
+    gamme: str(p.gamme ?? p.gamme_id),
+  })
+  if (!info.sousFamille && !info.excluded) errors.push("Sous-famille officielle obligatoire (voir AUREX Web Site Brief : ex. machines-cafe, robots-petrins, aspirateurs, fours-pose-libre)")
   return errors
 }
 
-/* ---------------- Catégories officielles (website brief 2026) ----------------
-   5 catégories. Les anciens slugs (CMS / URLs historiques) sont ramenés
-   vers ces catégories par CATEGORY_ALIASES. */
+/* ---------------- Catégories officielles (AUREX Web Site Brief final) ----------------
+   4 familles. Les anciens slugs (CMS / URLs historiques) sont ramenés vers ces familles par CATEGORY_ALIASES ;
+   les rubriques abandonnées (réfrigération, climatisation, traitement de l'air…) n'ont plus de catégorie. */
 
 export const CATEGORY_SLUGS = {
   cuisine: "cuisine-encastrable",
-  linge: "soin-linge-entretien",
+  linge: "lavage-entretien",
   eau: "eau-confort",
-  petit: "petit-electro-coffee",
-  froid: "refrigeration-conservation",
+  petit: "petit-electromenager",
 } as const
 
 export const CATEGORY_ALIASES: Record<string, string> = {
@@ -426,17 +280,20 @@ export const CATEGORY_ALIASES: Record<string, string> = {
   lavage: CATEGORY_SLUGS.linge,
   "lave-vaisselle": CATEGORY_SLUGS.linge,
   "entretien-maison": CATEGORY_SLUGS.linge,
-  climatisation: CATEGORY_SLUGS.linge,
-  "traitement-air": CATEGORY_SLUGS.linge,
+  "soin-linge-entretien": CATEGORY_SLUGS.linge,
   "chauffe-eau": CATEGORY_SLUGS.eau,
   fontaines: CATEGORY_SLUGS.eau,
-  "petit-electromenager": CATEGORY_SLUGS.petit,
-  refrigerateurs: CATEGORY_SLUGS.froid,
-  autres: CATEGORY_SLUGS.froid,
+  "petit-electro-coffee": CATEGORY_SLUGS.petit,
+  // Hors périmètre : plus de catégorie
+  "refrigeration-conservation": "",
+  refrigerateurs: "",
+  autres: "",
+  climatisation: "",
+  "traitement-air": "",
 }
 
-/** Slug canonique d'une catégorie (ancien ou nouveau slug → slug du brief). */
+/** Slug canonique d'une catégorie (ancien ou nouveau slug → slug officiel ; "" si la rubrique n'existe plus). */
 export function canonicalCategory(slug: unknown): string {
   const s = String(slug ?? "").toLowerCase().trim()
-  return CATEGORY_ALIASES[s] ?? s
+  return s in CATEGORY_ALIASES ? CATEGORY_ALIASES[s] : s
 }

@@ -1,16 +1,13 @@
 import { useP } from "../content/lang"
-import { specUi } from "../content/products"
+import { specUi, docUi } from "../content/products"
+import { catalogInfoOf } from "../lib/catalog"
+import { productFacts } from "../lib/catalogView"
 import { useEffect, useRef, useState } from "react"
 import { Link, useParams, Navigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import {
   products,
   categories,
-  productFamille,
-  productSousFamille,
-  productGamme,
-  productCapacites,
-  productCouleurs,
   productUrl,
   findProduct,
 } from "../data"
@@ -36,17 +33,29 @@ function EnergyBadge({ cls }: { cls: string }) {
   )
 }
 
+/** Vidéo de présentation : fichier (mp4/webm) ou lien YouTube / Vimeo. */
+function ProductVideo({ url, poster, title }: { url: string; poster: string; title: string }) {
+  const yt = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([\w-]{6,})/)
+  const vimeo = url.match(/vimeo\.com\/(?:video\/)?(\d+)/)
+  const embed = yt ? `https://www.youtube-nocookie.com/embed/${yt[1]}` : vimeo ? `https://player.vimeo.com/video/${vimeo[1]}` : null
+  return embed ? (
+    <iframe src={embed} title={title} loading="lazy" allowFullScreen className="aspect-video w-full rounded-[10px] border border-[#d6d6d6]" />
+  ) : (
+    <video src={url} poster={poster} controls preload="metadata" playsInline className="aspect-video w-full rounded-[10px] border border-[#d6d6d6] bg-black" />
+  )
+}
+
 // Temporaire : masque le bouton « Où acheter » (comme dans le header)
 const hideWhereToBuy = true
 
 export default function ProductDetailPage() {
   const { t } = useTranslation()
-  const { p } = useP()
+  const { p, lang } = useP()
   const { id, slug } = useParams<{ id?: string; slug?: string }>()
   const product = findProduct(id ?? slug)
   const [selectedImage, setSelectedImage] = useState(0)
   const galleryRef = useRef<HTMLDivElement>(null)
-  const [activeTab, setActiveTab] = useState<"features" | "specs" | "docs">(
+  const [activeTab, setActiveTab] = useState<"features" | "specs" | "media" | "docs">(
     "features",
   )
   const [isImageFullscreen, setIsImageFullscreen] = useState(false)
@@ -70,71 +79,36 @@ export default function ProductDetailPage() {
 
   const images = product.images ?? [product.image]
   const category = categories.find((c) => String(c.slug ?? "").toLowerCase() === String(product.category ?? "").toLowerCase())
-  // Hiérarchie résolue (champs explicites → fallback historique → legacy)
-  const famille = productFamille(product)
-  const coherentFamille =
-    famille && String(famille.categorySlug ?? "").toLowerCase() === String(product.category ?? "").toLowerCase()
-      ? famille
-      : undefined
-  const sousFamille = productSousFamille(product)
-  const coherentSousFamille =
-    sousFamille &&
-    coherentFamille &&
-    String(sousFamille.familleSlug ?? "").toLowerCase() === String(coherentFamille.slug ?? "").toLowerCase()
-      ? sousFamille
-      : undefined
-  const gamme = productGamme(product)
-  const coherentGamme =
-    gamme &&
-    coherentSousFamille &&
-    String(gamme.sousFamilleSlug ?? "").toLowerCase() ===
-      String(coherentSousFamille.slug ?? "").toLowerCase()
-      ? gamme
-      : undefined
-  const capacitesList = productCapacites(product)
-  const couleursList = productCouleurs(product)
-  const categoryLabel = category ? ml(category.label) : product.category
+  // Classification officielle AUREX (src/lib/catalog.ts) : famille, sous-famille, gamme, capacités, couleurs, connectivité
+  const info = catalogInfoOf(product)
+  const facts = productFacts(product, lang)
+  const categoryLabel = category ? ml(category.label) : facts.family
 
-  // Produits similaires : même gamme → sous-famille → famille → catégorie
-  const simScore = (p: (typeof products)[number]): number => {
-    if (p.id === product.id) return -1
-    const f = String(productFamille(p)?.slug ?? "").toLowerCase()
-    const sf = String(productSousFamille(p)?.slug ?? "").toLowerCase()
-    const g = String(productGamme(p)?.slug ?? "").toLowerCase()
-    if (coherentGamme && g === String(coherentGamme.slug ?? "").toLowerCase()) return 4
-    if (coherentSousFamille && sf === String(coherentSousFamille.slug ?? "").toLowerCase()) return 3
-    if (coherentFamille && f === String(coherentFamille.slug ?? "").toLowerCase()) return 2
-    if (String(p.category ?? "").toLowerCase() === String(product.category ?? "").toLowerCase()) return 1
+  // Produits similaires : même gamme → même sous-famille → même famille
+  const simScore = (other: (typeof products)[number]): number => {
+    if (other.id === product.id) return -1
+    const o = catalogInfoOf(other)
+    if (info.range && o.range === info.range) return 4
+    if (info.sousFamille && o.sousFamille === info.sousFamille) return 3
+    if (info.family && o.family === info.family) return 2
     return 0
   }
   const related = products
-    .map((p) => ({ p, score: simScore(p) }))
+    .map((other) => ({ other, score: simScore(other) }))
     .filter((x) => x.score > 0)
     .sort((a, b) => b.score - a.score)
-    .map((x) => x.p)
+    .map((x) => x.other)
     .slice(0, 3)
 
-  // Fil d'Ariane hiérarchique : Accueil > Catégorie > Famille > Sous-famille > Gamme > Produit
+  // Fil d'Ariane : Accueil > Produits > Famille > Sous-famille > Gamme > Produit
   const crumbs: Array<{ label: string; to?: string }> = [
     { label: t("products.breadcrumb.home"), to: "/" },
     { label: t("products.breadcrumb.products"), to: "/produits" },
-    { label: categoryLabel, to: `/produits/${product.category}` },
   ]
-  if (coherentFamille)
-    crumbs.push({
-      label: ml(coherentFamille.name),
-      to: `/produits/${product.category}?famille=${coherentFamille.slug}`,
-    })
-  if (coherentSousFamille)
-    crumbs.push({
-      label: ml(coherentSousFamille.name),
-      to: `/produits/${product.category}?famille=${coherentFamille?.slug}&sousFamille=${coherentSousFamille.slug}`,
-    })
-  if (coherentGamme)
-    crumbs.push({
-      label: ml(coherentGamme.name),
-      to: `/produits/${product.category}?famille=${coherentFamille?.slug}&sousFamille=${coherentSousFamille?.slug}&gamme=${coherentGamme.slug}`,
-    })
+  if (info.family) crumbs.push({ label: facts.family, to: `/produits/${info.family}` })
+  if (info.sousFamille) crumbs.push({ label: facts.subFamily, to: `/produits/${info.family}?sousFamille=${info.sousFamille}` })
+  if (info.range) crumbs.push({ label: facts.range, to: `/produits/${info.family}?sousFamille=${info.sousFamille}&gamme=${info.range}` })
+  crumbs.push({ label: ml(product.name) })
 
   const selectImage = (index: number) => {
     setSelectedImage(index)
@@ -284,15 +258,15 @@ export default function ProductDetailPage() {
           <Reveal variant="right" delay={120}>
           <div>
             <div className="mb-4 flex flex-wrap items-center gap-2">
-              <EnergyBadge cls={product.energyClass} />
-              {product.connectivity && (
-                <span className="flex items-center gap-1.5 rounded-full border border-[#d6d6d6] bg-[#f5f5f7] px-2.5 py-1 text-xs font-semibold text-[#0077b3]">
-                  <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
-                  </svg>
-                  SmartConnect
+              {facts.family && <span className="rounded-full border border-[#d6d6d6] bg-[#f5f5f7] px-2.5 py-1 text-xs font-semibold text-[#333336]">{facts.family}</span>}
+              {facts.subFamily && <span className="rounded-full border border-[#d6d6d6] bg-[#f5f5f7] px-2.5 py-1 text-xs font-semibold text-[#333336]">{facts.subFamily}</span>}
+              {product.energyClass && <EnergyBadge cls={product.energyClass} />}
+              {/* Wi-Fi / Bluetooth : uniquement si le produit les possède réellement */}
+              {facts.connectivity.map((c) => (
+                <span key={c} className="flex items-center gap-1.5 rounded-full border border-[#d6d6d6] bg-[#f5f5f7] px-2.5 py-1 text-xs font-semibold text-[#0077b3]">
+                  {c}
                 </span>
-              )}
+              ))}
             </div>
             <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-[#5a5a5e]">
               {product.reference}
@@ -301,45 +275,24 @@ export default function ProductDetailPage() {
               {ml(product.name)}
             </h1>
             <p className="mt-4 text-sm leading-relaxed text-[#333336]">
-              {ml(product.description)}
+              {ml(product.short_description) || ml(product.description)}
             </p>
 
-            {/* Specs rapides */}
+            {/* Caractéristiques principales (valeurs officielles du produit) */}
             <div className="mt-6 grid grid-cols-2 gap-3">
               {[
-                capacitesList.length > 0 && {
-                  label: t("productDetail.capacity"),
-                  value: capacitesList.map((v) => ml(v.label)).join(" · "),
-                },
-                {
-                  label: t("productDetail.energyClass"),
-                  value: product.energyClass,
-                },
-                ml(product.noiseLevel) && {
-                  label: t("productDetail.noiseLevel"),
-                  value: ml(product.noiseLevel),
-                },
-                product.dimensions && {
-                  label: t("productDetail.dimensions"),
-                  value: `${product.dimensions.w} × ${product.dimensions.h} × ${product.dimensions.d} cm`,
-                },
-                couleursList.length > 0 && {
-                  label: t("productDetail.color"),
-                  value: couleursList.map((v) => ml(v.label)).join(" · "),
-                },
+                facts.capacities.length > 0 && { label: t("productDetail.capacity"), value: facts.capacities.join(" · ") },
+                facts.range && { label: specUi.range.fr && p(specUi.range), value: facts.range },
+                facts.classifications.length > 0 && { label: p(specUi.classification), value: facts.classifications.join(" · ") },
+                facts.colors.length > 0 && { label: t("productDetail.color"), value: facts.colors.join(" · ") },
+                ml(product.noiseLevel) && { label: t("productDetail.noiseLevel"), value: ml(product.noiseLevel) },
+                product.dimensions && { label: t("productDetail.dimensions"), value: `${product.dimensions.w} × ${product.dimensions.h} × ${product.dimensions.d} cm` },
               ]
                 .filter(Boolean)
                 .map((spec) => (
-                  <div
-                    key={(spec as { label: string }).label}
-                    className="rounded-[10px] border border-[#d6d6d6] bg-white p-3.5 shadow-sm transition-shadow hover:shadow-md"
-                  >
-                    <p className="font-display text-[10px] uppercase tracking-widest text-[#5a5a5e]">
-                      {(spec as { label: string }).label}
-                    </p>
-                    <p className="mt-1 text-sm font-semibold text-[#1d1d1f]">
-                      {(spec as { value: string }).value}
-                    </p>
+                  <div key={(spec as { label: string }).label} className="rounded-[10px] border border-[#d6d6d6] bg-white p-3.5">
+                    <p className="font-display text-[10px] uppercase tracking-widest text-[#5a5a5e]">{(spec as { label: string }).label}</p>
+                    <p className="mt-1 text-sm font-semibold text-[#1d1d1f]">{(spec as { value: string }).value}</p>
                   </div>
                 ))}
             </div>
@@ -405,6 +358,7 @@ export default function ProductDetailPage() {
             {[
               { key: "features" as const, label: p(specUi.features) },
               { key: "specs" as const, label: p(specUi.specs) },
+              ...(product.video || product.view360 ? [{ key: "media" as const, label: p(docUi.media) }] : []),
               { key: "docs" as const, label: t("productDetail.tabs.docs") },
             ].map((tab) => (
               <button
@@ -423,6 +377,11 @@ export default function ProductDetailPage() {
 
           <div className="p-4 sm:p-6">
             {activeTab === "features" && (
+              <div className="space-y-5">
+                {product.short_description && ml(product.description) && (
+                  <p className="max-w-3xl whitespace-pre-line text-sm leading-relaxed text-[#333336]">{ml(product.description)}</p>
+                )}
+                {product.features.length === 0 && !ml(product.description) && <p className="text-sm text-[#5a5a5e]">{p(docUi.soon)}</p>}
               <ul className="grid grid-cols-1 gap-3 md:grid-cols-2">
                 {product.features.map((feat) => (
                   <li
@@ -438,6 +397,7 @@ export default function ProductDetailPage() {
                   </li>
                 ))}
               </ul>
+              </div>
             )}
             {activeTab === "specs" && (
               <div className="overflow-hidden rounded-[10px] border border-[#d6d6d6]">
@@ -445,94 +405,67 @@ export default function ProductDetailPage() {
                   <tbody>
                     {[
                       { label: p(specUi.reference), value: product.reference },
-                      capacitesList.length > 0 && { label: p(specUi.capacity), value: capacitesList.map((v) => ml(v.label)).join(", ") },
+                      facts.family && { label: p(specUi.family), value: facts.family },
+                      facts.subFamily && { label: p(specUi.subFamily), value: facts.subFamily },
+                      facts.range && { label: p(specUi.range), value: facts.range },
+                      ...(product.specs ?? []).map((row) => ({ label: ml(row.label), value: ml(row.value) })),
+                      facts.capacities.length > 0 && { label: p(specUi.capacity), value: facts.capacities.join(", ") },
+                      facts.classifications.length > 0 && { label: p(specUi.classification), value: facts.classifications.join(", ") },
                       product.energyClass && { label: p(specUi.energyClass), value: product.energyClass },
                       product.dimensions && { label: p(specUi.dimensions), value: `${product.dimensions.w} × ${product.dimensions.h} × ${product.dimensions.d} cm` },
-                      couleursList.length > 0 && { label: p(specUi.color), value: couleursList.map((v) => ml(v.label)).join(", ") },
-                      {
-                        label: p(specUi.connectivity),
-                        value: product.connectivity
-                          ? [product.wifi ?? true ? "Wi-Fi" : "", product.bluetooth ?? true ? "Bluetooth" : ""].filter(Boolean).join(" · ")
-                          : p(specUi.none),
-                      },
+                      facts.colors.length > 0 && { label: p(specUi.color), value: facts.colors.join(", ") },
+                      facts.connectivity.length > 0 && { label: p(specUi.connectivity), value: facts.connectivity.join(" · ") },
                       ml(product.noiseLevel) && { label: p(specUi.noise), value: ml(product.noiseLevel) },
-                      (coherentSousFamille || coherentFamille) && {
-                        label: p(specUi.installation),
-                        value: ml((coherentSousFamille ?? coherentFamille)!.name),
-                      },
                     ]
-                      .filter(Boolean)
+                      .filter((row) => row && (row as { value: string }).value)
                       .map((row, i) => (
-                        <tr
-                          key={(row as { label: string }).label}
-                          className={i % 2 === 0 ? "bg-white" : "bg-[#f5f5f7]/70"}
-                        >
-                          <td className="w-1/2 border-b border-[#d6d6d6] px-5 py-3.5 font-medium text-[#474747]">
-                            {(row as { label: string }).label}
-                          </td>
-                          <td className="border-b border-[#d6d6d6] px-5 py-3.5 font-semibold text-[#1d1d1f]">
-                            {(row as { value: string }).value}
-                          </td>
+                        <tr key={(row as { label: string }).label + i} className={i % 2 === 0 ? "bg-white" : "bg-[#f5f5f7]/70"}>
+                          <td className="w-1/2 border-b border-[#d6d6d6] px-5 py-3.5 font-medium text-[#474747]">{(row as { label: string }).label}</td>
+                          <td className="border-b border-[#d6d6d6] px-5 py-3.5 font-semibold text-[#1d1d1f]">{(row as { value: string }).value}</td>
                         </tr>
                       ))}
                   </tbody>
                 </table>
               </div>
             )}
-            {activeTab === "docs" && (
-              <div className="grid gap-3 md:grid-cols-2">
-                {[
-                  {
-                    name: t("productDetail.docs.userManual", { ref: product.reference }),
-                    type: "PDF",
-                    size: "2.4 Mo",
-                    icon: "M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z",
-                  },
-                  {
-                    name: t("productDetail.docs.techSheet", { ref: product.reference }),
-                    type: "PDF",
-                    size: "1.1 Mo",
-                    icon: "M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z",
-                  },
-                  {
-                    name: t("productDetail.docs.warrantyCert"),
-                    type: "PDF",
-                    size: "0.5 Mo",
-                    icon: "M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z",
-                  },
-                  {
-                    name: t("productDetail.docs.troubleshoot"),
-                    type: "PDF",
-                    size: "3.2 Mo",
-                    icon: "M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z",
-                  },
-                ].map((doc) => (
-                  <div
-                    key={doc.name}
-                    className="flex items-center justify-between rounded-[10px] border border-[#d6d6d6] bg-white p-4 transition-all hover:border-[#d6d6d6] hover:shadow-md hover:shadow-blue-900/5"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-[10px] bg-[#f5f5f7]">
-                        <svg className="h-5 w-5 text-[#0077b3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d={doc.icon} />
-                        </svg>
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-[#1d1d1f]">{doc.name}</p>
-                        <p className="text-xs text-[#5a5a5e]">
-                          {doc.type} · {doc.size}
-                        </p>
-                      </div>
-                    </div>
-                    <button className="flex items-center gap-1.5 rounded-[10px] px-3 py-2 text-sm font-semibold text-[#0077b3] transition-colors hover:bg-[#f5f5f7] hover:text-[var(--color-primary)]">
-                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                      </svg>
-                      {t("common.download")}
-                    </button>
+            {activeTab === "media" && (
+              <div className="space-y-6">
+                {product.video && <ProductVideo url={product.video} poster={product.image} title={ml(product.name)} />}
+                {product.view360 && (
+                  <div>
+                    <p className="mb-2 text-sm font-semibold text-[#1d1d1f]">{p(docUi.view360)}</p>
+                    <iframe src={product.view360} title={`${p(docUi.view360)} — ${ml(product.name)}`} loading="lazy" className="aspect-video w-full rounded-[10px] border border-[#d6d6d6]" allowFullScreen />
                   </div>
-                ))}
+                )}
               </div>
+            )}
+            {activeTab === "docs" && (
+              (product.documents ?? []).filter((d) => d.url).length === 0 ? (
+                <p className="text-sm text-[#5a5a5e]">{p(docUi.soon)}</p>
+              ) : (
+                <div className="grid gap-3 md:grid-cols-2">
+                  {(product.documents ?? [])
+                    .filter((d) => d.url)
+                    .map((doc) => (
+                      <a
+                        key={doc.type + doc.url}
+                        href={doc.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        download
+                        className="flex items-center justify-between gap-3 rounded-[10px] border border-[#d6d6d6] bg-white p-4 transition-colors hover:bg-[#fafafc]"
+                      >
+                        <span className="text-sm font-semibold text-[#1d1d1f]">{doc.label ? ml(doc.label) : p(docUi.types[doc.type])}</span>
+                        <span className="flex items-center gap-1.5 text-sm font-semibold text-[#0077b3]">
+                          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                          </svg>
+                          {t("common.download")}
+                        </span>
+                      </a>
+                    ))}
+                </div>
+              )
             )}
           </div>
         </div>
@@ -544,7 +477,7 @@ export default function ProductDetailPage() {
             <div className="mb-7 flex items-end justify-between">
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#0077b3] font-display">
-              {coherentGamme ? ml(coherentGamme.name) : categoryLabel}
+              {facts.range || facts.subFamily || categoryLabel}
                 </p>
                 <h2 className="mt-1.5 text-2xl font-bold text-[var(--color-primary)] font-display">
                   {t("productDetail.related")}
