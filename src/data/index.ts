@@ -52,6 +52,8 @@ export interface Product {
   features: string[]
   color?: string
   isNew?: boolean
+  /** Classe énergétique confirmée par la fiche officielle (sinon `energyClass` n'est jamais affichée). */
+  energy_class_verified?: boolean
   /** Affiché dans le Product Line-Up 2026 de l'accueil (CMS). */
   lineup?: boolean
   /** Options de classification officielles supplémentaires (identifiants de src/lib/catalog.ts). */

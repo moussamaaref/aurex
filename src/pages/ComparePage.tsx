@@ -203,18 +203,6 @@ export default function ComparePage() {
         ),
       },
       {
-        key: "energyClass",
-        label: t("comparator.rows.energyClass"),
-        best: "energy",
-        raw: (p) => p.energyClass,
-        render: (p) => (
-          <span className="flex items-center gap-2">
-            <EnergyBadge cls={p.energyClass} />
-            <span className="text-sm text-[#333336]">{p.energyClass}</span>
-          </span>
-        ),
-      },
-      {
         key: "connectivity",
         label: t("comparator.rows.connectivity"),
         raw: (p) => productFacts(p, lang).connectivity.join(" / "),
