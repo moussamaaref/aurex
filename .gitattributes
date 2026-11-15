@@ -162,3 +162,7 @@ public/aurex-favicon.png -filter -diff merge -text
 public/Gustiva.jpeg -filter -diff merge -text
 public/Spinova3.jpeg -filter -diff merge -text
 public/Vacuum.jpeg -filter -diff merge -text
+
+public/Gustiva.webp -filter -diff merge -text
+public/Spinova3.webp -filter -diff merge -text
+public/Vacuum.webp -filter -diff merge -text
