@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { useCompare } from "../context/CompareContext"
 import { useSiteSettings } from "../context/SiteSettingsContext"
-import { products, categories } from "../data"
+import { products, categories, availableCategoryContent } from "../data"
 import type { Product } from "../data"
 import {
   productUrl,
@@ -16,10 +16,9 @@ import {
 import { ml } from "../lib/ml"
 
 import { navItems, navLabels, navDetails, productsSide, megaLabels } from "../content/nav"
-import { categoryContent } from "../content/categories"
 import { useP } from "../content/lang"
 
-const megaCats = categoryContent
+const megaCats = availableCategoryContent
 
 export default function Header() {
   const { t, i18n } = useTranslation()

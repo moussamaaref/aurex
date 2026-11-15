@@ -1,6 +1,6 @@
 import { useP } from "../content/lang"
 import { specUi, docUi } from "../content/products"
-import { catalogInfoOf } from "../lib/catalog"
+import { catalogInfoOf, classOptionById, groupOf } from "../lib/catalog"
 import { energyClassOf, productFacts } from "../lib/catalogView"
 import { useEffect, useRef, useState } from "react"
 import { Link, useParams, Navigate } from "react-router-dom"
@@ -55,9 +55,6 @@ export default function ProductDetailPage() {
   const product = findProduct(id ?? slug)
   const [selectedImage, setSelectedImage] = useState(0)
   const galleryRef = useRef<HTMLDivElement>(null)
-  const [activeTab, setActiveTab] = useState<"features" | "specs" | "media" | "docs">(
-    "features",
-  )
   const [isImageFullscreen, setIsImageFullscreen] = useState(false)
 
   // Plein écran : Échap pour fermer, défilement de la page verrouillé.
@@ -105,6 +102,27 @@ export default function ProductDetailPage() {
     .slice(0, 3)
 
   // Fil d'Ariane : Accueil > Produits > Famille > Sous-famille > Gamme > Produit
+  // Type d'installation : caractéristique officielle du groupe « Installation » (ex. Pose libre)
+  const installation = info.classifications
+    .filter((id) => groupOf(id)?.id === "installation")
+    .map((id) => { const o = classOptionById(id); return o ? o.name[lang] || o.name.fr : "" })
+    .filter(Boolean)
+    .join(" · ")
+  const specRows = (
+    [
+      { label: p(specUi.reference), value: product.reference },
+      { label: p(specUi.capacity), value: facts.capacities.join(", ") },
+      { label: p(specUi.power), value: facts.powers.join(", ") },
+      { label: p(specUi.energyClass), value: energyClassOf(product) },
+      { label: p(specUi.dimensions), value: product.dimensions ? `${product.dimensions.w} × ${product.dimensions.h} × ${product.dimensions.d} cm` : "" },
+      { label: p(specUi.color), value: facts.colors.join(", ") },
+      { label: p(specUi.connectivity), value: facts.connectivity.join(" · ") },
+      { label: p(specUi.noise), value: ml(product.noiseLevel) },
+      { label: p(specUi.installation), value: installation },
+      ...(product.specs ?? []).map((row) => ({ label: ml(row.label), value: ml(row.value) })),
+    ] as Array<{ label: string; value: string }>
+  ).filter((row) => row.label && row.value)
+
   const crumbs: Array<{ label: string; to?: string }> = [
     { label: t("products.breadcrumb.home"), to: "/" },
     { label: t("products.breadcrumb.products"), to: "/produits" },
@@ -286,6 +304,7 @@ export default function ProductDetailPage() {
             <div className="mt-6 grid grid-cols-2 gap-3">
               {[
                 facts.capacities.length > 0 && { label: t("productDetail.capacity"), value: facts.capacities.join(" · ") },
+                facts.powers.length > 0 && { label: p(specUi.power), value: facts.powers.join(" · ") },
                 facts.range && { label: specUi.range.fr && p(specUi.range), value: facts.range },
                 facts.classifications.length > 0 && { label: p(specUi.classification), value: facts.classifications.join(" · ") },
                 facts.colors.length > 0 && { label: t("productDetail.color"), value: facts.colors.join(" · ") },
@@ -355,85 +374,71 @@ export default function ProductDetailPage() {
           </Reveal>
         </div>
 
-        {/* ══ Onglets ══ */}
-        <Reveal>
-        <div className="mt-16 rounded-[28px] border border-[#d6d6d6] bg-white shadow-sm">
-          <div className="flex overflow-x-auto border-b border-[#d6d6d6] px-4 sm:px-6">
-            {[
-              { key: "features" as const, label: p(specUi.features) },
-              { key: "specs" as const, label: p(specUi.specs) },
-              ...(product.video || product.view360 ? [{ key: "media" as const, label: p(docUi.media) }] : []),
-              { key: "docs" as const, label: t("productDetail.tabs.docs") },
-            ].map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                className={`-mb-px whitespace-nowrap border-b-2 px-6 py-4 text-sm font-semibold transition-colors ${
-                  activeTab === tab.key
-                    ? "border-[var(--color-accent)] text-[#006a9e]"
-                    : "border-transparent text-[#5a5a5e] hover:text-[#333336]"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
+        {/* ══ Fiche : présentation, fonctionnalités, spécifications techniques (sections séparées) ══ */}
+        <div className="mt-16 space-y-6">
+          {ml(product.description) && product.short_description && (
+            <Reveal>
+              <section aria-labelledby="pd-presentation" className="rounded-[28px] border border-[#d6d6d6] bg-white p-6 shadow-sm sm:p-8">
+                <h2 id="pd-presentation" className="text-xl font-semibold text-[#1d1d1f] font-display">{p(specUi.presentation)}</h2>
+                <p className="mt-3 max-w-3xl whitespace-pre-line text-sm leading-relaxed text-[#333336]">{ml(product.description)}</p>
+              </section>
+            </Reveal>
+          )}
 
-          <div className="p-4 sm:p-6">
-            {activeTab === "features" && (
-              <div className="space-y-5">
-                {product.short_description && ml(product.description) && (
-                  <p className="max-w-3xl whitespace-pre-line text-sm leading-relaxed text-[#333336]">{ml(product.description)}</p>
-                )}
-                {product.features.length === 0 && !ml(product.description) && <p className="text-sm text-[#5a5a5e]">{p(docUi.soon)}</p>}
-              <ul className="grid grid-cols-1 gap-3 md:grid-cols-2">
-                {product.features.map((feat) => (
-                  <li
-                    key={ml(feat)}
-                    className="flex items-start gap-3 rounded-[10px] border border-[#d6d6d6] bg-[#f5f5f7]/60 p-4 transition-colors hover:border-[#d6d6d6] hover:bg-[#f5f5f7]/40"
-                  >
-                    <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-accent)]/10">
-                      <svg className="h-3 w-3 text-[#006a9e]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
+          {/* Fonctionnalités : ce que fait l'appareil (icône + court texte), distinctes des spécifications */}
+          {product.features.filter((feat) => ml(feat)).length > 0 && (
+            <Reveal>
+              <section aria-labelledby="pd-features" className="rounded-[28px] border border-[#d6d6d6] bg-white p-6 shadow-sm sm:p-8">
+                <h2 id="pd-features" className="text-xl font-semibold text-[#1d1d1f] font-display">{p(specUi.features)}</h2>
+                <p className="mt-1 text-sm text-[#5a5a5e]">{p(specUi.featuresLead)}</p>
+                <ul className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {product.features
+                    .map((feat) => ml(feat))
+                    .filter(Boolean)
+                    .map((text) => {
+                      const m = text.match(/^(.{2,60}?)\s(?:—|:)\s(.+)$/)
+                      const title = m ? m[1] : text
+                      const detail = m ? m[2] : ""
+                      return (
+                        <li key={text} className="flex items-start gap-3.5 rounded-[20px] bg-[#f5f5f7] p-4">
+                          <span className="mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-white text-[#006a9e]" aria-hidden="true">
+                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                          </span>
+                          <span>
+                            <span className="block text-sm font-semibold leading-snug text-[#1d1d1f]">{title}</span>
+                            {detail && <span className="mt-1 block text-[13px] leading-relaxed text-[#474747]">{detail}</span>}
+                          </span>
+                        </li>
+                      )
+                    })}
+                </ul>
+              </section>
+            </Reveal>
+          )}
+
+          {/* Spécifications techniques : champs standard, uniquement ceux qui s'appliquent */}
+          {specRows.length > 0 && (
+            <Reveal>
+              <section aria-labelledby="pd-specs" className="rounded-[28px] border border-[#d6d6d6] bg-white p-6 shadow-sm sm:p-8">
+                <h2 id="pd-specs" className="text-xl font-semibold text-[#1d1d1f] font-display">{p(specUi.specs)}</h2>
+                <dl className="mt-6 overflow-hidden rounded-[10px] border border-[#d6d6d6] text-sm">
+                  {specRows.map((row, i) => (
+                    <div key={row.label + i} className={`grid grid-cols-1 gap-1 px-5 py-3.5 sm:grid-cols-2 sm:gap-4 ${i % 2 === 0 ? "bg-white" : "bg-[#f5f5f7]/70"} ${i > 0 ? "border-t border-[#d6d6d6]" : ""}`}>
+                      <dt className="font-medium text-[#474747]">{row.label}</dt>
+                      <dd className="font-semibold text-[#1d1d1f]">{row.value}</dd>
                     </div>
-                    <span className="text-sm text-[#333336]">{ml(feat)}</span>
-                  </li>
-                ))}
-              </ul>
-              </div>
-            )}
-            {activeTab === "specs" && (
-              <div className="overflow-hidden rounded-[10px] border border-[#d6d6d6]">
-                <table className="w-full text-sm">
-                  <tbody>
-                    {[
-                      { label: p(specUi.reference), value: product.reference },
-                      facts.family && { label: p(specUi.family), value: facts.family },
-                      facts.subFamily && { label: p(specUi.subFamily), value: facts.subFamily },
-                      facts.range && { label: p(specUi.range), value: facts.range },
-                      ...(product.specs ?? []).map((row) => ({ label: ml(row.label), value: ml(row.value) })),
-                      facts.capacities.length > 0 && { label: p(specUi.capacity), value: facts.capacities.join(", ") },
-                      facts.classifications.length > 0 && { label: p(specUi.classification), value: facts.classifications.join(", ") },
-                      energyClassOf(product) && { label: p(specUi.energyClass), value: energyClassOf(product) },
-                      product.dimensions && { label: p(specUi.dimensions), value: `${product.dimensions.w} × ${product.dimensions.h} × ${product.dimensions.d} cm` },
-                      facts.colors.length > 0 && { label: p(specUi.color), value: facts.colors.join(", ") },
-                      facts.connectivity.length > 0 && { label: p(specUi.connectivity), value: facts.connectivity.join(" · ") },
-                      ml(product.noiseLevel) && { label: p(specUi.noise), value: ml(product.noiseLevel) },
-                    ]
-                      .filter((row) => row && (row as { value: string }).value)
-                      .map((row, i) => (
-                        <tr key={(row as { label: string }).label + i} className={i % 2 === 0 ? "bg-white" : "bg-[#f5f5f7]/70"}>
-                          <td className="w-1/2 border-b border-[#d6d6d6] px-5 py-3.5 font-medium text-[#474747]">{(row as { label: string }).label}</td>
-                          <td className="border-b border-[#d6d6d6] px-5 py-3.5 font-semibold text-[#1d1d1f]">{(row as { value: string }).value}</td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-            {activeTab === "media" && (
-              <div className="space-y-6">
+                  ))}
+                </dl>
+              </section>
+            </Reveal>
+          )}
+
+          {(product.video || product.view360) && (
+            <Reveal>
+              <section aria-labelledby="pd-media" className="space-y-6 rounded-[28px] border border-[#d6d6d6] bg-white p-6 shadow-sm sm:p-8">
+                <h2 id="pd-media" className="text-xl font-semibold text-[#1d1d1f] font-display">{p(docUi.media)}</h2>
                 {product.video && <ProductVideo url={product.video} poster={product.image} title={ml(product.name)} />}
                 {product.view360 && (
                   <div>
@@ -441,13 +446,15 @@ export default function ProductDetailPage() {
                     <iframe src={product.view360} title={`${p(docUi.view360)} — ${ml(product.name)}`} loading="lazy" className="aspect-video w-full rounded-[10px] border border-[#d6d6d6]" allowFullScreen />
                   </div>
                 )}
-              </div>
-            )}
-            {activeTab === "docs" && (
-              (product.documents ?? []).filter((d) => d.url).length === 0 ? (
-                <p className="text-sm text-[#5a5a5e]">{p(docUi.soon)}</p>
-              ) : (
-                <div className="grid gap-3 md:grid-cols-2">
+              </section>
+            </Reveal>
+          )}
+
+          {(product.documents ?? []).filter((d) => d.url).length > 0 && (
+            <Reveal>
+              <section aria-labelledby="pd-docs" className="rounded-[28px] border border-[#d6d6d6] bg-white p-6 shadow-sm sm:p-8">
+                <h2 id="pd-docs" className="text-xl font-semibold text-[#1d1d1f] font-display">{p(specUi.documents)}</h2>
+                <div className="mt-6 grid gap-3 md:grid-cols-2">
                   {(product.documents ?? [])
                     .filter((d) => d.url)
                     .map((doc) => (
@@ -469,11 +476,10 @@ export default function ProductDetailPage() {
                       </a>
                     ))}
                 </div>
-              )
-            )}
-          </div>
+              </section>
+            </Reveal>
+          )}
         </div>
-        </Reveal>
 
         {/* ══ Produits similaires ══ */}
         {related.length > 0 && (

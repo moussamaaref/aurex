@@ -380,7 +380,7 @@ export default function SupportPage() {
   useEffect(() => {
     if (!hash) return
     const id = hash.slice(1)
-    const target = id === "pieces" || id === "sav" ? "demande" : id === "centres" ? "centres" : id
+    const target = id === "pieces" || id === "sav" ? "demande" : id
     const timer = window.setTimeout(() => document.getElementById(target)?.scrollIntoView({ behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" }), 80)
     if (id === "pieces") setPresetType("spare-parts")
     return () => window.clearTimeout(timer)
@@ -512,20 +512,6 @@ export default function SupportPage() {
       <RequestForm presetType={presetType} />
       <ContactChannels />
       <Faq />
-
-      <section id="centres" className="scroll-mt-24 bg-white py-16">
-        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h2 className="text-[28px] font-semibold tracking-tight text-[#1d1d1f]" style={{ fontFamily: "var(--font-display)" }}>
-              {p(support.centres.title)}
-            </h2>
-            <p className="mt-2 text-[17px] text-[#474747]">{p(support.centres.text)}</p>
-          </div>
-          <Link to="/distributeurs" className={btnPrimary}>
-            {p(support.centres.cta)}
-          </Link>
-        </div>
-      </section>
 
       {/* Section finale */}
       <section className="bg-[#fafafc] py-24 text-center lg:py-[110px]" aria-labelledby="support-final">

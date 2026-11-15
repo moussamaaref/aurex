@@ -34,6 +34,8 @@ export interface Product {
   sousFamille?: string
   gamme?: string
   capacites?: string[]
+  /** Puissances (W) : attribut distinct de la capacité */
+  puissances?: string[]
   couleurs?: string[]
   subcategory?: string
   image: string
@@ -1481,6 +1483,7 @@ function normalizeProducts(value: unknown): Product[] {
       sousFamille: strOrUndef(raw.sousFamille ?? raw.sous_famille ?? raw.sous_famille_id) ?? item.sousFamille,
       gamme: strOrUndef(raw.gamme ?? raw.gamme_id) ?? item.gamme,
       capacites: asStrArray(raw.capacites) ?? item.capacites,
+      puissances: asStrArray(raw.puissances) ?? item.puissances,
       couleurs: asStrArray(raw.couleurs) ?? item.couleurs,
       slug: strOrUndef(raw.slug) ?? item.slug,
       badges: Array.isArray(item.badges) ? item.badges : [],
@@ -1547,6 +1550,9 @@ export const categories: Category[] = normalizeCategories(loadManagedCollection(
 export const products: Product[] = normalizeProducts(loadManagedCollection("products", defaultProducts))
   .filter((p) => isCatalogProduct(p))
   .map((p) => ({ ...p, category: catalogInfoOf(p).family ?? p.category }))
+
+/** Catégories affichées (menu, accueil, pied de page) : uniquement celles qui comptent au moins un produit disponible. */
+export const availableCategoryContent = categoryContent.filter((c) => products.some((p) => p.category === c.slug))
 export const familles: Famille[] = normalizeTaxonomy(loadManagedCollection("familles", defaultFamilles), defaultFamilles)
 export const sousFamilles: SousFamille[] = normalizeTaxonomy(loadManagedCollection("sousFamilles", defaultSousFamilles), defaultSousFamilles)
 export const gammes: Gamme[] = normalizeTaxonomy(loadManagedCollection("gammes", defaultGammes), defaultGammes)

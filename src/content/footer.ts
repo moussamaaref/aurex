@@ -19,7 +19,6 @@ export const footerContent = {
     { label: { fr: "Notices & Manuels", en: "Manuals & Guides", ar: "الأدلة والكتيّبات" } as L3, href: "/support#notices" },
     { label: { fr: "FAQ", en: "FAQ", ar: "الأسئلة الشائعة" } as L3, href: "/support#faq" },
     { label: { fr: "Pièces Détachées", en: "Spare Parts", ar: "قطع الغيار" } as L3, href: "/support#pieces" },
-    { label: { fr: "Centres de Service", en: "Service Centres", ar: "مراكز الخدمة" } as L3, href: "/support#centres" },
   ],
 }
 
