@@ -307,15 +307,6 @@ export const support = {
       },
     ],
   },
-  centres: {
-    title: { fr: "Centres de service", en: "Service Centres", ar: "مراكز الخدمة" } as L3,
-    text: {
-      fr: "Retrouvez le réseau AUREX près de chez vous, par wilaya.",
-      en: "Find the AUREX network near you, by wilaya.",
-      ar: "اعثروا على شبكة AUREX قرب منطقتكم بحسب الولاية.",
-    } as L3,
-    cta: { fr: "Voir les points de service", en: "See service points", ar: "عرض نقاط الخدمة" } as L3,
-  },
   final: {
     title: { fr: "Votre maison compte. Notre support aussi.", en: "Your Home Matters. So Does Our Support.", ar: "بيتكم يهمّنا. ودعمنا كذلك." } as L3,
     text: {

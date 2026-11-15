@@ -92,7 +92,7 @@ export const GROUPS: GroupDef[] = [
 ]
 
 /** Clés texte non traduisibles mais éditables (images, liens). */
-const STRING_KEYS = new Set(["image", "cover", "href", "ctaHref", "productId", "sousFamille"])
+const STRING_KEYS = new Set(["image", "cover", "href", "ctaHref", "productId", "sousFamille", "position"])
 
 export type LeafKind = "l3" | "l3list" | "string"
 

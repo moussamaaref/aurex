@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Link } from "react-router-dom"
-import { categories, products, type Product } from "../data"
+import { categories, products, availableCategoryContent, type Product } from "../data"
 import { ml } from "../lib/ml"
 import { useP } from "../content/lang"
 import { categoryContent } from "../content/categories"
@@ -306,8 +306,8 @@ function Categories() {
             {p(categoriesSection.title)}
           </h2>
         </Reveal>
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {categoryContent.map((cat, i) => {
+        <div className={`mt-10 grid gap-5 sm:grid-cols-2 ${availableCategoryContent.length === 3 ? "lg:grid-cols-3" : "lg:grid-cols-4"}`}>
+          {availableCategoryContent.map((cat, i) => {
             const image = categories.find((c) => c.slug === cat.slug)?.image || cat.image
             return (
               <Reveal key={cat.slug} delay={Math.min(i, 4) * 70} className="h-full">

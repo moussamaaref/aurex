@@ -6,7 +6,10 @@ import { ml } from "../lib/ml"
 import { canonicalCategory } from "../lib/taxonomy"
 import {
   CLASSIFICATION_GROUPS,
-  OFFICIAL_CAPACITIES,
+  OFFICIAL_CAPACITY_VALUES,
+  OFFICIAL_POWERS,
+  OFFICIAL_FAMILIES,
+  formatCapacity,
   OFFICIAL_COLORS,
   OFFICIAL_RANGES,
   OFFICIAL_SUBFAMILIES,
@@ -16,7 +19,6 @@ import {
 import { keySpecsOf } from "../lib/catalogView"
 import { useP } from "../content/lang"
 import { productsUi, usageProFirst } from "../content/products"
-import { productsAdsUi } from "../content/productsAds"
 import CompareButton from "../components/CompareButton"
 import ProductsAdSpot from "../components/ProductsAdSpot"
 import Reveal from "../components/Reveal"
@@ -106,6 +108,7 @@ function ProductsPageInner() {
   const [sousFamille, setSousFamille] = useState("")
   const [gamme, setGamme] = useState("")
   const [capacite, setCapacite] = useState("")
+  const [puissance, setPuissance] = useState("")
   const [couleur, setCouleur] = useState("")
   const [wifiOnly, setWifiOnly] = useState(false)
   const [bluetoothOnly, setBluetoothOnly] = useState(false)
@@ -144,7 +147,13 @@ function ProductsPageInner() {
     [inFamily, lang],
   )
   const gammeOptions = useMemo(() => OFFICIAL_RANGES.filter((r) => scoped.some((x) => catalogInfoOf(x).range === r.id)).map((r) => ({ value: r.id, label: r.name })), [scoped])
-  const capacityOptions = useMemo(() => OFFICIAL_CAPACITIES.filter((c) => scoped.some((x) => catalogInfoOf(x).capacities.includes(c.id))).map((c) => ({ value: c.id, label: c.label })), [scoped])
+  const capacityOptions = useMemo(() => OFFICIAL_CAPACITY_VALUES.filter((c) => scoped.some((x) => catalogInfoOf(x).capacities.includes(c.id))).map((c) => ({ value: c.id, label: formatCapacity(c, lang) })), [scoped, lang])
+  const powerOptions = useMemo(() => OFFICIAL_POWERS.filter((c) => scoped.some((x) => catalogInfoOf(x).powers.includes(c.id))).map((c) => ({ value: c.id, label: formatCapacity(c, lang) })), [scoped, lang])
+  // Famille : libellés courts du filtre officiel ; seules les familles ayant des produits disponibles.
+  const familyOptions = useMemo(
+    () => OFFICIAL_FAMILIES.filter((f) => products.some((x) => x.category === f.id)).map((f) => ({ value: f.id, label: f.name[lang] || f.name.fr })),
+    [lang],
+  )
   const colorOptions = useMemo(
     () => OFFICIAL_COLORS.filter((c) => scoped.some((x) => catalogInfoOf(x).colors.includes(c.id))).map((c) => ({ value: c.id, label: c.name[lang] || c.name.fr })),
     [scoped, lang],
@@ -167,18 +176,20 @@ function ProductsPageInner() {
     if (sousFamille && !subFamilyOptions.some((o) => o.value === sousFamille)) setSousFamille("")
     if (gamme && !gammeOptions.some((o) => o.value === gamme)) setGamme("")
     if (capacite && !capacityOptions.some((o) => o.value === capacite)) setCapacite("")
+    if (puissance && !powerOptions.some((o) => o.value === puissance)) setPuissance("")
     if (couleur && !colorOptions.some((o) => o.value === couleur)) setCouleur("")
     if (wifiOnly && !hasWifi) setWifiOnly(false)
     if (bluetoothOnly && !hasBluetooth) setBluetoothOnly(false)
     if (classification && !classificationGroups.some((g) => g.options.some((o) => o.value === classification))) setClassification("")
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subFamilyOptions, gammeOptions, capacityOptions, colorOptions, hasWifi, hasBluetooth, classificationGroups])
+  }, [subFamilyOptions, gammeOptions, capacityOptions, powerOptions, colorOptions, hasWifi, hasBluetooth, classificationGroups])
 
   const filtered = useMemo(() => {
     let list = scoped.filter((x) => {
       const info = catalogInfoOf(x)
       if (gamme && info.range !== gamme) return false
       if (capacite && !info.capacities.includes(capacite)) return false
+      if (puissance && !info.powers.includes(puissance)) return false
       if (couleur && !info.colors.includes(couleur)) return false
       if (wifiOnly && !info.wifi) return false
       if (bluetoothOnly && !info.bluetooth) return false
@@ -200,12 +211,13 @@ function ProductsPageInner() {
       list = [...list].sort((a, b) => rank(a) - rank(b))
     }
     return list
-  }, [scoped, gamme, capacite, couleur, wifiOnly, bluetoothOnly, smartOnly, classification, badgeParam, usageParam, sortBy])
+  }, [scoped, gamme, capacite, puissance, couleur, wifiOnly, bluetoothOnly, smartOnly, classification, badgeParam, usageParam, sortBy])
 
   const resetFilters = () => {
     setSousFamille("")
     setGamme("")
     setCapacite("")
+    setPuissance("")
     setCouleur("")
     setWifiOnly(false)
     setBluetoothOnly(false)
@@ -213,7 +225,7 @@ function ProductsPageInner() {
     setClassification("")
   }
 
-  const hasFilters = Boolean(sousFamille || gamme || capacite || couleur || wifiOnly || bluetoothOnly || smartOnly || classification)
+  const hasFilters = Boolean(sousFamille || gamme || capacite || puissance || couleur || wifiOnly || bluetoothOnly || smartOnly || classification)
 
   // Valeurs initiales via l'URL (?sousFamille=…&gamme=…&capacite=…&couleur=…&classification=…&connectivite=wifi|bluetooth|smart)
   useEffect(() => {
@@ -221,6 +233,7 @@ function ProductsPageInner() {
     setSousFamille(q("sousfamille") || q("sous-famille"))
     setGamme(q("gamme"))
     setCapacite(q("capacite"))
+    setPuissance(q("puissance"))
     setCouleur(q("couleur"))
     setClassification(q("classification"))
     const conn = q("connectivite")
@@ -235,6 +248,7 @@ function ProductsPageInner() {
   if (sousFamille) chips.push({ key: "sf", label: subFamilyOptions.find((o) => o.value === sousFamille)?.label ?? sousFamille, clear: () => setSousFamille("") })
   if (gamme) chips.push({ key: "g", label: gammeOptions.find((o) => o.value === gamme)?.label ?? gamme, clear: () => setGamme("") })
   if (capacite) chips.push({ key: "c", label: capacityOptions.find((o) => o.value === capacite)?.label ?? capacite, clear: () => setCapacite("") })
+  if (puissance) chips.push({ key: "p", label: powerOptions.find((o) => o.value === puissance)?.label ?? puissance, clear: () => setPuissance("") })
   if (couleur) chips.push({ key: "k", label: colorOptions.find((o) => o.value === couleur)?.label ?? couleur, clear: () => setCouleur("") })
   if (wifiOnly) chips.push({ key: "w", label: "Wi-Fi", clear: () => setWifiOnly(false) })
   if (bluetoothOnly) chips.push({ key: "b", label: "Bluetooth", clear: () => setBluetoothOnly(false) })
@@ -244,7 +258,7 @@ function ProductsPageInner() {
     chips.push({ key: "cl", label, clear: () => setClassification("") })
   }
 
-  /** Champs de filtres dans l'ordre officiel : Famille, Sous-famille, Gamme, Capacité, Couleur, Connectivité, Classification. */
+  /** Champs de filtres dans l'ordre officiel : Famille, Sous-famille, Classification, Gamme, Capacité, Puissance, Couleur, Connectivité. */
   const renderFilterFields = () => (
     <>
       <FilterSelect
@@ -252,7 +266,7 @@ function ProductsPageInner() {
         value={category ?? ""}
         onChange={(v) => navigate(v ? `/produits/${v}` : "/produits")}
         allLabel={p(productsUi.filters.allFamilles)}
-        options={categories.map((c) => ({ value: c.slug, label: ml(c.label) }))}
+        options={familyOptions}
       />
       <FilterSelect
         label={p(productsUi.filters.sousFamille)}
@@ -268,11 +282,23 @@ function ProductsPageInner() {
                 .filter((g) => g.options.length > 0)
         }
       />
+      {classificationGroups.length > 0 && (
+        <FilterSelect
+          label={p(productsUi.filters.classification)}
+          value={classification}
+          onChange={setClassification}
+          allLabel={p(productsUi.filters.allClassifications)}
+          groups={classificationGroups}
+        />
+      )}
       {gammeOptions.length > 0 && (
         <FilterSelect label={p(productsUi.filters.gamme)} value={gamme} onChange={setGamme} allLabel={p(productsUi.filters.allGammes)} options={gammeOptions} />
       )}
       {capacityOptions.length > 0 && (
         <FilterSelect label={p(productsUi.filters.capacite)} value={capacite} onChange={setCapacite} allLabel={p(productsUi.filters.allCapacites)} options={capacityOptions} />
+      )}
+      {powerOptions.length > 0 && (
+        <FilterSelect label={p(productsUi.filters.puissance)} value={puissance} onChange={setPuissance} allLabel={p(productsUi.filters.allPuissances)} options={powerOptions} />
       )}
       {colorOptions.length > 0 && (
         <FilterSelect label={p(productsUi.filters.couleur)} value={couleur} onChange={setCouleur} allLabel={p(productsUi.filters.allCouleurs)} options={colorOptions} />
@@ -295,15 +321,6 @@ function ProductsPageInner() {
             ))}
         </div>
       )}
-      {classificationGroups.length > 0 && (
-        <FilterSelect
-          label={p(productsUi.filters.classification)}
-          value={classification}
-          onChange={setClassification}
-          allLabel={p(productsUi.filters.allClassifications)}
-          groups={classificationGroups}
-        />
-      )}
     </>
   )
 
@@ -316,7 +333,7 @@ function ProductsPageInner() {
           ? "bg-amber-400 text-amber-900"
           : "bg-[var(--color-accent)] text-white"
 
-  const ctaLabel = p(productsAdsUi.cta)
+  const ctaLabel = p(productsUi.discover)
   const resultsLabel = `${filtered.length} ${filtered.length === 1 ? t("products.results.one") : t("products.results.other")}`
 
   return (

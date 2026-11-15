@@ -33,16 +33,16 @@ export const categoryContent: CategoryContent[] = [
       ar: "تقديم أجهزة الطهي من AUREX كحلول عملية مصمّمة حول عادات الطهي اليومية واحتياجات المطبخ العصري.",
     },
     range: {
-      fr: ["Plaques de cuisson", "Hottes", "Cuisinières", "Micro-ondes", "Fours en pose libre"],
-      en: ["Hobs", "Cooker hoods", "Cookers", "Microwaves", "Freestanding ovens"],
-      ar: ["مواقد الطهي", "شفّاطات", "طباخات", "أفران ميكروويف", "أفران قائمة بذاتها"],
+      fr: ["Plaques de cuisson", "Hottes aspirantes", "Cuisinières", "Micro-ondes", "Fours en pose libre"],
+      en: ["Hobs", "Extractor hoods", "Cookers", "Microwaves", "Freestanding ovens"],
+      ar: ["مواقد الطهي", "شفّاطات الهواء", "طباخات", "أفران ميكروويف", "أفران قائمة بذاتها"],
     },
     image: "https://images.unsplash.com/photo-1586208958839-06c17cacdf08?w=800&h=900&fit=crop&auto=format",
   },
   {
     slug: "lavage-entretien",
     num: "02",
-    name: { fr: "Lavage & Entretien", en: "Laundry & Home Care", ar: "الغسيل والصيانة" },
+    name: { fr: "Soin du Linge & Entretien", en: "Laundry Care & Home Upkeep", ar: "العناية بالملابس والصيانة" },
     highlight: { fr: "Conçus autour de vos besoins du quotidien.", en: "Built around your everyday needs.", ar: "مبنية حول احتياجاتك اليومية." },
     cta: {
       fr: "Offrez à votre maison le soin qu'elle mérite",
@@ -73,16 +73,16 @@ export const categoryContent: CategoryContent[] = [
       ar: "تقديم الأجهزة المرتبطة بالماء كضروريات منزلية عملية تلبّي الاحتياجات اليومية.",
     },
     range: {
-      fr: ["Distributeurs d'eau", "Chauffe-eau"],
-      en: ["Water dispensers", "Water heaters"],
-      ar: ["موزّعات المياه", "سخّانات المياه"],
+      fr: ["Distributeurs d'eau et fontaines", "Chauffe-eau"],
+      en: ["Water dispensers & fountains", "Water heaters"],
+      ar: ["موزّعات المياه والنوافير", "سخّانات المياه"],
     },
     image: "https://images.unsplash.com/photo-1545259741-2ea3ebf61fa3?w=800&h=900&fit=crop&auto=format",
   },
   {
     slug: "petit-electromenager",
     num: "04",
-    name: { fr: "Petit Électroménager", en: "Small Appliances", ar: "الأجهزة الصغيرة" },
+    name: { fr: "Petit Électroménager & Coffee", en: "Small Appliances & Coffee", ar: "الأجهزة الصغيرة والقهوة" },
     highlight: { fr: "Les petits détails qui font la différence.", en: "Little things that make a difference", ar: "التفاصيل الصغيرة التي تصنع الفارق." },
     cta: { fr: "Rendez chaque routine plus facile", en: "Make Every Routine Effortless", ar: "اجعلوا كل روتين أسهل" },
     objective: {
@@ -91,8 +91,8 @@ export const categoryContent: CategoryContent[] = [
       ar: "إبراز القيمة اليومية للأجهزة الصغيرة في المطبخ من خلال روتين مألوف: من الخَبز وعصر العصائر إلى تحضير القهوة.",
     },
     range: {
-      fr: ["Robots pétrins", "Centrifugeuses", "Machines à café"],
-      en: ["Stand mixers / kneaders", "Juicers", "Coffee machines"],
+      fr: ["Robots pâtissiers / Pétrins", "Centrifugeuses", "Machines à café"],
+      en: ["Stand mixers / Kneaders", "Juicers", "Coffee machines"],
       ar: ["عجّانات", "عصّارات", "آلات القهوة"],
     },
     image: "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=900&fit=crop&auto=format",

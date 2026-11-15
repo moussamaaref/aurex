@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next"
 import { useSiteSettings } from "../context/SiteSettingsContext"
 import { useP } from "../content/lang"
 import { footerContent } from "../content/footer"
+import { availableCategoryContent } from "../data"
 import NewsletterBlock from "./NewsletterBlock"
 
 export default function Footer() {
@@ -16,7 +17,7 @@ export default function Footer() {
   }
 
   const footerLinks = [
-    { group: p(footerContent.groups.products), links: footerContent.productLinks.map((l) => ({ label: p(l.label), href: l.href })) },
+    { group: p(footerContent.groups.products), links: footerContent.productLinks.filter((l) => availableCategoryContent.some((c) => l.href === `/produits/${c.slug}`)).map((l) => ({ label: p(l.label), href: l.href })) },
     { group: p(footerContent.groups.explore), links: footerContent.exploreLinks.map((l) => ({ label: p(l.label), href: l.href })) },
     { group: p(footerContent.groups.support), links: footerContent.supportLinks.map((l) => ({ label: p(l.label), href: l.href })) },
   ]

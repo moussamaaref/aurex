@@ -158,6 +158,12 @@ export default function ComparePage() {
         render: (p) => <ChipList values={productFacts(p, lang).capacities} />,
       },
       {
+        key: "puissance",
+        label: lang === "en" ? "Power" : lang === "ar" ? "القدرة" : "Puissance",
+        raw: (p) => productFacts(p, lang).powers.join(" / "),
+        render: (p) => <ChipList values={productFacts(p, lang).powers} />,
+      },
+      {
         key: "couleurs",
         label: t("comparator.rows.couleurs"),
         raw: (p) => productFacts(p, lang).colors.join(" / "),

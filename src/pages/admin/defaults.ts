@@ -246,6 +246,7 @@ export function collectionTemplate(key: CollectionKey): Record<string, unknown> 
         sousFamille: "",
         gamme: "",
         capacites: [],
+        puissances: [],
         couleurs: [],
         classifications: [],
         short_description: "",

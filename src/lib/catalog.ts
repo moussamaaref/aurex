@@ -43,57 +43,77 @@ export const OFFICIAL_SUBFAMILIES: Array<{ id: SubFamilyId; family: FamilyId; na
 
 /* ---------------- Classification / Caractéristiques ---------------- */
 export interface ClassOption { id: string; name: L3 }
-export interface ClassGroup { id: string; title: L3; options: ClassOption[] }
+export interface ClassGroup {
+  id: string
+  title: L3
+  /** Sous-familles auxquelles la caractéristique s'applique (jamais une liste universelle). */
+  appliesTo: SubFamilyId[]
+  options: ClassOption[]
+}
 
 const o = (id: string, fr: string, en: string, ar: string): ClassOption => ({ id, name: { fr, en, ar } })
 
 export const CLASSIFICATION_GROUPS: ClassGroup[] = [
-  { id: "installation", title: { fr: "Installation et type", en: "Installation and type", ar: "التركيب والنوع" }, options: [o("pose-libre", "Pose libre", "Freestanding", "قائم بذاته")] },
+  { id: "installation", title: { fr: "Installation", en: "Installation", ar: "التركيب" }, appliesTo: ["micro-ondes", "fours-pose-libre", "lave-vaisselle"], options: [o("pose-libre", "Pose libre", "Freestanding", "قائم بذاته")] },
   {
     id: "energie",
     title: { fr: "Énergie / Alimentation", en: "Energy / Power supply", ar: "الطاقة / التغذية" },
+    appliesTo: ["plaques-cuisson", "cuisinieres", "fours-pose-libre", "chauffe-eau"],
     options: [o("gaz", "Gaz", "Gas", "غاز"), o("electrique", "Électrique", "Electric", "كهربائي"), o("mixte", "Mixte", "Dual fuel", "مختلط")],
   },
   {
     id: "foyers",
     title: { fr: "Nombre de foyers", en: "Number of burners", ar: "عدد المواقد" },
+    appliesTo: ["plaques-cuisson", "cuisinieres"],
     options: [o("2-foyers", "2 foyers", "2 burners", "موقدان"), o("4-foyers", "4 foyers", "4 burners", "4 مواقد"), o("5-foyers", "5 foyers", "5 burners", "5 مواقد")],
   },
   {
-    id: "chargement",
-    title: { fr: "Type de chargement", en: "Loading type", ar: "نوع التحميل" },
-    options: [o("front", "Front", "Front-loading", "تحميل أمامي"), o("libre", "Libre", "Freestanding", "حر"), o("ouverture-dessus", "Ouverture par le dessus", "Top-loading", "فتح علوي")],
+    id: "lave-linge",
+    title: { fr: "Type de lave-linge", en: "Washing machine type", ar: "نوع الغسّالة" },
+    appliesTo: ["lave-linge"],
+    options: [o("front", "Front (chargement frontal)", "Front (front-loading)", "أمامي (تحميل أمامي)"), o("ouverture-dessus", "Ouverture par le dessus", "Top-loading", "فتح علوي")],
   },
   {
-    id: "aspiration",
-    title: { fr: "Type d'aspiration", en: "Suction type", ar: "نوع الشفط" },
+    id: "aspirateur",
+    title: { fr: "Type d'aspirateur", en: "Vacuum cleaner type", ar: "نوع المكنسة" },
+    appliesTo: ["aspirateurs"],
     options: [o("avec-sac", "Avec sac", "Bagged", "بكيس"), o("sans-sac", "Sans sac", "Bagless", "بدون كيس"), o("sans-fil", "Sans fil", "Cordless", "لاسلكي")],
   },
   {
     id: "machine-cafe",
     title: { fr: "Type de machine à café", en: "Coffee machine type", ar: "نوع آلة القهوة" },
+    appliesTo: ["machines-cafe"],
     options: [o("espresso", "Espresso", "Espresso", "إسبريسو"), o("filtre", "Filtre", "Filter", "فلتر"), o("capsules", "Capsules", "Capsules", "كبسولات")],
   },
   {
     id: "cuisson",
-    title: { fr: "Fonctions de cuisson", en: "Cooking functions", ar: "وظائف الطهي" },
+    title: { fr: "Fonctions des fours", en: "Oven functions", ar: "وظائف الأفران" },
+    appliesTo: ["fours-pose-libre"],
     options: [o("vapeur", "Avec fonction vapeur", "With steam function", "بوظيفة البخار"), o("grill", "Avec grill", "With grill", "بشواية"), o("convection", "Avec convection", "With convection", "بالحمل الحراري")],
   },
   {
-    id: "temperature-eau",
-    title: { fr: "Température de l'eau", en: "Water temperature", ar: "درجة حرارة الماء" },
+    id: "distribution-eau",
+    title: { fr: "Distribution d'eau", en: "Water distribution", ar: "توزيع الماء" },
+    appliesTo: ["distributeurs-eau"],
     options: [o("eau-froide", "Eau froide", "Cold water", "ماء بارد"), o("eau-chaude", "Eau chaude", "Hot water", "ماء ساخن"), o("eau-ambiante", "Eau à température ambiante", "Room-temperature water", "ماء بدرجة حرارة الغرفة")],
   },
   {
     id: "hotte",
     title: { fr: "Type de hotte", en: "Hood type", ar: "نوع الشفّاط" },
-    options: [o("casquette", "Casquette", "Canopy", "كاسكيت"), o("decorative", "Decorative", "Decorative", "ديكوري"), o("pyramid", "Pyramid", "Pyramid", "هرمي")],
+    appliesTo: ["hottes"],
+    options: [o("casquette", "Casquette", "Canopy", "كاسكيت"), o("decorative", "Décorative", "Decorative", "ديكوري"), o("pyramid", "Pyramidale", "Pyramid", "هرمي")],
   },
-  { id: "moteur", title: { fr: "Type de moteur", en: "Motor type", ar: "نوع المحرّك" }, options: [o("mono", "Mono", "Single", "أحادي"), o("multi", "Multi", "Multi", "متعدد")] },
   {
-    id: "consommable",
-    title: { fr: "Type de consommable", en: "Consumable type", ar: "نوع المستهلكات" },
-    options: [o("poudre-caps", "Poudre/CAPS", "Powder/CAPS", "مسحوق/كبسولات"), o("caps", "Caps", "Caps", "كبسولات")],
+    id: "moteur",
+    title: { fr: "Type de motorisation / configuration", en: "Motor type / configuration", ar: "نوع المحرّك / التهيئة" },
+    appliesTo: ["robots-petrins", "centrifugeuses"],
+    options: [o("mono", "Mono", "Single", "أحادي"), o("multi", "Multi", "Multi", "متعدد")],
+  },
+  {
+    id: "lessive",
+    title: { fr: "Type de lessive", en: "Laundry type", ar: "نوع المنظّف" },
+    appliesTo: ["machines-cafe"],
+    options: [o("poudre-capsules", "Poudre / Capsules", "Powder / Capsules", "مسحوق / كبسولات"), o("capsules-conso", "Capsules", "Capsules", "كبسولات")],
   },
 ]
 
@@ -131,11 +151,22 @@ export const OFFICIAL_CAPACITIES: OfficialCapacity[] = [
   cap(8, "L", "volume", "8-l"), cap(20, "L", "volume", "20-l"), cap(25, "L", "volume", "25-l"), cap(30, "L", "volume", "30-l"),
   cap(50, "L", "volume", "50-l"), cap(60, "L", "volume", "60-l"), cap(65, "L", "volume", "65-l"), cap(80, "L", "volume", "80-l"),
   cap(85, "L", "volume", "85-l"), cap(100, "L", "volume", "100-l"),
-  cap(10.5, "kg", "lavage", "10-5-kg"), cap(12, "kg", "lavage", "12-kg"),
+  cap(8, "kg", "lavage", "8-kg"), cap(10.5, "kg", "lavage", "10-5-kg"), cap(12, "kg", "lavage", "12-kg"),
   cap(14, "couverts", "couverts", "14-couverts"), cap(15, "couverts", "couverts", "15-couverts"),
   cap(120, "W", "puissance", "120-w"), cap(500, "W", "puissance", "500-w"), cap(1200, "W", "puissance", "1200-w"),
   cap(1400, "W", "puissance", "1400-w"), cap(2000, "W", "puissance", "2000-w"),
 ]
+
+/** Valeur affichée avec son unité, au format numérique de la langue (1 200 W / 1,200 W). */
+export function formatCapacity(c: OfficialCapacity, lang: "fr" | "en" | "ar"): string {
+  if (c.value < 1000) return c.label
+  const unit = c.label.split(" ").slice(1).join(" ")
+  const n = lang === "en" ? c.value.toLocaleString("en-US") : lang === "ar" ? String(c.value) : c.value.toLocaleString("fr-FR").replace(/\s/g, " ")
+  return `${n} ${unit}`
+}
+
+export const OFFICIAL_CAPACITY_VALUES = OFFICIAL_CAPACITIES.filter((c) => c.kind !== "puissance")
+export const OFFICIAL_POWERS = OFFICIAL_CAPACITIES.filter((c) => c.kind === "puissance")
 
 /** Une capacité n'a de sens que pour certaines sous-familles (évite « 14 couverts » sur une hotte, etc.). */
 const CAPACITY_KINDS_BY_SUBFAMILY: Record<SubFamilyId, CapacityKind[]> = {
@@ -184,6 +215,7 @@ export interface CatalogProductLike {
   sousFamille?: string | null
   gamme?: string | null
   capacites?: string[] | null
+  puissances?: string[] | null
   couleurs?: string[] | null
   capacity?: unknown
   color?: unknown
@@ -198,7 +230,10 @@ export interface CatalogInfo {
   /** Produit hors périmètre officiel : jamais affiché. */
   excluded: boolean
   range?: RangeId
+  /** Capacités (volumes L, kg, couverts) */
   capacities: string[]
+  /** Puissances (W), attribut distinct de la capacité */
+  powers: string[]
   colors: string[]
   wifi: boolean
   bluetooth: boolean
@@ -258,10 +293,10 @@ const RANGE_ALIASES: Record<string, RangeId> = {
   estrela: "estrela", "estrela-s": "estrela-s", "t-vos": "t-vos", "t-vox": "t-vos", tvos: "t-vos", dustor: "dustor", liva: "liva", eronex: "eronex",
 }
 
-function mapCapacities(p: CatalogProductLike, sub?: SubFamilyId): string[] {
+function mapCapacities(p: CatalogProductLike, sub?: SubFamilyId): { capacities: string[]; powers: string[] } {
   const allowed = sub ? CAPACITY_KINDS_BY_SUBFAMILY[sub] : []
   const wanted = new Set<string>()
-  const candidates: string[] = [...(p.capacites ?? []).map((c) => slug(c))]
+  const candidates: string[] = [...(p.capacites ?? []).map((c) => slug(c)), ...(p.puissances ?? []).map((c) => slug(c))]
   const legacy = norm(p.capacity).replace(",", ".")
   const m = legacy.match(/(\d+(?:\.\d+)?)\s*(l|kg|w|couverts?)/)
   if (m) candidates.push(slug(`${m[1].replace(".", "-")}-${m[2].replace(/^couvert$/, "couverts")}`))
@@ -269,7 +304,8 @@ function mapCapacities(p: CatalogProductLike, sub?: SubFamilyId): string[] {
     const found = OFFICIAL_CAPACITIES.find((c) => c.id === id)
     if (found && allowed.includes(found.kind)) wanted.add(found.id)
   }
-  return OFFICIAL_CAPACITIES.filter((c) => wanted.has(c.id)).map((c) => c.id)
+  const picked = OFFICIAL_CAPACITIES.filter((c) => wanted.has(c.id))
+  return { capacities: picked.filter((c) => c.kind !== "puissance").map((c) => c.id), powers: picked.filter((c) => c.kind === "puissance").map((c) => c.id) }
 }
 
 function mapColors(p: CatalogProductLike): string[] {
@@ -317,8 +353,8 @@ function mapClassifications(p: CatalogProductLike, sub?: SubFamilyId): string[] 
   // Machines à café
   if (sf === "cafetieres-expresso") out.add("espresso")
   if (sf === "cafetieres-filtre") out.add("filtre")
-  if (gm === "poudre-caps") out.add("poudre-caps")
-  if (fam === "cafetieres" && /capsule/.test(name) && !out.has("poudre-caps")) out.add("capsules")
+  if (gm === "poudre-caps") out.add("poudre-capsules")
+  if (fam === "cafetieres" && /capsule/.test(name) && !out.has("poudre-capsules")) out.add("capsules")
 
   // Hottes
   if (sf === "hottes-casquette") out.add("casquette")
@@ -332,8 +368,11 @@ function mapClassifications(p: CatalogProductLike, sub?: SubFamilyId): string[] 
   // Classifications saisies explicitement dans le CMS (identifiants officiels uniquement)
   for (const c of p.classifications ?? []) if (ALL_CLASS_OPTIONS.some((x) => x.id === c)) out.add(c)
 
-  return ALL_CLASS_OPTIONS.filter((x) => out.has(x.id)).map((x) => x.id)
+  // Chaque caractéristique reste rattachée à sa sous-famille : jamais de liste universelle.
+  return ALL_CLASS_OPTIONS.filter((x) => out.has(x.id) && (!sub || groupOf(x.id)?.appliesTo.includes(sub))).map((x) => x.id)
 }
+
+export const groupOf = (optionId: string) => CLASSIFICATION_GROUPS.find((g) => g.options.some((x) => x.id === optionId))
 
 const cache = new WeakMap<object, CatalogInfo>()
 
@@ -347,7 +386,7 @@ export function catalogInfoOf(p: CatalogProductLike): CatalogInfo {
     family: sub ? OFFICIAL_SUBFAMILIES.find((s) => s.id === sub)?.family : undefined,
     excluded,
     range,
-    capacities: mapCapacities(p, sub),
+    ...mapCapacities(p, sub),
     colors: mapColors(p),
     // Wi-Fi / Bluetooth uniquement si le produit les possède réellement (champs explicites).
     wifi: p.wifi === true,

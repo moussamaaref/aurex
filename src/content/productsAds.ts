@@ -1,7 +1,7 @@
 import type { L3 } from "./lang"
 
 /** Product Advertising Spot (hero de la page Produits) : visuels publicitaires uniquement, aucun texte de présentation.
- *  Chaque campagne = une image + un CTA « Découvrir le produit » qui mène directement à la fiche du produit.
+ *  Chaque campagne = une image seule (aucun texte ni bouton) ; toute la bannière mène à la fiche du produit ciblé.
  *  Éditable dans /admin > Contenu du site > Produits. Emplacements vides (image vide) = ignorés.
  *  Cible : `productId` (id exact d'un produit) ou, à défaut, `sousFamille` (premier produit de cette sous-famille). */
 export interface ProductAd {
@@ -11,14 +11,11 @@ export interface ProductAd {
   productId: string
   /** à défaut : identifiant de sous-famille officielle (ex. machines-cafe) */
   sousFamille: string
+  /** cadrage du visuel dans la bannière (ex. "center", "center 30%", "left center") */
+  position: string
 }
 
 export const productsAdsUi = {
-  cta: { fr: "Découvrir le produit", en: "Discover the product", ar: "اكتشفوا المنتج" } as L3,
-  prev: { fr: "Visuel précédent", en: "Previous visual", ar: "الصورة السابقة" } as L3,
-  next: { fr: "Visuel suivant", en: "Next visual", ar: "الصورة التالية" } as L3,
-  pause: { fr: "Mettre en pause", en: "Pause", ar: "إيقاف مؤقت" } as L3,
-  play: { fr: "Relancer", en: "Play", ar: "تشغيل" } as L3,
   region: { fr: "Campagnes AUREX", en: "AUREX campaigns", ar: "حملات AUREX" } as L3,
 }
 
@@ -32,6 +29,7 @@ export const productsAds: ProductAd[] = [
     },
     productId: "",
     sousFamille: "machines-cafe",
+    position: "center",
   },
   {
     image: "/Spinova3.webp",
@@ -42,6 +40,7 @@ export const productsAds: ProductAd[] = [
     },
     productId: "",
     sousFamille: "lave-linge",
+    position: "center",
   },
   {
     image: "/Vacuum.webp",
@@ -52,8 +51,9 @@ export const productsAds: ProductAd[] = [
     },
     productId: "",
     sousFamille: "aspirateurs",
+    position: "center",
   },
-  { image: "", imageAlt: { fr: "", en: "", ar: "" }, productId: "", sousFamille: "" },
-  { image: "", imageAlt: { fr: "", en: "", ar: "" }, productId: "", sousFamille: "" },
-  { image: "", imageAlt: { fr: "", en: "", ar: "" }, productId: "", sousFamille: "" },
+  { image: "", imageAlt: { fr: "", en: "", ar: "" }, productId: "", sousFamille: "", position: "center" },
+  { image: "", imageAlt: { fr: "", en: "", ar: "" }, productId: "", sousFamille: "", position: "center" },
+  { image: "", imageAlt: { fr: "", en: "", ar: "" }, productId: "", sousFamille: "", position: "center" },
 ]
