@@ -9,12 +9,12 @@ import { submitSupportRequest, type SupportRequest } from "../lib/forms"
 import Reveal from "../components/Reveal"
 import Icon from "../components/Icon"
 
-const eyebrow = "text-xs font-semibold uppercase tracking-[0.18em] text-[#006a9e]"
-const h2 = "text-4xl font-semibold leading-[1.05] tracking-tight text-[#1d1d1f] lg:text-[40px]"
+const eyebrow = "text-xs font-semibold text-link-deep"
+const h2 = "text-4xl font-semibold leading-[1.05] tracking-tight text-obsidian lg:text-[40px]"
 const btnPrimary =
-  "group inline-flex min-h-12 items-center gap-2 rounded-full bg-[var(--color-accent)] px-7 text-[15px] font-semibold text-white transition-colors hover:bg-[#00628f] active:scale-[0.98] disabled:opacity-60"
+  "group inline-flex min-h-12 items-center gap-2 rounded-full bg-[var(--color-accent)] px-7 text-[15px] font-semibold text-white transition-colors hover:bg-accent-hover active:scale-[0.98] disabled:opacity-60"
 const field =
-  "min-h-12 w-full rounded-[14px] border border-[#86868b] bg-white px-4 text-[15px] text-[#1d1d1f] outline-none transition-colors placeholder:text-[#707070] focus:border-[var(--color-accent)]"
+  "min-h-12 w-full rounded-[14px] border border-steel bg-white px-4 text-[15px] text-obsidian outline-none transition-colors placeholder:text-muted-gray focus:border-[var(--color-accent)]"
 
 const norm = (v: string) => v.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").trim()
 
@@ -34,15 +34,15 @@ function MyAppliance() {
   }, [submitted])
 
   return (
-    <section id="mon-appareil" className="scroll-mt-24 bg-[#f5f5f7] py-20 lg:py-[90px]" aria-labelledby="myapp-title">
+    <section id="mon-appareil" className="scroll-mt-24 bg-studio-mist py-20 lg:py-[90px]" aria-labelledby="myapp-title">
       <div className="mx-auto max-w-4xl px-6 text-center">
         <Reveal>
           <p className={eyebrow}>{p(c.title)}</p>
           <h2 id="myapp-title" className={`mt-3 ${h2}`} style={{ fontFamily: "var(--font-display)" }}>
             {p(c.headline)}
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-[17px] text-[#474747]">{p(c.intro)}</p>
-          <p className="mx-auto mt-2 max-w-2xl text-[15px] text-[#5a5a5e]">{p(c.text)}</p>
+          <p className="mx-auto mt-4 max-w-2xl text-[17px] text-slate">{p(c.intro)}</p>
+          <p className="mx-auto mt-2 max-w-2xl text-[15px] text-iron-gray">{p(c.text)}</p>
           <form
             role="search"
             className="mx-auto mt-8 flex max-w-2xl flex-col gap-3 sm:flex-row"
@@ -71,7 +71,7 @@ function MyAppliance() {
 
         <div className="mt-8 text-start" aria-live="polite">
           {submitted && results.length === 0 && (
-            <p className="rounded-[20px] bg-white p-6 text-center text-[15px] text-[#474747]">{p(c.noResult)}</p>
+            <p className="rounded-[20px] bg-white p-6 text-center text-[15px] text-slate">{p(c.noResult)}</p>
           )}
           {results.length > 0 && (
             <ul className="grid gap-4 sm:grid-cols-2">
@@ -79,13 +79,13 @@ function MyAppliance() {
                 <li key={x.id}>
                   <Link
                     to={productUrl(x)}
-                    className="flex items-center gap-4 rounded-[20px] bg-white p-4 transition-colors hover:bg-[#fafafc]"
+                    className="flex items-center gap-4 rounded-[20px] bg-white p-4 transition-colors hover:bg-paper-frost"
                   >
                     <img loading="lazy" decoding="async" src={x.image} alt="" width={80} height={80} className="h-20 w-20 shrink-0 rounded-[14px] object-cover" />
                     <span className="min-w-0">
-                      <span className="block truncate text-[15px] font-semibold text-[#1d1d1f]">{ml(x.name)}</span>
-                      <span className="block font-mono text-xs text-[#5a5a5e]">{x.reference}</span>
-                      <span className="mt-1 inline-flex items-center gap-1 text-sm font-semibold text-[#006a9e]">
+                      <span className="block truncate text-[15px] font-semibold text-obsidian">{ml(x.name)}</span>
+                      <span className="block font-mono text-xs text-iron-gray">{x.reference}</span>
+                      <span className="mt-1 inline-flex items-center gap-1 text-sm font-semibold text-link-deep">
                         {p(c.openDocs)}
                         <Icon name="arrow" className="h-3.5 w-3.5 rtl:-scale-x-100" strokeWidth={2} />
                       </span>
@@ -121,7 +121,7 @@ function Manuals() {
           <h2 id="manuals-title" className={h2} style={{ fontFamily: "var(--font-display)" }}>
             {p(m.title)}
           </h2>
-          <p className="mt-3 max-w-2xl text-[17px] text-[#474747]">{p(m.text)}</p>
+          <p className="mt-3 max-w-2xl text-[17px] text-slate">{p(m.text)}</p>
         </Reveal>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <label className="sr-only" htmlFor="man-cat">
@@ -143,10 +143,10 @@ function Manuals() {
         <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {list.map((x) => (
             <li key={x.id}>
-              <Link to={productUrl(x)} className="block rounded-[20px] bg-[#f5f5f7] p-5 transition-colors hover:bg-[#ececf0]">
-                <span className="block text-[15px] font-semibold text-[#1d1d1f]">{ml(x.name)}</span>
-                <span className="mt-1 block font-mono text-xs text-[#5a5a5e]">{x.reference}</span>
-                <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-[#006a9e]">
+              <Link to={productUrl(x)} className="block rounded-[20px] bg-studio-mist p-5 transition-colors hover:bg-surface-hover">
+                <span className="block text-[15px] font-semibold text-obsidian">{ml(x.name)}</span>
+                <span className="mt-1 block font-mono text-xs text-iron-gray">{x.reference}</span>
+                <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-link-deep">
                   {p(m.open)}
                   <Icon name="arrow" className="h-3.5 w-3.5 rtl:-scale-x-100" strokeWidth={2} />
                 </span>
@@ -201,37 +201,37 @@ function RequestForm({ presetType }: { presetType: string }) {
   }
 
   return (
-    <section id="demande" className="scroll-mt-24 bg-[#f5f5f7] py-20 lg:py-[90px]" aria-labelledby="form-title">
+    <section id="demande" className="scroll-mt-24 bg-studio-mist py-20 lg:py-[90px]" aria-labelledby="form-title">
       <div className="mx-auto max-w-3xl px-6">
         <Reveal>
           <h2 id="form-title" className={h2} style={{ fontFamily: "var(--font-display)" }}>
             {p(f.title)}
           </h2>
-          <p className="mt-3 text-[17px] text-[#474747]">{p(f.text)}</p>
+          <p className="mt-3 text-[17px] text-slate">{p(f.text)}</p>
         </Reveal>
 
         {state === "done" ? (
           <div role="status" className="mt-8 rounded-[28px] bg-white p-8">
-            <p className="text-2xl font-semibold text-[#1d1d1f]" style={{ fontFamily: "var(--font-display)" }}>
+            <p className="text-2xl font-semibold text-obsidian" style={{ fontFamily: "var(--font-display)" }}>
               {p(f.successTitle)}
             </p>
-            <p className="mt-4 text-sm font-semibold text-[#5a5a5e]">{p(f.referenceLabel)}</p>
-            <p className="font-mono text-2xl font-semibold text-[#006a9e]">{result.reference}</p>
-            <p className="mt-4 text-[15px] leading-relaxed text-[#474747]">{p(f.nextStep)}</p>
-            {result.mode === "local" && <p className="mt-3 text-xs text-[#5a5a5e]">{p(f.localNote)}</p>}
+            <p className="mt-4 text-sm font-semibold text-iron-gray">{p(f.referenceLabel)}</p>
+            <p className="font-mono text-2xl font-semibold text-link-deep">{result.reference}</p>
+            <p className="mt-4 text-[15px] leading-relaxed text-slate">{p(f.nextStep)}</p>
+            {result.mode === "local" && <p className="mt-3 text-xs text-iron-gray">{p(f.localNote)}</p>}
           </div>
         ) : (
           <form onSubmit={onSubmit} noValidate className="mt-8 grid gap-5 rounded-[28px] bg-white p-6 sm:grid-cols-2 sm:p-8">
             <label className="block sm:col-span-2">
-              <span className="mb-1.5 block text-sm font-semibold text-[#333336]">{p(f.fields.name)} *</span>
+              <span className="mb-1.5 block text-sm font-semibold text-charcoal">{p(f.fields.name)} *</span>
               <input name="full_name" required autoComplete="name" className={field} />
             </label>
             <label className="block">
-              <span className="mb-1.5 block text-sm font-semibold text-[#333336]">{p(f.fields.phone)} *</span>
+              <span className="mb-1.5 block text-sm font-semibold text-charcoal">{p(f.fields.phone)} *</span>
               <input name="phone" type="tel" required autoComplete="tel" inputMode="tel" className={field} />
             </label>
             <label className="block">
-              <span className="mb-1.5 block text-sm font-semibold text-[#333336]">{p(f.fields.type)} *</span>
+              <span className="mb-1.5 block text-sm font-semibold text-charcoal">{p(f.fields.type)} *</span>
               <select value={type} onChange={(e) => setType(e.target.value)} className={field}>
                 {f.types.map((t) => (
                   <option key={t.value} value={t.value}>
@@ -241,22 +241,22 @@ function RequestForm({ presetType }: { presetType: string }) {
               </select>
             </label>
             <label className="block">
-              <span className="mb-1.5 block text-sm font-semibold text-[#333336]">{p(f.fields.wilaya)}</span>
+              <span className="mb-1.5 block text-sm font-semibold text-charcoal">{p(f.fields.wilaya)}</span>
               <select name="wilaya" defaultValue="" className={field}>
                 <option value="">{p(f.select)}</option>
                 {wilayas.map((w, i) => (
                   <option key={w} value={w}>
-                    {String(i + 1).padStart(2, "0")} — {w}
+                    {String(i + 1).padStart(2, "0")} : {w}
                   </option>
                 ))}
               </select>
             </label>
             <label className="block">
-              <span className="mb-1.5 block text-sm font-semibold text-[#333336]">{p(f.fields.commune)}</span>
+              <span className="mb-1.5 block text-sm font-semibold text-charcoal">{p(f.fields.commune)}</span>
               <input name="commune" className={field} />
             </label>
             <label className="block">
-              <span className="mb-1.5 block text-sm font-semibold text-[#333336]">{p(f.fields.deviceClass)}</span>
+              <span className="mb-1.5 block text-sm font-semibold text-charcoal">{p(f.fields.deviceClass)}</span>
               <select name="device_class" defaultValue="" className={field}>
                 <option value="">{p(f.select)}</option>
                 {categories.map((c) => (
@@ -267,19 +267,19 @@ function RequestForm({ presetType }: { presetType: string }) {
               </select>
             </label>
             <label className="block">
-              <span className="mb-1.5 block text-sm font-semibold text-[#333336]">{p(f.fields.reference)}</span>
+              <span className="mb-1.5 block text-sm font-semibold text-charcoal">{p(f.fields.reference)}</span>
               <input name="device_reference" className={field} />
             </label>
             <label className="block sm:col-span-2">
-              <span className="mb-1.5 block text-sm font-semibold text-[#333336]">{p(f.fields.message)} *</span>
+              <span className="mb-1.5 block text-sm font-semibold text-charcoal">{p(f.fields.message)} *</span>
               <textarea name="message" required rows={5} className={`${field} py-3`} />
             </label>
             <label className="block sm:col-span-2">
-              <span className="mb-1.5 block text-sm font-semibold text-[#333336]">{p(f.fields.file)}</span>
-              <input ref={fileRef} type="file" accept="image/*,video/*" className="block w-full text-sm text-[#474747] file:me-4 file:rounded-full file:border-0 file:bg-[#f5f5f7] file:px-5 file:py-3 file:text-sm file:font-semibold file:text-[#1d1d1f]" />
+              <span className="mb-1.5 block text-sm font-semibold text-charcoal">{p(f.fields.file)}</span>
+              <input ref={fileRef} type="file" accept="image/*,video/*" className="block w-full text-sm text-slate file:me-4 file:rounded-full file:border-0 file:bg-studio-mist file:px-5 file:py-3 file:text-sm file:font-semibold file:text-obsidian" />
             </label>
             {(state === "invalid" || state === "error") && (
-              <p role="alert" className="text-sm text-[#b64400] sm:col-span-2">
+              <p role="alert" className="text-sm text-launch-orange sm:col-span-2">
                 {state === "invalid" ? p(f.required) : p(f.error)}
               </p>
             )}
@@ -313,15 +313,15 @@ function ContactChannels() {
         <h2 id="contact-title" className={h2} style={{ fontFamily: "var(--font-display)" }}>
           {p(c.title)}
         </h2>
-        <p className="mt-3 text-[17px] text-[#474747]">{p(c.text)}</p>
+        <p className="mt-3 text-[17px] text-slate">{p(c.text)}</p>
         {rows.length > 0 ? (
           <dl className="mt-8 grid gap-4 sm:grid-cols-3">
             {rows.map((r) => (
-              <div key={r.value} className="rounded-[20px] bg-[#f5f5f7] p-6">
-                <dt className="text-xs font-semibold uppercase tracking-[0.12em] text-[#5a5a5e]">{p(r.label)}</dt>
-                <dd className="mt-2 text-[17px] font-semibold text-[#1d1d1f]">
+              <div key={r.value} className="rounded-[20px] bg-studio-mist p-6">
+                <dt className="text-xs font-semibold text-iron-gray">{p(r.label)}</dt>
+                <dd className="mt-2 text-[17px] font-semibold text-obsidian">
                   {r.href ? (
-                    <a href={r.href} className="hover:text-[#006a9e]">
+                    <a href={r.href} className="hover:text-link-deep">
                       {r.value}
                     </a>
                   ) : (
@@ -332,7 +332,7 @@ function ContactChannels() {
             ))}
           </dl>
         ) : (
-          <p className="mt-6 rounded-[20px] bg-[#f5f5f7] p-6 text-[15px] text-[#474747]">{p(c.none)}</p>
+          <p className="mt-6 rounded-[20px] bg-studio-mist p-6 text-[15px] text-slate">{p(c.none)}</p>
         )}
       </div>
     </section>
@@ -343,12 +343,12 @@ function Faq() {
   const { p } = useP()
   const [open, setOpen] = useState<number | null>(0)
   return (
-    <section id="faq" className="scroll-mt-24 bg-[#f5f5f7] py-20 lg:py-[90px]" aria-labelledby="faq-title">
+    <section id="faq" className="scroll-mt-24 bg-studio-mist py-20 lg:py-[90px]" aria-labelledby="faq-title">
       <div className="mx-auto max-w-3xl px-6">
         <h2 id="faq-title" className={h2} style={{ fontFamily: "var(--font-display)" }}>
           {p(support.faq.title)}
         </h2>
-        <div className="mt-8 divide-y divide-[#d6d6d6] rounded-[28px] bg-white px-6">
+        <div className="mt-8 divide-y divide-fog rounded-[28px] bg-white px-6">
           {support.faq.items.map((item, i) => (
             <div key={i}>
               <h3>
@@ -356,13 +356,13 @@ function Faq() {
                   type="button"
                   aria-expanded={open === i}
                   onClick={() => setOpen(open === i ? null : i)}
-                  className="flex min-h-14 w-full items-center justify-between gap-4 py-4 text-start text-[17px] font-semibold text-[#1d1d1f]"
+                  className="flex min-h-14 w-full items-center justify-between gap-4 py-4 text-start text-[17px] font-semibold text-obsidian"
                 >
                   {p(item.q)}
-                  <Icon name={open === i ? "close" : "sparkle"} className="h-4 w-4 shrink-0 text-[#006a9e]" strokeWidth={2} />
+                  <Icon name={open === i ? "close" : "sparkle"} className="h-4 w-4 shrink-0 text-link-deep" strokeWidth={2} />
                 </button>
               </h3>
-              {open === i && <p className="pb-5 text-[15px] leading-relaxed text-[#474747]">{p(item.a)}</p>}
+              {open === i && <p className="pb-5 text-[15px] leading-relaxed text-slate">{p(item.a)}</p>}
             </div>
           ))}
         </div>
@@ -389,11 +389,11 @@ export default function SupportPage() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative isolate overflow-hidden bg-[#1d1d1f] pb-20 pt-36 lg:pb-28 lg:pt-44">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(60%_80%_at_85%_10%,rgba(0,119,179,0.45),transparent_70%)]" />
+      <section className="relative isolate overflow-hidden bg-obsidian pb-20 pt-36 lg:pb-28 lg:pt-44">
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(60%_80%_at_85%_10%,color-mix(in_srgb,var(--color-signal-blue)_45%,transparent),transparent_70%)]" />
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 lg:grid-cols-[1.15fr_0.85fr]">
          <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#4db3e6]">{p(support.hero.eyebrow)}</p>
+          <p className="text-xs font-semibold text-sky">{p(support.hero.eyebrow)}</p>
           <h1 className="mt-4 text-3xl font-semibold sm:text-4xl leading-[1.05] tracking-tight text-white lg:text-[52px] lg:tracking-[-0.8px]" style={{ fontFamily: "var(--font-display)" }}>
             {p(support.hero.title)}
           </h1>
@@ -412,15 +412,15 @@ export default function SupportPage() {
           {/* Visuel : mosaïque des services de support (icônes) */}
           <div className="relative" aria-hidden="true">
             <div className="mx-auto grid max-w-md grid-cols-3 gap-3">
-              <div className="col-span-3 flex items-center gap-4 rounded-[28px] bg-white p-6 text-[#1d1d1f]">
-                <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#0077b3] text-white">
+              <div className="col-span-3 flex items-center gap-4 rounded-[28px] bg-white p-6 text-obsidian">
+                <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-signal-blue text-white">
                   <Icon name="headset" className="h-8 w-8" strokeWidth={1.7} />
                 </span>
                 <span>
                   <span className="block text-lg font-semibold" style={{ fontFamily: "var(--font-display)" }}>
                     {p(support.hero.eyebrow)}
                   </span>
-                  <span className="mt-0.5 block text-sm text-[#5a5a5e]">{p(support.hero.title)}</span>
+                  <span className="mt-0.5 block text-sm text-iron-gray">{p(support.hero.title)}</span>
                 </span>
               </div>
               {support.help.cards.slice(0, 6).map((card) => (
@@ -445,38 +445,38 @@ export default function SupportPage() {
           <div className="mt-10 grid gap-5 md:grid-cols-3">
             {support.warranty.items.map((item, i) => (
               <Reveal key={item.icon} delay={i * 90} className="h-full">
-                <div className="h-full rounded-[28px] bg-[#f5f5f7] p-8">
-                  <span className="text-[#006a9e]">
+                <div className="h-full rounded-[28px] bg-studio-mist p-8">
+                  <span className="text-link-deep">
                     <Icon name={item.icon} className="h-9 w-9" />
                   </span>
-                  <h3 className="mt-6 text-[21px] font-semibold leading-snug text-[#1d1d1f]" style={{ fontFamily: "var(--font-display)" }}>
+                  <h3 className="mt-6 text-[21px] font-semibold leading-snug text-obsidian" style={{ fontFamily: "var(--font-display)" }}>
                     {p(item.title)}
                   </h3>
-                  <p className="mt-3 text-[15px] leading-relaxed text-[#474747]">{p(item.text)}</p>
+                  <p className="mt-3 text-[15px] leading-relaxed text-slate">{p(item.text)}</p>
                 </div>
               </Reveal>
             ))}
           </div>
           <Reveal delay={150}>
-            <div className="mt-8 rounded-[28px] border border-[#d6d6d6] p-8">
-              <h3 className="text-[19px] font-semibold text-[#1d1d1f]" style={{ fontFamily: "var(--font-display)" }}>
+            <div className="mt-8 rounded-[28px] border border-fog p-8">
+              <h3 className="text-[19px] font-semibold text-obsidian" style={{ fontFamily: "var(--font-display)" }}>
                 {p(support.warranty.detailsTitle)}
               </h3>
-              <p className="mt-2 max-w-3xl text-[15px] leading-relaxed text-[#474747]">{p(support.warranty.detailsText)}</p>
+              <p className="mt-2 max-w-3xl text-[15px] leading-relaxed text-slate">{p(support.warranty.detailsText)}</p>
             </div>
           </Reveal>
         </div>
       </section>
 
       {/* How can we help you? */}
-      <section id="sav" className="scroll-mt-24 bg-[#f5f5f7] py-20 lg:py-[90px]" aria-labelledby="help-title">
+      <section id="sav" className="scroll-mt-24 bg-studio-mist py-20 lg:py-[90px]" aria-labelledby="help-title">
         <div className="mx-auto max-w-7xl px-6">
           <Reveal>
             <p className={eyebrow}>{p(support.help.eyebrow)}</p>
             <h2 id="help-title" className={`mt-3 ${h2}`} style={{ fontFamily: "var(--font-display)" }}>
               {p(support.help.title)}
             </h2>
-            <p className="mt-3 text-[17px] text-[#474747]">{p(support.help.text)}</p>
+            <p className="mt-3 text-[17px] text-slate">{p(support.help.text)}</p>
           </Reveal>
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {support.help.cards.map((card, i) => (
@@ -484,19 +484,19 @@ export default function SupportPage() {
                 <a
                   href={card.href}
                   onClick={() => card.requestType && setPresetType(card.requestType)}
-                  className="group flex h-full flex-col rounded-[28px] bg-white p-7 transition-colors hover:bg-[#fafafc]"
+                  className="group flex h-full flex-col rounded-[28px] bg-white p-7 transition-colors hover:bg-paper-frost"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-[#006a9e]">
+                    <span className="text-link-deep">
                       <Icon name={card.icon} className="h-7 w-7" />
                     </span>
-                    <span className="text-xs font-semibold text-[#5a5a5e]">{card.num}</span>
+                    <span className="text-xs font-semibold text-iron-gray">{card.num}</span>
                   </div>
-                  <h3 className="mt-6 text-[19px] font-semibold leading-snug text-[#1d1d1f]" style={{ fontFamily: "var(--font-display)" }}>
+                  <h3 className="mt-6 text-[19px] font-semibold leading-snug text-obsidian" style={{ fontFamily: "var(--font-display)" }}>
                     {p(card.title)}
                   </h3>
-                  <p className="mt-2 text-[15px] leading-relaxed text-[#474747]">{p(card.text)}</p>
-                  <span className="mt-auto inline-flex min-h-11 items-center gap-1.5 pt-5 text-[15px] font-semibold text-[#006a9e]">
+                  <p className="mt-2 text-[15px] leading-relaxed text-slate">{p(card.text)}</p>
+                  <span className="mt-auto inline-flex min-h-11 items-center gap-1.5 pt-5 text-[15px] font-semibold text-link-deep">
                     {p(card.cta)}
                     <Icon name="arrow" className="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1" strokeWidth={2} />
                   </span>
@@ -514,13 +514,13 @@ export default function SupportPage() {
       <Faq />
 
       {/* Section finale */}
-      <section className="bg-[#fafafc] py-24 text-center lg:py-[110px]" aria-labelledby="support-final">
+      <section className="bg-paper-frost py-24 text-center lg:py-[110px]" aria-labelledby="support-final">
         <div className="mx-auto max-w-4xl px-6">
           <Reveal>
-            <h2 id="support-final" className="text-5xl font-semibold leading-[1.05] tracking-tight text-[#1d1d1f] lg:text-[44px] lg:tracking-[-0.6px]" style={{ fontFamily: "var(--font-display)" }}>
+            <h2 id="support-final" className="text-5xl font-semibold leading-[1.05] tracking-tight text-obsidian lg:text-[44px] lg:tracking-[-0.6px]" style={{ fontFamily: "var(--font-display)" }}>
               {p(support.final.title)}
             </h2>
-            <p className="mx-auto mt-6 max-w-2xl text-[17px] leading-relaxed text-[#474747]">{p(support.final.text)}</p>
+            <p className="mx-auto mt-6 max-w-2xl text-[17px] leading-relaxed text-slate">{p(support.final.text)}</p>
             <a href="#contact" className={`${btnPrimary} mt-9`}>
               {p(support.final.cta)}
               <Icon name="arrow" className="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1" strokeWidth={2} />

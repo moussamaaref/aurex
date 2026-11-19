@@ -65,7 +65,7 @@ export function TrilingualInput({
     <div className="space-y-2">
       {(["fr", "ar", "en"] as const).map((lang) => (
         <div key={lang} className="flex items-start gap-2">
-          <span className="mt-2 w-7 shrink-0 rounded-md bg-[#1d1d1f] px-1 py-0.5 text-center text-[10px] font-bold uppercase text-white">
+          <span className="mt-2 w-7 shrink-0 rounded-md bg-obsidian px-1 py-0.5 text-center text-xs font-bold text-white">
             {lang}
           </span>
           <textarea
@@ -75,7 +75,7 @@ export function TrilingualInput({
             dir={lang === "ar" ? "rtl" : "ltr"}
             placeholder={lang === "fr" ? "Français" : lang === "ar" ? "Arabe" : "Anglais"}
             disabled={disabled}
-            className="min-h-[52px] w-full rounded-xl border border-[#d6d6d6] bg-white px-3 py-2 text-sm text-[#1A1A1A] placeholder:text-[#86868b] focus:border-[#0077b3] focus:outline-none focus:ring-2 focus:ring-[#0077b3]/10 disabled:opacity-50"
+            className="min-h-[52px] w-full rounded-xl border border-fog bg-white px-3 py-2 text-sm text-obsidian placeholder:text-steel focus:border-signal-blue focus:outline-none focus:ring-2 focus:ring-signal-blue/10 disabled:opacity-50"
           />
         </div>
       ))}
@@ -88,7 +88,7 @@ export function TrilingualInput({
               disabled={disabled}
               onClick={() => onChange({ ...loc, fr: s })}
               title={`Utiliser « ${s} »`}
-              className="rounded-lg border border-[#d6d6d6] bg-white px-2 py-1 text-[11px] font-semibold text-[#333336] transition hover:border-[#0077b3] hover:text-[#006a9e] disabled:opacity-50"
+              className="rounded-lg border border-fog bg-white px-2 py-1 text-[11px] font-semibold text-charcoal transition hover:border-signal-blue hover:text-link-deep disabled:opacity-50"
             >
               {s}
             </button>
@@ -151,7 +151,7 @@ export function SingleImageField({
           type="button"
           disabled={disabled || busy}
           onClick={() => inputRef.current?.click()}
-          className="rounded-lg border border-[#d6d6d6] bg-white px-3 py-1.5 text-xs font-semibold text-[#333336] transition hover:border-[#1d1d1f]/25 hover:bg-[#f5f5f7] disabled:cursor-not-allowed disabled:opacity-45"
+          className="rounded-lg border border-fog bg-white px-3 py-1.5 text-xs font-semibold text-charcoal transition hover:border-obsidian/25 hover:bg-studio-mist disabled:cursor-not-allowed disabled:opacity-45"
         >
           {busy ? "..." : "Uploader"}
         </button>
@@ -164,12 +164,12 @@ export function SingleImageField({
         />
       </div>
       {error && (
-        <p role="alert" className="rounded-lg bg-[#FBEAEA] px-3 py-2 text-xs font-medium text-[#C1443D]">
+        <p role="alert" className="rounded-lg bg-danger-wash px-3 py-2 text-xs font-medium text-danger">
           {error}
         </p>
       )}
       {value ? (
-        <div className="overflow-hidden rounded-xl border border-[#d6d6d6] bg-white">
+        <div className="overflow-hidden rounded-xl border border-fog bg-white">
           {/* eslint-disable-next-line jsx-a11y/alt-text */}
           <img
             src={value}
@@ -177,12 +177,12 @@ export function SingleImageField({
             className="h-32 w-full object-cover"
             onError={(e) => ((e.target as HTMLImageElement).style.display = "none")}
           />
-          <div className="truncate bg-[#f5f5f7] px-3 py-1.5 text-[11px] text-[#5a5a5e]">
+          <div className="truncate bg-studio-mist px-3 py-1.5 text-[11px] text-iron-gray">
             {value}
           </div>
         </div>
       ) : (
-        <div className="rounded-xl border border-dashed border-[#d6d6d6] bg-[#f5f5f7] px-3 py-6 text-center text-xs text-[#707070]">
+        <div className="rounded-xl border border-dashed border-fog bg-studio-mist px-3 py-6 text-center text-xs text-muted-gray">
           Aucune image
         </div>
       )}
@@ -235,7 +235,7 @@ export function ImagesGalleryField({
           type="button"
           disabled={disabled || busy}
           onClick={() => inputRef.current?.click()}
-          className="rounded-xl border border-dashed border-[#0077b3]/50 bg-[#0077b3]/5 px-3.5 py-2 text-xs font-semibold text-[#006a9e] transition hover:bg-[#0077b3]/10 disabled:opacity-50"
+          className="rounded-xl border border-dashed border-signal-blue/50 bg-signal-blue/5 px-3.5 py-2 text-xs font-semibold text-link-deep transition hover:bg-signal-blue/10 disabled:opacity-50"
         >
           {busy ? "Upload..." : "+ Ajouter des images"}
         </button>
@@ -247,23 +247,23 @@ export function ImagesGalleryField({
           hidden
           onChange={(e) => void handleFiles(e.target.files)}
         />
-        <span className="text-xs text-[#707070]">{value.length} image(s)</span>
+        <span className="text-xs text-muted-gray">{value.length} image(s)</span>
       </div>
       {error && (
-        <p role="alert" className="rounded-lg bg-[#FBEAEA] px-3 py-2 text-xs font-medium text-[#C1443D]">
+        <p role="alert" className="rounded-lg bg-danger-wash px-3 py-2 text-xs font-medium text-danger">
           {error}
         </p>
       )}
       {value.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-[#d6d6d6] bg-[#f5f5f7] px-3 py-6 text-center text-xs text-[#707070]">
-          Galerie vide — ajoutez des images
+        <div className="rounded-xl border border-dashed border-fog bg-studio-mist px-3 py-6 text-center text-xs text-muted-gray">
+          Galerie vide : ajoutez des images
         </div>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
           {value.map((url, i) => (
             <div
               key={`${url}-${i}`}
-              className="overflow-hidden rounded-xl border border-[#d6d6d6] bg-white"
+              className="overflow-hidden rounded-xl border border-fog bg-white"
             >
               <img src={url} alt={`galerie ${i + 1}`} className="h-32 w-full object-cover" />
               <div className="space-y-2 p-2">
@@ -274,14 +274,14 @@ export function ImagesGalleryField({
                     onChange(value.map((v, idx) => (idx === i ? e.target.value : v)))
                   }
                   disabled={disabled}
-                  className="w-full truncate rounded-lg border border-[#d6d6d6] px-2 py-1 text-[11px]"
+                  className="w-full truncate rounded-lg border border-fog px-2 py-1 text-[11px]"
                 />
                 <div className="flex gap-1">
                   <button
                     type="button"
                     disabled={disabled}
                     onClick={() => move(i, -1)}
-                    className="rounded-lg border border-[#d6d6d6] px-2 py-1 text-[11px] hover:bg-[#f5f5f7]"
+                    className="rounded-lg border border-fog px-2 py-1 text-[11px] hover:bg-studio-mist"
                   >
                     ↑
                   </button>
@@ -289,7 +289,7 @@ export function ImagesGalleryField({
                     type="button"
                     disabled={disabled}
                     onClick={() => move(i, 1)}
-                    className="rounded-lg border border-[#d6d6d6] px-2 py-1 text-[11px] hover:bg-[#f5f5f7]"
+                    className="rounded-lg border border-fog px-2 py-1 text-[11px] hover:bg-studio-mist"
                   >
                     ↓
                   </button>
@@ -297,7 +297,7 @@ export function ImagesGalleryField({
                     type="button"
                     disabled={disabled}
                     onClick={() => onChange(value.filter((_, idx) => idx !== i))}
-                    className="ml-auto rounded-lg bg-[#FBEAEA] px-2 py-1 text-[11px] font-semibold text-[#C1443D] hover:bg-[#F5D8D6]"
+                    className="ml-auto rounded-lg bg-danger-wash px-2 py-1 text-[11px] font-semibold text-danger hover:bg-danger-line"
                   >
                     Supprimer
                   </button>
@@ -364,7 +364,7 @@ function MultiChips({
           {value.map((slug) => (
             <span
               key={String(slug)}
-              className="inline-flex items-center gap-1.5 rounded-full bg-[#1d1d1f] px-2.5 py-1 text-[11px] font-semibold text-white"
+              className="inline-flex items-center gap-1.5 rounded-full bg-obsidian px-2.5 py-1 text-[11px] font-semibold text-white"
             >
               {optionLabels[String(slug)] ?? String(slug)}
               {!disabled && (
@@ -381,7 +381,7 @@ function MultiChips({
           ))}
         </div>
       ) : (
-        <p className="text-xs text-[#707070]">Aucune sélection — choisissez ci-dessous.</p>
+        <p className="text-xs text-muted-gray">Aucune sélection : choisissez ci-dessous.</p>
       )}
       <input
         type="search"
@@ -389,17 +389,17 @@ function MultiChips({
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Rechercher…"
         disabled={disabled}
-        className="w-full rounded-xl border border-[#d6d6d6] bg-white px-3 py-2 text-xs text-[#1A1A1A] placeholder:text-[#86868b] focus:border-[#0077b3] focus:outline-none disabled:opacity-50"
+        className="w-full rounded-xl border border-fog bg-white px-3 py-2 text-xs text-obsidian placeholder:text-steel focus:border-signal-blue focus:outline-none disabled:opacity-50"
       />
-      <div className="flex max-h-40 flex-wrap gap-1.5 overflow-y-auto rounded-xl border border-[#d6d6d6] bg-white p-2">
-        {visible.length === 0 && <span className="px-1 py-1 text-xs text-[#707070]">Aucune autre valeur.</span>}
+      <div className="flex max-h-40 flex-wrap gap-1.5 overflow-y-auto rounded-xl border border-fog bg-white p-2">
+        {visible.length === 0 && <span className="px-1 py-1 text-xs text-muted-gray">Aucune autre valeur.</span>}
         {visible.map((slug) => (
           <button
             key={slug}
             type="button"
             disabled={disabled}
             onClick={() => toggle(slug)}
-            className="rounded-lg border border-[#d6d6d6] bg-[#f5f5f7] px-2 py-1 text-[11px] font-semibold text-[#333336] transition hover:border-[#0077b3] hover:text-[#006a9e] disabled:opacity-50"
+            className="rounded-lg border border-fog bg-studio-mist px-2 py-1 text-[11px] font-semibold text-charcoal transition hover:border-signal-blue hover:text-link-deep disabled:opacity-50"
           >
             {optionLabels[slug] ?? slug}
           </button>
@@ -410,7 +410,7 @@ function MultiChips({
           <button
             type="button"
             onClick={() => onChange([])}
-            className="text-[11px] font-semibold text-[#C1443D] hover:text-[#A6362F]"
+            className="text-[11px] font-semibold text-danger hover:text-danger-deep"
           >
             Tout effacer
           </button>
@@ -464,7 +464,7 @@ export function StructuredEditor({ value, onChange, fieldKey, disabled, options,
             value={value || "#057593"}
             onChange={(e) => onChange(e.target.value)}
             disabled={disabled}
-            className="h-10 w-14 cursor-pointer rounded-lg border border-[#d6d6d6] bg-white p-1 disabled:opacity-50"
+            className="h-10 w-14 cursor-pointer rounded-lg border border-fog bg-white p-1 disabled:opacity-50"
           />
           <input
             type="text"
@@ -472,7 +472,7 @@ export function StructuredEditor({ value, onChange, fieldKey, disabled, options,
             onChange={(e) => onChange(e.target.value)}
             placeholder="#057593"
             disabled={disabled}
-            className={`min-w-0 flex-1 uppercase ${inputBase}`}
+            className={`min-w-0 flex-1 ${inputBase}`}
           />
         </div>
         <div className="flex flex-wrap gap-1.5">
@@ -486,7 +486,7 @@ export function StructuredEditor({ value, onChange, fieldKey, disabled, options,
               aria-label={`Couleur ${preset}`}
               className={`h-7 w-7 rounded-lg border-2 transition hover:scale-110 ${
                 value.toLowerCase() === preset.toLowerCase()
-                  ? "border-[#1d1d1f] shadow-md"
+                  ? "border-obsidian shadow-md"
                   : "border-white shadow-sm"
               } disabled:opacity-50`}
               style={{ backgroundColor: preset }}
@@ -507,7 +507,7 @@ export function StructuredEditor({ value, onChange, fieldKey, disabled, options,
         disabled={disabled}
         className={inputBase}
       >
-        <option value="">— Choisir —</option>
+        <option value="">Choisir</option>
         {!opts.includes(value) && value !== "" && <option value={value}>{value} (actuel)</option>}
         {opts.map((opt) => (
           <option key={opt} value={opt}>
@@ -549,8 +549,8 @@ export function StructuredEditor({ value, onChange, fieldKey, disabled, options,
               key={badge}
               className={`flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-2 text-xs font-semibold transition ${
                 on
-                  ? "border-[#1d1d1f] bg-[#1d1d1f] text-white"
-                  : "border-[#d6d6d6] bg-white text-[#333336] hover:border-[#1d1d1f]/40"
+                  ? "border-obsidian bg-obsidian text-white"
+                  : "border-fog bg-white text-charcoal hover:border-obsidian/40"
               } ${disabled ? "cursor-not-allowed opacity-50" : ""}`}
             >
               <input
@@ -558,7 +558,7 @@ export function StructuredEditor({ value, onChange, fieldKey, disabled, options,
                 checked={on}
                 disabled={disabled}
                 onChange={() => toggle(badge)}
-                className="h-3.5 w-3.5 accent-[#1d1d1f]"
+                className="h-3.5 w-3.5 accent-obsidian"
               />
               {badge}
             </label>
@@ -590,7 +590,7 @@ export function StructuredEditor({ value, onChange, fieldKey, disabled, options,
         disabled={disabled}
         className={inputBase}
       >
-        <option value="">— Choisir une catégorie —</option>
+        <option value="">Choisir une catégorie</option>
         {!slugs.includes(value) && value !== "" && <option value={value}>{labelOf("category_slug", value)} (actuel)</option>}
         {slugs.map((slug) => (
           <option key={slug} value={slug}>
@@ -622,7 +622,7 @@ export function StructuredEditor({ value, onChange, fieldKey, disabled, options,
           disabled={disabled}
           className={inputBase}
         >
-          <option value="">— Choisir —</option>
+          <option value="">Choisir</option>
           {!allowed.includes(current) && current !== "" && (
             <option value={current}>{labelOf(fieldKey, current)} (actuel)</option>
           )}
@@ -633,13 +633,13 @@ export function StructuredEditor({ value, onChange, fieldKey, disabled, options,
           ))}
         </select>
         {!parentVal && all.length > 0 && (
-          <p className="text-[11px] text-[#707070]">
+          <p className="text-[11px] text-muted-gray">
             Sélectionnez d'abord {getFieldLabel(dep.parentKeys[0])} pour filtrer cette liste.
           </p>
         )}
         {parentVal !== "" && allowed.length === 0 && (
-          <p className="text-[11px] font-semibold text-[#b64400]">
-            Aucune valeur pour ce parent — créez-la dans sa collection.
+          <p className="text-[11px] font-semibold text-launch-orange">
+            Aucune valeur pour ce parent : créez-la dans sa collection.
           </p>
         )}
       </div>
@@ -672,7 +672,7 @@ export function StructuredEditor({ value, onChange, fieldKey, disabled, options,
               disabled={disabled}
               onClick={() => onChange(s)}
               title={`Utiliser « ${s} »`}
-              className="rounded-lg border border-[#d6d6d6] bg-white px-2 py-1 text-[11px] font-semibold text-[#333336] transition hover:border-[#0077b3] hover:text-[#006a9e] disabled:opacity-50"
+              className="rounded-lg border border-fog bg-white px-2 py-1 text-[11px] font-semibold text-charcoal transition hover:border-signal-blue hover:text-link-deep disabled:opacity-50"
             >
               {s}
             </button>
@@ -723,14 +723,14 @@ export function StructuredEditor({ value, onChange, fieldKey, disabled, options,
       return (
         <div className="space-y-3">
           {value.map((item, index) => (
-            <div key={index} className="rounded-xl border border-[#d6d6d6] bg-[#f5f5f7] p-3">
+            <div key={index} className="rounded-xl border border-fog bg-studio-mist p-3">
               <div className="mb-2 flex items-center justify-between">
-                <p className="text-xs font-semibold text-[#5a5a5e]">Élément {index + 1}</p>
+                <p className="text-xs font-semibold text-iron-gray">Élément {index + 1}</p>
                 {!disabled && (
                   <button
                     type="button"
                     onClick={() => onChange(value.filter((_, itemIndex) => itemIndex !== index))}
-                    className="text-xs font-semibold text-[#C1443D] hover:text-[#A6362F]"
+                    className="text-xs font-semibold text-danger hover:text-danger-deep"
                   >
                     Supprimer
                   </button>
@@ -750,7 +750,7 @@ export function StructuredEditor({ value, onChange, fieldKey, disabled, options,
             <button
               type="button"
               onClick={() => onChange([...value, { fr: "", ar: "", en: "" }])}
-              className="rounded-xl border border-dashed border-[#0077b3]/50 px-3.5 py-2 text-xs font-semibold text-[#006a9e] hover:bg-[#0077b3]/5"
+              className="rounded-xl border border-dashed border-signal-blue/50 px-3.5 py-2 text-xs font-semibold text-link-deep hover:bg-signal-blue/5"
             >
               Ajouter une valeur
             </button>
@@ -771,10 +771,10 @@ export function StructuredEditor({ value, onChange, fieldKey, disabled, options,
           return (
           <div
             key={stable ? `${stable}-${index}` : index}
-            className="rounded-xl border border-[#d6d6d6] bg-[#f5f5f7] p-4"
+            className="rounded-xl border border-fog bg-studio-mist p-4"
           >
             <div className="mb-3 flex items-center justify-between">
-              <p className="text-xs font-semibold text-[#5a5a5e]">
+              <p className="text-xs font-semibold text-iron-gray">
                 Élément {index + 1}
               </p>
               {!disabled && (
@@ -783,7 +783,7 @@ export function StructuredEditor({ value, onChange, fieldKey, disabled, options,
                   onClick={() =>
                     onChange(value.filter((_entry, itemIndex) => itemIndex !== index))
                   }
-                  className="text-xs font-semibold text-[#C1443D] hover:text-[#A6362F]"
+                  className="text-xs font-semibold text-danger hover:text-danger-deep"
                 >
                   Supprimer
                 </button>
@@ -811,7 +811,7 @@ export function StructuredEditor({ value, onChange, fieldKey, disabled, options,
           <button
             type="button"
             onClick={() => onChange([...value, ""])}
-            className="rounded-xl border border-dashed border-[#0077b3]/50 px-3.5 py-2 text-xs font-semibold text-[#006a9e] hover:bg-[#0077b3]/5"
+            className="rounded-xl border border-dashed border-signal-blue/50 px-3.5 py-2 text-xs font-semibold text-link-deep hover:bg-signal-blue/5"
           >
             Ajouter une valeur
           </button>
@@ -835,7 +835,7 @@ export function StructuredEditor({ value, onChange, fieldKey, disabled, options,
               key={key}
               className={spanWide ? "sm:col-span-2" : "sm:col-span-1"}
             >
-              <span className="mb-1.5 block text-xs font-semibold text-[#333336]">
+              <span className="mb-1.5 block text-xs font-semibold text-charcoal">
                 {getFieldLabel(key)}
               </span>
               <StructuredEditor

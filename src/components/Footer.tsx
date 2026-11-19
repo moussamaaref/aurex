@@ -25,7 +25,7 @@ export default function Footer() {
   return (
     <>
     <NewsletterBlock />
-    <footer className="bg-[#f5f5f7] text-[#1d1d1f] border-t border-[#d6d6d6]">
+    <footer className="bg-studio-mist text-obsidian border-t border-fog">
       {/* Main footer */}
       <div className="max-w-7xl mx-auto px-6 pt-16 pb-12">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-8">
@@ -37,7 +37,7 @@ export default function Footer() {
                   {settings.logoIconUrl ? (
                     <img loading="lazy" decoding="async" src={settings.logoIconUrl} alt="icon" className="w-8 h-8 object-contain" />
                   ) : (
-                    <svg width="22" height="22" viewBox="0 0 20 20" fill="none">
+                    <svg aria-hidden="true" width="22" height="22" viewBox="0 0 20 20" fill="none">
                       <rect x="3" y="3" width="6" height="6" fill="white" opacity="0.9" />
                       <rect x="11" y="3" width="6" height="6" fill="white" opacity="0.5" />
                       <rect x="3" y="11" width="6" height="6" fill="white" opacity="0.5" />
@@ -59,7 +59,7 @@ export default function Footer() {
             </div>
 
             <p
-              className="text-sm text-[#474747] leading-relaxed max-w-xs"
+              className="text-sm text-slate leading-relaxed max-w-xs"
               style={{ fontFamily: "var(--font-sans)" }}
             >
               <span
@@ -72,8 +72,8 @@ export default function Footer() {
               {(() => {
                 const defaults = [
                   { label: "Facebook", icon: "f", href: "#" },
-                  { label: "Instagram", icon: "◎", href: "#" },
-                  { label: "YouTube", icon: "▶", href: "#" },
+                  { label: "Instagram", icon: "ig", href: "#" },
+                  { label: "YouTube", icon: "yt", href: "#" },
                   { label: "LinkedIn", icon: "in", href: "#" },
                 ]
                 const entries = Object.entries(settings.socialLinks)
@@ -92,7 +92,7 @@ export default function Footer() {
                     target={s.href.startsWith("http") ? "_blank" : undefined}
                     rel={s.href.startsWith("http") ? "noreferrer" : undefined}
                     aria-label={s.label}
-                    className="w-11 h-11 rounded-[10px] bg-white hover:bg-[var(--color-accent)] border border-[#d6d6d6] hover:border-[var(--color-accent)] flex items-center justify-center text-xs text-[#474747] hover:text-white transition-all"
+                    className="w-11 h-11 rounded-[10px] bg-white hover:bg-[var(--color-accent)] border border-fog hover:border-[var(--color-accent)] flex items-center justify-center text-xs text-slate hover:text-white transition-[color,background-color,border-color,opacity,transform,box-shadow]"
                     style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
                   >
                     {s.icon}
@@ -106,7 +106,7 @@ export default function Footer() {
           {footerLinks.map(({ group, links }) => (
             <div key={group}>
               <h4
-                className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#5a5a5e] mb-4"
+                className="text-xs font-bold text-iron-gray mb-4"
                 style={{ fontFamily: "var(--font-display)" }}
               >
                 {group}
@@ -116,7 +116,7 @@ export default function Footer() {
                   <li key={link.label}>
                     <Link
                       to={link.href}
-                      className="inline-flex min-h-11 items-center text-sm text-[#474747] hover:text-[#1d1d1f] transition-colors lg:min-h-0"
+                      className="inline-flex min-h-11 items-center text-sm text-slate hover:text-obsidian transition-colors lg:min-h-0"
                       style={{ fontFamily: "var(--font-sans)" }}
                     >
                       {link.label}
@@ -129,11 +129,11 @@ export default function Footer() {
         </div>
 
         {/* Contact info */}
-        <div className="mt-12 pt-8 border-t border-[#d6d6d6] grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="mt-12 pt-8 border-t border-fog grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
             {
               icon: (
-                <svg
+                <svg aria-hidden="true"
                   className="w-4 h-4"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -152,7 +152,7 @@ export default function Footer() {
             },
             {
               icon: (
-                <svg
+                <svg aria-hidden="true"
                   className="w-4 h-4"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -171,7 +171,7 @@ export default function Footer() {
             },
             {
               icon: (
-                <svg
+                <svg aria-hidden="true"
                   className="w-4 h-4"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -195,18 +195,18 @@ export default function Footer() {
             },
           ].filter((info) => !/x{2}/i.test(String(info.value))).map((info) => (
             <div key={info.label} className="flex items-start gap-3">
-              <div className="w-7 h-7 rounded-[10px] bg-white border border-[#d6d6d6] flex items-center justify-center text-[#006a9e] flex-shrink-0 mt-0.5">
+              <div className="w-7 h-7 rounded-[10px] bg-white border border-fog flex items-center justify-center text-link-deep flex-shrink-0 mt-0.5">
                 {info.icon}
               </div>
               <div>
                 <p
-                  className="text-xs text-[#5a5a5e] font-medium"
+                  className="text-xs text-iron-gray font-medium"
                   style={{ fontFamily: "var(--font-sans)" }}
                 >
                   {info.label}
                 </p>
                 <p
-                  className="text-sm text-[#1d1d1f] mt-0.5"
+                  className="text-sm text-obsidian mt-0.5"
                   style={{ fontFamily: "var(--font-sans)" }}
                 >
                   {info.value}
@@ -218,10 +218,10 @@ export default function Footer() {
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t border-[#d6d6d6] bg-white">
+      <div className="border-t border-fog bg-white">
         <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-2">
           <p
-            className="text-xs text-[#5a5a5e]"
+            className="text-xs text-iron-gray"
             style={{ fontFamily: "var(--font-sans)" }}
           >
             {t("footer.copyright")}
@@ -236,7 +236,7 @@ export default function Footer() {
               <a
                 key={label}
                 href="#"
-                className="inline-flex min-h-11 items-center text-xs text-[#5a5a5e] hover:text-[#1d1d1f] transition-colors"
+                className="inline-flex min-h-11 items-center text-xs text-iron-gray hover:text-obsidian transition-colors"
                 style={{ fontFamily: "var(--font-sans)" }}
               >
                 {label}

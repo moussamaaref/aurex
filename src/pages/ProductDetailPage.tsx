@@ -26,7 +26,7 @@ function EnergyBadge({ cls }: { cls: string }) {
           : "bg-yellow-500"
   return (
     <span
-      className={`${color} text-white text-xs font-bold px-2 py-1 rounded-[10px] font-display tracking-wider shadow-sm`}
+      className={`${color} text-white text-xs font-bold px-2 py-1 rounded-[10px] font-display shadow-sm`}
     >
       {cls}
     </span>
@@ -39,9 +39,9 @@ function ProductVideo({ url, poster, title }: { url: string; poster: string; tit
   const vimeo = url.match(/vimeo\.com\/(?:video\/)?(\d+)/)
   const embed = yt ? `https://www.youtube-nocookie.com/embed/${yt[1]}` : vimeo ? `https://player.vimeo.com/video/${vimeo[1]}` : null
   return embed ? (
-    <iframe src={embed} title={title} loading="lazy" allowFullScreen className="aspect-video w-full rounded-[10px] border border-[#d6d6d6]" />
+    <iframe src={embed} title={title} loading="lazy" allowFullScreen className="aspect-video w-full rounded-[10px] border border-fog" />
   ) : (
-    <video src={url} poster={poster} controls preload="metadata" playsInline className="aspect-video w-full rounded-[10px] border border-[#d6d6d6] bg-black" />
+    <video src={url} poster={poster} controls preload="metadata" playsInline className="aspect-video w-full rounded-[10px] border border-fog bg-black" />
   )
 }
 
@@ -150,18 +150,18 @@ export default function ProductDetailPage() {
           : "bg-[var(--color-accent)] text-white"
 
   return (
-    <div className="min-h-screen bg-[#f5f5f7] pb-24 pt-24 lg:pb-0">
+    <div className="min-h-screen bg-studio-mist pb-24 pt-24 lg:pb-0">
       {/* ══ Breadcrumb ══ */}
-      <div className="border-b border-[#d6d6d6] bg-white">
+      <div className="border-b border-fog bg-white">
         <div className="mx-auto max-w-7xl px-4 py-3.5 sm:px-6">
           <nav
-            className="flex flex-wrap items-center gap-1.5 text-xs text-[#5a5a5e]"
+            className="flex flex-wrap items-center gap-1.5 text-xs text-iron-gray"
             aria-label="Breadcrumb"
           >
             {crumbs.map((crumb, i) => (
               <span key={`${crumb.label}-${i}`} className="flex items-center gap-1.5">
                 {i > 0 && (
-                  <svg className="h-3 w-3 text-[#d6d6d6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <svg aria-hidden="true" className="h-3 w-3 text-fog" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                   </svg>
                 )}
@@ -174,7 +174,7 @@ export default function ProductDetailPage() {
                 )}
               </span>
             ))}
-            <svg className="h-3 w-3 text-[#d6d6d6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg aria-hidden="true" className="h-3 w-3 text-fog" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
             </svg>
             <span className="font-medium text-[var(--color-primary)]">{ml(product.name)}</span>
@@ -191,7 +191,7 @@ export default function ProductDetailPage() {
               className={`overflow-hidden bg-white shadow-sm ${
                 isImageFullscreen
                   ? "fixed inset-0 z-[70] flex h-[100dvh] w-screen items-center justify-center rounded-none border-0"
-                  : "relative aspect-square rounded-[28px] border border-[#d6d6d6]"
+                  : "relative aspect-square rounded-[28px] border border-fog"
               }`}
             >
               <div
@@ -238,7 +238,7 @@ export default function ProductDetailPage() {
                 onClick={() => setIsImageFullscreen((value) => !value)}
                 className="absolute right-4 top-4 rounded-[10px] bg-white/90 p-3 text-[var(--color-primary)] shadow-lg backdrop-blur transition-colors hover:bg-[var(--color-accent)] hover:text-white"
               >
-                <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <svg aria-hidden="true" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                   {isImageFullscreen ? (
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 9 4 4m0 0v4m0-4h4m7 7 5 5m0 0v-4m0 4h-4" />
                   ) : (
@@ -250,7 +250,7 @@ export default function ProductDetailPage() {
                 {product.badges.map((badge) => (
                   <span
                     key={ml(badge)}
-                    className={`rounded-[10px] px-2.5 py-1.5 text-[10px] font-bold tracking-wider shadow-sm ${badgeStyle(ml(badge))}`}
+                    className={`rounded-[10px] px-2.5 py-1.5 text-xs font-bold shadow-sm ${badgeStyle(ml(badge))}`}
                   >
                     {ml(badge)}
                   </span>
@@ -263,10 +263,10 @@ export default function ProductDetailPage() {
                   <button
                     key={i}
                     onClick={() => selectImage(i)}
-                    className={`relative aspect-square overflow-hidden rounded-[10px] border-2 bg-white transition-all ${
+                    className={`relative aspect-square overflow-hidden rounded-[10px] border-2 bg-white transition-[color,background-color,border-color,opacity,transform,box-shadow] ${
                       selectedImage === i
                         ? "border-[var(--color-accent)] shadow-md ring-2 ring-blue-100"
-                        : "border-[#d6d6d6] hover:border-[#d6d6d6] hover:shadow-sm"
+                        : "border-fog hover:border-fog hover:shadow-sm"
                     }`}
                   >
                     <img loading="lazy" decoding="async" src={img} alt={`${ml(product.name)} ${i + 1}`} className="h-full w-full object-cover" />
@@ -280,23 +280,23 @@ export default function ProductDetailPage() {
           <Reveal variant="right" delay={120}>
           <div>
             <div className="mb-4 flex flex-wrap items-center gap-2">
-              {facts.family && <span className="rounded-full border border-[#d6d6d6] bg-[#f5f5f7] px-2.5 py-1 text-xs font-semibold text-[#333336]">{facts.family}</span>}
-              {facts.subFamily && <span className="rounded-full border border-[#d6d6d6] bg-[#f5f5f7] px-2.5 py-1 text-xs font-semibold text-[#333336]">{facts.subFamily}</span>}
+              {facts.family && <span className="rounded-full border border-fog bg-studio-mist px-2.5 py-1 text-xs font-semibold text-charcoal">{facts.family}</span>}
+              {facts.subFamily && <span className="rounded-full border border-fog bg-studio-mist px-2.5 py-1 text-xs font-semibold text-charcoal">{facts.subFamily}</span>}
               {energyClassOf(product) && <EnergyBadge cls={energyClassOf(product)} />}
               {/* Wi-Fi / Bluetooth : uniquement si le produit les possède réellement */}
               {facts.connectivity.map((c) => (
-                <span key={c} className="flex items-center gap-1.5 rounded-full border border-[#d6d6d6] bg-[#f5f5f7] px-2.5 py-1 text-xs font-semibold text-[#006a9e]">
+                <span key={c} className="flex items-center gap-1.5 rounded-full border border-fog bg-studio-mist px-2.5 py-1 text-xs font-semibold text-link-deep">
                   {c}
                 </span>
               ))}
             </div>
-            <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-[#5a5a5e]">
+            <p className="mb-2 font-mono text-xs text-iron-gray">
               {product.reference}
             </p>
             <h1 className="text-3xl font-semibold leading-tight tracking-tight text-[var(--color-primary)] lg:text-4xl font-display">
               {ml(product.name)}
             </h1>
-            <p className="mt-4 text-sm leading-relaxed text-[#333336]">
+            <p className="mt-4 text-sm leading-relaxed text-charcoal">
               {ml(product.short_description) || ml(product.description)}
             </p>
 
@@ -313,9 +313,9 @@ export default function ProductDetailPage() {
               ]
                 .filter(Boolean)
                 .map((spec) => (
-                  <div key={(spec as { label: string }).label} className="rounded-[10px] border border-[#d6d6d6] bg-white p-3.5">
-                    <p className="font-display text-[10px] uppercase tracking-widest text-[#5a5a5e]">{(spec as { label: string }).label}</p>
-                    <p className="mt-1 text-sm font-semibold text-[#1d1d1f]">{(spec as { value: string }).value}</p>
+                  <div key={(spec as { label: string }).label} className="rounded-[10px] border border-fog bg-white p-3.5">
+                    <p className="font-display text-xs text-iron-gray">{(spec as { label: string }).label}</p>
+                    <p className="mt-1 text-sm font-semibold text-obsidian">{(spec as { value: string }).value}</p>
                   </div>
                 ))}
             </div>
@@ -323,14 +323,14 @@ export default function ProductDetailPage() {
             {/* Technologies */}
             {product.technologies.length > 0 && (
               <div className="mt-5">
-                <p className="mb-2.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#5a5a5e] font-display">
+                <p className="mb-2.5 text-xs font-bold text-iron-gray font-display">
                   {t("productDetail.technologiesTitle")}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {product.technologies.map((tech) => (
                     <span
                       key={ml(tech)}
-                      className="rounded-full border border-[#d6d6d6] bg-[#f5f5f7] px-3.5 py-1.5 text-xs font-semibold text-[var(--color-primary)] transition-colors hover:border-blue-200 hover:bg-[#f5f5f7]"
+                      className="rounded-full border border-fog bg-studio-mist px-3.5 py-1.5 text-xs font-semibold text-[var(--color-primary)] transition-colors hover:border-blue-200 hover:bg-studio-mist"
                     >
                       {ml(tech)}
                     </span>
@@ -340,14 +340,14 @@ export default function ProductDetailPage() {
             )}
 
             {/* CTA */}
-            <div className="mt-8 rounded-[28px] border border-[#d6d6d6] bg-white p-6 shadow-sm">
+            <div className="mt-8 rounded-[28px] border border-fog bg-white p-6 shadow-sm">
               <div className="flex flex-wrap gap-3">
                 {!hideWhereToBuy && (
                   <Link
                     to="/distributeurs"
-                    className="flex flex-1 items-center justify-center gap-2 rounded-[10px] bg-[var(--color-primary)] px-6 py-3.5 text-sm font-bold text-white shadow-md shadow-blue-900/20 transition-all hover:-translate-y-0.5 hover:bg-[#00628f] hover:shadow-lg"
+                    className="flex flex-1 items-center justify-center gap-2 rounded-[10px] bg-[var(--color-primary)] px-6 py-3.5 text-sm font-bold text-white shadow-md shadow-blue-900/20 transition-[color,background-color,border-color,opacity,transform,box-shadow] hover:-translate-y-0.5 hover:bg-accent-hover hover:shadow-lg"
                   >
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <svg aria-hidden="true" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
@@ -362,9 +362,9 @@ export default function ProductDetailPage() {
               </div>
               <Link
                 to="/support#demande"
-                className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-[10px] px-2 py-1 text-xs font-medium text-[#474747] transition-colors hover:text-[var(--color-primary)]"
+                className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-[10px] px-2 py-1 text-xs font-medium text-slate transition-colors hover:text-[var(--color-primary)]"
               >
-                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg aria-hidden="true" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
                 {p(docUi.question)}
@@ -378,9 +378,9 @@ export default function ProductDetailPage() {
         <div className="mt-16 space-y-6">
           {ml(product.description) && product.short_description && (
             <Reveal>
-              <section aria-labelledby="pd-presentation" className="rounded-[28px] border border-[#d6d6d6] bg-white p-6 shadow-sm sm:p-8">
-                <h2 id="pd-presentation" className="text-xl font-semibold text-[#1d1d1f] font-display">{p(specUi.presentation)}</h2>
-                <p className="mt-3 max-w-3xl whitespace-pre-line text-sm leading-relaxed text-[#333336]">{ml(product.description)}</p>
+              <section aria-labelledby="pd-presentation" className="rounded-[28px] border border-fog bg-white p-6 shadow-sm sm:p-8">
+                <h2 id="pd-presentation" className="text-xl font-semibold text-obsidian font-display">{p(specUi.presentation)}</h2>
+                <p className="mt-3 max-w-3xl whitespace-pre-line text-sm leading-relaxed text-charcoal">{ml(product.description)}</p>
               </section>
             </Reveal>
           )}
@@ -388,9 +388,9 @@ export default function ProductDetailPage() {
           {/* Fonctionnalités : ce que fait l'appareil (icône + court texte), distinctes des spécifications */}
           {product.features.filter((feat) => ml(feat)).length > 0 && (
             <Reveal>
-              <section aria-labelledby="pd-features" className="rounded-[28px] border border-[#d6d6d6] bg-white p-6 shadow-sm sm:p-8">
-                <h2 id="pd-features" className="text-xl font-semibold text-[#1d1d1f] font-display">{p(specUi.features)}</h2>
-                <p className="mt-1 text-sm text-[#5a5a5e]">{p(specUi.featuresLead)}</p>
+              <section aria-labelledby="pd-features" className="rounded-[28px] border border-fog bg-white p-6 shadow-sm sm:p-8">
+                <h2 id="pd-features" className="text-xl font-semibold text-obsidian font-display">{p(specUi.features)}</h2>
+                <p className="mt-1 text-sm text-iron-gray">{p(specUi.featuresLead)}</p>
                 <ul className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                   {product.features
                     .map((feat) => ml(feat))
@@ -400,15 +400,15 @@ export default function ProductDetailPage() {
                       const title = m ? m[1] : text
                       const detail = m ? m[2] : ""
                       return (
-                        <li key={text} className="flex items-start gap-3.5 rounded-[20px] bg-[#f5f5f7] p-4">
-                          <span className="mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-white text-[#006a9e]" aria-hidden="true">
-                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <li key={text} className="flex items-start gap-3.5 rounded-[20px] bg-studio-mist p-4">
+                          <span className="mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-white text-link-deep" aria-hidden="true">
+                            <svg aria-hidden="true" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                             </svg>
                           </span>
                           <span>
-                            <span className="block text-sm font-semibold leading-snug text-[#1d1d1f]">{title}</span>
-                            {detail && <span className="mt-1 block text-[13px] leading-relaxed text-[#474747]">{detail}</span>}
+                            <span className="block text-sm font-semibold leading-snug text-obsidian">{title}</span>
+                            {detail && <span className="mt-1 block text-[13px] leading-relaxed text-slate">{detail}</span>}
                           </span>
                         </li>
                       )
@@ -421,13 +421,13 @@ export default function ProductDetailPage() {
           {/* Spécifications techniques : champs standard, uniquement ceux qui s'appliquent */}
           {specRows.length > 0 && (
             <Reveal>
-              <section aria-labelledby="pd-specs" className="rounded-[28px] border border-[#d6d6d6] bg-white p-6 shadow-sm sm:p-8">
-                <h2 id="pd-specs" className="text-xl font-semibold text-[#1d1d1f] font-display">{p(specUi.specs)}</h2>
-                <dl className="mt-6 overflow-hidden rounded-[10px] border border-[#d6d6d6] text-sm">
+              <section aria-labelledby="pd-specs" className="rounded-[28px] border border-fog bg-white p-6 shadow-sm sm:p-8">
+                <h2 id="pd-specs" className="text-xl font-semibold text-obsidian font-display">{p(specUi.specs)}</h2>
+                <dl className="mt-6 overflow-hidden rounded-[10px] border border-fog text-sm">
                   {specRows.map((row, i) => (
-                    <div key={row.label + i} className={`grid grid-cols-1 gap-1 px-5 py-3.5 sm:grid-cols-2 sm:gap-4 ${i % 2 === 0 ? "bg-white" : "bg-[#f5f5f7]/70"} ${i > 0 ? "border-t border-[#d6d6d6]" : ""}`}>
-                      <dt className="font-medium text-[#474747]">{row.label}</dt>
-                      <dd className="font-semibold text-[#1d1d1f]">{row.value}</dd>
+                    <div key={row.label + i} className={`grid grid-cols-1 gap-1 px-5 py-3.5 sm:grid-cols-2 sm:gap-4 ${i % 2 === 0 ? "bg-white" : "bg-studio-mist/70"} ${i > 0 ? "border-t border-fog" : ""}`}>
+                      <dt className="font-medium text-slate">{row.label}</dt>
+                      <dd className="font-semibold text-obsidian">{row.value}</dd>
                     </div>
                   ))}
                 </dl>
@@ -437,13 +437,13 @@ export default function ProductDetailPage() {
 
           {(product.video || product.view360) && (
             <Reveal>
-              <section aria-labelledby="pd-media" className="space-y-6 rounded-[28px] border border-[#d6d6d6] bg-white p-6 shadow-sm sm:p-8">
-                <h2 id="pd-media" className="text-xl font-semibold text-[#1d1d1f] font-display">{p(docUi.media)}</h2>
+              <section aria-labelledby="pd-media" className="space-y-6 rounded-[28px] border border-fog bg-white p-6 shadow-sm sm:p-8">
+                <h2 id="pd-media" className="text-xl font-semibold text-obsidian font-display">{p(docUi.media)}</h2>
                 {product.video && <ProductVideo url={product.video} poster={product.image} title={ml(product.name)} />}
                 {product.view360 && (
                   <div>
-                    <p className="mb-2 text-sm font-semibold text-[#1d1d1f]">{p(docUi.view360)}</p>
-                    <iframe src={product.view360} title={`${p(docUi.view360)} — ${ml(product.name)}`} loading="lazy" className="aspect-video w-full rounded-[10px] border border-[#d6d6d6]" allowFullScreen />
+                    <p className="mb-2 text-sm font-semibold text-obsidian">{p(docUi.view360)}</p>
+                    <iframe src={product.view360} title={`${p(docUi.view360)} — ${ml(product.name)}`} loading="lazy" className="aspect-video w-full rounded-[10px] border border-fog" allowFullScreen />
                   </div>
                 )}
               </section>
@@ -452,8 +452,8 @@ export default function ProductDetailPage() {
 
           {(product.documents ?? []).filter((d) => d.url).length > 0 && (
             <Reveal>
-              <section aria-labelledby="pd-docs" className="rounded-[28px] border border-[#d6d6d6] bg-white p-6 shadow-sm sm:p-8">
-                <h2 id="pd-docs" className="text-xl font-semibold text-[#1d1d1f] font-display">{p(specUi.documents)}</h2>
+              <section aria-labelledby="pd-docs" className="rounded-[28px] border border-fog bg-white p-6 shadow-sm sm:p-8">
+                <h2 id="pd-docs" className="text-xl font-semibold text-obsidian font-display">{p(specUi.documents)}</h2>
                 <div className="mt-6 grid gap-3 md:grid-cols-2">
                   {(product.documents ?? [])
                     .filter((d) => d.url)
@@ -464,11 +464,11 @@ export default function ProductDetailPage() {
                         target="_blank"
                         rel="noreferrer"
                         download
-                        className="flex items-center justify-between gap-3 rounded-[10px] border border-[#d6d6d6] bg-white p-4 transition-colors hover:bg-[#fafafc]"
+                        className="flex items-center justify-between gap-3 rounded-[10px] border border-fog bg-white p-4 transition-colors hover:bg-paper-frost"
                       >
-                        <span className="text-sm font-semibold text-[#1d1d1f]">{doc.label ? ml(doc.label) : p(docUi.types[doc.type])}</span>
-                        <span className="flex items-center gap-1.5 text-sm font-semibold text-[#006a9e]">
-                          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <span className="text-sm font-semibold text-obsidian">{doc.label ? ml(doc.label) : p(docUi.types[doc.type])}</span>
+                        <span className="flex items-center gap-1.5 text-sm font-semibold text-link-deep">
+                          <svg aria-hidden="true" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                           </svg>
                           {t("common.download")}
@@ -486,7 +486,7 @@ export default function ProductDetailPage() {
           <div className="mt-14">
             <div className="mb-7 flex items-end justify-between">
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#006a9e] font-display">
+                <p className="text-xs font-bold text-link-deep font-display">
               {facts.range || facts.subFamily || categoryLabel}
                 </p>
                 <h2 className="mt-1.5 text-2xl font-bold text-[var(--color-primary)] font-display">
@@ -496,10 +496,10 @@ export default function ProductDetailPage() {
               {category && (
                 <Link
                   to={`/produits/${category.slug}`}
-                  className="hidden items-center gap-1.5 text-sm font-semibold text-[#006a9e] transition-all hover:gap-2.5 sm:flex"
+                  className="hidden items-center gap-1.5 text-sm font-semibold text-link-deep transition-[color,background-color,border-color,opacity,transform,box-shadow] hover:gap-2.5 sm:flex"
                 >
                   {t("common.viewAll")}
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <svg aria-hidden="true" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12l-7.5 7.5M21 12H3" />
                   </svg>
                 </Link>
@@ -510,7 +510,7 @@ export default function ProductDetailPage() {
                 <Reveal key={p.id} delay={Math.min(ri, 2) * 80} className="h-full">
                 <Link
                   to={productUrl(p)}
-                  className="group overflow-hidden rounded-[28px] border border-[#d6d6d6] bg-white transition-all duration-300 hover:-translate-y-1 hover:border-[#d6d6d6] hover:shadow-xl hover:shadow-blue-900/10 h-full block"
+                  className="group overflow-hidden rounded-[28px] border border-fog bg-white transition-[color,background-color,border-color,opacity,transform,box-shadow] duration-300 hover:-translate-y-1 hover:border-fog hover:shadow-xl hover:shadow-blue-900/10 h-full block"
                 >
                   <div className="aspect-video overflow-hidden bg-white">
                     <img loading="lazy" decoding="async"
@@ -520,8 +520,8 @@ export default function ProductDetailPage() {
                     />
                   </div>
                   <div className="p-4">
-                    <p className="font-mono text-[10px] uppercase tracking-widest text-[#5a5a5e]">{p.reference}</p>
-                    <h3 className="mt-1 text-sm font-semibold text-[#1d1d1f] transition-colors group-hover:text-[var(--color-primary)]">
+                    <p className="font-mono text-xs text-iron-gray">{p.reference}</p>
+                    <h3 className="mt-1 text-sm font-semibold text-obsidian transition-colors group-hover:text-[var(--color-primary)]">
                       {ml(p.name)}
                     </h3>
                   </div>
@@ -534,10 +534,10 @@ export default function ProductDetailPage() {
       </div>
 
       {/* Barre d'action fixe : le chemin d'achat reste visible pendant la lecture de la fiche (mobile / tablette) */}
-      <div className="no-print fixed inset-x-0 bottom-0 z-40 border-t border-[#d6d6d6] bg-white/95 p-3 backdrop-blur lg:hidden">
+      <div className="no-print fixed inset-x-0 bottom-0 z-40 border-t border-fog bg-white/95 p-3 backdrop-blur lg:hidden">
         <Link
           to="/distributeurs"
-          className="flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[var(--color-accent)] text-sm font-semibold text-white transition-colors hover:bg-[#00628f] active:scale-[0.98]"
+          className="flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[var(--color-accent)] text-sm font-semibold text-white transition-colors hover:bg-accent-hover active:scale-[0.98]"
         >
           {p(docUi.findDistributor)}
         </Link>

@@ -1,4 +1,8 @@
+/* Hallmark · checked: 2026-11-19 · genre: modern-minimal (inferred)
+ * floor: polish pass on 38 files · fixed: 10a, 19, 30a, 33, 34, 48, 54, 67 · structural: 6b, 8, 44, 58 printed to the owner
+ * built: the project · redesign: polish · v2.0.0 */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600&display=swap');
 @import 'tailwindcss';
 @import 'leaflet/dist/leaflet.css';
 
@@ -11,7 +15,7 @@
 
   /* Marque remappée sur le système Apple : encre obsidian + action bleue */
   --color-primary: #1d1d1f;
-  --color-primary-dark: #000000;
+  --color-primary-dark: #0b0b0d;
   --color-primary-light: #333336;
 
   --color-accent: #0077b3;
@@ -36,7 +40,7 @@
   --color-charcoal: #333336;
   --color-mist: #e2e2e5;
   --color-fog: #d6d6d6;
-  --color-void: #000000;
+  --color-void: #0b0b0d;
   --color-signal-blue: #0077b3;
   --color-deep-link-blue: #0077b3;
   --color-pulse-green: #03aa49;
@@ -53,6 +57,31 @@
   --color-control-gray: #e6e6e8;
   --color-steel: #86868b;
   --color-launch-orange: #b64400;
+
+
+  /* Tokens ajoutés (polish) : teintes de l'interface auparavant en valeurs littérales */
+  --color-link-deep: #006a9e;
+  --color-muted-gray: #707070;
+  --color-sky: #4db3e6;
+  --color-surface-hover: #ececf0;
+  --color-blue-wash: #f0f7fb;
+  --color-orange-wash: #fdf1e8;
+  --color-green-wash: #e6f4ec;
+  --color-danger: #c1443d;
+  --color-danger-deep: #a6362f;
+  --color-danger-wash: #fbeaea;
+  --color-danger-line: #f5d8d6;
+  --color-sand: #efead8;
+  --color-sky-soft: #a9c4ff;
+  --color-brand-sky: #168bc3;
+  --color-blue-line: #dce6f8;
+  --color-surface-deep: #e8e8ed;
+  --color-blue-wash-deep: #e4ecfb;
+  --color-map-water: #dceaf5;
+  --color-amber-deep: #8a672e;
+  --color-shadow-navy: #0a2342;
+  --color-shadow-slate: #0f172a;
+  --font-rtl: 'Noto Sans Arabic', 'Segoe UI', Tahoma, sans-serif;
 
   /* Échelle typographique */
   --text-caption: 12px;
@@ -93,8 +122,8 @@ html, body, #root {
 
 body {
   font-family: var(--font-sans);
-  background-color: #f5f5f7;
-  color: #1d1d1f;
+  background-color: var(--color-studio-mist);
+  color: var(--color-obsidian);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -109,13 +138,13 @@ button, a {
 }
 
 button:focus-visible, a:focus-visible, input:focus-visible {
-  outline: 3px solid rgba(0, 119, 179, 0.45);
+  outline: 3px solid color-mix(in srgb, var(--color-signal-blue) 45%, transparent);
   outline-offset: 3px;
 }
 
 ::selection {
-  background: #0077b3;
-  color: #ffffff;
+  background: var(--color-signal-blue);
+  color: var(--color-paper-white);
 }
 
 /* Élévation Apple : aucune ombre portée — contraste de surfaces + filets 1px.
@@ -133,7 +162,7 @@ button:focus-visible, a:focus-visible, input:focus-visible {
   scrollbar-color: transparent transparent;
 }
 *:hover {
-  scrollbar-color: rgba(29, 29, 31, 0.25) transparent;
+  scrollbar-color: color-mix(in srgb, var(--color-obsidian) 25%, transparent) transparent;
 }
 
 .aurex-map-marker {
@@ -145,15 +174,15 @@ button:focus-visible, a:focus-visible, input:focus-visible {
   display: block;
   width: 18px;
   height: 18px;
-  border: 4px solid #fff;
+  border: 4px solid var(--color-paper-white);
   border-radius: 9999px;
-  background: #0077b3;
-  box-shadow: 0 3px 10px rgba(29, 29, 31, 0.35);
+  background: var(--color-signal-blue);
+  box-shadow: 0 3px 10px color-mix(in srgb, var(--color-obsidian) 35%, transparent);
 }
 
 .aurex-map-fullscreen:fullscreen {
   min-height: 100vh;
-  width: 100vw;
+  width: 100%;
   border-radius: 0;
 }
 
@@ -202,13 +231,13 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 
 /* RTL support for Arabic */
 [dir="rtl"] body {
-  font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+  font-family: var(--font-rtl);
 }
 [dir="rtl"] .font-display {
-  font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+  font-family: var(--font-rtl);
 }
 [dir="rtl"] .font-sans {
-  font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+  font-family: var(--font-rtl);
 }
 [dir="rtl"] .space-y-2 > * + * { margin-top: 0.5rem; }
 [dir="rtl"] .space-y-3 > * + * { margin-top: 0.75rem; }
@@ -219,7 +248,7 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 
 @media print {
   body {
-    background: #ffffff;
+    background: var(--color-paper-white);
   }
   header,
   footer,

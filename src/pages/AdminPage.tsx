@@ -701,23 +701,23 @@ export default function AdminPage() {
     !sessionRole
 
   return (
-    <div className="min-h-screen bg-[#f5f5f7] px-4 pb-16 pt-6 sm:px-6">
+    <div className="min-h-screen bg-studio-mist px-4 pb-16 pt-6 sm:px-6">
       <div className="mx-auto max-w-7xl">
         <header className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
-            <p className="flex items-center gap-2 text-xs font-semibold text-[#006a9e]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#0077b3]" />
-              AUREX — Console
+            <p className="flex items-center gap-2 text-xs font-semibold text-link-deep">
+              <span className="h-1.5 w-1.5 rounded-full bg-signal-blue" />
+              AUREX Console
             </p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-[#1d1d1f]">
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-obsidian">
               Console AUREX
             </h1>
-            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-[#474747]">
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate">
               Catalogue, Stories produit, actualités, FAQ, distributeurs, demandes de support et paramètres du site.
             </p>
             {isViewer && (
-              <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-[#fdf1e8] px-3 py-1 text-xs font-semibold text-[#b64400]">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#b64400]" /> Mode lecture seule — rôle
+              <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-orange-wash px-3 py-1 text-xs font-semibold text-launch-orange">
+                <span className="h-1.5 w-1.5 rounded-full bg-launch-orange" /> Mode lecture seule : rôle
                 viewer
               </p>
             )}
@@ -732,7 +732,7 @@ export default function AdminPage() {
               />
               {sessionUser && (
                 <>
-                  <span className="max-w-56 truncate text-xs text-[#5a5a5e]">
+                  <span className="max-w-56 truncate text-xs text-iron-gray">
                     {sessionUser.email ?? sessionUser.id}
                   </span>
                   <button type="button" onClick={() => void signOut()} className={btnGhostSmall}>
@@ -746,10 +746,10 @@ export default function AdminPage() {
                 aria-live="polite"
                 className={`rounded-xl px-4 py-3 text-xs font-medium ${
                   notice.kind === "error"
-                    ? "bg-[#FBEAEA] text-[#C1443D]"
+                    ? "bg-danger-wash text-danger"
                     : notice.kind === "success"
-                      ? "bg-[#E6F4EC] text-[#03873a]"
-                      : "bg-[#f0f7fb] text-[#1d1d1f]"
+                      ? "bg-green-wash text-deep-green"
+                      : "bg-blue-wash text-obsidian"
                 }`}
               >
                 {notice.text}
@@ -762,10 +762,10 @@ export default function AdminPage() {
           gate
         ) : (
           <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
-            <aside className="h-fit rounded-2xl bg-[#1d1d1f] p-2 shadow-[0_1px_2px_rgba(10,35,66,0.2),0_20px_40px_-24px_rgba(10,35,66,0.65)] lg:sticky lg:top-6">
+            <aside className="h-fit rounded-2xl bg-obsidian p-2 shadow-[0_1px_2px_color-mix(in_srgb,var(--color-shadow-navy)_20%,transparent),0_20px_40px_-24px_color-mix(in_srgb,var(--color-shadow-navy)_65%,transparent)] lg:sticky lg:top-6">
               <div className="mb-2 px-3 pb-3 pt-2">
                 <p className="text-base font-semibold tracking-tight text-white">AUREX</p>
-                <p className="text-[11px] font-medium text-[#006a9e]">Console d'administration</p>
+                <p className="text-[11px] font-medium text-link-deep">Console d'administration</p>
               </div>
               {tabs.map(([id, label]) => {
                 const isActive = activeTab === id
@@ -776,11 +776,11 @@ export default function AdminPage() {
                     onClick={() => setActiveTab(id)}
                     className={`mb-1 flex w-full items-center gap-2.5 rounded-xl border-l-2 px-3.5 py-2.5 text-left text-sm font-medium transition ${
                       isActive
-                        ? "border-[#0077b3] bg-white/10 text-white"
+                        ? "border-signal-blue bg-white/10 text-white"
                         : "border-transparent text-white/60 hover:border-white/20 hover:bg-white/5 hover:text-white/90"
                     }`}
                   >
-                    <span className={`text-xs ${isActive ? "text-[#006a9e]" : "text-white/40"}`}>
+                    <span className={`text-xs ${isActive ? "text-link-deep" : "text-white/40"}`}>
                       {icons[id] ?? "•"}
                     </span>{" "}
                     {label}

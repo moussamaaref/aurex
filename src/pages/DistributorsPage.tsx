@@ -166,35 +166,35 @@ export default function DistributorsPage() {
   const hasFilters = wilaya !== "" || commune !== ""
 
   return (
-    <div className="min-h-screen bg-[#f5f5f7] pt-24">
+    <div className="min-h-screen bg-studio-mist pt-24">
       {/* ══ Header — galerie blanche ══ */}
-      <section className="relative overflow-hidden bg-white px-6 pb-14 pt-14 border-b border-[#d6d6d6]">
+      <section className="relative overflow-hidden bg-white px-6 pb-14 pt-14 border-b border-fog">
         <div className="relative mx-auto max-w-7xl">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-[#006a9e] font-display">
+          <p className="text-xs font-semibold text-link-deep font-display">
             {t("distributors.eyebrow")}
           </p>
-          <h1 className="mt-3 text-5xl font-semibold lg:text-6xl font-display text-[#1d1d1f] tracking-tight">
+          <h1 className="mt-3 text-5xl font-semibold lg:text-6xl font-display text-obsidian tracking-tight">
             {t("distributors.title")}
           </h1>
-          <p className="mt-4 max-w-2xl text-[17px] leading-relaxed text-[#333336] font-sans">
+          <p className="mt-4 max-w-2xl text-[17px] leading-relaxed text-charcoal font-sans">
             {t("distributors.description")}
           </p>
 
           {/* Stats */}
-          <div className="mt-8 flex flex-wrap gap-8 border-t border-[#d6d6d6] pt-6">
+          <div className="mt-8 flex flex-wrap gap-8 border-t border-fog pt-6">
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-semibold font-display text-[#1d1d1f] tracking-tight">{distributors.length}</span>
-              <span className="text-xs font-medium text-[#5a5a5e]">{t("distributors.statsPoints")}</span>
+              <span className="text-3xl font-semibold font-display text-obsidian tracking-tight">{distributors.length}</span>
+              <span className="text-xs font-medium text-iron-gray">{t("distributors.statsPoints")}</span>
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-semibold font-display text-[#1d1d1f] tracking-tight">{wilayas.length}</span>
-              <span className="text-xs font-medium text-[#5a5a5e]">{t("distributors.statsWilayas")}</span>
+              <span className="text-3xl font-semibold font-display text-obsidian tracking-tight">{wilayas.length}</span>
+              <span className="text-xs font-medium text-iron-gray">{t("distributors.statsWilayas")}</span>
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-semibold font-display text-[#1d1d1f] tracking-tight">
+              <span className="text-3xl font-semibold font-display text-obsidian tracking-tight">
                 {distributors.filter((d) => d.email).length}
               </span>
-              <span className="text-xs font-medium text-[#5a5a5e]">{t("distributors.statsAgencies")}</span>
+              <span className="text-xs font-medium text-iron-gray">{t("distributors.statsAgencies")}</span>
             </div>
           </div>
         </div>
@@ -202,14 +202,14 @@ export default function DistributorsPage() {
 
       <main className="mx-auto max-w-7xl px-4 pb-16 sm:px-6">
         {/* ══ Filtres (carte flottante) ══ */}
-        <div className="relative z-10 mt-6 mb-6 rounded-[28px] border border-[#d6d6d6] bg-white p-4 sm:p-5">
+        <div className="relative z-10 mt-6 mb-6 rounded-[28px] border border-fog bg-white p-4 sm:p-5">
           <div className="grid gap-4 lg:grid-cols-[1fr_1fr_auto_auto]">
-            <label className="text-[11px] font-bold uppercase tracking-wider text-[#5a5a5e] font-sans">
+            <label className="text-xs font-bold text-iron-gray font-sans">
               {t("distributors.wilaya")}
               <select
                 value={wilaya}
                 onChange={(e) => setWilaya(e.target.value)}
-                className="mt-2 w-full rounded-[10px] border border-[#d6d6d6] bg-[#f5f5f7]/60 px-3.5 py-3 text-sm font-medium normal-case tracking-normal text-[#333336] outline-none transition focus:border-[var(--color-accent)] focus:bg-white focus:ring-4 focus:ring-blue-100 font-sans"
+                className="mt-2 w-full rounded-[10px] border border-fog bg-studio-mist/60 px-3.5 py-3 text-sm font-medium normal-case tracking-normal text-charcoal outline-none transition focus:border-[var(--color-accent)] focus:bg-white focus:ring-4 focus:ring-blue-100 font-sans"
               >
                 <option value="">{t("distributors.allWilayas")}</option>
                 {wilayas.map((item) => (
@@ -217,12 +217,12 @@ export default function DistributorsPage() {
                 ))}
               </select>
             </label>
-            <label className="text-[11px] font-bold uppercase tracking-wider text-[#5a5a5e] font-sans">
+            <label className="text-xs font-bold text-iron-gray font-sans">
               {t("distributors.commune")}
               <select
                 value={commune}
                 onChange={(e) => setCommune(e.target.value)}
-                className="mt-2 w-full rounded-[10px] border border-[#d6d6d6] bg-[#f5f5f7]/60 px-3.5 py-3 text-sm font-medium normal-case tracking-normal text-[#333336] outline-none transition focus:border-[var(--color-accent)] focus:bg-white focus:ring-4 focus:ring-blue-100 font-sans"
+                className="mt-2 w-full rounded-[10px] border border-fog bg-studio-mist/60 px-3.5 py-3 text-sm font-medium normal-case tracking-normal text-charcoal outline-none transition focus:border-[var(--color-accent)] focus:bg-white focus:ring-4 focus:ring-blue-100 font-sans"
               >
                 <option value="">{t("distributors.allCommunes")}</option>
                 {communes.map((item) => (
@@ -240,7 +240,7 @@ export default function DistributorsPage() {
                 type="button"
                 onClick={resetFilters}
                 disabled={!hasFilters}
-                className="w-full rounded-full border border-[#d6d6d6] px-4 py-3 text-sm font-semibold text-[#474747] transition hover:border-[#d6d6d6] hover:text-[#333336] disabled:cursor-not-allowed disabled:opacity-40 font-sans"
+                className="w-full rounded-full border border-fog px-4 py-3 text-sm font-semibold text-slate transition hover:border-fog hover:text-charcoal disabled:cursor-not-allowed disabled:opacity-40 font-sans"
               >
                 {t("distributors.reset")}
               </button>
@@ -253,13 +253,13 @@ export default function DistributorsPage() {
           {/* Carte */}
           <div
             ref={mapShellRef}
-            className={`aurex-map-fullscreen relative min-h-[420px] overflow-hidden border border-[#d6d6d6] bg-[#DCEAF5] shadow-sm sm:min-h-[560px] ${
+            className={`aurex-map-fullscreen relative min-h-[420px] overflow-hidden border border-fog bg-map-water shadow-sm sm:min-h-[560px] ${
               isFullscreen ? "rounded-none" : "rounded-[28px]"
             }`}
           >
             <div id="distributors-map" className="absolute inset-0" />
             <div className="pointer-events-none absolute left-4 top-4 z-[400] flex items-center gap-2 rounded-[10px] bg-white/95 px-3.5 py-2.5 text-xs font-semibold text-[var(--color-primary)] shadow-md backdrop-blur-sm font-sans">
-              <svg className="h-4 w-4 text-[#006a9e]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg aria-hidden="true" className="h-4 w-4 text-link-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
               </svg>
@@ -273,9 +273,9 @@ export default function DistributorsPage() {
                   ? t("distributors.exitFullscreen")
                   : t("distributors.fullscreen")
               }
-              className="absolute right-4 top-4 z-[500] inline-flex items-center gap-2 rounded-[10px] bg-white px-3.5 py-2.5 text-xs font-bold text-[var(--color-primary)] shadow-md transition hover:bg-[#f5f5f7] font-sans"
+              className="absolute right-4 top-4 z-[500] inline-flex items-center gap-2 rounded-[10px] bg-white px-3.5 py-2.5 text-xs font-bold text-[var(--color-primary)] shadow-md transition hover:bg-studio-mist font-sans"
             >
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg aria-hidden="true" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -297,7 +297,7 @@ export default function DistributorsPage() {
                       <p className="text-base font-bold text-[var(--color-primary)] font-display">
                         {ml(selected.name)}
                       </p>
-                      <p className="mt-1 text-xs text-[#474747] font-sans">
+                      <p className="mt-1 text-xs text-slate font-sans">
                         {ml(selected.commune)} · {ml(selected.wilaya)}
                       </p>
                     </div>
@@ -305,22 +305,22 @@ export default function DistributorsPage() {
                       type="button"
                       onClick={() => setSelected(null)}
                       aria-label={t("distributors.closeDetails")}
-                      className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-[#474747] transition hover:bg-[#e2e2e5]"
+                      className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-slate transition hover:bg-mist"
                     >
                       ×
                     </button>
                   </div>
-                  <div className="mt-3 space-y-1.5 text-xs text-[#333336] font-sans">
+                  <div className="mt-3 space-y-1.5 text-xs text-charcoal font-sans">
                     <p>{ml(selected.address)}</p>
-                    <a href={`tel:${selected.phone}`} className="block text-[#006a9e]">
+                    <a href={`tel:${selected.phone}`} className="block text-link-deep">
                       {selected.phone}
                     </a>
                     {selected.email && (
-                      <a href={`mailto:${selected.email}`} className="block break-all text-[#006a9e]">
+                      <a href={`mailto:${selected.email}`} className="block break-all text-link-deep">
                         {selected.email}
                       </a>
                     )}
-                    <p className="text-[11px] text-[#5a5a5e]">
+                    <p className="text-[11px] text-iron-gray">
                       GPS · {selected.lat.toFixed(5)}, {selected.lng.toFixed(5)}
                     </p>
                   </div>
@@ -328,7 +328,7 @@ export default function DistributorsPage() {
                     href={directionsUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-[var(--color-accent)] px-4 py-2.5 text-xs font-bold text-white transition hover:bg-[#00628f] font-sans"
+                    className="mt-3 inline-flex w-full items-center justify-center rounded-full bg-[var(--color-accent)] px-4 py-2.5 text-xs font-bold text-white transition hover:bg-accent-hover font-sans"
                   >
                     {t("distributors.directions")}
                   </a>
@@ -337,17 +337,17 @@ export default function DistributorsPage() {
           </div>
 
           {/* Panneau latéral */}
-          <aside className="flex max-h-[560px] flex-col overflow-hidden rounded-[28px] border border-[#d6d6d6] bg-white shadow-sm">
+          <aside className="flex max-h-[560px] flex-col overflow-hidden rounded-[28px] border border-fog bg-white shadow-sm">
             {selected ? (
               <>
                 {/* En-tête détail */}
-                <div className="relative bg-gradient-to-br from-[var(--color-primary)] to-[#00628f] px-5 pb-8 pt-5 text-white">
+                <div className="relative bg-gradient-to-br from-[var(--color-primary)] to-accent-hover px-5 pb-8 pt-5 text-white">
                   <button
                     type="button"
                     onClick={() => setSelected(null)}
                     className="mb-4 inline-flex items-center gap-1.5 rounded-[10px] bg-white/10 px-3 py-1.5 text-xs font-semibold text-blue-100 transition hover:bg-white/20"
                   >
-                    <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <svg aria-hidden="true" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                     </svg>
                     {t("distributors.backToList")}
@@ -362,38 +362,38 @@ export default function DistributorsPage() {
                 </div>
 
                 {/* Corps détail */}
-                <div className="flex-1 space-y-3 overflow-y-auto px-5 py-5 text-sm text-[#333336] font-sans">
-                  <div className="flex items-start gap-3 rounded-[10px] bg-[#f5f5f7] p-3">
-                    <svg className="mt-0.5 h-4.5 w-4.5 h-5 w-5 shrink-0 text-[#006a9e]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                <div className="flex-1 space-y-3 overflow-y-auto px-5 py-5 text-sm text-charcoal font-sans">
+                  <div className="flex items-start gap-3 rounded-[10px] bg-studio-mist p-3">
+                    <svg aria-hidden="true" className="mt-0.5 h-4.5 w-4.5 h-5 w-5 shrink-0 text-link-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
                     </svg>
                     <p className="leading-relaxed">{ml(selected.address)}</p>
                   </div>
-                  <a href={`tel:${selected.phone}`} className="flex items-center gap-3 rounded-[10px] bg-[#f5f5f7] p-3 transition hover:bg-[#f5f5f7]">
-                    <svg className="h-5 w-5 shrink-0 text-[#006a9e]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                  <a href={`tel:${selected.phone}`} className="flex items-center gap-3 rounded-[10px] bg-studio-mist p-3 transition hover:bg-studio-mist">
+                    <svg aria-hidden="true" className="h-5 w-5 shrink-0 text-link-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
                     </svg>
-                    <span className="font-semibold text-[#333336]">{selected.phone}</span>
+                    <span className="font-semibold text-charcoal">{selected.phone}</span>
                   </a>
                   {selected.email && (
-                    <a href={`mailto:${selected.email}`} className="flex items-center gap-3 rounded-[10px] bg-[#f5f5f7] p-3 transition hover:bg-[#f5f5f7]">
-                      <svg className="h-5 w-5 shrink-0 text-[#006a9e]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                    <a href={`mailto:${selected.email}`} className="flex items-center gap-3 rounded-[10px] bg-studio-mist p-3 transition hover:bg-studio-mist">
+                      <svg aria-hidden="true" className="h-5 w-5 shrink-0 text-link-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
                       </svg>
-                      <span className="break-all text-[#333336]">{selected.email}</span>
+                      <span className="break-all text-charcoal">{selected.email}</span>
                     </a>
                   )}
-                  <p className="px-1 pt-1 text-[11px] font-medium tracking-wide text-[#5a5a5e]">
+                  <p className="px-1 pt-1 text-xs font-medium text-iron-gray">
                     GPS · {selected.lat.toFixed(5)}, {selected.lng.toFixed(5)}
                   </p>
                   <a
                     href={directionsUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--color-accent)] px-4 py-3.5 text-sm font-bold text-white transition hover:bg-[#00628f] font-sans"
+                    className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--color-accent)] px-4 py-3.5 text-sm font-bold text-white transition hover:bg-accent-hover font-sans"
                   >
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <svg aria-hidden="true" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z" />
                     </svg>
                     {t("distributors.directions")}
@@ -402,25 +402,25 @@ export default function DistributorsPage() {
               </>
             ) : (
               <>
-                <div className="border-b border-[#d6d6d6] px-5 pb-4 pt-5">
+                <div className="border-b border-fog px-5 pb-4 pt-5">
                   <h2 className="text-lg font-bold text-[var(--color-primary)] font-display">
                     {t("distributors.listTitle")}
                   </h2>
-                  <p className="mt-1 text-xs text-[#5a5a5e]">{t("distributors.listHint")}</p>
+                  <p className="mt-1 text-xs text-iron-gray">{t("distributors.listHint")}</p>
                 </div>
                 <div ref={listRef} className="flex-1 space-y-2 overflow-y-auto p-4">
                   {filtered.length === 0 ? (
                     <div className="flex flex-col items-center gap-3 py-12 text-center">
                       <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white">
-                        <svg className="h-6 w-6 text-[#5a5a5e]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <svg aria-hidden="true" className="h-6 w-6 text-iron-gray" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                         </svg>
                       </div>
-                      <p className="text-sm font-semibold text-[#333336]">{t("distributors.empty")}</p>
+                      <p className="text-sm font-semibold text-charcoal">{t("distributors.empty")}</p>
                       <button
                         type="button"
                         onClick={resetFilters}
-                        className="text-xs font-bold text-[#006a9e] hover:underline"
+                        className="text-xs font-bold text-link-deep hover:underline"
                       >
                         {t("distributors.reset")}
                       </button>
@@ -433,22 +433,22 @@ export default function DistributorsPage() {
                         <button
                           type="button"
                           onClick={() => handleSelect(distributor)}
-                          className={`group w-full rounded-[10px] border p-3.5 text-start transition-all ${
+                          className={`group w-full rounded-[10px] border p-3.5 text-start transition-[color,background-color,border-color,opacity,transform,box-shadow] ${
                             isActive
-                              ? "border-[var(--color-accent)] bg-[#f5f5f7]/60 ring-2 ring-blue-100"
-                              : "border-[#d6d6d6] hover:border-blue-200 hover:bg-[#f5f5f7] hover:shadow-sm"
+                              ? "border-[var(--color-accent)] bg-studio-mist/60 ring-2 ring-blue-100"
+                              : "border-fog hover:border-blue-200 hover:bg-studio-mist hover:shadow-sm"
                           }`}
                         >
                           <div className="flex items-center justify-between gap-2">
-                            <span className="text-sm font-semibold text-[#1d1d1f] transition-colors group-hover:text-[var(--color-primary)] font-sans">
+                            <span className="text-sm font-semibold text-obsidian transition-colors group-hover:text-[var(--color-primary)] font-sans">
                               {ml(distributor.name)}
                             </span>
-                            <svg className="h-4 w-4 shrink-0 text-[#d6d6d6] transition-all group-hover:translate-x-0.5 group-hover:text-[#006a9e]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <svg aria-hidden="true" className="h-4 w-4 shrink-0 text-fog transition-[color,background-color,border-color,opacity,transform,box-shadow] group-hover:translate-x-0.5 group-hover:text-link-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                             </svg>
                           </div>
-                          <span className="mt-1 flex items-center gap-1.5 text-xs text-[#474747] font-sans">
-                            <svg className="h-3.5 w-3.5 text-[#d6d6d6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <span className="mt-1 flex items-center gap-1.5 text-xs text-slate font-sans">
+                            <svg aria-hidden="true" className="h-3.5 w-3.5 text-fog" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
                               <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
                             </svg>

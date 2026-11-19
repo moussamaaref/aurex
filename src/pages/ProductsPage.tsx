@@ -55,12 +55,12 @@ function FilterSelect({
   groups?: Array<{ label: string; options: Array<{ value: string; label: string }> }>
 }) {
   return (
-    <div className="border-t border-[#d6d6d6] pt-5">
-      <label className="mb-3 block text-[11px] font-bold uppercase tracking-[0.18em] text-[#5a5a5e] font-display">{label}</label>
+    <div className="border-t border-fog pt-5">
+      <label className="mb-3 block text-xs font-bold text-iron-gray font-display">{label}</label>
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="w-full rounded-[10px] border border-[#d6d6d6] bg-[#f5f5f7] px-3 py-2 text-sm text-[#333336] outline-none focus:border-[var(--color-accent)]"
+        className="w-full rounded-[10px] border border-fog bg-studio-mist px-3 py-2 text-sm text-charcoal outline-none focus:border-[var(--color-accent)]"
       >
         <option value="">{allLabel}</option>
         {(options ?? []).map((o) => (
@@ -304,8 +304,8 @@ function ProductsPageInner() {
         <FilterSelect label={p(productsUi.filters.couleur)} value={couleur} onChange={setCouleur} allLabel={p(productsUi.filters.allCouleurs)} options={colorOptions} />
       )}
       {(hasWifi || hasBluetooth) && (
-        <div className="border-t border-[#d6d6d6] pt-5">
-          <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-[#5a5a5e] font-display">{p(productsUi.filters.connectivite)}</p>
+        <div className="border-t border-fog pt-5">
+          <p className="mb-3 text-xs font-bold text-iron-gray font-display">{p(productsUi.filters.connectivite)}</p>
           {(
             [
               { key: "wifi", show: hasWifi, label: productsUi.filters.wifi, checked: wifiOnly, set: setWifiOnly },
@@ -314,9 +314,9 @@ function ProductsPageInner() {
           )
             .filter((c) => c.show)
             .map((c) => (
-              <label key={c.key} className="group flex min-h-11 cursor-pointer items-center gap-2.5 rounded-[10px] p-2 transition-colors hover:bg-[#f5f5f7]">
-                <input type="checkbox" checked={c.checked} onChange={(e) => c.set(e.target.checked)} className="h-4 w-4 rounded border-[#d6d6d6] accent-[var(--color-accent)]" />
-                <span className="text-sm text-[#333336] font-sans">{p(c.label)}</span>
+              <label key={c.key} className="group flex min-h-11 cursor-pointer items-center gap-2.5 rounded-[10px] p-2 transition-colors hover:bg-studio-mist">
+                <input type="checkbox" checked={c.checked} onChange={(e) => c.set(e.target.checked)} className="h-4 w-4 rounded border-fog accent-[var(--color-accent)]" />
+                <span className="text-sm text-charcoal font-sans">{p(c.label)}</span>
               </label>
             ))}
         </div>
@@ -337,7 +337,7 @@ function ProductsPageInner() {
   const resultsLabel = `${filtered.length} ${filtered.length === 1 ? t("products.results.one") : t("products.results.other")}`
 
   return (
-    <div className="min-h-screen bg-[#f5f5f7] pt-[72px]">
+    <div className="min-h-screen bg-studio-mist pt-[72px]">
       {/* ══ Product Advertising Spot : visuels publicitaires AUREX (aucun texte de présentation) ══ */}
       <ProductsAdSpot family={category} />
       <h1 className="sr-only">
@@ -347,16 +347,16 @@ function ProductsPageInner() {
       <main className={`mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-8 ${selectedProducts.length > 0 ? "pb-52 lg:pb-44" : ""}`}>
         {/* Fil d'Ariane */}
         <nav className="mb-2 flex items-center gap-2 text-xs font-sans sm:mb-4" aria-label="Breadcrumb">
-          <Link to="/" className="inline-flex min-h-11 items-center text-[#5a5a5e] transition-colors hover:text-[#1d1d1f]">{t("products.breadcrumb.home")}</Link>
-          <span className="text-[#d6d6d6]">/</span>
+          <Link to="/" className="inline-flex min-h-11 items-center text-iron-gray transition-colors hover:text-obsidian">{t("products.breadcrumb.home")}</Link>
+          <span className="text-fog">/</span>
           {currentCategory ? (
             <>
-              <Link to="/produits" className="text-[#5a5a5e] transition-colors hover:text-[#1d1d1f]">{t("products.breadcrumb.products")}</Link>
-              <span className="text-[#d6d6d6]">/</span>
-              <span className="font-semibold text-[#1d1d1f]">{ml(currentCategory.label)}</span>
+              <Link to="/produits" className="text-iron-gray transition-colors hover:text-obsidian">{t("products.breadcrumb.products")}</Link>
+              <span className="text-fog">/</span>
+              <span className="font-semibold text-obsidian">{ml(currentCategory.label)}</span>
             </>
           ) : (
-            <span className="font-semibold text-[#1d1d1f]">{t("products.breadcrumb.products")}</span>
+            <span className="font-semibold text-obsidian">{t("products.breadcrumb.products")}</span>
           )}
         </nav>
 
@@ -364,8 +364,8 @@ function ProductsPageInner() {
         <div className="-mx-4 mb-5 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:mb-8 sm:flex-wrap sm:overflow-visible sm:px-0">
           <Link
             to="/produits"
-            className={`inline-flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-full px-5 text-sm font-semibold transition-all font-sans ${
-              !category ? "bg-[var(--color-accent)] text-white" : "bg-white text-[#474747] hover:bg-[#f5f5f7] hover:text-[var(--color-primary)]"
+            className={`inline-flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-full px-5 text-sm font-semibold transition-[color,background-color,border-color,opacity,transform,box-shadow] font-sans ${
+              !category ? "bg-[var(--color-accent)] text-white" : "bg-white text-slate hover:bg-studio-mist hover:text-[var(--color-primary)]"
             }`}
           >
             {t("common.all")}
@@ -379,13 +379,13 @@ function ProductsPageInner() {
               <Link
                 key={cat.slug}
                 to={`/produits/${cat.slug}`}
-                className={`inline-flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-full px-5 text-sm font-semibold transition-all font-sans ${
-                  isActive ? "text-white bg-[var(--color-accent)]" : "bg-white text-[#474747] hover:bg-[#f5f5f7] hover:text-[var(--color-primary)]"
+                className={`inline-flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-full px-5 text-sm font-semibold transition-[color,background-color,border-color,opacity,transform,box-shadow] font-sans ${
+                  isActive ? "text-white bg-[var(--color-accent)]" : "bg-white text-slate hover:bg-studio-mist hover:text-[var(--color-primary)]"
                 }`}
               >
                 {!isActive && <span className="mr-2 inline-block h-2 w-2 rounded-full align-middle" style={{ backgroundColor: color }} />}
                 {ml(cat.label)}
-                <span className={`ms-2 text-xs font-medium ${isActive ? "text-white/80" : "text-[#5a5a5e]"}`}>
+                <span className={`ms-2 text-xs font-medium ${isActive ? "text-white/80" : "text-iron-gray"}`}>
                   {products.filter((x) => x.category === cat.slug).length}
                 </span>
               </Link>
@@ -396,20 +396,20 @@ function ProductsPageInner() {
         <div className="flex gap-8">
           {/* ══ Sidebar filtres (défilante) ══ */}
           <aside className="hidden w-60 flex-shrink-0 lg:block">
-            <div className="sticky top-24 flex max-h-[calc(100vh-7rem)] flex-col overflow-hidden rounded-[28px] border border-[#d6d6d6] bg-white shadow-sm">
+            <div className="sticky top-24 flex max-h-[calc(100vh-7rem)] flex-col overflow-hidden rounded-[28px] border border-fog bg-white shadow-sm">
               <div className="shrink-0 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)] px-5 py-4 text-white">
-                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-200" style={{ fontFamily: "var(--font-display)" }}>
+                <p className="text-xs font-bold text-blue-200" style={{ fontFamily: "var(--font-display)" }}>
                   {t("products.filter")}
                 </p>
               </div>
               <div
-                className="min-h-0 flex-1 space-y-6 overflow-y-auto overscroll-contain p-5 [scrollbar-color:#b8b8bd_transparent] [scrollbar-width:thin]"
+                className="min-h-0 flex-1 space-y-6 overflow-y-auto overscroll-contain p-5 [scrollbar-color:var(--color-steel)_transparent] [scrollbar-width:thin]"
                 tabIndex={0}
                 aria-label={t("products.filter")}
               >
                 {renderFilterFields()}
                 {hasFilters && (
-                  <div className="border-t border-[#d6d6d6] pt-4">
+                  <div className="border-t border-fog pt-4">
                     <button
                       onClick={resetFilters}
                       className="inline-flex w-full items-center justify-center gap-1.5 rounded-full border border-red-100 bg-red-50 px-3 py-2 text-xs font-semibold text-red-600 transition-colors hover:border-red-200 hover:bg-red-100 font-sans"
@@ -425,19 +425,19 @@ function ProductsPageInner() {
           {/* ══ Contenu ══ */}
           <div className="min-w-0 flex-1">
             {/* Barre d'outils */}
-            <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-[28px] border border-[#d6d6d6] bg-white p-3 shadow-sm">
+            <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-[28px] border border-fog bg-white p-3 shadow-sm">
               <div className="flex flex-wrap items-center gap-3">
                 <button
                   onClick={() => setFiltersOpen(true)}
-                  className="flex min-h-11 items-center gap-2 rounded-full border border-[#d6d6d6] px-3.5 py-2 text-sm font-medium text-[#333336] transition-colors hover:bg-[#f5f5f7] lg:hidden font-sans"
+                  className="flex min-h-11 items-center gap-2 rounded-full border border-fog px-3.5 py-2 text-sm font-medium text-charcoal transition-colors hover:bg-studio-mist lg:hidden font-sans"
                 >
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <svg aria-hidden="true" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                   </svg>
                   {t("products.filter")}
                   {hasFilters && <span className="ml-0.5 h-2 w-2 rounded-full bg-[var(--color-accent)]" />}
                 </button>
-                <span className="text-sm font-semibold text-[#333336]">{resultsLabel}</span>
+                <span className="text-sm font-semibold text-charcoal">{resultsLabel}</span>
 
                 {/* Chips filtres actifs */}
                 <div className="hidden flex-wrap items-center gap-2 lg:flex">
@@ -445,10 +445,10 @@ function ProductsPageInner() {
                     <button
                       key={chip.key}
                       onClick={chip.clear}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-[#f5f5f7] px-3 py-1 text-xs font-semibold text-[var(--color-primary)] transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-studio-mist px-3 py-1 text-xs font-semibold text-[var(--color-primary)] transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600"
                     >
                       {chip.label}
-                      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <svg aria-hidden="true" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                       </svg>
                     </button>
@@ -460,7 +460,7 @@ function ProductsPageInner() {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="min-h-11 max-w-[10rem] cursor-pointer rounded-[10px] border border-[#d6d6d6] bg-[#f5f5f7] px-3 py-2 text-sm sm:max-w-none text-[#333336] outline-none transition hover:bg-white focus:border-[var(--color-accent)] focus:ring-4 focus:ring-blue-100 font-sans"
+                  className="min-h-11 max-w-[10rem] cursor-pointer rounded-[10px] border border-fog bg-studio-mist px-3 py-2 text-sm sm:max-w-none text-charcoal outline-none transition hover:bg-white focus:border-[var(--color-accent)] focus:ring-4 focus:ring-blue-100 font-sans"
                   aria-label={t("products.sortBy.relevance")}
                 >
                   {sortOptions.map((opt) => (
@@ -470,22 +470,22 @@ function ProductsPageInner() {
                   ))}
                 </select>
 
-                <div className="hidden overflow-hidden rounded-full border border-[#d6d6d6] sm:flex">
+                <div className="hidden overflow-hidden rounded-full border border-fog sm:flex">
                   {(["grid", "list"] as const).map((mode) => (
                     <button
                       key={mode}
                       onClick={() => setViewMode(mode)}
                       aria-label={mode}
                       className={`flex h-11 w-11 items-center justify-center transition-colors ${
-                        viewMode === mode ? "bg-[var(--color-primary)] text-white" : "bg-[#f5f5f7] text-[#5a5a5e] hover:bg-white hover:text-[#333336]"
+                        viewMode === mode ? "bg-[var(--color-primary)] text-white" : "bg-studio-mist text-iron-gray hover:bg-white hover:text-charcoal"
                       }`}
                     >
                       {mode === "grid" ? (
-                        <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                        <svg aria-hidden="true" className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                           <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                         </svg>
                       ) : (
-                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <svg aria-hidden="true" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
                       )}
@@ -497,16 +497,16 @@ function ProductsPageInner() {
 
             {/* ══ Grille / Liste ══ */}
             {filtered.length === 0 ? (
-              <div className="flex flex-col items-center justify-center rounded-[28px] border border-dashed border-[#d6d6d6] bg-white py-24 text-center">
+              <div className="flex flex-col items-center justify-center rounded-[28px] border border-dashed border-fog bg-white py-24 text-center">
                 <p className="font-display text-xl font-bold text-[var(--color-primary)]">
                   {smartOnly ? p(productsUi.smartEmptyTitle) : t("products.noResults")}
                 </p>
-                <p className="mt-2 max-w-sm font-sans text-sm leading-relaxed text-[#474747]">
+                <p className="mt-2 max-w-sm font-sans text-sm leading-relaxed text-slate">
                   {smartOnly ? p(productsUi.smartEmptyText) : t("products.noResultsDesc")}
                 </p>
                 <button
                   onClick={resetFilters}
-                  className="mt-8 rounded-full bg-[var(--color-accent)] px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#00628f]"
+                  className="mt-8 rounded-full bg-[var(--color-accent)] px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-accent-hover"
                 >
                   {t("common.resetFilters")}
                 </button>
@@ -517,7 +517,7 @@ function ProductsPageInner() {
                   <Reveal key={product.id} delay={Math.min(pi, 7) * 50} className="h-full">
                     <Link
                       to={productUrl(product)}
-                      className="group flex h-full flex-col overflow-hidden rounded-[28px] border border-[#d6d6d6] bg-white transition-all duration-300 hover:-translate-y-1.5 hover:border-[#d6d6d6]/50 motion-reduce:transition-none"
+                      className="group flex h-full flex-col overflow-hidden rounded-[28px] border border-fog bg-white transition-[color,background-color,border-color,opacity,transform,box-shadow] duration-300 hover:-translate-y-1.5 hover:border-fog/50 motion-reduce:transition-none"
                     >
                       <div className="relative aspect-square flex-shrink-0 overflow-hidden bg-white">
                         <img
@@ -529,29 +529,29 @@ function ProductsPageInner() {
                         />
                         <div className="absolute left-3 top-3 flex flex-col gap-1.5">
                           {product.badges.map((badge) => (
-                            <span key={ml(badge)} className={`rounded-[10px] px-2 py-1 text-[10px] font-bold tracking-wider backdrop-blur-sm ${badgeStyle(ml(badge))}`}>
+                            <span key={ml(badge)} className={`rounded-[10px] px-2 py-1 text-xs font-bold backdrop-blur-sm ${badgeStyle(ml(badge))}`}>
                               {ml(badge)}
                             </span>
                           ))}
                         </div>
                       </div>
                       <div className="flex flex-1 flex-col p-4">
-                        <p className="mb-1 font-mono text-[10px] uppercase tracking-widest text-[#5a5a5e]">{product.reference}</p>
-                        <h3 className="mb-3 line-clamp-2 text-sm font-semibold leading-snug text-[#1d1d1f] transition-colors group-hover:text-[var(--color-primary)]">
+                        <p className="mb-1 font-mono text-xs text-iron-gray">{product.reference}</p>
+                        <h3 className="mb-3 line-clamp-2 text-sm font-semibold leading-snug text-obsidian transition-colors group-hover:text-[var(--color-primary)]">
                           {ml(product.name)}
                         </h3>
                         {/* 2 à 6 caractéristiques principales (données réelles du produit) */}
                         <ul className="mb-3 flex flex-wrap gap-1.5">
                           {keySpecsOf(product, lang).map((spec) => (
-                            <li key={spec} className="rounded-[10px] border border-[#d6d6d6] bg-[#f5f5f7] px-2 py-0.5 font-sans text-xs text-[#474747]">
+                            <li key={spec} className="rounded-[10px] border border-fog bg-studio-mist px-2 py-0.5 font-sans text-xs text-slate">
                               {spec}
                             </li>
                           ))}
                         </ul>
-                        <div className="mt-auto border-t border-[#d6d6d6] pt-3">
-                          <span className="mb-3 flex items-center gap-1 text-xs font-semibold text-[#006a9e] transition-all group-hover:gap-2">
+                        <div className="mt-auto border-t border-fog pt-3">
+                          <span className="mb-3 flex items-center gap-1 text-xs font-semibold text-link-deep transition-[color,background-color,border-color,opacity,transform,box-shadow] group-hover:gap-2">
                             {ctaLabel}
-                            <svg className="h-3.5 w-3.5 rtl:-scale-x-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                            <svg aria-hidden="true" className="h-3.5 w-3.5 rtl:-scale-x-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12l-7.5 7.5M21 12H3" />
                             </svg>
                           </span>
@@ -568,7 +568,7 @@ function ProductsPageInner() {
                   <Reveal key={product.id} delay={Math.min(pi, 5) * 60}>
                     <Link
                       to={productUrl(product)}
-                      className="group flex flex-col gap-5 rounded-[28px] border border-[#d6d6d6] bg-white p-4 transition-all duration-300 hover:-translate-y-1 hover:border-[#d6d6d6]/50 motion-reduce:transition-none sm:flex-row"
+                      className="group flex flex-col gap-5 rounded-[28px] border border-fog bg-white p-4 transition-[color,background-color,border-color,opacity,transform,box-shadow] duration-300 hover:-translate-y-1 hover:border-fog/50 motion-reduce:transition-none sm:flex-row"
                     >
                       <div className="relative h-48 w-full flex-shrink-0 overflow-hidden rounded-[10px] bg-white sm:h-36 sm:w-36">
                         <img loading="lazy" decoding="async" src={product.image} alt={ml(product.name)} className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 motion-reduce:transition-none" />
@@ -576,12 +576,12 @@ function ProductsPageInner() {
                       <div className="flex min-w-0 flex-1 flex-col justify-center">
                         <div className="flex items-start justify-between gap-4">
                           <div>
-                            <p className="font-mono text-[10px] uppercase tracking-widest text-[#5a5a5e]">{product.reference}</p>
-                            <h3 className="mt-1 text-base font-semibold text-[#1d1d1f] transition-colors group-hover:text-[var(--color-primary)]">{ml(product.name)}</h3>
+                            <p className="font-mono text-xs text-iron-gray">{product.reference}</p>
+                            <h3 className="mt-1 text-base font-semibold text-obsidian transition-colors group-hover:text-[var(--color-primary)]">{ml(product.name)}</h3>
                           </div>
                           <div className="flex flex-shrink-0 flex-col items-end gap-1.5">
                             {product.badges.map((badge) => (
-                              <span key={ml(badge)} className={`rounded-[10px] px-2 py-0.5 text-[10px] font-bold tracking-wider ${badgeStyle(ml(badge))}`}>
+                              <span key={ml(badge)} className={`rounded-[10px] px-2 py-0.5 text-xs font-bold ${badgeStyle(ml(badge))}`}>
                                 {ml(badge)}
                               </span>
                             ))}
@@ -589,16 +589,16 @@ function ProductsPageInner() {
                         </div>
                         <ul className="mt-3 flex flex-wrap gap-1.5">
                           {keySpecsOf(product, lang).map((spec) => (
-                            <li key={spec} className="rounded-[10px] border border-[#d6d6d6] bg-[#f5f5f7] px-2 py-0.5 text-xs text-[#474747]">
+                            <li key={spec} className="rounded-[10px] border border-fog bg-studio-mist px-2 py-0.5 text-xs text-slate">
                               {spec}
                             </li>
                           ))}
                         </ul>
                       </div>
-                      <div className="flex flex-col items-end justify-between border-[#d6d6d6] sm:w-48 sm:border-l sm:pl-4">
-                        <span className="flex items-center gap-1 text-xs font-semibold text-[#006a9e] transition-all group-hover:gap-2">
+                      <div className="flex flex-col items-end justify-between border-fog sm:w-48 sm:border-l sm:pl-4">
+                        <span className="flex items-center gap-1 text-xs font-semibold text-link-deep transition-[color,background-color,border-color,opacity,transform,box-shadow] group-hover:gap-2">
                           {ctaLabel}
-                          <svg className="h-3.5 w-3.5 rtl:-scale-x-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <svg aria-hidden="true" className="h-3.5 w-3.5 rtl:-scale-x-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12l-7.5 7.5M21 12H3" />
                           </svg>
                         </span>
@@ -638,7 +638,7 @@ function ProductsPageInner() {
                   <div key={product.id} className="flex min-w-0 items-center gap-2 rounded-[10px] border border-white/10 bg-white/10 p-2 backdrop-blur-sm">
                     <img loading="lazy" decoding="async" src={product.image} alt={ml(product.name)} className="h-12 w-12 flex-shrink-0 rounded-[10px] object-cover" />
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate font-mono text-[9px] uppercase tracking-wider text-blue-300/60">{product.reference}</span>
+                      <span className="block truncate font-mono text-[9px] text-blue-300/60">{product.reference}</span>
                       <span className="mt-1 block line-clamp-2 text-xs font-semibold leading-snug text-white">{ml(product.name)}</span>
                     </span>
                     <button
@@ -660,12 +660,12 @@ function ProductsPageInner() {
             <Link
               to="/comparateur"
               className={`mt-3 flex w-full items-center justify-center gap-2 rounded-full px-5 py-3.5 text-sm font-bold transition-colors ${
-                selectedProducts.length > 1 ? "bg-[var(--color-accent)] text-white hover:bg-[#00628f]" : "pointer-events-none bg-white/10 text-white/30"
+                selectedProducts.length > 1 ? "bg-[var(--color-accent)] text-white hover:bg-accent-hover" : "pointer-events-none bg-white/10 text-white/30"
               }`}
               aria-disabled={selectedProducts.length < 2}
             >
               {t("comparator.compare")}
-              <svg className="h-4 w-4 rtl:-scale-x-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <svg aria-hidden="true" className="h-4 w-4 rtl:-scale-x-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12l-7.5 7.5M21 12H3" />
               </svg>
             </Link>
@@ -678,11 +678,11 @@ function ProductsPageInner() {
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="absolute inset-0 bg-[var(--color-primary)]/40 backdrop-blur-sm" onClick={() => setFiltersOpen(false)} />
           <div className="animate-slide-up absolute bottom-0 left-0 right-0 max-h-[88dvh] overflow-y-auto overscroll-contain rounded-t-3xl bg-white p-6">
-            <div className="mx-auto mb-6 h-1.5 w-12 rounded-full bg-[#d6d6d6]" />
+            <div className="mx-auto mb-6 h-1.5 w-12 rounded-full bg-fog" />
             <div className="mb-6 flex items-center justify-between">
               <h3 className="font-display text-xl font-bold text-[var(--color-primary)]">{t("products.mobileFilters")}</h3>
-              <button onClick={() => setFiltersOpen(false)} className="rounded-full p-2 text-[#5a5a5e] transition-colors hover:bg-[#f5f5f7]" aria-label="Close">
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <button onClick={() => setFiltersOpen(false)} className="rounded-full p-2 text-iron-gray transition-colors hover:bg-studio-mist" aria-label="Close">
+                <svg aria-hidden="true" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -692,7 +692,7 @@ function ProductsPageInner() {
               <div className="flex flex-col gap-3 pt-2">
                 <button
                   onClick={() => setFiltersOpen(false)}
-                  className="w-full rounded-full bg-[var(--color-accent)] py-4 font-sans text-sm font-bold text-white transition-colors hover:bg-[#00628f]"
+                  className="w-full rounded-full bg-[var(--color-accent)] py-4 font-sans text-sm font-bold text-white transition-colors hover:bg-accent-hover"
                 >
                   {t("products.viewResults", { count: filtered.length })}
                 </button>

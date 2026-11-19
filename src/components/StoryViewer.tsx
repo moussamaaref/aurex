@@ -100,7 +100,7 @@ export default function StoryViewer({ story, onClose }: { story: Story; onClose:
 
         {/* Titre court + information essentielle */}
         <div className="relative z-10 mt-auto p-6 pb-8 md:p-10">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-white/80">{ml(story.name as Localized)}</p>
+          <p className="text-xs font-semibold text-white/80">{ml(story.name as Localized)}</p>
           <h2 className="mt-2 text-3xl font-semibold leading-tight tracking-tight text-white md:text-[40px]" style={{ fontFamily: "var(--font-display)" }}>
             {ml(scene.title as Localized)}
           </h2>
@@ -133,7 +133,7 @@ export default function StoryViewer({ story, onClose }: { story: Story; onClose:
                 data-story-focus
                 to={href}
                 onClick={onClose}
-                className="group inline-flex min-h-12 items-center gap-2 rounded-full bg-white px-7 text-[15px] font-semibold text-[#1d1d1f] transition-colors hover:bg-[#f5f5f7]"
+                className="group inline-flex min-h-12 items-center gap-2 rounded-full bg-white px-7 text-[15px] font-semibold text-obsidian transition-colors hover:bg-studio-mist"
               >
                 {story.cta_label ? ml(story.cta_label as Localized) : p(storyUi.cta)}
                 <Icon name="arrow" className="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1" strokeWidth={2} />

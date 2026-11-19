@@ -28,7 +28,7 @@ export function HistoryTab({
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <SectionHeading
           title="Historique & Audit"
-          description="Journal des actions (audit_logs) — visible par tous les rôles, écriture réservée aux éditeurs/admins."
+          description="Journal des actions (audit_logs) : visible par tous les rôles, écriture réservée aux éditeurs/admins."
         />
         <div className="flex items-center gap-2">
           <input
@@ -43,18 +43,18 @@ export function HistoryTab({
           </button>
         </div>
       </div>
-      <p className="mt-3 text-xs text-[#707070]">
+      <p className="mt-3 text-xs text-muted-gray">
         {filtered.length} / {auditLogs.length} évènement(s)
       </p>
 
       {filtered.length === 0 ? (
-        <p className="mt-6 rounded-xl border border-dashed border-[#d6d6d6] bg-[#fafafc] p-6 text-center text-sm text-[#5a5a5e]">
+        <p className="mt-6 rounded-xl border border-dashed border-fog bg-paper-frost p-6 text-center text-sm text-iron-gray">
           {auditLogs.length === 0 ? "Aucun évènement d'audit pour l'instant." : "Aucun résultat pour cette recherche."}
         </p>
       ) : (
-        <div className="mt-6 overflow-auto rounded-2xl border border-[#d6d6d6]">
+        <div className="mt-6 overflow-auto rounded-2xl border border-fog">
           <table className="w-full min-w-[640px] text-left text-xs">
-            <thead className="bg-[#fafafc] text-[#707070]">
+            <thead className="bg-paper-frost text-muted-gray">
               <tr>
                 <th className="px-3 py-2.5">Date</th>
                 <th className="px-3 py-2.5">Acteur</th>
@@ -71,21 +71,21 @@ export function HistoryTab({
                   <tr
                     key={l.id}
                     onClick={() => setExpandedId(expanded ? null : l.id)}
-                    className="cursor-pointer border-t border-[#d6d6d6] hover:bg-[#fafafc]"
+                    className="cursor-pointer border-t border-fog hover:bg-paper-frost"
                     title="Cliquer pour voir le payload complet"
                   >
-                    <td className="px-3 py-2.5 text-[#474747]">
+                    <td className="px-3 py-2.5 text-slate">
                       {new Date(l.created_at).toLocaleString("fr-FR")}
                     </td>
-                    <td className="px-3 py-2.5 font-mono text-[11px] text-[#333336]">
+                    <td className="px-3 py-2.5 font-mono text-[11px] text-charcoal">
                       {l.actor_id ? l.actor_id.slice(0, 8) : "—"}
                     </td>
-                    <td className="px-3 py-2.5 font-semibold text-[#1d1d1f]">{l.action}</td>
-                    <td className="px-3 py-2.5 text-[#333336]">{l.entity}</td>
-                    <td className="px-3 py-2.5 font-mono text-[11px] text-[#5a5a5e]">
+                    <td className="px-3 py-2.5 font-semibold text-obsidian">{l.action}</td>
+                    <td className="px-3 py-2.5 text-charcoal">{l.entity}</td>
+                    <td className="px-3 py-2.5 font-mono text-[11px] text-iron-gray">
                       {l.entity_id ?? "—"}
                     </td>
-                    <td className="max-w-[240px] px-3 py-2.5 font-mono text-[11px] text-[#5a5a5e]">
+                    <td className="max-w-[240px] px-3 py-2.5 font-mono text-[11px] text-iron-gray">
                       {expanded ? (
                         <pre className="max-h-48 overflow-auto whitespace-pre-wrap break-all">
                           {JSON.stringify(l.payload, null, 2)}

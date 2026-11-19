@@ -62,7 +62,7 @@ function PasswordChange({ onSubmit }: { onSubmit: (password: string) => Promise<
     )
   }
   return (
-    <div className="w-full space-y-2 rounded-xl border border-[#d6d6d6] bg-white p-3">
+    <div className="w-full space-y-2 rounded-xl border border-fog bg-white p-3">
       <PasswordField value={value} onChange={setValue} placeholder={`Nouveau mot de passe (${MIN_PASSWORD_LENGTH} caractères min.)`} id={pwId} />
       <div className="flex gap-2">
         <button
@@ -144,14 +144,14 @@ export function UsersTab({
       </div>
 
       <form
-        className="mt-5 rounded-2xl border border-[#d6d6d6] bg-[#fafafc] p-4"
+        className="mt-5 rounded-2xl border border-fog bg-paper-frost p-4"
         onSubmit={(e) => {
           e.preventDefault()
           if (canCreate) onCreateWithPassword()
         }}
       >
-        <h3 className="text-sm font-semibold text-[#1d1d1f]">Créer un utilisateur</h3>
-        <p className="mt-1 text-xs text-[#5a5a5e]">
+        <h3 className="text-sm font-semibold text-obsidian">Créer un utilisateur</h3>
+        <p className="mt-1 text-xs text-iron-gray">
           Le compte est actif immédiatement (e-mail confirmé). Transmettez le mot de passe de manière sécurisée ; l'utilisateur pourra se connecter sur /admin.
         </p>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
@@ -160,7 +160,7 @@ export function UsersTab({
           <div className="sm:col-span-2">
             <PasswordField value={newProfilePassword} onChange={onPasswordChange} placeholder={`Mot de passe (${MIN_PASSWORD_LENGTH} caractères minimum)`} id="new-user-password" />
           </div>
-          <label className="flex items-center gap-2 text-sm text-[#333336]">
+          <label className="flex items-center gap-2 text-sm text-charcoal">
             <span className="font-semibold">Rôle</span>
             <select value={newProfileRole} onChange={(e) => onNewRoleChange(e.target.value as Role)} className={`${inputBase} !w-auto`}>
               <option value="editor">Éditeur (modifie le contenu)</option>
@@ -179,46 +179,46 @@ export function UsersTab({
         </div>
       </form>
 
-      <div className="mt-5 rounded-2xl border border-[#d6d6d6] bg-white p-4">
-        <h3 className="text-sm font-semibold text-[#1d1d1f]">Liste des utilisateurs ({profiles.length})</h3>
+      <div className="mt-5 rounded-2xl border border-fog bg-white p-4">
+        <h3 className="text-sm font-semibold text-obsidian">Liste des utilisateurs ({profiles.length})</h3>
         {profiles.length === 0 ? (
-          <p className="mt-2 text-sm text-[#5a5a5e]">Aucun utilisateur enregistré.</p>
+          <p className="mt-2 text-sm text-iron-gray">Aucun utilisateur enregistré.</p>
         ) : (
           <div className="mt-3 space-y-2">
             {profiles.map((profile) => {
               const info = userEmails[profile.id]
               const isSelf = profile.id === currentUserId
               return (
-                <div key={profile.id} className="flex flex-col gap-3 rounded-xl border border-[#d6d6d6] bg-[#fafafc] p-4">
+                <div key={profile.id} className="flex flex-col gap-3 rounded-xl border border-fog bg-paper-frost p-4">
                   <div className="flex items-center justify-between gap-2">
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-semibold text-[#1d1d1f]">
+                      <p className="truncate text-sm font-semibold text-obsidian">
                         {profile.full_name || info?.email || profile.id.slice(0, 8)}
-                        {isSelf && <span className="ms-2 rounded-full bg-[#f0f7fb] px-2 py-0.5 text-[11px] font-semibold text-[#006a9e]">vous</span>}
+                        {isSelf && <span className="ms-2 rounded-full bg-blue-wash px-2 py-0.5 text-[11px] font-semibold text-link-deep">vous</span>}
                       </p>
-                      {info?.email && <p className="truncate text-xs text-[#474747]">{info.email}</p>}
-                      <p className="truncate text-[11px] text-[#707070]">
+                      {info?.email && <p className="truncate text-xs text-slate">{info.email}</p>}
+                      <p className="truncate text-[11px] text-muted-gray">
                         {info?.last ? `Dernière connexion : ${new Date(info.last).toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" })}` : "Jamais connecté"}
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
                       <span
                         className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
-                          profile.role === "admin" ? "bg-[#FBEAEA] text-[#C1443D]" : profile.role === "viewer" ? "bg-[#e6e6e8] text-[#474747]" : "bg-[#f0f7fb] text-[#006a9e]"
+                          profile.role === "admin" ? "bg-danger-wash text-danger" : profile.role === "viewer" ? "bg-control-gray text-slate" : "bg-blue-wash text-link-deep"
                         }`}
                       >
                         {profile.role}
                       </span>
-                      <span className="text-[11px] text-[#707070]">{new Date(profile.created_at).toLocaleDateString("fr-FR")}</span>
+                      <span className="text-[11px] text-muted-gray">{new Date(profile.created_at).toLocaleDateString("fr-FR")}</span>
                     </div>
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
-                    <label className="flex items-center gap-2 text-xs text-[#474747]">
+                    <label className="flex items-center gap-2 text-xs text-slate">
                       <span>Rôle :</span>
                       <select
                         value={profile.role}
                         onChange={(e) => onChangeRole(profile.id, e.target.value as Role)}
-                        className="rounded-lg border border-[#d6d6d6] bg-white px-2 py-1 text-xs font-normal"
+                        className="rounded-lg border border-fog bg-white px-2 py-1 text-xs font-normal"
                       >
                         <option value="editor">Éditeur</option>
                         <option value="admin">Admin</option>
