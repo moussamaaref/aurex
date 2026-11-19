@@ -85,7 +85,7 @@ export default function ProductsAdSpot({ family }: { family?: string }) {
       onBlur={() => setPaused(false)}
     >
       <div
-        className="relative isolate h-32 overflow-hidden rounded-[24px] bg-[#e8e8ed] [clip-path:inset(0_round_24px)] sm:h-44 sm:rounded-[28px] sm:[clip-path:inset(0_round_28px)] lg:h-56"
+        className="relative isolate h-32 overflow-hidden rounded-[24px] bg-surface-deep [clip-path:inset(0_round_24px)] sm:h-44 sm:rounded-[28px] sm:[clip-path:inset(0_round_28px)] lg:h-56"
         style={{ perspective: "1100px" }}
       >
         <div
@@ -139,7 +139,7 @@ export default function ProductsAdSpot({ family }: { family?: string }) {
                   onClick={() => setIndex(i)}
                   className="group flex h-8 min-w-6 items-center justify-center px-0.5 sm:h-11"
                 >
-                  <span className={`block h-1.5 rounded-full transition-all duration-300 ${i === index ? "w-7 bg-white" : "w-1.5 bg-white/60 group-hover:bg-white"}`} />
+                  <span className={`block h-1.5 rounded-full transition-[color,background-color,border-color,opacity,transform,box-shadow] duration-300 ${i === index ? "w-7 bg-white" : "w-1.5 bg-white/60 group-hover:bg-white"}`} />
                 </button>
               ))}
             </div>

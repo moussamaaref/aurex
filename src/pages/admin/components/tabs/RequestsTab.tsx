@@ -34,7 +34,7 @@ const TYPES: Record<string, string> = {
 }
 
 const statusStyle = (s: string) =>
-  s === "done" ? "bg-[#E6F4EC] text-[#03873a]" : s === "in-progress" ? "bg-[#f0f7fb] text-[#006a9e]" : "bg-[#fdf1e8] text-[#b64400]"
+  s === "done" ? "bg-green-wash text-deep-green" : s === "in-progress" ? "bg-blue-wash text-link-deep" : "bg-orange-wash text-launch-orange"
 
 function downloadCsv(name: string, rows: Array<Record<string, unknown>>) {
   if (rows.length === 0) return
@@ -141,12 +141,12 @@ export function RequestsTab({ isViewer }: { isViewer: boolean }) {
           </div>
         </div>
 
-        {error && <p className="mt-4 rounded-xl bg-[#FBEAEA] px-4 py-3 text-xs font-medium text-[#C1443D]">{error}</p>}
+        {error && <p className="mt-4 rounded-xl bg-danger-wash px-4 py-3 text-xs font-medium text-danger">{error}</p>}
 
         <div className="mt-5 flex flex-wrap items-center gap-2 text-xs">
-          <span className="rounded-full bg-[#fdf1e8] px-3 py-1 font-semibold text-[#b64400]">Nouvelles : {count("new")}</span>
-          <span className="rounded-full bg-[#f0f7fb] px-3 py-1 font-semibold text-[#006a9e]">En cours : {count("in-progress")}</span>
-          <span className="rounded-full bg-[#E6F4EC] px-3 py-1 font-semibold text-[#03873a]">Traitées : {count("done")}</span>
+          <span className="rounded-full bg-orange-wash px-3 py-1 font-semibold text-launch-orange">Nouvelles : {count("new")}</span>
+          <span className="rounded-full bg-blue-wash px-3 py-1 font-semibold text-link-deep">En cours : {count("in-progress")}</span>
+          <span className="rounded-full bg-green-wash px-3 py-1 font-semibold text-deep-green">Traitées : {count("done")}</span>
           <select value={filter} onChange={(e) => setFilter(e.target.value)} className={`${inputBase} !w-auto`}>
             <option value="">Tous les statuts</option>
             {STATUSES.map(([v, l]) => (
@@ -165,23 +165,23 @@ export function RequestsTab({ isViewer }: { isViewer: boolean }) {
           </select>
         </div>
 
-        <ul className="mt-5 divide-y divide-[#e6e6e8] overflow-hidden rounded-2xl border border-[#d6d6d6]">
-          {visible.length === 0 && <li className="p-6 text-sm text-[#5a5a5e]">Aucune demande.</li>}
+        <ul className="mt-5 divide-y divide-control-gray overflow-hidden rounded-2xl border border-fog">
+          {visible.length === 0 && <li className="p-6 text-sm text-iron-gray">Aucune demande.</li>}
           {visible.map((x) => (
             <li key={x.id} className="bg-white">
               <button
                 type="button"
                 onClick={() => setOpenId(openId === x.id ? null : x.id)}
-                className="flex w-full flex-wrap items-center justify-between gap-3 px-4 py-3 text-left hover:bg-[#fafafc]"
+                className="flex w-full flex-wrap items-center justify-between gap-3 px-4 py-3 text-left hover:bg-paper-frost"
                 aria-expanded={openId === x.id}
               >
                 <span className="min-w-0">
-                  <span className="block font-mono text-xs text-[#5a5a5e]">{x.reference}</span>
-                  <span className="block truncate text-sm font-semibold text-[#1d1d1f]">
-                    {x.full_name} — {TYPES[x.request_type] ?? x.request_type}
+                  <span className="block font-mono text-xs text-iron-gray">{x.reference}</span>
+                  <span className="block truncate text-sm font-semibold text-obsidian">
+                    {x.full_name} : {TYPES[x.request_type] ?? x.request_type}
                   </span>
                 </span>
-                <span className="flex items-center gap-3 text-xs text-[#5a5a5e]">
+                <span className="flex items-center gap-3 text-xs text-iron-gray">
                   {new Date(x.created_at).toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" })}
                   <span className={`rounded-full px-2.5 py-1 font-semibold ${statusStyle(x.status)}`}>
                     {STATUSES.find(([v]) => v === x.status)?.[1] ?? x.status}
@@ -189,12 +189,12 @@ export function RequestsTab({ isViewer }: { isViewer: boolean }) {
                 </span>
               </button>
               {openId === x.id && (
-                <div className="space-y-3 border-t border-[#e6e6e8] bg-[#fafafc] px-4 py-4 text-sm text-[#333336]">
+                <div className="space-y-3 border-t border-control-gray bg-paper-frost px-4 py-4 text-sm text-charcoal">
                   <dl className="grid gap-2 sm:grid-cols-2">
-                    <div><dt className="text-xs text-[#5a5a5e]">Téléphone</dt><dd><a className="font-semibold text-[#006a9e]" href={`tel:${x.phone}`}>{x.phone}</a></dd></div>
-                    <div><dt className="text-xs text-[#5a5a5e]">Localisation</dt><dd>{[x.wilaya, x.commune].filter(Boolean).join(" — ") || "—"}</dd></div>
-                    <div><dt className="text-xs text-[#5a5a5e]">Appareil</dt><dd>{[x.device_class, x.device_reference].filter(Boolean).join(" · ") || "—"}</dd></div>
-                    <div><dt className="text-xs text-[#5a5a5e]">Pièce jointe</dt><dd>{x.attachment_name ?? "—"}{x.attachment_url ? ` (stockée : ${x.attachment_url})` : ""}</dd></div>
+                    <div><dt className="text-xs text-iron-gray">Téléphone</dt><dd><a className="font-semibold text-link-deep" href={`tel:${x.phone}`}>{x.phone}</a></dd></div>
+                    <div><dt className="text-xs text-iron-gray">Localisation</dt><dd>{[x.wilaya, x.commune].filter(Boolean).join(" — ") || "—"}</dd></div>
+                    <div><dt className="text-xs text-iron-gray">Appareil</dt><dd>{[x.device_class, x.device_reference].filter(Boolean).join(" · ") || "—"}</dd></div>
+                    <div><dt className="text-xs text-iron-gray">Pièce jointe</dt><dd>{x.attachment_name ?? "—"}{x.attachment_url ? ` (stockée : ${x.attachment_url})` : ""}</dd></div>
                   </dl>
                   <p className="whitespace-pre-wrap rounded-xl bg-white p-3">{x.message || "—"}</p>
                   <div className="flex flex-wrap gap-2">
@@ -229,12 +229,12 @@ export function RequestsTab({ isViewer }: { isViewer: boolean }) {
             Exporter CSV
           </button>
         </div>
-        <ul className="mt-4 max-h-72 divide-y divide-[#e6e6e8] overflow-auto rounded-2xl border border-[#d6d6d6] bg-white text-sm">
-          {subscribers.length === 0 && <li className="p-4 text-[#5a5a5e]">Aucun abonné.</li>}
+        <ul className="mt-4 max-h-72 divide-y divide-control-gray overflow-auto rounded-2xl border border-fog bg-white text-sm">
+          {subscribers.length === 0 && <li className="p-4 text-iron-gray">Aucun abonné.</li>}
           {subscribers.map((s) => (
             <li key={s.id} className="flex items-center justify-between gap-3 px-4 py-2.5">
-              <span className="truncate font-medium text-[#1d1d1f]">{s.email}</span>
-              <span className="shrink-0 text-xs text-[#5a5a5e]">
+              <span className="truncate font-medium text-obsidian">{s.email}</span>
+              <span className="shrink-0 text-xs text-iron-gray">
                 {(s.lang ?? "fr").toUpperCase()} · {new Date(s.created_at).toLocaleDateString("fr-FR")}
               </span>
             </li>

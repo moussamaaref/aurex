@@ -21,7 +21,7 @@ export default function CompareToast() {
       aria-live="polite"
       className="fixed bottom-5 inset-x-4 sm:inset-x-auto sm:right-6 sm:left-auto z-[70] no-print"
     >
-      <div className="sm:max-w-sm bg-[#1d1d1f] text-white rounded-[10px] shadow-2xl px-4 py-3 flex items-center gap-3">
+      <div className="sm:max-w-sm bg-obsidian text-white rounded-[10px] shadow-2xl px-4 py-3 flex items-center gap-3">
         <svg
           className="w-5 h-5 text-emerald-400 flex-shrink-0"
           fill="none"
@@ -37,7 +37,7 @@ export default function CompareToast() {
           <Link
             to={toast.actionHref}
             onClick={dismissToast}
-            className="flex-shrink-0 text-xs font-semibold text-[#8FB8FF] hover:text-white underline underline-offset-2 font-sans"
+            className="flex-shrink-0 text-xs font-semibold text-sky-soft hover:text-white underline underline-offset-2 font-sans"
           >
             {toast.actionLabel}
           </Link>

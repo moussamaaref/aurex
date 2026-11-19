@@ -42,10 +42,10 @@ export default function LineUpCard({ product, cta }: { product: Product; cta: st
       onBlur={onLeave}
       aria-label={`${ml(product.name)} — ${cta}`}
       className="group flex h-full flex-col overflow-hidden rounded-[28px] bg-white transition-[transform,box-shadow] duration-300 ease-out motion-reduce:transition-none"
-      style={{ border: "1px solid #e6e6e8" }}
+      style={{ border: "1px solid var(--color-control-gray)" }}
       data-lang={lang}
     >
-      <div className="aspect-[4/5] overflow-hidden bg-[#f5f5f7]">
+      <div className="aspect-[4/5] overflow-hidden bg-studio-mist">
         <img
           loading="lazy"
           decoding="async"
@@ -57,21 +57,21 @@ export default function LineUpCard({ product, cta }: { product: Product; cta: st
         />
       </div>
       <div className="flex flex-1 flex-col p-6">
-        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#006a9e]">{categoryLabelOf(product.category)}</p>
-        <h3 className="mt-2 text-[19px] font-semibold leading-snug text-[#1d1d1f]" style={{ fontFamily: "var(--font-display)" }}>
+        <p className="text-xs font-semibold text-link-deep">{categoryLabelOf(product.category)}</p>
+        <h3 className="mt-2 text-[19px] font-semibold leading-snug text-obsidian" style={{ fontFamily: "var(--font-display)" }}>
           {ml(product.name)}
         </h3>
-        {product.reference && <p className="mt-1 font-mono text-xs text-[#5a5a5e]">{product.reference}</p>}
+        {product.reference && <p className="mt-1 font-mono text-xs text-iron-gray">{product.reference}</p>}
         {specs.length > 0 && (
           <ul className="mt-4 flex flex-wrap gap-2">
             {specs.map((spec) => (
-              <li key={spec} className="rounded-full bg-[#f5f5f7] px-3 py-1 text-xs font-medium text-[#333336]">
+              <li key={spec} className="rounded-full bg-studio-mist px-3 py-1 text-xs font-medium text-charcoal">
                 {spec}
               </li>
             ))}
           </ul>
         )}
-        <span className="mt-auto inline-flex min-h-11 items-center gap-2 pt-5 text-[15px] font-semibold text-[#006a9e] transition-colors group-hover:text-[#00628f] group-focus-visible:underline group-active:opacity-80">
+        <span className="mt-auto inline-flex min-h-11 items-center gap-2 pt-5 text-[15px] font-semibold text-link-deep transition-colors group-hover:text-accent-hover group-focus-visible:underline group-active:opacity-80">
           {cta}
           <Icon name="arrow" className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1" strokeWidth={2} />
         </span>

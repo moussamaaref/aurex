@@ -21,28 +21,28 @@ export default function NewsletterBlock() {
   }
 
   return (
-    <section className="bg-white border-t border-[#d6d6d6]" aria-labelledby="newsletter-title">
+    <section className="bg-white border-t border-fog" aria-labelledby="newsletter-title">
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 lg:grid-cols-2 lg:items-center lg:py-20">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#006a9e]" style={{ fontFamily: "var(--font-display)" }}>
+          <p className="text-xs font-semibold text-link-deep" style={{ fontFamily: "var(--font-display)" }}>
             {p(c.eyebrow)}
           </p>
           <h2
             id="newsletter-title"
-            className="mt-3 text-4xl font-semibold leading-[1.05] tracking-tight text-[#1d1d1f] lg:text-[40px]"
+            className="mt-3 text-4xl font-semibold leading-[1.05] tracking-tight text-obsidian lg:text-[40px]"
             style={{ fontFamily: "var(--font-display)" }}
           >
             {p(c.title)}
           </h2>
-          <p className="mt-4 max-w-xl text-[17px] leading-relaxed text-[#474747]">{p(c.text)}</p>
+          <p className="mt-4 max-w-xl text-[17px] leading-relaxed text-slate">{p(c.text)}</p>
         </div>
 
         {state === "done" ? (
-          <div role="status" className="rounded-[28px] bg-[#f5f5f7] p-8">
-            <p className="text-xl font-semibold leading-snug text-[#1d1d1f]" style={{ fontFamily: "var(--font-display)" }}>
+          <div role="status" className="rounded-[28px] bg-studio-mist p-8">
+            <p className="text-xl font-semibold leading-snug text-obsidian" style={{ fontFamily: "var(--font-display)" }}>
               {p(c.successTitle)}
             </p>
-            <p className="mt-3 text-[15px] leading-relaxed text-[#474747]">{p(c.successText)}</p>
+            <p className="mt-3 text-[15px] leading-relaxed text-slate">{p(c.successText)}</p>
           </div>
         ) : (
           <form onSubmit={submit} noValidate className="flex flex-col gap-3 sm:flex-row">
@@ -61,17 +61,17 @@ export default function NewsletterBlock() {
               }}
               placeholder={p(c.placeholder)}
               aria-invalid={state === "invalid"}
-              className="min-h-12 flex-1 rounded-full border border-[#86868b] bg-white px-6 text-[15px] text-[#1d1d1f] outline-none transition-colors placeholder:text-[#707070] focus:border-[var(--color-accent)]"
+              className="min-h-12 flex-1 rounded-full border border-steel bg-white px-6 text-[15px] text-obsidian outline-none transition-colors placeholder:text-muted-gray focus:border-[var(--color-accent)]"
             />
             <button
               type="submit"
               disabled={state === "sending"}
-              className="min-h-12 whitespace-nowrap rounded-full bg-[var(--color-accent)] px-7 text-[15px] font-semibold text-white transition-colors hover:bg-[#00628f] disabled:opacity-60"
+              className="min-h-12 whitespace-nowrap rounded-full bg-[var(--color-accent)] px-7 text-[15px] font-semibold text-white transition-colors hover:bg-accent-hover disabled:opacity-60"
             >
               {p(c.cta)}
             </button>
             {(state === "invalid" || state === "error") && (
-              <p role="alert" className="text-sm text-[#b64400] sm:basis-full">
+              <p role="alert" className="text-sm text-launch-orange sm:basis-full">
                 {state === "invalid" ? p(c.invalid) : p(c.error)}
               </p>
             )}

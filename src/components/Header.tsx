@@ -130,14 +130,14 @@ export default function Header() {
         <div aria-hidden="true" className="fixed inset-0 z-40" onClick={closeSearch} />
       )}
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled ? "shadow-[0_8px_30px_rgba(15,23,42,0.08)]" : ""
+        className={`fixed top-0 left-0 right-0 z-50 transition-[color,background-color,border-color,opacity,transform,box-shadow] duration-300 ${
+          scrolled ? "shadow-[0_8px_30px_color-mix(in_srgb,var(--color-shadow-slate)_8%,transparent)]" : ""
         }`}
       >
         {/* Main bar */}
         <div
           className={`bg-white border-b transition-colors duration-300 ${
-            scrolled ? "border-[#d6d6d6]" : "border-[#d6d6d6]"
+            scrolled ? "border-fog" : "border-fog"
           }`}
         >
           <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-[72px]">
@@ -148,7 +148,7 @@ export default function Header() {
                   {settings.logoIconUrl ? (
                     <img src={settings.logoIconUrl} alt="icon" className="w-9 h-9 object-contain" />
                   ) : (
-                    <svg width="24" height="24" viewBox="0 0 20 20" fill="none">
+                    <svg aria-hidden="true" width="24" height="24" viewBox="0 0 20 20" fill="none">
                       <rect x="3" y="3" width="6" height="6" fill="white" opacity="0.9" />
                       <rect x="11" y="3" width="6" height="6" fill="white" opacity="0.5" />
                       <rect x="3" y="11" width="6" height="6" fill="white" opacity="0.5" />
@@ -165,7 +165,7 @@ export default function Header() {
                   {settings.logoText}
                 </span>
               ) : (
-                <span hidden className="text-[27px] font-bold tracking-[-0.08em] text-[#168BC3]">
+                <span hidden className="text-[27px] font-bold tracking-[-0.08em] text-brand-sky">
                   aurex
                 </span>
               )}
@@ -186,13 +186,13 @@ export default function Header() {
                       ${
                         isActive(item.href)
                           ? "text-[var(--color-primary)]"
-                          : "text-[#333336] hover:text-[var(--color-primary)]"
+                          : "text-charcoal hover:text-[var(--color-primary)]"
                       }`}
                     style={{ fontFamily: "var(--font-sans)" }}
                   >
                     {p(navLabels[item.key])}
                     {item.hasMega && (
-                      <svg
+                      <svg aria-hidden="true"
                         className={`w-3.5 h-3.5 ml-0.5 transition-transform duration-200 ${
                           megaOpen ? "rotate-180" : ""
                         }`}
@@ -225,7 +225,7 @@ export default function Header() {
             <div className="flex items-center gap-1">
               <Link
                 to="/comparateur"
-                className="relative inline-flex min-h-11 min-w-11 items-center justify-center p-2 text-[#474747] hover:text-[var(--color-primary)] transition-colors rounded-[10px] hover:bg-[#f5f5f7]"
+                className="relative inline-flex min-h-11 min-w-11 items-center justify-center p-2 text-slate hover:text-[var(--color-primary)] transition-colors rounded-[10px] hover:bg-studio-mist"
                 aria-label={`${t("header.comparator")}${
                   compareIds.length > 0
                     ? ` (${compareIds.length} ${t("comparator.countShort", {
@@ -258,11 +258,11 @@ export default function Header() {
 
               <button
                 onClick={() => (searchOpen ? closeSearch() : setSearchOpen(true))}
-                className="inline-flex min-h-11 min-w-11 items-center justify-center p-2 text-[#474747] hover:text-[var(--color-primary)] transition-colors rounded-[10px] hover:bg-[#f5f5f7]"
+                className="inline-flex min-h-11 min-w-11 items-center justify-center p-2 text-slate hover:text-[var(--color-primary)] transition-colors rounded-[10px] hover:bg-studio-mist"
                 aria-label={t("header.searchLabel")}
               >
                 {searchOpen ? (
-                  <svg
+                  <svg aria-hidden="true"
                     className="w-5 h-5"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -276,7 +276,7 @@ export default function Header() {
                     />
                   </svg>
                 ) : (
-                  <svg
+                  <svg aria-hidden="true"
                     className="w-5 h-5"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -293,7 +293,7 @@ export default function Header() {
               </button>
 
               {/* Language */}
-              <div className="hidden md:flex items-center gap-0.5 pl-1 ml-1 border-l border-[#d6d6d6]">
+              <div className="hidden md:flex items-center gap-0.5 pl-1 ml-1 border-l border-fog">
                 {(["FR", "AR", "EN"] as const).map((l) => (
                   <button
                     key={l}
@@ -301,7 +301,7 @@ export default function Header() {
                     className={`px-2 py-1 text-xs font-semibold rounded-full transition-colors ${
                       i18n.language === l.toLowerCase()
                         ? "bg-[var(--color-primary)] text-white"
-                        : "text-[#474747] hover:text-[var(--color-primary)] hover:bg-[#f5f5f7]"
+                        : "text-slate hover:text-[var(--color-primary)] hover:bg-studio-mist"
                     }`}
                     style={{
                       fontFamily: "var(--font-display)",
@@ -316,10 +316,10 @@ export default function Header() {
               {!hideWhereToBuy && !isDistributors && (
                 <Link
                   to="/distributeurs"
-                  className="hidden md:flex items-center gap-1.5 bg-[var(--color-accent)] text-white text-sm font-semibold px-4 py-2.5 rounded-[10px] hover:bg-[#00628f] transition-colors ml-2 shadow-sm shadow-blue-200"
+                  className="hidden md:flex items-center gap-1.5 bg-[var(--color-accent)] text-white text-sm font-semibold px-4 py-2.5 rounded-[10px] hover:bg-accent-hover transition-colors ml-2 shadow-sm shadow-blue-200"
                   style={{ fontFamily: "var(--font-sans)" }}
                 >
-                <svg
+                <svg aria-hidden="true"
                   className="w-4 h-4"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -343,10 +343,10 @@ export default function Header() {
 
               <button
                 onClick={() => setMobileOpen((v) => !v)}
-                className="lg:hidden inline-flex min-h-11 min-w-11 items-center justify-center p-2 text-[#474747] hover:text-[var(--color-primary)] transition-colors rounded-[10px] ml-1"
+                className="lg:hidden inline-flex min-h-11 min-w-11 items-center justify-center p-2 text-slate hover:text-[var(--color-primary)] transition-colors rounded-[10px] ml-1"
                 aria-label={t("header.menuLabel")}
               >
-                <svg
+                <svg aria-hidden="true"
                   className="w-5 h-5"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -373,7 +373,7 @@ export default function Header() {
 
           {/* Search bar */}
           {searchOpen && (
-            <div className="border-t border-[#d6d6d6] px-6 py-3 animate-fade-in-down">
+            <div className="border-t border-fog px-6 py-3 animate-fade-in-down">
               <div className="max-w-2xl mx-auto relative">
                 <input
                   type="search"
@@ -391,11 +391,11 @@ export default function Header() {
                   role="combobox"
                   aria-expanded={searchQuery.trim().length >= 2}
                   aria-controls="aurex-search-results"
-                  className="w-full pl-10 pr-4 py-2.5 bg-[#f5f5f7] border border-[#d6d6d6] rounded-[10px] text-sm placeholder-gray-400 focus:outline-none focus:border-[var(--color-accent)] focus:bg-white transition-colors"
+                  className="w-full pl-10 pr-4 py-2.5 bg-studio-mist border border-fog rounded-[10px] text-sm placeholder-gray-400 focus:outline-none focus:border-[var(--color-accent)] focus:bg-white transition-colors"
                   style={{ fontFamily: "var(--font-sans)" }}
                 />
-                <svg
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#5a5a5e]"
+                <svg aria-hidden="true"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-iron-gray"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -411,12 +411,12 @@ export default function Header() {
                   <div
                     id="aurex-search-results"
                     role="listbox"
-                    className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-[10px] border border-[#d6d6d6] bg-white shadow-2xl"
+                    className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-[10px] border border-fog bg-white shadow-2xl"
                   >
                     {searchResults.length > 0 ? (
                       <>
                         <p
-                          className="px-4 pt-3 text-[10px] font-bold uppercase tracking-[0.18em] text-[#5a5a5e]"
+                          className="px-4 pt-3 text-xs font-bold text-iron-gray"
                           style={{ fontFamily: "var(--font-display)" }}
                         >
                           {t("header.searchResults")} ({searchResults.length})
@@ -427,22 +427,22 @@ export default function Header() {
                               <button
                                 type="button"
                                 onClick={() => goToProduct(p)}
-                                className="flex w-full items-center gap-3 rounded-[10px] p-2 text-start transition-colors hover:bg-[#f5f5f7]"
+                                className="flex w-full items-center gap-3 rounded-[10px] p-2 text-start transition-colors hover:bg-studio-mist"
                               >
                                 <img
                                   src={p.image}
                                   alt=""
-                                  className="h-11 w-11 flex-shrink-0 rounded-[10px] bg-[#f5f5f7] object-cover"
+                                  className="h-11 w-11 flex-shrink-0 rounded-[10px] bg-studio-mist object-cover"
                                 />
                                 <span className="min-w-0 flex-1">
-                                  <span className="block truncate text-sm font-semibold text-[#1d1d1f]" style={{ fontFamily: "var(--font-sans)" }}>
+                                  <span className="block truncate text-sm font-semibold text-obsidian" style={{ fontFamily: "var(--font-sans)" }}>
                                     {ml(p.name)}
                                   </span>
-                                  <span className="block truncate font-mono text-[10px] uppercase tracking-wider text-[#5a5a5e]">
+                                  <span className="block truncate font-mono text-xs text-iron-gray">
                                     {p.reference}
                                   </span>
                                 </span>
-                                <svg className="h-4 w-4 flex-shrink-0 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <svg aria-hidden="true" className="h-4 w-4 flex-shrink-0 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                                 </svg>
                               </button>
@@ -452,14 +452,14 @@ export default function Header() {
                         <Link
                           to="/produits"
                           onClick={closeSearch}
-                          className="block border-t border-[#d6d6d6] px-4 py-3 text-center text-xs font-semibold text-[#006a9e] transition-colors hover:bg-[#f5f5f7]"
+                          className="block border-t border-fog px-4 py-3 text-center text-xs font-semibold text-link-deep transition-colors hover:bg-studio-mist"
                           style={{ fontFamily: "var(--font-sans)" }}
                         >
                           {t("header.searchSeeAll")}
                         </Link>
                       </>
                     ) : (
-                      <p className="px-4 py-6 text-center text-sm text-[#474747]" style={{ fontFamily: "var(--font-sans)" }}>
+                      <p className="px-4 py-6 text-center text-sm text-slate" style={{ fontFamily: "var(--font-sans)" }}>
                         {t("header.searchNoResults")}
                       </p>
                     )}
@@ -473,7 +473,7 @@ export default function Header() {
         {/* Mega menu */}
         {hoveredNav === "products" && (
           <div
-            className="hidden lg:block bg-white border-b border-[#d6d6d6] shadow-xl animate-fade-in-down"
+            className="hidden lg:block bg-white border-b border-fog shadow-xl animate-fade-in-down"
             onMouseEnter={() => openNav("products")}
             onMouseLeave={closeNav}
           >
@@ -481,7 +481,7 @@ export default function Header() {
               <div className="grid grid-cols-4 gap-8">
                 <div className="col-span-3">
                   <p
-                    className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#5a5a5e] mb-5"
+                    className="text-xs font-bold text-iron-gray mb-5"
                     style={{ fontFamily: "var(--font-display)" }}
                   >
                     {p(megaLabels.categories)}
@@ -491,10 +491,10 @@ export default function Header() {
                       <Link
                         key={cat.slug}
                         to={`/produits/${cat.slug}`}
-                        className="flex items-start gap-3 p-3 rounded-[10px] hover:bg-[#f5f5f7] group transition-colors"
+                        className="flex items-start gap-3 p-3 rounded-[10px] hover:bg-studio-mist group transition-colors"
                       >
-                        <div className="w-9 h-9 bg-[#f5f5f7] rounded-[10px] flex items-center justify-center flex-shrink-0 group-hover:bg-[var(--color-primary)] transition-colors">
-                          <svg
+                        <div className="w-9 h-9 bg-studio-mist rounded-[10px] flex items-center justify-center flex-shrink-0 group-hover:bg-[var(--color-primary)] transition-colors">
+                          <svg aria-hidden="true"
                             className="w-4 h-4 text-[var(--color-primary)] group-hover:text-white transition-colors"
                             fill="none"
                             viewBox="0 0 24 24"
@@ -516,7 +516,7 @@ export default function Header() {
                             {p(cat.name)}
                           </p>
                           <p
-                            className="text-xs text-[#474747] mt-0.5"
+                            className="text-xs text-slate mt-0.5"
                             style={{ fontFamily: "var(--font-sans)" }}
                           >
                             {p(cat.highlight)}
@@ -527,11 +527,11 @@ export default function Header() {
                   </div>
                   <Link
                     to="/produits"
-                    className="inline-flex items-center gap-1.5 mt-6 text-sm font-medium text-[#006a9e] hover:text-[var(--color-primary)] transition-colors"
+                    className="inline-flex items-center gap-1.5 mt-6 text-sm font-medium text-link-deep hover:text-[var(--color-primary)] transition-colors"
                     style={{ fontFamily: "var(--font-sans)" }}
                   >
                     {p(megaLabels.seeAll)}
-                    <svg
+                    <svg aria-hidden="true"
                       className="w-4 h-4"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -547,29 +547,29 @@ export default function Header() {
                   </Link>
                 </div>
 
-                <div className="border-l border-[#d6d6d6] pl-8">
+                <div className="border-l border-fog pl-8">
                   <p
-                    className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#5a5a5e] mb-5"
+                    className="text-xs font-bold text-iron-gray mb-5"
                     style={{ fontFamily: "var(--font-display)" }}
                   >
                     {p(megaLabels.featured)}
                   </p>
-                  <div className="rounded-[28px] overflow-hidden bg-[#f5f5f7]">
+                  <div className="rounded-[28px] overflow-hidden bg-studio-mist">
                     <div className="p-5">
                       <span
-                        className="text-xs font-semibold text-[#006a9e]"
+                        className="text-xs font-semibold text-link-deep"
                         style={{ fontFamily: "var(--font-display)" }}
                       >
                         2026
                       </span>
                       <h4
-                        className="text-lg font-semibold leading-tight mt-1.5 text-[#1d1d1f]"
+                        className="text-lg font-semibold leading-tight mt-1.5 text-obsidian"
                         style={{ fontFamily: "var(--font-display)" }}
                       >
                         {p(productsSide.lineup.title)}
                       </h4>
                       <p
-                        className="text-sm text-[#5a5a5e] mt-2 leading-relaxed"
+                        className="text-sm text-iron-gray mt-2 leading-relaxed"
                         style={{ fontFamily: "var(--font-sans)" }}
                       >
                         {p(productsSide.lineup.text)}
@@ -577,11 +577,11 @@ export default function Header() {
                       <Link
                         to={productsSide.lineup.href}
                         onClick={() => setHoveredNav(null)}
-                        className="inline-flex min-h-11 items-center gap-1.5 mt-3 text-sm font-semibold text-[#006a9e] hover:underline"
+                        className="inline-flex min-h-11 items-center gap-1.5 mt-3 text-sm font-semibold text-link-deep hover:underline"
                         style={{ fontFamily: "var(--font-sans)" }}
                       >
                         {t("header.discover")}
-                        <svg className="w-3 h-3 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <svg aria-hidden="true" className="w-3 h-3 rtl:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                         </svg>
                       </Link>
@@ -597,12 +597,12 @@ export default function Header() {
                         key={link.href}
                         to={link.href}
                         onClick={() => setMobileOpen(false)}
-                        className="flex items-center justify-between p-2.5 rounded-[10px] hover:bg-[#f5f5f7] group transition-colors"
+                        className="flex items-center justify-between p-2.5 rounded-[10px] hover:bg-studio-mist group transition-colors"
                       >
                         <span className="flex items-center gap-2">
                           {link.href === "/comparateur" && (
                             <svg
-                              className="w-4 h-4 text-[#5a5a5e] group-hover:text-[#006a9e] transition-colors"
+                              className="w-4 h-4 text-iron-gray group-hover:text-link-deep transition-colors"
                               fill="none"
                               viewBox="0 0 24 24"
                               stroke="currentColor"
@@ -622,7 +622,7 @@ export default function Header() {
                             </svg>
                           )}
                           <span
-                            className="text-sm text-[#333336] group-hover:text-[var(--color-primary)] transition-colors"
+                            className="text-sm text-charcoal group-hover:text-[var(--color-primary)] transition-colors"
                             style={{ fontFamily: "var(--font-sans)" }}
                           >
                             {p(link.label)}
@@ -634,8 +634,8 @@ export default function Header() {
                               </span>
                             )}
                         </span>
-                        <svg
-                          className="w-4 h-4 text-[#5a5a5e] group-hover:text-[#006a9e] transition-colors"
+                        <svg aria-hidden="true"
+                          className="w-4 h-4 text-iron-gray group-hover:text-link-deep transition-colors"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -658,7 +658,7 @@ export default function Header() {
 
         {hoveredNav && hoveredNav !== "products" && (
           <div
-            className="hidden lg:block bg-white border-b border-[#d6d6d6] shadow-xl animate-fade-in-down"
+            className="hidden lg:block bg-white border-b border-fog shadow-xl animate-fade-in-down"
             onMouseEnter={() => openNav(hoveredNav)}
             onMouseLeave={closeNav}
           >
@@ -666,7 +666,7 @@ export default function Header() {
               <div className="grid grid-cols-[1.2fr_2fr_1fr] items-center gap-8">
                 <div>
                   <p
-                    className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#006a9e] mb-2"
+                    className="text-xs font-bold text-link-deep mb-2"
                     style={{ fontFamily: "var(--font-display)" }}
                   >
                     {p(navLabels[hoveredNav as keyof typeof navLabels])}
@@ -679,7 +679,7 @@ export default function Header() {
                   </h3>
                 </div>
                 <p
-                  className="text-sm text-[#64748B] leading-relaxed max-w-xl"
+                  className="text-sm text-iron-gray leading-relaxed max-w-xl"
                   style={{ fontFamily: "var(--font-sans)" }}
                 >
                   {p(navDetails[hoveredNav as keyof typeof navDetails].description)}
@@ -687,11 +687,11 @@ export default function Header() {
                 <Link
                   to={navItems.find((n) => n.key === hoveredNav)?.href ?? "/"}
                   onClick={() => setHoveredNav(null)}
-                  className="justify-self-end inline-flex items-center gap-2 bg-[#f5f5f7] text-[var(--color-primary)] hover:bg-[var(--color-accent)] hover:text-white font-semibold text-sm px-4 py-3 rounded-full transition-colors"
+                  className="justify-self-end inline-flex items-center gap-2 bg-studio-mist text-[var(--color-primary)] hover:bg-[var(--color-accent)] hover:text-white font-semibold text-sm px-4 py-3 rounded-full transition-colors"
                   style={{ fontFamily: "var(--font-sans)" }}
                 >
                   {p(navDetails[hoveredNav as keyof typeof navDetails].action)}
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <svg aria-hidden="true" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                   </svg>
                 </Link>
@@ -714,12 +714,12 @@ export default function Header() {
                 <div key={item.key}>
                   <Link
                     to={item.href}
-                    className="flex items-center justify-between py-3 px-3 text-[#333336] font-medium rounded-[10px] hover:bg-[#f5f5f7] hover:text-[var(--color-primary)] transition-colors"
+                    className="flex items-center justify-between py-3 px-3 text-charcoal font-medium rounded-[10px] hover:bg-studio-mist hover:text-[var(--color-primary)] transition-colors"
                     style={{ fontFamily: "var(--font-sans)" }}
                   >
                     {p(navLabels[item.key])}
-                    <svg
-                      className="w-4 h-4 text-[#5a5a5e]"
+                    <svg aria-hidden="true"
+                      className="w-4 h-4 text-iron-gray"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -733,12 +733,12 @@ export default function Header() {
                     </svg>
                   </Link>
                   {item.key === "products" && (
-                    <div className="ml-3 grid grid-cols-2 gap-1 border-l border-[#DCE6F8] pl-3 pb-2">
+                    <div className="ml-3 grid grid-cols-2 gap-1 border-l border-blue-line pl-3 pb-2">
                       {megaCats.map((cat) => (
                         <Link
                           key={cat.slug}
                           to={`/produits/${cat.slug}`}
-                          className="rounded-[10px] px-2 py-2 text-xs text-[#474747] hover:bg-[#f5f5f7] hover:text-[var(--color-primary)]"
+                          className="rounded-[10px] px-2 py-2 text-xs text-slate hover:bg-studio-mist hover:text-[var(--color-primary)]"
                         >
                           {p(cat.name)}
                         </Link>
@@ -749,12 +749,12 @@ export default function Header() {
               ))}
               <Link
                 to="/comparateur"
-                className="mt-2 flex items-center justify-between py-3 px-3 text-[#333336] font-medium rounded-[10px] hover:bg-[#f5f5f7] hover:text-[var(--color-primary)] transition-colors border-t border-[#d6d6d6] pt-3"
+                className="mt-2 flex items-center justify-between py-3 px-3 text-charcoal font-medium rounded-[10px] hover:bg-studio-mist hover:text-[var(--color-primary)] transition-colors border-t border-fog pt-3"
                 style={{ fontFamily: "var(--font-sans)" }}
               >
                 <span className="flex items-center gap-2">
                   <svg
-                    className="w-4 h-4 text-[#5a5a5e]"
+                    className="w-4 h-4 text-iron-gray"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -775,8 +775,8 @@ export default function Header() {
                     </span>
                   )}
                 </span>
-                <svg
-                  className="w-4 h-4 text-[#5a5a5e]"
+                <svg aria-hidden="true"
+                  className="w-4 h-4 text-iron-gray"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -791,14 +791,14 @@ export default function Header() {
               </Link>
             </nav>
 
-            <div className="p-4 border-t border-[#d6d6d6] space-y-2">
+            <div className="p-4 border-t border-fog space-y-2">
               {!hideWhereToBuy && !isDistributors && (
                 <Link
                   to="/distributeurs"
-                  className="flex items-center justify-center gap-2 bg-[var(--color-accent)] text-white font-medium py-3 rounded-[10px] hover:bg-[#00628f] transition-colors"
+                  className="flex items-center justify-center gap-2 bg-[var(--color-accent)] text-white font-medium py-3 rounded-[10px] hover:bg-accent-hover transition-colors"
                   style={{ fontFamily: "var(--font-sans)" }}
                 >
-                <svg
+                <svg aria-hidden="true"
                   className="w-4 h-4"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -827,7 +827,7 @@ export default function Header() {
                     className={`px-3 py-1.5 text-xs font-bold rounded-full border transition-colors ${
                       i18n.language === l.toLowerCase()
                         ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)]"
-                        : "text-[#474747] border-[#d6d6d6] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
+                        : "text-slate border-fog hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
                     }`}
                     style={{
                       fontFamily: "var(--font-display)",

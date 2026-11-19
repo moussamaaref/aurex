@@ -49,7 +49,7 @@ function ImageField({
 
   return (
     <div className="flex flex-wrap items-start gap-3">
-      <div className="h-20 w-28 shrink-0 overflow-hidden rounded-xl border border-[#d6d6d6] bg-[#f5f5f7]">
+      <div className="h-20 w-28 shrink-0 overflow-hidden rounded-xl border border-fog bg-studio-mist">
         {value ? <img src={value} alt="" className="h-full w-full object-cover" /> : null}
       </div>
       <div className="min-w-0 flex-1 space-y-2">
@@ -66,9 +66,9 @@ function ImageField({
           <button type="button" onClick={() => inputRef.current?.click()} disabled={disabled || busy} className={btnSecondary}>
             {busy ? "Téléversement…" : "Téléverser une image"}
           </button>
-          <span className="text-xs text-[#5a5a5e]">JPG, PNG, WebP — 8 Mo max. Pensez à enregistrer ensuite.</span>
+          <span className="text-xs text-iron-gray">JPG, PNG, WebP, 8 Mo max. Pensez à enregistrer ensuite.</span>
         </div>
-        {error && <p role="alert" className="text-xs font-medium text-[#C1443D]">{error}</p>}
+        {error && <p role="alert" className="text-xs font-medium text-danger">{error}</p>}
       </div>
     </div>
   )
@@ -155,7 +155,7 @@ export function ContentTab({
           description="Tous les textes (français, anglais, arabe), images et liens des pages : accueil, À propos, Support, Smart Tech, Nouveautés, catégories, navigation, pied de page, newsletter, filtres, SEO. Un champ modifié remplace celui du code ; « Rétablir » revient à l'original."
         />
         <div className="flex items-center gap-2">
-          <span className="rounded-full bg-[#f0f7fb] px-3 py-1 text-xs font-semibold text-[#006a9e]">
+          <span className="rounded-full bg-blue-wash px-3 py-1 text-xs font-semibold text-link-deep">
             {totalEdited} modification{totalEdited > 1 ? "s" : ""}
           </span>
           <button type="button" onClick={onSave} disabled={isViewer || saving} className={btnPrimary}>
@@ -176,11 +176,11 @@ export function ContentTab({
                 onClick={() => setGroupId(g.id)}
                 aria-current={active}
                 className={`flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2.5 text-left text-sm font-medium transition ${
-                  active ? "bg-[#1d1d1f] text-white" : "text-[#333336] hover:bg-[#f5f5f7]"
+                  active ? "bg-obsidian text-white" : "text-charcoal hover:bg-studio-mist"
                 }`}
               >
                 {g.label}
-                <span className={`text-[11px] ${active ? "text-white/70" : "text-[#5a5a5e]"}`}>
+                <span className={`text-[11px] ${active ? "text-white/70" : "text-iron-gray"}`}>
                   {c?.edited ? `${c.edited}/` : ""}
                   {c?.total ?? 0}
                 </span>
@@ -200,26 +200,26 @@ export function ContentTab({
           />
 
           <div className="mt-4 space-y-3">
-            {sections.length === 0 && <p className="text-sm text-[#5a5a5e]">Aucun champ.</p>}
+            {sections.length === 0 && <p className="text-sm text-iron-gray">Aucun champ.</p>}
             {sections.map(([title, items], index) => {
               const edited = items.filter((l) => overrides[l.id] !== undefined).length
               return (
-                <details key={title} open={query !== "" || index === 0} className="rounded-2xl border border-[#d6d6d6] bg-white">
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-sm font-semibold text-[#1d1d1f]">
+                <details key={title} open={query !== "" || index === 0} className="rounded-2xl border border-fog bg-white">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-sm font-semibold text-obsidian">
                     <span>{title}</span>
-                    <span className="text-xs font-medium text-[#5a5a5e]">
-                      {edited > 0 && <span className="me-2 rounded-full bg-[#f0f7fb] px-2 py-0.5 text-[#006a9e]">{edited} modifié{edited > 1 ? "s" : ""}</span>}
+                    <span className="text-xs font-medium text-iron-gray">
+                      {edited > 0 && <span className="me-2 rounded-full bg-blue-wash px-2 py-0.5 text-link-deep">{edited} modifié{edited > 1 ? "s" : ""}</span>}
                       {items.length} champ{items.length > 1 ? "s" : ""}
                     </span>
                   </summary>
-                  <div className="space-y-5 border-t border-[#e6e6e8] p-4">
+                  <div className="space-y-5 border-t border-control-gray p-4">
                     {items.map((leaf) => {
                       const ov = overrides[leaf.id]
                       const modified = ov !== undefined
                       return (
                         <div key={leaf.id}>
                           <div className="mb-2 flex items-center justify-between gap-3">
-                            <p className="text-xs font-semibold uppercase tracking-wide text-[#5a5a5e]">{fieldLabel(leaf)}</p>
+                            <p className="text-xs font-semibold text-iron-gray">{fieldLabel(leaf)}</p>
                             {modified && (
                               <button type="button" onClick={() => reset(leaf)} disabled={isViewer} className={btnGhostSmall}>
                                 Rétablir
@@ -246,7 +246,7 @@ export function ContentTab({
                                 const value = ((ov as L3Value | undefined)?.[lang] ?? defaults[lang]) as string | string[]
                                 const text = toText(value)
                                 return (
-                                  <label key={lang} className="block text-[11px] font-semibold text-[#5a5a5e]">
+                                  <label key={lang} className="block text-[11px] font-semibold text-iron-gray">
                                     {LANG_LABEL[lang]}
                                     <textarea
                                       value={text}
@@ -255,7 +255,7 @@ export function ContentTab({
                                       onChange={(e) => setLang(leaf, lang, e.target.value)}
                                       disabled={isViewer}
                                       className={`mt-1 ${inputBase} ${
-                                        (ov as L3Value | undefined)?.[lang] !== undefined ? "!border-[#0077b3]" : ""
+                                        (ov as L3Value | undefined)?.[lang] !== undefined ? "!border-signal-blue" : ""
                                       } font-normal`}
                                     />
                                   </label>

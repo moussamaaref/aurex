@@ -20,7 +20,7 @@ export function ThemeTab({
       />
       <div className="mt-6 grid gap-5 sm:grid-cols-3">
         {(["primary", "accent", "surface"] as const).map((key) => (
-          <label key={key} className="text-sm font-semibold capitalize text-[#1d1d1f]">
+          <label key={key} className="text-sm font-semibold capitalize text-obsidian">
             {key}
             <div className="mt-2 flex gap-2">
               <input
@@ -28,13 +28,13 @@ export function ThemeTab({
                 value={theme[key]}
                 onChange={(e) => onThemeChange({ ...theme, [key]: e.target.value })}
                 disabled={isViewer}
-                className="h-11 w-14 rounded-lg border border-[#d6d6d6] p-1 disabled:opacity-50"
+                className="h-11 w-14 rounded-lg border border-fog p-1 disabled:opacity-50"
               />
               <input
                 value={theme[key]}
                 onChange={(e) => onThemeChange({ ...theme, [key]: e.target.value })}
                 disabled={isViewer}
-                className={`min-w-0 flex-1 uppercase ${inputBase}`}
+                className={`min-w-0 flex-1 ${inputBase}`}
               />
             </div>
           </label>

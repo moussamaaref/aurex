@@ -33,7 +33,7 @@ function Layout({ children }: { children: React.ReactNode }) {
   const isAdmin = pathname.startsWith("/admin")
   return (
     <div className="min-h-screen flex flex-col">
-      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-white focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-[#1d1d1f] focus:outline-2">{t("common.skipToContent")}</a>
+      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-white focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-obsidian focus:outline-2">{t("common.skipToContent")}</a>
       {!isAdmin && <Header />}
       <main id="main" tabIndex={-1} className="flex-1 outline-none">{children}</main>
       {!isAdmin && <Footer />}
@@ -44,25 +44,25 @@ function Layout({ children }: { children: React.ReactNode }) {
 function NotFound() {
   const { t } = useTranslation()
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#f5f5f7] pt-24 px-6 text-center">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-studio-mist pt-24 px-6 text-center">
       <p
-        className="text-6xl font-bold text-[#1d1d1f]"
+        className="text-6xl font-bold text-obsidian"
         style={{ fontFamily: "var(--font-display)" }}
       >
         404
       </p>
       <h1
-        className="text-2xl font-bold text-[#1d1d1f] mt-4"
+        className="text-2xl font-bold text-obsidian mt-4"
         style={{ fontFamily: "var(--font-display)" }}
       >
         {t("notFound.title")}
       </h1>
-      <p className="text-[#474747] mt-2 font-sans text-sm">
+      <p className="text-slate mt-2 font-sans text-sm">
         {t("notFound.desc")}
       </p>
       <a
         href="/"
-        className="mt-8 bg-[#1d1d1f] text-white font-semibold px-6 py-3 rounded-[10px] text-sm font-sans hover:bg-[#1d1d1f] transition-colors inline-flex"
+        className="mt-8 bg-obsidian text-white font-semibold px-6 py-3 rounded-[10px] text-sm font-sans hover:bg-obsidian transition-colors inline-flex"
       >
         {t("notFound.backHome")}
       </a>
@@ -257,7 +257,7 @@ export default function App() {
         <SiteSettingsProvider>
           <CompareProvider>
             <Layout>
-              <Suspense fallback={<div className="flex min-h-[60vh] items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-4 border-[#d6d6d6] border-t-[#0077b3]" /></div>}>
+              <Suspense fallback={<div className="flex min-h-[60vh] items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-4 border-fog border-t-signal-blue" /></div>}>
                 <Routes>
                   <Route path="/" element={<HomePage />} />
                   <Route path="/produits" element={<ProductsPage />} />

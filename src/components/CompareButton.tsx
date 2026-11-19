@@ -98,10 +98,10 @@ export default function CompareButton({
           className ?? ""
         } ${
           added
-            ? "bg-[#1d1d1f] text-white border-[#1d1d1f]"
+            ? "bg-obsidian text-white border-obsidian"
             : full
-              ? "bg-[#f5f5f7] text-gray-300 border-[#d6d6d6] cursor-not-allowed"
-              : "bg-[#e2e2e5] text-[#333336] border-transparent hover:bg-[#d6d6d6]"
+              ? "bg-studio-mist text-gray-300 border-fog cursor-not-allowed"
+              : "bg-mist text-charcoal border-transparent hover:bg-fog"
         }`}
       >
         {added ? (
@@ -124,10 +124,10 @@ export default function CompareButton({
         className ?? ""
       } ${
         added
-          ? "bg-[#1d1d1f] text-white"
+          ? "bg-obsidian text-white"
           : full
-            ? "bg-[#f5f5f7] text-gray-300 border border-[#d6d6d6] cursor-not-allowed"
-            : "bg-[#0077b3] text-white hover:bg-[#00628f]"
+            ? "bg-studio-mist text-gray-300 border border-fog cursor-not-allowed"
+            : "bg-signal-blue text-white hover:bg-accent-hover"
       }`}
     >
       {added ? <CheckIcon /> : <ScaleIcon />}

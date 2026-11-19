@@ -39,7 +39,7 @@ function StoryCards({ onOpen, lang }: { onOpen: (s: Story) => void; lang: string
     [lang],
   )
 
-  if (visible.length === 0) return <p className="mt-8 text-[17px] text-[#474747]">{p(storyUi.empty)}</p>
+  if (visible.length === 0) return <p className="mt-8 text-[17px] text-slate">{p(storyUi.empty)}</p>
 
   return (
     <ul className="mt-10 grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-3 lg:grid-cols-5">
@@ -53,7 +53,7 @@ function StoryCards({ onOpen, lang }: { onOpen: (s: Story) => void; lang: string
                 type="button"
                 onClick={() => onOpen(story)}
                 aria-label={`${p(storyUi.open)} — ${ml(story.name as Localized)}`}
-                className="group relative block aspect-[3/4] w-full overflow-hidden rounded-[28px] bg-[#1d1d1f] text-start transition-transform duration-300 hover:-translate-y-1 active:scale-[0.98] motion-reduce:transition-none"
+                className="group relative block aspect-[3/4] w-full overflow-hidden rounded-[28px] bg-obsidian text-start transition-transform duration-300 hover:-translate-y-1 active:scale-[0.98] motion-reduce:transition-none"
               >
                 {cover && (
                   <img
@@ -70,11 +70,11 @@ function StoryCards({ onOpen, lang }: { onOpen: (s: Story) => void; lang: string
                 {/* Indicateur de progression discret : nombre de scènes */}
                 <span className="absolute inset-x-4 top-4 flex gap-1" aria-hidden="true">
                   {Array.from({ length: count }).map((_, k) => (
-                    <span key={k} className={`h-1 flex-1 rounded-full ${k === 0 ? "bg-[#1d1d1f]/70" : "bg-[#1d1d1f]/20"}`} />
+                    <span key={k} className={`h-1 flex-1 rounded-full ${k === 0 ? "bg-obsidian/70" : "bg-obsidian/20"}`} />
                   ))}
                 </span>
                 {story.is_new && (
-                  <span className="absolute start-4 top-9 rounded-full bg-[var(--color-accent)] px-3 py-1 text-[11px] font-semibold tracking-wider text-white">
+                  <span className="absolute start-4 top-9 rounded-full bg-[var(--color-accent)] px-3 py-1 text-xs font-semibold text-white">
                     {p(storyUi.new)}
                   </span>
                 )}
@@ -108,18 +108,18 @@ export default function NewsPage() {
   const remaining = visibleNews.slice(1)
 
   return (
-    <div className="bg-[#f5f5f7] pt-28">
+    <div className="bg-studio-mist pt-28">
       {/* Héros — AUREX DISCOVERIES */}
       <section className="bg-white">
         <div className="mx-auto max-w-7xl px-6 py-16 lg:py-24">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#006a9e]">{p(news.hero.eyebrow)}</p>
-          <h1 className="mt-4 max-w-4xl text-3xl font-semibold sm:text-4xl leading-[1.05] tracking-tight text-[#1d1d1f] lg:text-[52px] lg:tracking-[-0.8px]" style={{ fontFamily: "var(--font-display)" }}>
+          <p className="text-xs font-semibold text-link-deep">{p(news.hero.eyebrow)}</p>
+          <h1 className="mt-4 max-w-4xl text-3xl font-semibold sm:text-4xl leading-[1.05] tracking-tight text-obsidian lg:text-[52px] lg:tracking-[-0.8px]" style={{ fontFamily: "var(--font-display)" }}>
             {p(news.hero.title)}
           </h1>
-          <p className="mt-6 max-w-2xl text-[19px] leading-relaxed text-[#333336]">{p(news.hero.text)}</p>
+          <p className="mt-6 max-w-2xl text-[19px] leading-relaxed text-charcoal">{p(news.hero.text)}</p>
           <a
             href="#stories"
-            className="group mt-9 inline-flex min-h-12 items-center gap-2 rounded-full bg-[var(--color-accent)] px-7 text-[15px] font-semibold text-white transition-colors hover:bg-[#00628f] active:scale-[0.98]"
+            className="group mt-9 inline-flex min-h-12 items-center gap-2 rounded-full bg-[var(--color-accent)] px-7 text-[15px] font-semibold text-white transition-colors hover:bg-accent-hover active:scale-[0.98]"
           >
             {p(news.hero.cta)}
             <Icon name="arrow" className="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1" strokeWidth={2} />
@@ -130,10 +130,10 @@ export default function NewsPage() {
       {/* Product Stories — « Meet What's New. » */}
       <section id="stories" className="scroll-mt-24 mx-auto max-w-7xl px-6 py-16 lg:py-[90px]" aria-labelledby="stories-title">
         <Reveal>
-          <h2 id="stories-title" className="text-4xl font-semibold leading-none tracking-tight text-[#1d1d1f] lg:text-[48px]" style={{ fontFamily: "var(--font-display)" }}>
+          <h2 id="stories-title" className="text-4xl font-semibold leading-none tracking-tight text-obsidian lg:text-[48px]" style={{ fontFamily: "var(--font-display)" }}>
             {p(storyUi.heading)}
           </h2>
-          <p className="mt-4 max-w-2xl text-[17px] leading-relaxed text-[#474747]">{p(storyUi.description)}</p>
+          <p className="mt-4 max-w-2xl text-[17px] leading-relaxed text-slate">{p(storyUi.description)}</p>
         </Reveal>
         <StoryCards onOpen={setOpenStory} lang={lang} />
       </section>
@@ -141,7 +141,7 @@ export default function NewsPage() {
       {/* À la une : articles */}
       <div id="a-la-une" className="mx-auto max-w-7xl px-6 pb-16 lg:pb-[90px]">
         <div className="mb-10 flex flex-wrap items-end justify-between gap-5">
-          <h2 className="text-4xl font-semibold leading-none tracking-tight text-[#1d1d1f] lg:text-[40px]" style={{ fontFamily: "var(--font-display)" }}>
+          <h2 className="text-4xl font-semibold leading-none tracking-tight text-obsidian lg:text-[40px]" style={{ fontFamily: "var(--font-display)" }}>
             {p(news.featuredSection)}
           </h2>
           <div className="flex flex-wrap gap-2" role="group" aria-label={p(news.filters)}>
@@ -152,7 +152,7 @@ export default function NewsPage() {
                 onClick={() => setCategory(item)}
                 aria-pressed={category === item}
                 className={`min-h-11 rounded-full px-5 text-sm font-semibold transition-colors ${
-                  category === item ? "bg-[#1d1d1f] text-white" : "border border-[#d6d6d6] bg-white text-[#474747] hover:border-[#0077b3] hover:text-[#006a9e]"
+                  category === item ? "bg-obsidian text-white" : "border border-fog bg-white text-slate hover:border-signal-blue hover:text-link-deep"
                 }`}
               >
                 {item === "all" ? p(news.all) : item}
@@ -172,22 +172,22 @@ export default function NewsPage() {
                   alt={ml(featured.title as Localized)}
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 motion-reduce:transition-none"
                 />
-                <span className="absolute start-5 top-5 inline-flex items-center rounded-full bg-[var(--color-accent)] px-4 py-2 text-[11px] font-semibold uppercase tracking-widest text-white">
+                <span className="absolute start-5 top-5 inline-flex items-center rounded-full bg-[var(--color-accent)] px-4 py-2 text-xs font-semibold text-white">
                   {p(news.featuredBadge)}
                 </span>
-                <span className="absolute bottom-5 start-5 rounded-full bg-black/55 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-white">
+                <span className="absolute bottom-5 start-5 rounded-full bg-black/55 px-3 py-1.5 text-xs font-semibold text-white">
                   {p(news.featuredLabel)}
                 </span>
               </div>
               <div className="flex flex-col justify-center p-8 md:p-12">
-                <time className="text-sm text-[#5a5a5e]" dateTime={ml(featured.date as Localized)}>
+                <time className="text-sm text-iron-gray" dateTime={ml(featured.date as Localized)}>
                   {formatDate(featured.date, lang)}
                 </time>
-                <h3 className="mt-4 text-3xl font-semibold leading-tight tracking-tight text-[#1d1d1f] md:text-[34px]" style={{ fontFamily: "var(--font-display)" }}>
+                <h3 className="mt-4 text-3xl font-semibold leading-tight tracking-tight text-obsidian md:text-[34px]" style={{ fontFamily: "var(--font-display)" }}>
                   {ml(featured.title as Localized)}
                 </h3>
-                <p className="mt-5 text-[17px] leading-relaxed text-[#474747]">{ml(featured.excerpt as Localized)}</p>
-                <span className="mt-8 inline-flex min-h-11 items-center gap-2 text-[15px] font-semibold text-[#006a9e] transition-all group-hover:gap-3">
+                <p className="mt-5 text-[17px] leading-relaxed text-slate">{ml(featured.excerpt as Localized)}</p>
+                <span className="mt-8 inline-flex min-h-11 items-center gap-2 text-[15px] font-semibold text-link-deep transition-[color,background-color,border-color,opacity,transform,box-shadow] group-hover:gap-3">
                   {p(news.featuredCta)}
                   <Icon name="arrow" className="h-4 w-4 rtl:-scale-x-100" strokeWidth={2} />
                 </span>
@@ -209,19 +209,19 @@ export default function NewsPage() {
                       alt={ml(item.title as Localized)}
                       className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 motion-reduce:transition-none"
                     />
-                    <span className="absolute start-3 top-3 rounded-full bg-black/60 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-white">
+                    <span className="absolute start-3 top-3 rounded-full bg-black/60 px-3 py-1.5 text-xs font-semibold text-white">
                       {ml(item.category as Localized)}
                     </span>
                   </div>
                   <div className="flex flex-1 flex-col p-6">
-                    <time className="text-xs text-[#5a5a5e]" dateTime={ml(item.date as Localized)}>
+                    <time className="text-xs text-iron-gray" dateTime={ml(item.date as Localized)}>
                       {formatDate(item.date, lang)}
                     </time>
-                    <h3 className="mt-2 line-clamp-2 text-[19px] font-semibold leading-snug text-[#1d1d1f]" style={{ fontFamily: "var(--font-display)" }}>
+                    <h3 className="mt-2 line-clamp-2 text-[19px] font-semibold leading-snug text-obsidian" style={{ fontFamily: "var(--font-display)" }}>
                       {ml(item.title as Localized)}
                     </h3>
-                    <p className="mt-3 line-clamp-3 flex-1 text-[15px] leading-relaxed text-[#474747]">{ml(item.excerpt as Localized)}</p>
-                    <span className="mt-4 inline-flex min-h-11 items-center gap-1.5 text-[15px] font-semibold text-[#006a9e]">
+                    <p className="mt-3 line-clamp-3 flex-1 text-[15px] leading-relaxed text-slate">{ml(item.excerpt as Localized)}</p>
+                    <span className="mt-4 inline-flex min-h-11 items-center gap-1.5 text-[15px] font-semibold text-link-deep">
                       {p(news.cardCta)}
                       <Icon name="arrow" className="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1" strokeWidth={2} />
                     </span>
@@ -233,20 +233,20 @@ export default function NewsPage() {
         )}
 
         {visibleNews.length === 0 && (
-          <p className="rounded-[28px] bg-white py-16 text-center text-[17px] text-[#474747]">{p(news.empty)}</p>
+          <p className="rounded-[28px] bg-white py-16 text-center text-[17px] text-slate">{p(news.empty)}</p>
         )}
 
         {/* Support & assistance */}
-        <section className="mt-16 flex flex-col justify-between gap-7 rounded-[28px] bg-[#1d1d1f] p-8 md:flex-row md:items-center md:p-12">
+        <section className="mt-16 flex flex-col justify-between gap-7 rounded-[28px] bg-obsidian p-8 md:flex-row md:items-center md:p-12">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#4db3e6]">{p(news.needHelp)}</p>
+            <p className="text-xs font-semibold text-sky">{p(news.needHelp)}</p>
             <h2 className="mt-3 max-w-2xl text-2xl font-semibold leading-snug text-white md:text-[28px]" style={{ fontFamily: "var(--font-display)" }}>
               {p(news.supportTitle)}
             </h2>
           </div>
           <Link
             to="/support"
-            className="group inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-full bg-white px-7 text-[15px] font-semibold text-[#1d1d1f] transition-colors hover:bg-[#f5f5f7] active:scale-[0.98]"
+            className="group inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-full bg-white px-7 text-[15px] font-semibold text-obsidian transition-colors hover:bg-studio-mist active:scale-[0.98]"
           >
             {p(news.supportAction)}
             <Icon name="arrow" className="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1" strokeWidth={2} />

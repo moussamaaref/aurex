@@ -22,13 +22,13 @@ export function OverviewTab({
             className="absolute inset-y-0 left-0 w-1"
             style={{ backgroundColor: statAccents[index % statAccents.length] }}
           />
-          <p className="text-sm text-[#474747]">{label}</p>
-          <p className="mt-2 text-3xl font-semibold tracking-tight text-[#1d1d1f]">{value}</p>
-          <p className="mt-1 text-xs text-[#707070]">Éléments administrables</p>
+          <p className="text-sm text-slate">{label}</p>
+          <p className="mt-2 text-3xl font-semibold tracking-tight text-obsidian">{value}</p>
+          <p className="mt-1 text-xs text-muted-gray">Éléments administrables</p>
         </div>
       ))}
       <div className={`p-5 sm:col-span-2 xl:col-span-3 ${cardBase}`}>
-        <h3 className="text-sm font-semibold text-[#1d1d1f]">Raccourcis</h3>
+        <h3 className="text-sm font-semibold text-obsidian">Raccourcis</h3>
         <div className="mt-3 flex flex-wrap gap-2">
           <button type="button" onClick={onManageCollections} className={btnPrimary}>
             Gérer les collections
@@ -41,7 +41,7 @@ export function OverviewTab({
           </button>
         </div>
         {isViewer && (
-          <p className="mt-3 text-xs text-[#b64400]">
+          <p className="mt-3 text-xs text-launch-orange">
             Viewer : vous pouvez consulter les collections et l'historique, mais pas modifier.
           </p>
         )}
